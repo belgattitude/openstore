@@ -15,6 +15,8 @@ To install
 To update
 
 	cd my/project/dir/openstore
-	git 
+	git pull
+
+
 	
 	
