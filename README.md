@@ -1,4 +1,4 @@
-openstore
+Openstore
 =========
 
-A ZF2 openstore attempt
+An attempt to create a ZF2 ecommerce module 
