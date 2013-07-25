@@ -1,14 +1,14 @@
 {
-	"name": "zendframework/skeleton-application",
-	"description": "Skeleton Application for ZF2",
-	"license": "BSD-3-Clause",
+	"name": "nuvolia/zf2-openstore",
+	"description": "An attempt to create an ecommerce solution in zf2",
+	"license": "GPL v2 Clause",
 	"keywords": [
-		"framework",
+		"openstore",
 		"zf2"
 	],
-	"homepage": "http://framework.zend.com/",
+	"homepage": "http://nuvolia.com",
 	"require": {
-		"php": ">=5.3.3",
+		"php": ">=5.4.4",
 		"zendframework/zendframework": "2.2.*",
         "doctrine/orm": "2.4.0-rc2",
         "doctrine/dbal": "2.4.0-rc2",
@@ -24,7 +24,6 @@
 		"widmogrod/zf2-assetic-module": "dev-master",
 		"leafo/lessphp": "0.3.x",
 		"leafo/scssphp": "dev-master"
-		
 	}
 }
 
