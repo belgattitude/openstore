@@ -62,7 +62,12 @@ class ProductPricelist implements InputFilterAwareInterface
 	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Unit sales price"})
 	 */
 	private $price;
+
 	
+	/**
+	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Available stock"})
+	 */
+	private $stock;	
 	
 	/**
 	 * @Gedmo\Timestampable(on="create")
