@@ -1,0 +1,100 @@
+	<style>
+		.category_item {
+			/*
+			border: 1px solid black;
+			margin-bottom: 2px;
+			text-wrap: none;
+   */
+			text-overflow: ellipsis;
+			
+		}
+		.category_item > div.label {
+			/*margin-right:20px;*/
+			margin-top: 4px;
+			/*float: right;*/
+			font-size: 9px;
+		}			
+		
+		.level1 { and
+			padding-left: 0px;
+			margin-left: 0px;
+		}
+		.level2 {
+			padding-left: 20px;
+		}		
+		.level3 {
+			padding-left: 35px;
+		}		
+		.level4 {
+			padding-left: 45px;
+		}		
+	</style>
+	<script type="text/javascript">
+		jQuery.redirect = function(url, params) {
+			url = url || window.location.href || '';
+			url =  url.match(/\?/) ? url : url + '?';
+
+			for ( var key in params ) {
+				var re = RegExp( ';?' + key + '=?[^&;]*', 'g' );
+				url = url.replace( re, '');
+				url += ';' + key + '=' + params[key]; 
+			}  
+			// cleanup url 
+			url = url.replace(/[;&]$/, '');
+			url = url.replace(/\?[;&]/, '?'); 
+			url = url.replace(/[;&]{2}/g, ';');
+			// $(location).attr('href', url);
+			window.location.replace( url ); 
+		};		
+	</script>
+
+		<script>
+		$(document).ready(
+			function() { 
+				$("#e1").select2(
+				{
+					allowClear: true
+					//,multiple: true
+				
+				});
+				$("#e1").on(
+					"change", function(e) { 
+						console.log('e', e);
+						var val = e.val;
+						document.location.href=val;
+					}
+				);		
+			}	
+		);
+		</script>	
+	
+
+<!-- start sidebar -->
+<ul class="nav nav-list">
+   <li class="nav-header">Brands</li>
+   <select id ="e1" style="width: 100%">
+			<option value="<?= $this->url('store') ?>">All brands</option>
+			<optgroup label="Brands">
+			<?php foreach($this->brands as $brand) : ?>				
+				<option value="<?= $this->url('store/brand', array('brand_reference' => $brand['reference'])) ?>"><?= $brand['title'] ?></option>
+			<?php endforeach; ?>			
+			</optgroup>
+		</select>
+    <li class="nav-header">Categories</li>
+	<?php foreach($this->categories as $categ) : ?>
+		<?php if ($categ['lvl'] > 0) : ?>
+			<li class="category_item level<?= $categ['lvl'] ?> <?php if ($categ['is_expanded']) : ?>active<?php endif; ?>"><div class="label pull-right"><?= $categ['count_product'] ?></div>
+				<!--<a href="javascript:$.redirect( location.href, { category : '<?= $categ['reference'] ?>' })">-->
+				<a href="<?= $this->url('store/category', array('category_reference' => $categ['reference'])) ?>">
+				
+					<?php if ($categ['lvl'] == 1 && false):  ?>
+					<i class="icon-home"></i>				
+					<?php endif; ?>
+					<?= $categ['title'] ?>
+					
+				</a>
+			</li>
+		<?php endif; ?>
+	<?php endforeach; ?>	
+</ul>	
+

@@ -1,0 +1,189 @@
+<?php echo $this->doctype(); ?>
+
+<html lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<?php echo $this->headTitle('Webstore ' . $this->translate('Skeleton Application'))->setSeparator(' - ')->setAutoEscape(false) ?>
+		<?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0') ?>
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<?php
+		$theme_path = $this->basePath() . '/themes/webstore'
+		?>
+		<?php
+		echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
+				
+				->prependStylesheet($theme_path . '/css/main.css')
+				->prependStylesheet($theme_path . '/resources/bootstrap/css/bootstrap-responsive.min.css')
+				->prependStylesheet($theme_path . '/resources/bootstrap-themes/united/bootstrap.css')
+				->prependStylesheet($theme_path . '/resources/bootstrap/css/bootstrap.min.css')
+				->prependStylesheet($theme_path . '/resources/twitter-typeahead/css/typeahead.js-bootstrap.css')
+				
+				->prependStylesheet($theme_path . '/resources/jquery-select2/select2.css')
+				->prependStylesheet($theme_path . '/resources/jquery-select2-bootstrap/select2-bootstrap.css')
+				
+		?>
+
+		<?php
+		echo $this->headScript()
+				->prependFile($theme_path . '/resources/jquery-select2/select2.js')
+				
+				->prependFile($theme_path . '/resources/twitter-typeahead/js/typeahead.min.js')
+				->prependFile($theme_path . '/resources/bootstrap/js/bootstrap.min.js')
+				
+				->prependFile($theme_path . '/resources/jquery/jquery.min.js')
+				
+		?>
+
+		<!--[if lt IE 9]>
+		  <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+
+	</head>
+	<body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+		<div class="container">
+
+			<div class="row"><!-- start header -->
+				<div class="span4 logo">
+					<a href="index.html">
+						<h1>Openstore</h1>
+					</a>
+				</div>
+				<div class="span8">
+
+					<div class="row">
+						<div class="span1">&nbsp;</div>
+						<!--
+						<div class="span2">
+							<h4>Currency</h4>
+							<a href="#">USD</a> |
+							<a href="#"><strong>GBP</strong></a> |
+							<a href="#">EUR</a>
+						</div>
+						-->
+						<div class="span3">
+							<a href="<?= $this->basePath() . '/shopcart'; ?>"><h4>Panier d'achat (3)</h4></a>
+						</div>					
+						<div class="span4 customer_service">
+							
+							<div class="btn-group pull-right">
+								<button data-toggle="dropdown" class="btn-mini btn btn-inverse dropdown-toggle">Language <span class="caret"></span></button>
+								<ul class="dropdown-menu">
+								  <li><a href="<?= $this->url(null, array('ui_language' => 'fr'), array(), $reuseMatchedParams=true) ?>">Français</a></li>
+								  <li><a href="<?= $this->url(null, array('ui_language' => 'en'), array(), $reuseMatchedParams=true) ?>">English</a></li>
+								  <li><a href="<?= $this->url(null, array('ui_language' => 'de'), array(), $reuseMatchedParams=true) ?>">German</a></li>
+								  <li><a href="<?= $this->url(null, array('ui_language' => 'nl'), array(), $reuseMatchedParams=true) ?>">Nederlands</a></li>
+								</ul>
+							</div>							
+							
+						</div>
+					</div>
+					<br>
+					<div class="row">
+						<div class="links pull-right">
+							<a href="index.html">Home</a> |
+							<a href="my_account.html">My Account</a> |
+							<a href="<?= $this->basePath() . '/shopcart'; ?>">Shopping Cart</a> |
+							<a href="two-column.html">About</a> |
+							<a href="contact.html">Contact</a>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<!-- -->
+			
+   
+<div class="container" data-spy="affix" data-offset-top="10" id="nav">
+    <div id="nav" class="navbar">
+        <div class="navbar-inner">				
+
+	<!--
+			<div class="row">
+			
+				<div class="span12">
+					<div class="navbar navbar-fixed-top">
+						<div class="navbar-inner">
+ -->
+							<div style="width: auto;" class="container">
+								<a data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar">
+									<span class="icon-bar"></span>
+
+									<span class="icon-bar"></span>
+									<span class="icon-bar"></span>
+								</a>
+								<div class="nav-collapse">
+									<ul class="nav">
+										<li class="dropdown">
+											<a data-toggle="dropdown" class="dropdown-toggle" href="category.html">Desktops <b class="caret"></b></a>
+											<ul class="dropdown-menu">
+												<li><a href="listings.html">PC</a></li>
+												<li><a href="listings.html">Mac</a></li>
+												<li class="divider"></li>
+												<li class="nav-header">Accessories</li>
+												<li><a href="listings.html">Keyboard</a></li>
+												<li><a href="listings.html">Speakers</a></li>
+											</ul>
+										</li>
+										<li><a href="category.html">Laptops</a></li>
+
+										<li><a href="category.html">Components</a></li>
+										<li><a href="category.html">Tablets</a></li>
+										<li class="dropdown">
+											<a data-toggle="dropdown" class="dropdown-toggle" href="category.html">Software <b class="caret"></b></a>
+											<ul class="dropdown-menu">
+												<li><a href="listings.html">Business &amp; Office</a></li>
+												<li><a href="listings.html">Children's Fun &amp; Learning</a></li>
+												<li><a href="listings.html"> Digital Imaging</a></li>
+												<li class="divider"></li>
+												<li class="nav-header">PC Games</li>
+												<li><a href="listings.html">Action &amp; Shooter</a></li>
+												<li><a href="listings.html">Adventure</a></li>
+												<li><a href="listings.html">Fighting</a></li>
+											</ul>
+										</li>
+										<li><a href="listings.html">Phones &amp; PDAs</a></li>
+
+									</ul>
+
+									<ul class="nav pull-right">
+										<li class="divider-vertical"></li>
+										
+										<form action="" class="navbar-search">
+											<input type="text" id="livesearch2" class="span3" autocomplete="off" name="query" value="" placeholder="Search" >
+											<button type="submit" class="btn btn-primary btn-small search_btn">Go</button>
+										</form>
+
+									</ul>
+								</div><!-- /.nav-collapse -->
+							</div>
+						</div><!-- /navbar-inner -->
+					</div><!-- /navbar -->
+				</div>
+			<!--
+			</div>
+   -->
+
+   <script type="text/javascript">
+
+$('#livesearch2').typeahead({
+  name: 'query',
+  local: ['PB45', 'SW201', 'ME']
+});
+
+	   
+   </script>
+   
+		<?php echo $this->content; ?>		
+
+		</div>
+		<script>
+			$('#nav').affix();			
+		</script>
+    </body>
+</html>
