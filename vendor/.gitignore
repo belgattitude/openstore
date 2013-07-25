@@ -1,0 +1,14 @@
+!.gitignore
+.composer
+composer
+bjyoungblood
+doctrine
+doctrine/data-fixtures/*
+gedmo
+hounddog
+kriswallsmith
+leafo
+symfony
+widmogrod
+zendframework
+autoload.php
