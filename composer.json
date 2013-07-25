@@ -4,7 +4,8 @@
 	"license": "GPL v2 Clause",
 	"keywords": [
 		"openstore",
-		"zf2"
+		"zf2",
+		"test"
 	],
 	"homepage": "http://nuvolia.com",
 	"require": {
