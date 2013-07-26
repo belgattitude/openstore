@@ -23,6 +23,7 @@ class IndexController extends AbstractActionController
     public function indexAction()
     {
 		
+		$config = $this->getServiceLocator()->get('Openstore/Config');
 		$view = new ViewModel();
 		$options = array(
 			'query'		=> $this->params()->fromQuery('query'),

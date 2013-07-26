@@ -24,15 +24,41 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 
 	public function onBootstrap(MvcEvent $e)
 	{
-		
 		$eventManager = $e->getApplication()->getEventManager();
 		$moduleRouteListener = new ModuleRouteListener();
 		$moduleRouteListener->attach($eventManager);
 	}
 
+    /**
+     * @inheritdoc
+     */
+    public function getServiceConfig()
+    {
+        return array(
+            'aliases' => array(
+                //'ZendDeveloperTools\ReportInterface' => 'ZendDeveloperTools\Report',
+            ),
+            'invokables' => array(
+                //'ZendDeveloperTools\Report'             => 'ZendDeveloperTools\Report',
+            ),
+            'factories' => array(
+                'Openstore\Config' => function ($sm) {
+                    $config = $sm->get('Configuration');
+                    $config = isset($config['openstore']) ? $config['openstore'] : null;
+                    return new Options($config);
+                },
+            ),
+        );
+    }
+	
+
 	public function getConfig()
 	{
-		return include __DIR__ . '/config/module.config.php';
+		return array_merge(
+				include __DIR__ . '/config/module.config.php',
+				include __DIR__ . '/config/routes.config.php',
+				include __DIR__ . '/config/openstore.config.php'
+		);
 	}
 
 	public function getAutoloaderConfig()
