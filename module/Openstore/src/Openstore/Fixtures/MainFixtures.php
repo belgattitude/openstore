@@ -12,8 +12,34 @@ class LoadUserData implements FixtureInterface
     {
         $this->importLanguages($manager);
 		$this->importProductUnit($manager);
-		
+		$this->importUserRoles($manager);
     }
+	
+	function importUserRoles(ObjectManager $manager)
+	{
+		$roles = array(
+			'guest' => array('parent_id' => null),
+			'user' => array('parent_id' => 'guest'),
+			'moderator' => array('parent_id' => 'user'),
+			'administrator' => array('parent_id' => 'moderator')
+		);
+		
+		foreach($roles as $reference => $infos) {
+			$role = new Entity\Role();
+			$role->setRoleId($reference);
+			
+			if ($infos['parent_id'] !== null) {
+				$role->setParent($roles[$infos['parent_id']]['roleobject']);
+			}
+			$manager->persist($role);
+			$roles[$reference]['roleobject'] = $role;
+			
+			
+		}
+		$manager->flush();
+		
+
+	}
 	
 	function importProductUnit(ObjectManager $manager)
 	{
