@@ -8,6 +8,10 @@ use Zend\Db\Adapter\AdapterAwareInterface;
 
 use Zend\Db\Sql\Sql;
 
+use Smart\Data\Store;
+use Smart\Data\Store\Adapter\ZendDbSqlSelect;
+
+
 
 
 abstract class BrowserAbstract implements AdapterAwareInterface 
@@ -63,7 +67,24 @@ abstract class BrowserAbstract implements AdapterAwareInterface
 	{
 		$options = new \Openstore\Catalog\Browser\Search\Options();		
 		return $otions;
-	}	
+	}
+	
+	
+	/**
+	 * 
+	 * @param \Openstore\Catalog\Browser\Search\Options $options
+	 * @return \Smart\Data\Store\Adapter\Adapter
+	 */
+	function getStore(SearchOptions $options=null)
+	{
+		if ($options === null) {
+			$options = $this->getDefaultOptions();
+		}
+		$select = $this->getSelect($options);
+		$store = new ZendDbSqlSelect(['select'  => $select,
+									  'adapter' => $this->adapter]);
+		return $store;
+	}
 	
 	/**
 	 * 
@@ -78,7 +99,19 @@ abstract class BrowserAbstract implements AdapterAwareInterface
 			$options = $this->getDefaultOptions();
 		}
 		$select = $this->getSelect($options);
+		
+		
+		$store = new ZendDbSqlSelect(['select'  => $select,
+									  'adapter' => $this->adapter]);
+		
+				
+		$results = $store->getData();
+		
+		return $results;
+		
 		$sql_string = $sql->getSqlStringForSqlObject($select);
+		
+		
 		
 		
 		//echo '<pre>';

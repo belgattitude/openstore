@@ -68,6 +68,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 				'namespaces' => array(
 					__NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
 					'Nv' => __DIR__ . '/src/Nv',
+					'Smart' => __DIR__ . '/src/Smart'
 				),
 			),
 		);

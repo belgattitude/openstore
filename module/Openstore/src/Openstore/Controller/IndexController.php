@@ -27,10 +27,12 @@ class IndexController extends AbstractActionController
 		$view = new ViewModel();
 		$options = array(
 			'query'		=> $this->params()->fromQuery('query'),
-			'category'	=> $this->params()->fromRoute('category_reference')	,
-			'brand'		=> $this->params()->fromRoute('brand_reference')	
+			'category'	=> $this->params()->fromRoute('category_reference'),
+			'brand'		=> $this->params()->fromRoute('brand_reference'),
+			'page'		=> (int) $this->params()->fromQuery('page', 1),
+			'limit'		=> (int) $this->params()->fromQuery('limit', 20),
+			
 		);
-		
 		//var_dump($this->params()->fromQuery());
 		//var_dump($this->params()->fromRoute());
 		
@@ -44,6 +46,7 @@ class IndexController extends AbstractActionController
 		
 		$view->categories	= $categories;
 		$view->products		= $products;
+		$view->searchOptions= $options;
 		
 		$adapter      = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');		
 		$catBrowser	  = new \Openstore\Catalog\Browser\Category($adapter, $this->getFilter());		
@@ -114,7 +117,18 @@ class IndexController extends AbstractActionController
 		$options->setKeywords($search_options['query']);
 		$options->setBrand($search_options['brand']);
 		$options->setCategory($search_options['category']);
-		return $productBrowser->getData($options);
+		
+		$store = $productBrowser->getStore($options);
+		
+		var_dump($search_options);
+		$store->getOptions()->setLimit($search_options['limit'])
+							->setOffset(($search_options['page'] - 1) * $search_options['limit']);
+		
+		$results = $store->getData();
+		//var_dump($results->getTotalRows());
+		return $results;
+		
+		//return $productBrowser->getData($options);
 		
 	}
 	

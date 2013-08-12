@@ -186,7 +186,7 @@
 						
 					</div>
 					<div class="caption"> <!-- style="background-repeat: no-repeat; background-image: url(http://akilia2.emdmusic.com/medias/products/dynamic/<?= $product->product_id ?>-150x120_90.jpg)"> -->
-						<a href="product.html"> <h5><?php echo $product->title ?></h5></a><?= $product->reference ?>   
+						<a href="<?= $this->url('store/product', array('product_id' => $product['product_id']), array(), false); ?>"> <h5><?php echo $product->title ?></h5></a><?= $product->reference ?>   
 						<div style="max-height: 120px; text-overflow: ellipsis; overflow:hidden"><?php echo $product->description ?></div>
 						<div><?php echo $product->characteristic ?></div>
 						<p><a class="btn primary details" href="#" rel="ajax/2.html"><i class="icon-zoom-in"></i></a> <a class="btn addto" href="#" rel="2">Add to <i class="icon-shopping-cart"></i></a> <span class="label label-info price"><?= $this->currencyFormat($product->price, "EUR", "fr_FR"); ?></span></p>
@@ -196,17 +196,25 @@
 			</li>
 			<?php endforeach; ?>
 		</div>
+		
+		<?php if ($this->products->getTotalRows() > 10) : ?>
+		<?php echo $this->products->getPaginator()->getTotalPages() ?>
+		<?php echo $this->products->getPaginator()->getCurrentPage() ?>
+		<?php $paginator = $this->products->getPaginator() ?>
 		<div class="pagination pagination-centered pagination-large">
 			<ul>
+			<?php
+				$pages = $paginator->getPages();
+			?>
+			
 			<li><a href="#">Prev</a></li>
-			<li><a href="#">1</a></li>
-			<li><a href="#">2</a></li>
-			<li><a href="#">3</a></li>
-			<li><a href="#">4</a></li>
-			<li><a href="#">5</a></li>
+			<?php foreach($pages as $page) : ?>	
+			<li><a href="#"><?= $page ?></a></li>
+			<?php endforeach; ?>
 			<li><a href="#">Next</a></li>
 			</ul>
 	    </div>
+		<?php endif; ?>
 </div>
 	
 	
