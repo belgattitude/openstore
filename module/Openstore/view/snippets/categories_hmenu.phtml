@@ -15,7 +15,7 @@
 		font-size: 9px;
 	}			
 
-	.level1 { and
+	.level1 { 
 			  padding-left: 0px;
 			  margin-left: 0px;
 	}
@@ -70,7 +70,7 @@
 
 
 <!-- start sidebar -->
-<ul class="nav nav-list">
+<ul class="nav nav-pills nav-stacked">
 	<li class="nav-header">Brands</li>
 	<select id ="e1" style="width: 100%">
 		<option value="<?= $this->url('store') ?>">All brands</option>
@@ -89,19 +89,16 @@
     <li class="nav-header">Categories</li>
 	<?php foreach ($this->categories as $categ) : ?>
 	<?php if ($categ['lvl'] > 0) : ?>
-			<li class="category_item level<?= $categ['lvl'] ?> <?php if ($categ['is_expanded']) : ?>active<?php endif; ?>"><div class="label pull-right"><?= $categ['count_product'] ?></div>
+			<li class="category_item level<?= $categ['lvl'] ?> <?php if ($categ['is_expanded']) : ?>active<?php endif; ?>">
 				<!--<a href="javascript:$.redirect( location.href, { category : '<?= $categ['reference'] ?>' })">-->
 				<a href="<?= $this->url('store/browse', 
 								array(
 									'category_reference'	=> $categ['reference'],
 									'page'					=> 1
 								), array(), $reuseMatchedParams = true) ?>">
-
-					<?php if ($categ['lvl'] == 1 && false): ?>
-						<i class="icon-home"></i>				
-					<?php endif; ?>
-		<?= $categ['title'] ?>
-
+					
+					<?= $categ['title'] ?>
+					<span class="badge pull-right"><?= $categ['count_product'] ?></span>
 				</a>
 			</li>
 		<?php endif; ?>

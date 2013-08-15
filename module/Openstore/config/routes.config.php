@@ -98,16 +98,17 @@ return array(
 					'browse' => array(
 						'type' => 'segment',
 						'options' => array(
-							'route' => '/browse[/filter/:browse_filter][/brand/:brand_reference][/category/:category_reference][/page/:page][/perPage/:perPage][/sortBy/:sortBy][/sortDir/:sortDir]',
+							'route' => '/browse[/query/:query][/filter/:filter][/brands/:brands][/categories/:categories][/page/:page][/limit/:limit][/sortBy/:sortBy][/sortDir/:sortDir]',
 							'defaults' => array(
 								'action'	=> 'browse',
+								'query'		=> null,
 								'filter'	=> null,
-								'brand_reference'	=> null,
-								'category_reference' => null,
+								'brands'	=> array(),
+								'categories'=> array(),
 								'page'		=> 1,
-								//'perPage'	=> 10, // better in the controller
+								//'limit'	=> 10, // better in the controller
 								'sortBy'	=> "test",
-								'sortDir'	=> "asc",								
+								'sortDir'	=> "ASC",								
 							),
 						),
 					),

@@ -19,96 +19,7 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 
 
-class BrowseParams
-{
-	/**
-	 * @var ArrayObject
-	 */
-	protected $params;
-	
-	
-	function __construct() {
-		$this->params = new \ArrayObject();
-	}
-	
-	/**
-	 * 
-	 * @param \Openstore\Controller\Zend\Mvc\Controller\Plugin\Params $params
-	 * @return \Openstore\Controller\BrowseParams
-	 */
-	static function createFromRequest(Zend\Mvc\Controller\Plugin\Params $params) {
-		$browseParams = new BrowseParams();
-		
-		
-		$browseParams->setBrands();
-		$browseParams->setBrowseFilter($params->fromRoute('browse_filter', 'all'));
-		$browseParams->setCategories($params->fromRoute('category_reference'));
-		$browseParams->setKeywords($params->fromRoute('query', ''));
-		$browseParams->setLimit($params->fromRoute('perPage', 20));
-		$browseParams->setPage($params->fromRoute('page', 1));
-		$browseParams->setSortBy($params->fromRoute('sort_by'));
-		$browseParams->setSortDirection($params->fromRoute('sort_dir', 'ASC'));
-		
-		return $browseParams; 
-	}
-	
-	/**
-	 * 
-	 * @param type $keywords
-	 * @return \Openstore\Controller\BrowseParams
-	 */
-	function setKeywords($keywords) {
-		$this->params['keywords'] = $keywords;
-		return $this;
-	}
-	function setCategories($categories) {
-		$this->params['categories'] = $keywords;
-		return $this;
-		
-	}
-	
-	function setBrands() {
-		
-		$this->params['brands'] = $keywords;
-		return $this;
-		
-	}
-	
-	function setBrowseFilter() {
-		
-		$this->params['browse_filter'] = $keywords;
-		return $this;
-		
-	}
-	
-	function setPage() {
-		
-		$this->params['page'] = $keywords;
-		return $this;
-		
-	}
-	
-	function setPerPage() {
-		
-		$this->params['keywords'] = $keywords;
-		return $this;
-		
-	}
-	function setSortBy()
-	{
-		$this->params['sortby'] = $keywords;
-		return $this;
-		
-	}
-	
-	function setSortDirection()
-	{
-		
-		$this->params['sort_direction'] = $keywords;
-		return $this;
-		
-	}
-}
+
 
 class StoreController extends AbstractActionController
 {
@@ -122,8 +33,12 @@ class StoreController extends AbstractActionController
     public function browseAction()
     {
 		
+							//'route' => '/browse[/filter/:browse_filter][/brand/:brand_reference][/category/:category_reference][/page/:page][/perPage/:perPage][/sortBy/:sortBy][/sortDir/:sortDir]',		
+									
 		$config = $this->getServiceLocator()->get('Openstore/Config');
 		$view = new ViewModel();
+		
+		$browseParams = BrowsingOptions::createFromRequest($this->params());
 		$options = array(
 			'browse_filter' => $this->params()->fromRoute('browse_filter', 'all'),
 			'query'		=> $this->params()->fromQuery('query'),
