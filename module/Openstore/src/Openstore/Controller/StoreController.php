@@ -19,10 +19,106 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 
 
-
+class BrowseParams
+{
+	/**
+	 * @var ArrayObject
+	 */
+	protected $params;
+	
+	
+	function __construct() {
+		$this->params = new \ArrayObject();
+	}
+	
+	/**
+	 * 
+	 * @param \Openstore\Controller\Zend\Mvc\Controller\Plugin\Params $params
+	 * @return \Openstore\Controller\BrowseParams
+	 */
+	static function createFromRequest(Zend\Mvc\Controller\Plugin\Params $params) {
+		$browseParams = new BrowseParams();
+		
+		
+		$browseParams->setBrands();
+		$browseParams->setBrowseFilter($params->fromRoute('browse_filter', 'all'));
+		$browseParams->setCategories($params->fromRoute('category_reference'));
+		$browseParams->setKeywords($params->fromRoute('query', ''));
+		$browseParams->setLimit($params->fromRoute('perPage', 20));
+		$browseParams->setPage($params->fromRoute('page', 1));
+		$browseParams->setSortBy($params->fromRoute('sort_by'));
+		$browseParams->setSortDirection($params->fromRoute('sort_dir', 'ASC'));
+		
+		return $browseParams; 
+	}
+	
+	/**
+	 * 
+	 * @param type $keywords
+	 * @return \Openstore\Controller\BrowseParams
+	 */
+	function setKeywords($keywords) {
+		$this->params['keywords'] = $keywords;
+		return $this;
+	}
+	function setCategories($categories) {
+		$this->params['categories'] = $keywords;
+		return $this;
+		
+	}
+	
+	function setBrands() {
+		
+		$this->params['brands'] = $keywords;
+		return $this;
+		
+	}
+	
+	function setBrowseFilter() {
+		
+		$this->params['browse_filter'] = $keywords;
+		return $this;
+		
+	}
+	
+	function setPage() {
+		
+		$this->params['page'] = $keywords;
+		return $this;
+		
+	}
+	
+	function setPerPage() {
+		
+		$this->params['keywords'] = $keywords;
+		return $this;
+		
+	}
+	function setSortBy()
+	{
+		$this->params['sortby'] = $keywords;
+		return $this;
+		
+	}
+	
+	function setSortDirection()
+	{
+		
+		$this->params['sort_direction'] = $keywords;
+		return $this;
+		
+	}
+}
 
 class StoreController extends AbstractActionController
 {
+	
+	public function indexAction()
+	{
+		$view = new ViewModel();
+		return $view;
+	}
+	
     public function browseAction()
     {
 		
@@ -37,6 +133,8 @@ class StoreController extends AbstractActionController
 			'limit'		=> (int) $this->params()->fromRoute('perPage', 20),
 			
 		);
+		
+
 		//var_dump($this->params()->fromQuery());
 		//var_dump($this->params()->fromRoute());
 		//var_dump($options);
@@ -137,273 +235,7 @@ class StoreController extends AbstractActionController
 		
 	}
 	
-	function getCategories2()
-	{
-/*
-SELECT SQL_NO_CACHE
-    parent.id, 
-	parent.reference, 
-	if (pc18.title is null, parent.title, pc18.title), 
-	if(parent.rgt = (parent.lft+1), 1, 0) as is_leaf, 
-	parent.parent_id as parent_id,	
-	parent.lvl as lvl,
-	parent.lft as lft,
-	parent.rgt as rgt,
-	COUNT(p.id) as count_product
-FROM
-    product_category parent
-        LEFT OUTER JOIN
-    product_category node ON node.lft BETWEEN parent.lft AND parent.rgt
-        LEFT OUTER JOIN
-    product_category_translation pc18 ON pc18.category_id = parent.id
-        and pc18.lang = 'fr'
-        LEFT OUTER JOIN
-    (SELECT 
-        p.id, p.category_id
-    FROM
-        product p
-    INNER JOIN product_pricelist ppl ON ppl.product_id = p.id
-        and p.flag_active = 1
-    INNER JOIN pricelist pl ON pl.id = ppl.pricelist_id
-        and pl.reference = 'NL'
-	INNER JOIN product_brand pb on pb.id = p.brand_id
-	WHERE 1=1
-    -- pb.reference in ('REMO')
-	-- AND p.title like '%R%'
-    GROUP BY p.id, p.category_id) as p ON node.id = p.category_id
-WHERE 1 = 1
--- AND parent.rgt = (parent.lft+1)
--- AND IF(pc18.title is null, parent.title, pc18.title) like '%ROTO%'
-GROUP BY parent.reference
--- HAVING count(p.id) > 0
-ORDER by parent.lft
- * 
-SELECT SQL_NO_CACHE parent.reference, parent.title, COUNT(distinct p.id)
-  FROM product_category parent
-  LEFT OUTER JOIN product_category node 
-    ON node.lft BETWEEN parent.lft AND parent.rgt
-  LEFT OUTER JOIN product p
-    ON node.id = p.category_id and p.flag_active = 1
-  -- left outer join product_pricelist ppl on ppl.product_id = p.id
-  -- left outer join pricelist pl on pl.id = ppl.pricelist_id and pl.reference = 'FR'
- GROUP BY parent.reference
- ORDER by parent.lft
- * 
- * 
-SELECT SQL_NO_CACHE parent.id, parent.reference, if(parent.rgt = (parent.lft+1), 1, 0) as is_leaf, if (pc18.title is null, parent.title, pc18.title) as title, parent.parent_id, parent.lvl, COUNT(p.id) as count_product
-FROM product_category AS node
-     inner join product p on node.id = p.category_id
-	 inner join product_pricelist ppl on ppl.product_id = p.id
-	 inner join pricelist pl on pl.id = ppl.pricelist_id
-	 inner join product_brand pb on pb.id = p.brand_id
-     inner join product_category AS parent on node.lft BETWEEN parent.lft AND parent.rgt
-     left outer join product_category_translation pc18 on pc18.category_id = parent.id
-WHERE 1=1
-and p.flag_active = 1	
-and pb.reference in ('REMO')
-and pl.reference = 'NL'
-and pc18.lang = 'en'
-GROUP BY parent.id
-ORDER BY parent.lft; 
- * 
-select SQL_NO_CACHE parent.id, parent.reference, parent.title, parent.total_product, count(p.id) from
-(
-SELECT parent.id, parent.lft, parent.rgt, parent.reference, parent.title, COUNT(p.id) as total_product
-  FROM product_category parent
-  LEFT OUTER JOIN product_category node 
-    ON node.lft BETWEEN parent.lft AND parent.rgt
-  LEFT OUTER JOIN product p
-    ON node.id = p.category_id
- GROUP BY parent.reference
- ORDER by parent.lft
-) as parent
 
-  LEFT OUTER JOIN product_category node 
-    ON node.lft BETWEEN parent.lft AND parent.rgt
-  LEFT OUTER JOIN product p
-    ON node.id = p.category_id and p.flag_active = 1
-  LEFT OUTER JOIN product_pricelist ppl on ppl.product_id = p.id
-  RIGHT JOIN pricelist pl on pl.id = ppl.pricelist_id and pl.reference = 'BE'
- GROUP BY parent.id
- ORDER by parent.lft
- * 
- * 
-SELECT SQL_NO_CACHE parent.id, parent.reference, parent.title, pc18.title, parent.lvl, COUNT(p.id) as count_product
-FROM product_category AS node 
-     inner join product p on node.id = p.category_id
-	 inner join product_pricelist ppl on ppl.product_id = p.id
-	 inner join pricelist pl on pl.id = ppl.pricelist_id and pl.reference = 'NL'
-	 inner join product_brand pb on pb.id = p.brand_id
-     inner join product_category AS parent on node.lft BETWEEN parent.lft AND parent.rgt
-     left outer join product_category_translation pc18 on pc18.category_id = parent.id and pc18.lang = 'nl'
-WHERE 1=1
-AND p.flag_active = 1	
-and pb.reference in ('REMO')
-GROUP BY parent.id
-ORDER BY parent.root, parent.lft;  
- *  
- * 
-SELECT parent.reference, parent.title, parent.lvl, COUNT(p.id) as count_product
-FROM product_category AS node 
-     inner join product p on node.id = p.category_id
-
-     inner join product_category AS parent on node.lft BETWEEN parent.lft AND parent.rgt
-     left outer join product_category_translation pc18 on pc18.id = parent.id and pc18.lang = 'fr'
-WHERE 1=1
-AND p.flag_active = 1	
-GROUP BY parent.reference
-ORDER BY parent.root, parent.lft;  
- * 
- * 
- * 
- * 10 secondes
-SELECT parent.reference, COUNT(product.id) as count_product
-FROM product_category AS node ,
-        product_category AS parent,
-        product
-WHERE node.lft BETWEEN parent.lft AND parent.rgt
-        AND node.id = product.category_id
-GROUP BY parent.reference
-ORDER BY parent.root, parent.lft; 
- 
- * 
- * 
- */
-		
-/*
- * 
- * 
- * avec product count (2 secondes)
-SELECT parent.reference, COUNT(product.id)
-FROM product_category AS node ,
-        product_category AS parent,
-        product
-WHERE node.lft BETWEEN parent.lft AND parent.rgt
-        AND node.id = product.category_id
-and node.root = 2 and parent.root = 2
-GROUP BY 1
-ORDER BY parent.lft;
- * 
- */		
-		$lang = 'fr';
-		$pricelist_id = 1;
-		$serviceLocator = $this->getServiceLocator();
-        $adapter      = $serviceLocator->get('Zend\Db\Adapter\Adapter');
-		$db = "nuvolia";
-		$sql = new Sql($adapter);
-		$select = $sql->select();
-		$select->from(array('pc' => 'product_category'),  array())
-				->join(array('pc18' => 'product_category_translation'), 
-							new Expression("pc18.id = pc.id and pc18.lang = '$lang'"), 
-							array(), $select::JOIN_LEFT)
-				
-				->join(array('p' => 'product'), "p.category_id = pc.id", array(), $select::JOIN_LEFT)
-				->where('p.flag_active = 1 or p.flag_active is null');
-
-		$columns = array(
-			'id'				=> new Expression('pc.id'),
-			'reference'			=> new Expression('pc.reference'),
-			'title'				=> new Expression('pc.title'),
-			'level'				=> new Expression('pc.lvl'),	
-			'is_leaf'			=> new Expression('pc.rgt = pc.lft + 1')
-		);
-
-		$select->columns(
-				array_merge($columns, array(
-					'count_product' => new Expression('count(p.id)')
-				)), true);
-		
-		$select->group($columns);
-		$select->order(array('pc.root' => $select::ORDER_ASCENDING, 'pc.lft' => $select::ORDER_ASCENDING));
-		
-		
-		
-	
-		$sql_string = $sql->getSqlStringForSqlObject($select);
-		//$sql_string = $sql->getSqlStringForSqlObject($select);
-		//echo '<pre>';
-		//var_dump($sql_string);die();
-		
-		$results = $adapter->query($sql_string, $adapter::QUERY_MODE_EXECUTE);		
-		return $results;
-		
-		
-	}
-	
-	
-	
-	function printCategories()
-	{
-		$em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-
-		$query = $em
-			->createQueryBuilder()
-			->select('node')
-			->from('Openstore\Entity\ProductCategory', 'node')
-			->orderBy('node.root, node.lft', 'ASC')
-			->getQuery()
-		;
-		// set hint to translate nodes
-		$treeDecorationOptions = array(
-			'decorate' => true,
-			'rootOpen' => '<ol>',
-			'rootClose' => '</ol>',
-			'childOpen' => '<li>',
-			'childClose' => '</li>',
-			'nodeDecorator' => function($node) {
-				return str_repeat('-', $node['level']).$node['title'].PHP_EOL;
-			}
-		);
-		$repository = $em->getRepository('Openstore\Entity\ProductCategory');
-		// build tree in english
-		echo $repository->buildTree($query->getArrayResult(), $treeDecorationOptions).PHP_EOL.PHP_EOL;		
-	}
-	
-	
-	function generateEntities()
-	{
-		die('cool');
-		$yaml_dirs = array(
-			realpath(dirname(__FILE__) . '/../../../config/entities') => '\\Application\\Entity'); 
-		
-		$config = \Doctrine\ORM\Tools\Setup::createConfiguration();
-		$driver = new \Doctrine\ORM\Mapping\Driver\SimplifiedYamlDriver($yaml_dirs);
-		$driver->setGlobalBasename('schema');
-		$config->setMetadataDriverImpl($driver);
-	  
-		$conn = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager')->getConnection();
-	//	$a = new \Doctrine\ORM\EntityManager($conn, $config, $eventManager);
-	//	$a->getConnection();
-		 $em = \Doctrine\ORM\EntityManager::create($conn, $config);
-
-		 // Getting metadata
-		$cmf = new \Doctrine\ORM\Tools\DisconnectedClassMetadataFactory();
-		$cmf->setEntityManager($em);  // we must set the EntityManager
-
-		$driver = $em->getConfiguration()->getMetadataDriverImpl();
-
-		$classes = $driver->getAllClassNames();
-		$metadata = array();
-		foreach ($classes as $class) {
-		  //any unsupported table/schema could be handled here to exclude some classes
-		  if (true) {
-			$metadata[] = $cmf->getMetadataFor($class);
-		  }
-		}
-		var_dump($metadata);	
-		
-		// Generating
-		
-		$generator = new \Doctrine\ORM\Tools\EntityGenerator();
-		$generator->setUpdateEntityIfExists(true);    // only update if class already exists
-		$generator->setRegenerateEntityIfExists(true);  // this will overwrite the existing classes
-		$generator->setGenerateStubMethods(true);
-		$generator->setGenerateAnnotations(true);
-		$generator->generate($metadata, '/tmp/test');		
-		 
-		 
-		
-	}
 	
 	public function searchAction()
 	{

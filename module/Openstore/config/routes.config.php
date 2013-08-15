@@ -77,7 +77,7 @@ return array(
 					),
 					'defaults' => array(
 						'__NAMESPACE__' => 'Openstore\Controller',
-						'controller' => 'StoreController',
+						'controller' => 'Store',
 						'action' => 'index',
 						'ui_language' =>
 						in_array($browser_language, $supported_languages) ? $browser_language : $default_language,
@@ -111,6 +111,7 @@ return array(
 							),
 						),
 					),
+					/*
 					'category' => array(
 						'type' => 'segment',
 						'options' => array(
@@ -128,7 +129,7 @@ return array(
 								'action' => 'index',
 							)
 						),
-					),
+					),*/
 				),
 			),
 			'shopcart' => array(

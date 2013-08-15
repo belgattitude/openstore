@@ -33,6 +33,7 @@ return array(
 	'controllers' => array(
 		'invokables' => array(
 			'Openstore\Controller\Index' => 'Openstore\Controller\IndexController',
+			'Openstore\Controller\Store' => 'Openstore\Controller\StoreController',
 			'Openstore\Controller\Shopcart' => 'Openstore\Controller\ShopcartController',
 			'Openstore\Controller\Console' => 'Openstore\Controller\ConsoleController',
 		),
