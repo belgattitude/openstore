@@ -9,6 +9,8 @@ use Iterator;
 use IteratorAggregate;
 use Smart\Data\Store\ResultInterface;
 
+
+
 abstract class AbstractResultSet implements Iterator, ResultSetInterface
 {
 

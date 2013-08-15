@@ -19,9 +19,11 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 
 
-class IndexController extends AbstractActionController
+
+
+class StoreController extends AbstractActionController
 {
-    public function indexAction()
+    public function browseAction()
     {
 		
 		$config = $this->getServiceLocator()->get('Openstore/Config');

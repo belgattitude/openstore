@@ -1,0 +1,45 @@
+<?php if ($this->pageCount): ?>
+	<div class="pagination pagination-centered pagination-large">
+		<ul>
+			
+			<!-- Previous page link -->
+			<?php if (isset($this->previous)): ?>
+				<li>
+					<a href="<?php echo $this->url('store/browse', array('page' => $this->previous), array(), $reuseMatchedParams=true); ?>">
+						&laquo;
+					</a> 
+				</li>
+			<?php else: ?>
+				<li class="disabled">
+					<a>
+					&laquo;
+					</a>
+				</li>
+			<?php endif; ?>
+				
+			<!-- Numbered page links -->
+			<?php foreach ($this->pagesInRange as $page): ?>
+				<?php if ($page != $this->current): ?>
+					<li>
+						<a href="<?php echo $this->url('store/browse', array('page' => $page), array(), $reuseMatchedParams=true); ?>">
+							<?php echo $page; ?>
+						</a> 
+					</li>	
+				<?php else: ?>
+					<li class="disabled"><a><?php echo $page; ?></a></li>
+				<?php endif; ?>
+			<?php endforeach; ?>
+
+			<!-- Next page link -->
+			<?php if (isset($this->next)): ?>
+				<li>
+					<a href="<?php echo $this->url('store/browse', array('page' => $this->next), array(), $reuseMatchedParams=true); ?>">
+						&raquo;
+					</a>
+				</li>
+			<?php else: ?>
+				<li class="disabled"><a>&raquo;</a></li>
+			<?php endif; ?>
+		</ul> 
+	</div>
+<?php endif; ?>

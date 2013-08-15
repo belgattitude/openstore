@@ -67,12 +67,9 @@ class ResultSet extends AbstractResultSet
 	function getPaginator()
 	{
 		if ($this->paginator === null) {
-			$this->paginator = new Paginator();
-			$this->paginator->setBehaviour('sliding');
-			$this->paginator->setMaximumPages(10);
-			$this->paginator->setTotalRows($this->getTotalRows());
-			$this->paginator->setOffset($this->getStore()->getOptions()->getOffset());
-			$this->paginator->setLimit($this->getStore()->getOptions()->getLimit());
+			$this->paginator = new Paginator($this->getTotalRows(), 
+											 $this->getStore()->getOptions()->getLimit(), 
+											 $this->getStore()->getOptions()->getOffset());
 		}
 		return $this->paginator;
 	}

@@ -64,6 +64,7 @@ return array(
 	),
 	'router' => array(
 		'routes' => array(
+			
 			'store' => array(
 				'type' => 'Zend\Mvc\Router\Http\Segment',
 				'options' => array(
@@ -76,7 +77,7 @@ return array(
 					),
 					'defaults' => array(
 						'__NAMESPACE__' => 'Openstore\Controller',
-						'controller' => 'Index',
+						'controller' => 'StoreController',
 						'action' => 'index',
 						'ui_language' =>
 						in_array($browser_language, $supported_languages) ? $browser_language : $default_language,
@@ -97,9 +98,16 @@ return array(
 					'browse' => array(
 						'type' => 'segment',
 						'options' => array(
-							'route' => '/browse[/filter/:browse_filter][/brand/:brand_reference][/category/:category_reference][/page/:page]',
+							'route' => '/browse[/filter/:browse_filter][/brand/:brand_reference][/category/:category_reference][/page/:page][/perPage/:perPage][/sortBy/:sortBy][/sortDir/:sortDir]',
 							'defaults' => array(
-								'action' => 'index',
+								'action'	=> 'browse',
+								'filter'	=> null,
+								'brand_reference'	=> null,
+								'category_reference' => null,
+								'page'		=> 1,
+								//'perPage'	=> 10, // better in the controller
+								'sortBy'	=> "test",
+								'sortDir'	=> "asc",								
 							),
 						),
 					),
