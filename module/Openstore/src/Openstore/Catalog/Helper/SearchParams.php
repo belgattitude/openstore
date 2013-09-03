@@ -21,10 +21,24 @@ class SearchParams
 	 */
 	static function createFromRequest(\Zend\Mvc\Controller\Plugin\Params $params) {
 		$searchParams = new SearchParams();
-		
 		$searchParams->setFilter($params->fromRoute('filter', 'all'));
-		$searchParams->setCategories($params->fromRoute('categories'));
-		$searchParams->setBrands($params->fromRoute('brands'));
+		//var_dump($params->fromRoute('categories')); die();
+		$categories = $params->fromRoute('categories');
+		if (trim($categories) == '') {
+			$searchParams->setCategories(null);
+		} else {
+			$searchParams->setCategories(explode(',', $categories));
+		}
+		
+
+		$brands = $params->fromRoute('brands');
+		if (trim($brands) == '') {
+			$searchParams->setBrands(null);
+		} else {
+			$searchParams->setBrands(explode(',', $brands));
+		}
+		
+		
 		$searchParams->setQuery($params->fromRoute('query', ''));
 		$searchParams->setLimit($params->fromRoute('perPage', 20));
 		$searchParams->setPage($params->fromRoute('page', 1));
@@ -84,7 +98,16 @@ class SearchParams
 	}
 	
 	function setCategories($categories) {
-		$this->params['categories'] = $categories;
+		
+		$categories = (array) $categories;
+		
+		if (count($categories) == 0) {
+			$this->params['categories'] = null; 
+		} else {
+			
+			$this->params['categories'] = $categories;
+			
+		}
 		return $this;
 		
 	}
@@ -94,15 +117,39 @@ class SearchParams
 		return $this->params['categories'];
 	}
 	
-	function setBrands($brands) {
+	function getFirstCategory()
+	{
+		if (is_array($this->params['categories']) && count($this->params['categories']) > 0) {
+			
+			return $this->params['categories'][0];
+		}
 		
-		$this->params['brands'] = $brands;
+		return null;
+	}
+	
+	function setBrands($brands) {
+
+		$brands = (array) $brands;
+		if (count($brands) == 0) {
+			$this->params['brands'] = null; 
+		} else {
+			$this->params['brands'] = $brands;
+		}
+		
 		return $this;
 		
 	}
 	
 	function getBrands() {
 		return $this->params['brands'];
+	}
+
+	function getFirstBrand()
+	{
+		if (is_array($this->params['brands']) && count($this->params['brands']) > 0) {
+			return $this->params['brands'][0];
+		}
+		return null;
 	}
 	
 	function setFilter($filter) {

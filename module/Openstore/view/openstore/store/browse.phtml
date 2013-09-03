@@ -1,21 +1,22 @@
 <div class="row">
 	<div class="col-md-12">
-		<?php $browse_filter = $this->searchOptions['browse_filter']; ?>
+		
+		<?php $browse_filter = $this->searchParams->getFilter() ?>
 		<ul class="nav nav-tabs">
-			<li <?= ($browse_filter == 'all') ? 'class="active"' : '' ?>>
-				<a href="<?= $this->url('store/browse', array('page' => 1, 'browse_filter' => 'all')); ?>">All products</a>
+			<li <?= ($browse_filter == '') ? 'class="active"' : '' ?>>
+				<a href="<?= $this->url('store/browse', array('page' => 1, 'filter' => null)); ?>">All products</a>
 			</li>
 			<li <?= ($browse_filter == 'promos') ? 'class="active"' : '' ?>>
-				<a href="<?= $this->url('store/browse', array('page' => 1, 'browse_filter' => 'promos'), array(), $reuseMatchedParams = true); ?>">Promos</a>	
+				<a href="<?= $this->url('store/browse', array('page' => 1, 'filter' => 'promos'), array(), $reuseMatchedParams = true); ?>">Promos</a>	
 			</li>
 			<li <?= ($browse_filter == 'new') ? 'class="active"' : '' ?>>
-				<a href="<?= $this->url('store/browse', array('page' => 1, 'browse_filter' => 'new'), array(), $reuseMatchedParams = true); ?>">New</a>
+				<a href="<?= $this->url('store/browse', array('page' => 1, 'filter' => 'new'), array(), $reuseMatchedParams = true); ?>">New</a>
 			</li>
 			<li <?= ($browse_filter == 'onstock') ? 'class="active"' : '' ?>>
-				<a href="<?= $this->url('store/browse', array('page' => 1, 'browse_filter' => 'onstock'), array(), $reuseMatchedParams = true); ?>">On stock</a>
+				<a href="<?= $this->url('store/browse', array('page' => 1, 'filter' => 'onstock'), array(), $reuseMatchedParams = true); ?>">On stock</a>
 			</li>			
 			<li <?= ($browse_filter == 'favourites') ? 'class="active pull-right"' : 'class="pull-right"' ?>>
-				<a href="<?= $this->url('store/browse', array('page' => 1, 'browse_filter' => 'favourites'), array(), $reuseMatchedParams = true); ?>"><span class="glyphicon glyphicon-heart"></span> Favorites</a> 
+				<a href="<?= $this->url('store/browse', array('page' => 1, 'filter' => 'favourites'), array(), $reuseMatchedParams = true); ?>"><span class="glyphicon glyphicon-heart"></span> Favorites</a> 
 			</li>
 		</ul>
 	</div>
@@ -24,9 +25,11 @@
 <div class="row">	
 	<div class="col-md-3">
 		<?php
+		
 		echo $this->partial('snippets/categories_hmenu', array(
 			'categories' => $this->categories,
 			'brands' => $this->brands,
+			'searchParams' => $this->searchParams
 		))
 		?>
 	</div>

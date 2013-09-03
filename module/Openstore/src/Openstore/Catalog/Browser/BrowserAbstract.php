@@ -1,18 +1,14 @@
 <?php
 namespace Openstore\Catalog\Browser;
 
-use Openstore\Catalog\Browser\Search\Options as SearchOptions;
+use Openstore\Catalog\Browser\SearchParams\SearchParamsAbstract as SearchParams;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterAwareInterface;
 
 use Zend\Db\Sql\Sql;
 
-use Smart\Data\Store;
 use Smart\Data\Store\Adapter\ZendDbSqlSelect;
-
-
-
 
 abstract class BrowserAbstract implements AdapterAwareInterface 
 {
@@ -54,33 +50,29 @@ abstract class BrowserAbstract implements AdapterAwareInterface
 	
 	/**
 	 * 
-	 * @param \Openstore\Catalog\Browser\Search\Options $options
+	 * @param \Openstore\Catalog\Browser\SearchParams\SearchParamsAbstract $params
 	 * @return \Zend\Db\Sql\Select
 	 */
-	abstract function getSelect(SearchOptions $options=null);
+	abstract function getSelect(SearchParams $params=null);
 	
 	/**
 	 * 
-	 * @return \Openstore\Catalog\Browser\Search\Options $options
+	 * @return \Openstore\Catalog\Browser\SearchParams\SearchParamsAbstract $params
 	 */
-	function getDefaultOptions()
-	{
-		$options = new \Openstore\Catalog\Browser\Search\Options();		
-		return $otions;
-	}
+	abstract function getDefaultParams();
 	
 	
 	/**
 	 * 
-	 * @param \Openstore\Catalog\Browser\Search\Options $options
+	 * @param \Openstore\Catalog\Browser\SearchParams\SearchParamsAbstract $params
 	 * @return \Smart\Data\Store\Adapter\Adapter
 	 */
-	function getStore(SearchOptions $options=null)
+	function getStore(SearchParams $params=null)
 	{
-		if ($options === null) {
-			$options = $this->getDefaultOptions();
+		if ($params === null) {
+			$params = $this->getDefaultParams();
 		}
-		$select = $this->getSelect($options);
+		$select = $this->getSelect($params);
 		$store = new ZendDbSqlSelect(['select'  => $select,
 									  'adapter' => $this->adapter]);
 		return $store;
@@ -88,38 +80,25 @@ abstract class BrowserAbstract implements AdapterAwareInterface
 	
 	/**
 	 * 
-	 * @param \Openstore\Catalog\Browser\Search\Options $options
+	 * @param \Openstore\Catalog\Browser\SearchParams\SearchParamsAbstract $params
 	 * @return array
 	 */
-	function getData(SearchOptions $options=null)
+	function getData(SearchParams $params=null)
 	{
 		
 		$sql = new Sql($this->adapter);
-		if ($options === null) {
-			$options = $this->getDefaultOptions();
+		if ($params === null) {
+			$params = $this->getDefaultParams();
 		}
-		$select = $this->getSelect($options);
+		$select = $this->getSelect($params);
 		
 		
 		$store = new ZendDbSqlSelect(['select'  => $select,
 									  'adapter' => $this->adapter]);
-		
 				
 		$results = $store->getData();
-		
 		return $results;
 		
-		$sql_string = $sql->getSqlStringForSqlObject($select);
-		
-		
-		
-		
-		//echo '<pre>';
-		//var_dump($sql_string);die();
-		
-		$results = $this->adapter->query($sql_string, Adapter::QUERY_MODE_EXECUTE);			
-		return $results;
 	}
-
 		
 }

@@ -18,6 +18,8 @@ use Zend\View\Model\JsonModel;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 
+use Openstore\Catalog\Helper\SearchParams;
+
 
 
 
@@ -32,43 +34,55 @@ class StoreController extends AbstractActionController
 	
     public function browseAction()
     {
-		
-							//'route' => '/browse[/filter/:browse_filter][/brand/:brand_reference][/category/:category_reference][/page/:page][/perPage/:perPage][/sortBy/:sortBy][/sortDir/:sortDir]',		
-									
 		$config = $this->getServiceLocator()->get('Openstore/Config');
 		$view = new ViewModel();
 		
-		$browseParams = BrowsingOptions::createFromRequest($this->params());
-		$options = array(
-			'browse_filter' => $this->params()->fromRoute('browse_filter', 'all'),
-			'query'		=> $this->params()->fromQuery('query'),
-			'category'	=> $this->params()->fromRoute('category_reference'),
-			'brand'		=> $this->params()->fromRoute('brand_reference'),
-			'page'		=> (int) $this->params()->fromRoute('page'),
-			'limit'		=> (int) $this->params()->fromRoute('perPage', 20),
-			
-		);
-		
+		$searchParams = SearchParams::createFromRequest($this->params());
+		$this->layout()->searchParams = $searchParams;		
 
-		//var_dump($this->params()->fromQuery());
-		//var_dump($this->params()->fromRoute());
-		//var_dump($options);
-		
-		$brands		= $this->getBrands($options);
-		$categories = $this->getCategories($options);
-		
-		
-		$products	= $this->getProducts($options);
-		
-		$view->brands		= $brands;
-		
-		$view->categories	= $categories;
-		$view->products		= $products;
-		$view->searchOptions= $options;
-		
 		$adapter      = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');		
+		
+		// 1. get Categories
+		$categoryBrowser = new \Openstore\Catalog\Browser\Category($adapter, $this->getFilter());
+		$categoryParams = new \Openstore\Catalog\Browser\SearchParams\Category();
+		$categoryParams->setIncludeEmptyNodes($include_empty_nodes=false);
+		$categoryParams->setDepth($depth=1);
+		$categoryParams->setBrands($searchParams->getBrands());
+		
+		$categoryParams->setExpandedCategory($searchParams->getFirstCategory());
+		$view->categories = $categoryBrowser->getData($categoryParams);
+		
+		
+		// 2. get Brands
+		$brandBrowser = new \Openstore\Catalog\Browser\Brand($adapter, $this->getFilter());
+		$brandParams = new \Openstore\Catalog\Browser\SearchParams\Brand();
+		//$brandParams->setCategories($searchParams->getCategories());
+		$view->brands = $brandBrowser->getData($brandParams);
+		
+		// 3. getProducts
+
+		$productBrowser	= new \Openstore\Catalog\Browser\Product($adapter, $this->getFilter());
+		$productParams = new \Openstore\Catalog\Browser\SearchParams\Product();
+		$productParams->setQuery($searchParams->getQuery());
+		$productParams->setBrands($searchParams->getBrands());
+		
+		$productParams->setCategories($searchParams->getCategories());
+		$store = $productBrowser->getStore($productParams);
+
+		$store->getOptions()->setLimit($searchParams->getLimit())
+							->setOffset(($searchParams->getPage() - 1) * $searchParams->getLimit());
+		
+		//var_dump($store->getData());
+		//die();
+		$view->products = $store->getData();
+		
+		// Setting other variables
+		
+		$view->searchParams = $searchParams;
+		
+		
 		$catBrowser	  = new \Openstore\Catalog\Browser\Category($adapter, $this->getFilter());		
-		$view->category_breadcrumb = $catBrowser->getAncestors($options['category']);
+		$view->category_breadcrumb = $catBrowser->getAncestors($searchParams->getFirstCategory());
 		// Test with doctrine
 		//$em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 		//$this->printCategories();
@@ -104,26 +118,6 @@ class StoreController extends AbstractActionController
 		
 	}
 	
-	function getCategories($search_options)
-	{
-        $adapter      = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');		
-		 //$di = new \Zend\Di\Di();
-		 //$di->newInstance('Openstore\Catalog\Browser\Category', array('filter' => $this->getFilter())	);
-		 //die();
-		$catBrowser	  = new \Openstore\Catalog\Browser\Category($adapter, $this->getFilter());
-
-		//$em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-		//$catBrowser->test($em);
-		
-		
-		$options = new \Openstore\Catalog\Browser\Search\Options\Category();		
-		$options->setIncludeEmptyNodes($include_empty_nodes=false);
-		$options->setDepth($depth=1);
-		$options->setExpandedCategory($search_options['category']);
-		$options->setBrand($search_options['brand']);
-		//$options = new \Openstore\Catalog\Browser\Search\Options();
-		return $catBrowser->getData($options);
-	}
 	
 	
 	function getProducts($search_options)

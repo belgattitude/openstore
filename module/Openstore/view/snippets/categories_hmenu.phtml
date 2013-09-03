@@ -72,17 +72,26 @@
 <!-- start sidebar -->
 <ul class="nav nav-pills nav-stacked">
 	<li class="nav-header">Brands</li>
-	<select id ="e1" style="width: 100%">
-		<option value="<?= $this->url('store') ?>">All brands</option>
+	<select id="e1" style="width: 100%">
+		<option value="<?= $this->url('store/browse', 
+				array('brands' => null,
+					  'page' => 1),
+				array(), $reuseMatchedParams = true) ?>">All brands</option>
 		<optgroup label="Brands">
 			<?php foreach ($this->brands as $brand) : ?>				
 				<option value="<?= $this->url('store/browse', 
 						array(
-							'brand_reference'		=> $brand['reference'], 
-							'category_reference'	=> null,
+							'brands'		=> $brand['reference'], 
+							'categories'	=> null,
 							'page' => 1
 						), array(), $reuseMatchedParams = true)
-				?>"><?= $brand['title'] ?></option>
+				?>"
+				<?php
+					if ($brand['reference'] == $this->searchParams->getFirstBrand()) {
+						echo ' selected="selected" ';
+					}
+				?>
+				><?= $brand['title']  ?></option>
 <?php endforeach; ?>			
 		</optgroup>
 	</select>
@@ -93,7 +102,7 @@
 				<!--<a href="javascript:$.redirect( location.href, { category : '<?= $categ['reference'] ?>' })">-->
 				<a href="<?= $this->url('store/browse', 
 								array(
-									'category_reference'	=> $categ['reference'],
+									'categories'	=> $categ['reference'],
 									'page'					=> 1
 								), array(), $reuseMatchedParams = true) ?>">
 					

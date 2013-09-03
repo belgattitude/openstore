@@ -103,8 +103,8 @@ return array(
 								'action'	=> 'browse',
 								'query'		=> null,
 								'filter'	=> null,
-								'brands'	=> array(),
-								'categories'=> array(),
+								'brands'	=> '',
+								'categories'=> '',
 								'page'		=> 1,
 								//'limit'	=> 10, // better in the controller
 								'sortBy'	=> "test",

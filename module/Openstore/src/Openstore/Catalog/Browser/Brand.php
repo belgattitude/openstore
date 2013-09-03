@@ -4,38 +4,36 @@
  */
 namespace Openstore\Catalog\Browser;
 
-use Openstore\Catalog\Browser\Search\Options as SearchOptions;
-//use Zend\Db\Sql\Sql;
+use Openstore\Catalog\Browser\SearchParams\SearchParamsAbstract as SearchParams; 
 use Zend\Db\Sql\Select;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Sql;
 
 class Brand extends BrowserAbstract
 {
 	
 	/**
 	 * 
-	 * @return \Openstore\Catalog\Browser\Search\Options\Category
+	 * @return \Openstore\Catalog\Browser\SearchParams\Brand
 	 */
-	function getDefaultOptions()
+	function getDefaultParams()
 	{
-		$options = new \Openstore\Catalog\Browser\Search\Options\Brand();		
+		$options = new \Openstore\Catalog\Browser\SearchParams\Brand();		
 		return $options;
 	}	
 	
 	/**
 	 * 
-	 * @param \Openstore\Catalog\Browser\Search\Options $options
+	 * @param \Openstore\Catalog\Browser\SearchParams\Brand $brand
 	 * @return \Zend\Db\Sql\Select
 	 */
-	function getSelect(SearchOptions $options=null)
+	function getSelect(SearchParams $params=null)
 	{
-		
-		if ($options === null) $options = $this->getDefaultOptions();		
+		if ($params === null) $params = $this->getDefaultParams();		
 		
 		$lang = $this->filter->getLanguage();
 		$pricelist = $this->filter->getPricelist();
-		
 		
 		$select = new Select();
 		$select->from(array('pb' => 'product_brand'), array())
@@ -68,30 +66,27 @@ class Brand extends BrowserAbstract
 		$select->group($columns);
 		
 		$select->order(array('pb.title' => $select::ORDER_ASCENDING));
-
-		if (($category = $options->getCategory()) !== null) {
-			$spb = new Select();
-			$spb->from('product_category')
-					->columns(array('category_id', 'lft', 'rgt'))
-					->where(array('reference' => $category))
-					->limit(1);
-			$sql = new Sql($this->adapter);
-			$sql_string = $sql->getSqlStringForSqlObject($spb);
-			$results = $this->adapter->query($sql_string, Adapter::QUERY_MODE_EXECUTE)->toArray();
-			if (count($results) > 0) {
-				$select->where('pc.lft between ' . $results[0]['lft'] . ' and ' . $results[0]['rgt']);
-			}
-		}
 		
-		if (($keywords = $options->getKeywords()) != null) {
-			$query = str_replace(' ', '%', trim($keywords));				
-			$select->where("pb.title like '%$query%'");
-		}
+		if (($categories = $params->getCategories()) !== null) {
 			
+			$sql = new Sql($this->adapter);
+			$category_clauses = array();
+			foreach($categories as $category_reference) {
+				$spb = new Select();
+				$spb->from('product_category')
+						->columns(array('category_id', 'lft', 'rgt'))
+						->where(array('reference' => $category_reference))
+						->limit(1);
+				
+				$sql_string = $sql->getSqlStringForSqlObject($spb);
+				$results = $this->adapter->query($sql_string, Adapter::QUERY_MODE_EXECUTE)->toArray();
+				if (count($results) > 0) {
+					$category_clauses[] = 'pc.lft between ' . $results[0]['lft'] . ' and ' . $results[0]['rgt'];
+				}
+			}
+			$select->where('(' . join(' or ', $category_clauses) . ')');
+		}
 		
 		return $select;
 	}
-	
-	
-	
 }

@@ -27,13 +27,14 @@ class IndexController extends AbstractActionController
 		$config = $this->getServiceLocator()->get('Openstore/Config');
 		$view = new ViewModel();
 		$options = array(
-			'browse_filter' => $this->params()->fromRoute('browse_filter', 'all'),
-			'query'		=> $this->params()->fromQuery('query'),
-			'category'	=> $this->params()->fromRoute('category_reference'),
-			'brand'		=> $this->params()->fromRoute('brand_reference'),
-			'page'		=> (int) $this->params()->fromRoute('page'),
-			'limit'		=> (int) $this->params()->fromRoute('perPage', 20),
-			
+			'filter'		=> $this->params()->fromRoute('filter', 'all'),
+			'query'			=> $this->params()->fromQuery('query'),
+			'categories'	=> $this->params()->fromRoute('categories'),
+			'brands'		=> $this->params()->fromRoute('brands'),
+			'page'			=> (int) $this->params()->fromRoute('page'),
+			'limit'			=> (int) $this->params()->fromRoute('perPage', 20),
+			'sortDir'		=> $this->params()->fromRoute('sortDir', 'ASC'),
+			'sortBy'		=> $this->params()->fromRoute('sortBy')
 		);
 		//var_dump($this->params()->fromQuery());
 		//var_dump($this->params()->fromRoute());

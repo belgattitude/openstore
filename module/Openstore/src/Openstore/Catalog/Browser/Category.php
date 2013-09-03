@@ -4,7 +4,7 @@
  */
 namespace Openstore\Catalog\Browser;
 
-use Openstore\Catalog\Browser\Search\Options as SearchOptions;
+use Openstore\Catalog\Browser\SearchParams\SearchParamsAbstract as SearchParams; 
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 use Zend\Db\Adapter\Adapter;
@@ -19,23 +19,23 @@ class Category extends BrowserAbstract
 	
 	/**
 	 * 
-	 * @return \Openstore\Catalog\Browser\Search\Options\Category
+	 * @return \Openstore\Catalog\Browser\SearchParams\Category
 	 */
-	function getDefaultOptions()
+	function getDefaultParams()
 	{
-		$options = new \Openstore\Catalog\Browser\Search\Options\Category();		
-		$options->setIncludeEmptyNodes($include_empty_nodes=false);
-		return $options;
+		$params = new \Openstore\Catalog\Browser\SearchParams\Category();		
+		$params->setIncludeEmptyNodes($include_empty_nodes=false);
+		return $params;
 	}
 	
 	/**
 	 * 
-	 * @param \Openstore\Catalog\Browser\Search\Options $options
+	 * @param \Openstore\Catalog\Browser\SearchParams\Category
 	 * @return \Zend\Db\Sql\Select
 	 */
-	function getSelect(SearchOptions $options=null)
+	function getSelect(SearchParams $params=null)
 	{
-		if ($options === null) $options = $this->getDefaultOptions();
+		if ($params === null) $params = $this->getDefaultParams();
 		
 		$lang		= $this->filter->getLanguage();
 		
@@ -55,8 +55,14 @@ class Category extends BrowserAbstract
 				
 				->group(array('p.product_id', 'p.category_id'));
 
-		if (($brand = $options->getBrand()) != '') {
-			$subselect->where("pb.reference = '$brand'");
+		$brands = $params->getBrands();
+		if ($brands != '' && count($brands) > 0) {
+			$brand_clauses = array();
+			foreach ($brands as $brand_reference) {
+				$brand_clauses[] = "pb.reference = '$brand_reference'";
+			}
+			
+			$subselect->where('(' . join(' OR ', $brand_clauses) . ')');
 		}
 		
 		
@@ -65,14 +71,16 @@ class Category extends BrowserAbstract
 		
 		$select = new Select();
 		
-		if (($expanded_category = $options->getExpandedCategory()) !== null) {
+		if (($expanded_category = $params->getExpandedCategory()) !== null) {
+			
 			$open_categories = array();
 			$ancestors = $this->getAncestors($expanded_category);
 			foreach($ancestors as $ancestor) {
 				$open_categories[$ancestor['category_id']] = $ancestor['reference'];
 			}
 			$open_categories = "(" . join(',', array_keys($open_categories)) . ")";
-		} else {			
+		} else {
+			
 			$open_categories = '(null)';
 		}
 		
@@ -110,7 +118,7 @@ class Category extends BrowserAbstract
 		
 		$select->group($columns);
 		
-		if (($depth = $options->getDepth()) != 0) {
+		if (($depth = $params->getDepth()) != 0) {
 			if ($expanded_category != '') {
 				
 //echo "(parent.lvl <= $depth or parent.id in $open_categories or (parent.lft between $parent_left and $parent_right)"; die();
@@ -132,9 +140,9 @@ class Category extends BrowserAbstract
 				echo '<pre>';
 				var_dump($clauses);
 				echo '</pre>';
+				die();
 				 * 
 				 */
-				//die();
 				$select->where('(' . join(' or ', $clauses) . ')');
 				
 				//$select->where('parent.lvl <=1')
@@ -147,7 +155,7 @@ class Category extends BrowserAbstract
 		
 		
 		
-		if (!$options->getIncludeEmptyNodes()) {
+		if (!$params->getIncludeEmptyNodes()) {
 			$select->having('count_product > 0');
 		}
 		
@@ -162,8 +170,6 @@ class Category extends BrowserAbstract
 		$sql = new Sql($adapter);
 		$sql_string = $sql->getSqlStringForSqlObject($select);
 		
-		//echo '<pre>';
-		//var_dump($sql_string);die();
 		
 		//$results = $adapter->query($sql_string, Adapter::QUERY_MODE_EXECUTE);			
 		//echo '<pre>';
@@ -263,53 +269,6 @@ class Category extends BrowserAbstract
 		
 	}
 	
-	
-	function test(\Doctrine\ORM\EntityManager $em)
-	{
-		return;
-		
-
-		$lang = 'fr';
-		$pricelist = 'BE';
-		//return;
-
-		$subselect = $em->createQueryBuilder();
-		$subselect->select(array('p.product_id as id', 'IDENTITY(p.category_id) as category_id'))
-				->from('Openstore\Entity\Product', 'p')
-				->join('Openstore\Entity\ProductPricelist', 'ppl', Expr\Join::WITH, 'ppl.product_id = p.product_id')
-				->join('Openstore\Entity\Pricelist', 'pl', Expr\Join::WITH, "pl.pricelist_id = ppl.pricelist_id")
-				->leftJoin('Openstore\Entity\ProductBrand', 'pb', Expr\Join::WITH, "pb.id = p.brand_id")
-				->where('p.flag_active = 1')
-				->andWhere("pl.reference = '$pricelist'")
-				->groupBy('p.product_id, p.category_id');
-		//var_dump($subselect->getDQL()); die();
-		//$a  = $subselect->getQuery()->execute(null, Query::HYDRATE_SCALAR);
-		//var_dump($a); die();
-		$sub = $subselect->getDQL();
-		
-		$qb = $em->createQueryBuilder();
-		$qb->select(array('parent.id as id', 'parent.reference as reference', 'COALESCE(pc18.title, parent.title) as title', 'CASE WHEN parent.rgt = (parent.lft+1) THEN 1 ELSE 0 END as is_leaf'))
-			->from('Openstore\Entity\ProductCategory', 'parent')
-			->leftJoin('Openstore\Entity\ProductCategory', 'node', Expr\Join::WITH, "node.lft BETWEEN parent.lft AND parent.rgt")	
-			->leftJoin('Openstore\Entity\ProductCategoryTranslation', 'pc18', Expr\Join::WITH, "pc18.category_id = parent.id and pc18.lang = '$lang'")	
-			->leftJoin($subselect, 'p', Expr\Join::WITH, 'node.id = p.category_id')
-				
-		//new Expression("node.id = p.category_id"), 	
-			->orderBy('parent.reference', 'ASC')
-			->setFirstResult(1)
-			->setMaxResults(5);		
-			
-		var_dump($qb->getQuery()->getSQL());
-		echo '<hr>';
-		echo $qb->getDQL();
-		echo '<pre>';
-		$results = $qb->getQuery()->execute(null, Query::HYDRATE_SCALAR);
-		var_dump($results); die();
-		foreach($results as $result) {
-		//	echo $result['reference'];
-		}
-		//die();
-	}
 	
 	
 }

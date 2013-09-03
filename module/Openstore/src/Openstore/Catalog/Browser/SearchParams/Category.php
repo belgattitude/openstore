@@ -1,20 +1,41 @@
 <?php
-namespace Openstore\Catalog\Browser\Search\Options;
-use Openstore\Catalog\Browser\Search\Options; 
-class Category extends Options
+namespace Openstore\Catalog\Browser\SearchParams;
+
+class Category extends SearchParamsAbstract
 {
+	/**
+	 * @var array
+	 */
+	protected $brands;
+	
+	
 	/**
 	 *
 	 * @var boolean
 	 */
 	protected $include_empty_nodes;
 	
+	/**
+	 *
+	 * @var int
+	 */
 	protected $depth;
 	
 	function __construct()
 	{
 		$this->depth = 0;
 	}
+	
+	function getParams()
+	{
+		return array(
+			'brands' => $this->getBrands(),
+			'expanded_category' => $this->getExpandedCategory(),
+			'depth' => $this->getDepth(),
+			'include_empty_nodes' => $this->getIncludeEmptyNodes()
+		);
+	}
+	
 	
 	/**
 	 * 
@@ -69,14 +90,14 @@ class Category extends Options
 		return $this->include_empty_nodes;
 	}
 	
-	function setBrand($brand)
+	function setBrands($brands)
 	{
-		$this->brand = $brand;
+		$this->brands = (array) $brands;
 	}
 	
-	function getBrand()
+	function getBrands()
 	{
-		return $this->brand;
+		return $this->brands;
 	}
 	
 	

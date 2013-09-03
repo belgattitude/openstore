@@ -13,9 +13,10 @@
 		<?php
 		echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
 				->prependStylesheet($theme_path . '/css/main.css')
-				->prependStylesheet($theme_path . '/resources/bootstrap-glyphicons/css/bootstrap-glyphicons.css')
+				->prependStylesheet($theme_path . '/resources/bootstrap-themes/united/bootstrap.min.css')
+				//->prependStylesheet($theme_path . '/resources/bootstrap-glyphicons/css/bootstrap-glyphicons.css')
 				->prependStylesheet($theme_path . '/resources/bootstrap/css/bootstrap.min.css')
-				->prependStylesheet($theme_path . '/resources/twitter-typeahead/css/typeahead.js-bootstrap.css')
+				//->prependStylesheet($theme_path . '/resources/twitter-typeahead/css/typeahead.js-bootstrap.css')
 				->prependStylesheet($theme_path . '/resources/jquery-select2/select2.css')
 				->prependStylesheet($theme_path . '/resources/jquery-select2-bootstrap/select2-bootstrap.css')
 		?>
@@ -24,21 +25,86 @@
 		echo $this->headScript()
 				->prependFile($theme_path . '/resources/jquery-select2/select2.js')
 				->prependFile($theme_path . '/resources/twitter-typeahead/js/typeahead.min.js')
+				->prependFile('http://twitter.github.com/hogan.js/builds/2.0.0/hogan-2.0.0.js')
 				->prependFile($theme_path . '/resources/bootstrap/js/bootstrap.min.js')
 				->prependFile($theme_path . '/resources/jquery/jquery.min.js')
 		?>
+		<style>
+
+			.twitter-typeahead .tt-query,
+			.twitter-typeahead .tt-hint {
+				margin-bottom: 0;
+			}
+
+			.tt-dropdown-menu {
+				min-width: 160px;
+				margin-top: 2px;
+				padding: 5px 0;
+				background-color: #fff;
+				border: 1px solid #ccc;
+				border: 1px solid rgba(0,0,0,.2);
+				*border-right-width: 2px;
+				*border-bottom-width: 2px;
+				-webkit-border-radius: 6px;
+				-moz-border-radius: 6px;
+				border-radius: 6px;
+				-webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+				-moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+				box-shadow: 0 5px 10px rgba(0,0,0,.2);
+				-webkit-background-clip: padding-box;
+				-moz-background-clip: padding;
+				background-clip: padding-box;
+			}
+
+			.tt-suggestion {
+				display: block;
+				padding: 3px 20px;
+			}
+
+			.tt-suggestion.tt-is-under-cursor {
+				color: #fff;
+				background-color: #0081c2;
+				background-image: -moz-linear-gradient(top, #0088cc, #0077b3);
+				background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0077b3));
+				background-image: -webkit-linear-gradient(top, #0088cc, #0077b3);
+				background-image: -o-linear-gradient(top, #0088cc, #0077b3);
+				background-image: linear-gradient(to bottom, #0088cc, #0077b3);
+				background-repeat: repeat-x;
+				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientType=0)
+			}
+
+			.tt-suggestion.tt-is-under-cursor a {
+				color: #fff;
+			}
+
+			.tt-suggestion p {
+				margin: 0;
+			}
+
+			.twitter-typeahead .tt-hint {
+				display: block;
+				height: 38px;
+				padding: 8px 12px;
+				font-size: 14px;
+				line-height: 1.428571429;
+				border: 1px solid transparent;
+			}			
+
+		</style>
 
 		<!--[if lt IE 9]>
 		  <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
 
 	</head>
+
 	<body>
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
 		<div class="container">
-			<nav class="navbar" role="navigation">
+
+			<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 				<!-- Brand and toggle get grouped for better mobile display -->
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -53,9 +119,9 @@
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse navbar-ex1-collapse">
 					<ul class="nav navbar-nav">
-						<li class="active"><a href="#">Home</a></li>
-						<li><a href="#">Link</a></li>
-						<li><a href="#">Link</a></li>
+						<li><a href="#">Home</a></li>
+						<li class="active"><a href="#">Catalog</a></li>
+						<li><a href="#">Shopcart</a></li>
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
 							<ul class="dropdown-menu">
@@ -67,38 +133,73 @@
 							</ul>
 						</li>
 					</ul>
+
+					<!--
 					<form class="navbar-form navbar-left" action="" role="search">
 						<div class="form-group">
 							<input type="text" name="query" id="livesearch2" class="form-control" placeholder="Search">
 						</div>
 						<button type="submit" class="btn btn-default">Submit</button>
 					</form>
-					<ul class="nav navbar-nav navbar-right">
-						<li class="dropdown">
-							
-					
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Language <b class="caret"></b></a>
-								
-								<ul class="dropdown-menu">
-								  <li><a href="<?= $this->url(null, array('ui_language' => 'fr'), array(), $reuseMatchedParams=true) ?>">Français</a></li>
-								  <li><a href="<?= $this->url(null, array('ui_language' => 'en'), array(), $reuseMatchedParams=true) ?>">English</a></li>
-								  <li><a href="<?= $this->url(null, array('ui_language' => 'de'), array(), $reuseMatchedParams=true) ?>">German</a></li>
-								  <li><a href="<?= $this->url(null, array('ui_language' => 'nl'), array(), $reuseMatchedParams=true) ?>">Nederlands</a></li>
-								</ul>
-							</div>
-						</li>
-					</ul>
+					-->
+
+					<form class="navbar-form navbar-right" role="search" onsubmit="openstore_catalog_search()">
+						<div class="form-group">
+							<input class="twitter-typeahead form-control" type="text" id="livesearch2"  name="query" value="<?= $this->searchParams->getQuery() ?>"  placeholder="Search">
+						</div>
+						<button type="submit" class="btn btn-default">Submit</button>
+					</form>
+
+
 				</div><!-- /.navbar-collapse -->
 			</nav>
+			<style>
+				.repo-language {
+					float: right;
+					font-style: italic;
+				}
 
+				.repo-name {
+					font-weight: bold;
+				}
 
+				.repo-description {
+					font-size: 14px;
+				}
+
+			</style>
 			<script type="text/javascript">
-				$('#livesearch2').typeahead({
-					name: 'query',
-					local: ['PB45', 'SW201', 'SW203', 'ME']
-				});
-			</script>
 
+						$('#livesearch2').typeahead({
+							name: 'twitter-oss',
+							prefetch: '<?= '/workspace/openstore/public/data/repos.json' ?>',
+							template: [
+								'<p class="repo-language">{{language}}</p>',
+								'<p class="repo-name">{{name}}</p>',
+								'<p class="repo-description">{{description}}</p>'
+							].join(''),
+							engine: Hogan
+						});
+
+			</script>
+			<div class="container">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+
+
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Language <b class="caret"></b></a>
+
+						<ul class="dropdown-menu">
+							<li><a href="<?= $this->url(null, array('ui_language' => 'fr'), array(), $reuseMatchedParams = true) ?>">Français</a></li>
+							<li><a href="<?= $this->url(null, array('ui_language' => 'en'), array(), $reuseMatchedParams = true) ?>">English</a></li>
+							<li><a href="<?= $this->url(null, array('ui_language' => 'de'), array(), $reuseMatchedParams = true) ?>">German</a></li>
+							<li><a href="<?= $this->url(null, array('ui_language' => 'nl'), array(), $reuseMatchedParams = true) ?>">Nederlands</a></li>
+						</ul>
+						</div>
+					</li>
+				</ul>
+
+			</div>
 			<div class="container">
 				<?php echo $this->content; ?>		
 			</div>	
@@ -106,5 +207,7 @@
 				<p>&copy; Company 2013</p>
 			</footer>
 		</div>
+
+
 	</body>
 </html>
