@@ -67,11 +67,13 @@ body {
 	color: #BDBFC0;
     font-size: 12px;
     padding-left: 8px;
-    text-transform: uppercase;		
+    
 }
 
 .os_sidebar nav  .active {
-	background-color: #DD4814;
+	background-color: #992804;
+	
+	
 }
 
 .os_sidebar nav .active a {
