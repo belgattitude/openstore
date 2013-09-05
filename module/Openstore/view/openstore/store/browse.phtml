@@ -74,44 +74,67 @@
 		</div>	
 		
 		
-		<div class="row">	
+		<!--<div class="row">	-->
 
-			<?php foreach ($this->products as $product) : ?>
+			<?php foreach ($this->products as $idx => $product) : ?>
+			<?php 
+				//echo "<h3>" . $idx % 3 . "</h3>";
+				$columns = 3;
+				$break = ($idx % $columns) == 0;	
+				$last_idx = count($this->products);
+			?>
+			<?php if ($break) : ?>
+<div class="row"> <!-- start row <?php echo "idx" . $idx . " --- ($idx % 3)" ?> -->	
+			<?php endif; ?>	
 				<div class="col-md-4">
+					<!-- <div class="thumbnail wrapper"> -->
 					<div class="thumbnail wrapper">
-
 						<div class="ribbon-wrapper-green"><div class="ribbon-green"><?= $product->brand_title ?></div></div>
-
 						<div>
-							<div class="span7">
-								<a href="<?= $this->url('store/product', array('product_id' => $product['product_id']), array(), false); ?>"><img class="img-polaroid" src="http://akilia2.emdmusic.com/medias/products/dynamic/<?= $product->product_id ?>-150x120_90.jpg" alt=""></a>
+							<div style="padding: 2px 2px;  background: rgba(54, 25, 25, .5); color: white; position: absolute">
+								<span><?= $product->reference ?></span>
+							</div>	 
+							
+							<div style="width: 100%; max-height: 200px; min-height: 80px; line-height: 150px; text-align: center;">
+								 <a href="<?= $this->url('store/product', array('product_id' => $product['product_id']), array(), false); ?>">
+									<img style="vertical-align: middle" src="http://akilia2.emdmusic.com/medias/products/dynamic/<?= $product->product_id ?>-170x200_90.jpg" alt="" />
+								</a>
 							</div>
-							<div class="span5">
-								<h5  class="pull-left"><?= $product->reference ?></h5>
-							</div>
-
 						</div>
-						<div class="caption"> <!-- style="background-repeat: no-repeat; background-image: url(http://akilia2.emdmusic.com/medias/products/dynamic/<?= $product->product_id ?>-150x120_90.jpg)"> -->
-							<a href="<?= $this->url('store/product', array('product_id' => $product['product_id']), array(), false); ?>"> <h5><?php echo $product->title ?></h5></a><?= $product->reference ?>   
-							<div style="max-height: 120px; text-overflow: ellipsis; overflow:hidden"><?php echo $product->description ?></div>
+						
+						<div class="caption" style="border-top: 1px solid black; margin-top: 1px"> 
+							<a href="<?= $this->url('store/product', array('product_id' => $product['product_id']), array(), false); ?>"> 
+								<?php echo $product->title ?>
+							</a>
+							<!--
+							<div style="max-height: 80px; text-overflow: ellipsis; overflow:hidden">
+								<?php echo $product->description ?>
+							</div>
+							-->
 							<div><?php echo $product->characteristic ?></div>
 							<p>
 								<a class="btn primary details" href="#" rel="ajax/2.html"><span class="glyphicon glyphicon-zoom-in"></span></a> 
 								<a class="btn addto" href="#" rel="2">Add to <span class="glyphicon glyphicon-shopping-cart"></span></a> 
 								<span class="label label-info price"><?= $this->currencyFormat($product->price, "EUR", "fr_FR"); ?></span>
 							</p>
-
 						</div>
 					</div>
 				</div>
+<?php if (((($idx+1) % $columns) == 0) || $idx+1 == $last_idx) : ?>				
+</div><p></p> <!-- end row -->	
+
+<?php endif; ?>
 			<?php endforeach; ?>
 
-		</div>		
+		<!--</div>-->
 
-
-		<?php
-		echo $this->paginationControl($this->products->getPaginator(), 'Sliding', 'snippets/pagination_control', array('route' => 'test'));
-		?>
+		<div class="row">
+			<div class="col-md-12">
+				<?php
+				echo $this->paginationControl($this->products->getPaginator(), 'Sliding', 'snippets/pagination_control', array('route' => 'test'));
+				?>
+			</div>	
+		</div>
 
 	</div>
 
