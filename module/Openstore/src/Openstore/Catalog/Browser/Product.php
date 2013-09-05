@@ -79,7 +79,6 @@ class Product extends BrowserAbstract
 			$select->where('(' . join(' OR ', $brand_clauses) . ')');
 		}
 		
-		
 		$categories = $params->getCategories();
 		if ($categories !== null && count($categories) > 0) {
 			
@@ -106,7 +105,8 @@ class Product extends BrowserAbstract
 		
 		if (($query = $params->getQuery()) != null) {
 			$query = str_replace(' ', '%', trim($query));				
-			$select->where("p.reference like '$query%'");
+			$q = $this->adapter->getPlatform()->quoteValue($query . '%');
+			$select->where("p.reference like $q");
 		}
 		
 		return $select;

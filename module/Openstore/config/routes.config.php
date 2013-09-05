@@ -98,10 +98,10 @@ return array(
 					'browse' => array(
 						'type' => 'segment',
 						'options' => array(
-							'route' => '/browse[/query/:query][/filter/:filter][/brands/:brands][/categories/:categories][/page/:page][/limit/:limit][/sortBy/:sortBy][/sortDir/:sortDir]',
+							'route' => '/browse[/filter/:filter][/brands/:brands][/categories/:categories][/page/:page][/limit/:limit][/sortBy/:sortBy][/sortDir/:sortDir]',
 							'defaults' => array(
 								'action'	=> 'browse',
-								'query'		=> null,
+								//'query'		=> null,
 								'filter'	=> null,
 								'brands'	=> '',
 								'categories'=> '',

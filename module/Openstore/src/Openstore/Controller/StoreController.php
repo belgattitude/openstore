@@ -38,6 +38,7 @@ class StoreController extends AbstractActionController
 		$view = new ViewModel();
 		
 		$searchParams = SearchParams::createFromRequest($this->params());
+		
 		$this->layout()->searchParams = $searchParams;		
 
 		$adapter      = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');		

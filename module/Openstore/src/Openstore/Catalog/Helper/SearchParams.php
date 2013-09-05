@@ -38,8 +38,8 @@ class SearchParams
 			$searchParams->setBrands(explode(',', $brands));
 		}
 		
-		
-		$searchParams->setQuery($params->fromRoute('query', ''));
+		$searchParams->setQuery($params->fromQuery('query', ''));
+		//var_dump($searchParams->getQuery()); die('ggg');
 		$searchParams->setLimit($params->fromRoute('perPage', 20));
 		$searchParams->setPage($params->fromRoute('page', 1));
 		$searchParams->setSortBy($params->fromRoute('sortBy'));
@@ -84,17 +84,20 @@ class SearchParams
 	
 	/**
 	 * 
-	 * @param type $keywords
+	 * @param string $query
 	 * @return \Openstore\Controller\searchParams
 	 */
 	function setQuery($query) {
+		
 		$this->params['query'] = $query;
+		
 		return $this;
 	}
 	
 	function getQuery()
 	{
-		$this->params['query'];
+		
+		return $this->params['query'];
 	}
 	
 	function setCategories($categories) {

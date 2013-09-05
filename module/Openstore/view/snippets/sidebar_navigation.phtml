@@ -1,6 +1,7 @@
 <!-- start sidebar -->
-<ul class="nav nav-pills nav-stacked">
-	<div class ="os_sidebar">
+<div  id="affix_sidebar">
+<ul class="nav nav-pills nav-stacked" >
+	<div class="os_sidebar">
 		<nav>
 			<div class="box_header">Brands</div>
 			<div class="box_content" style="padding: 5px 5px 5px 5px">
@@ -65,7 +66,6 @@
 									'page' => 1
 										), array(), $reuseMatchedParams = true)
 								?>">
-
 									<?= $categ['title'] ?>
 									<span class="badge pull-right"><?= $categ['count_product'] ?></span>
 								</a>
@@ -77,6 +77,7 @@
 		</nav>		
 	</div>	
 </ul>	
+</div>	
 
 <script type="text/javascript">
 	$(function() {
@@ -106,7 +107,7 @@
 		$("#os_brand_selector").select2(
 				{
 					allowClear: true
-							//,multiple: true
+					
 
 				});
 		$("#os_brand_selector").on(
@@ -144,5 +145,17 @@
 			//document.location.href = val;
 				}
 		);
+	/*		
+		$('#affix_sidebar').affix({
+		  offset: {
+			top: 50
+		  , bottom: function () {
+			  return (this.bottom = $('.bs-footer').outerHeight(true))
+			}
+		  }
+		})
+	*/		
+			
+			
 	});
 </script>	
