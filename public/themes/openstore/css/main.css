@@ -17,18 +17,105 @@ body {
   padding-right: 15px;
 }
 
-/* Responsive: Portrait tablets and up */
-@media screen and (min-width: 768px) {
-  /* Let the jumbotron breathe */
-  .jumbotron {
-    margin-top: 20px;
-  }
-  /* Remove padding from wrapping element since we kick in the grid classes here */
-  .body-content {
-    padding: 0;
-  }
+
+/** 
+ * Sidebar navigation
+ */
+.os_sidebar {
+	
 }
 
+.os_sidebar nav {
+	/*background: none repeat scroll 0 0 #20262A;	*/
+	background: none repeat scroll 0 0 #120000;
+}
+
+.os_sidebar .box_header {
+	background-color: #DD4814; 
+	color: #FFFFFF; 
+	padding-top: 10px; 
+	padding-left: 4px; 
+	height: 40px
+}
+
+.os_sidebar .box_content {
+	
+}
+
+.os_sidebar .box_content ul {
+	list-style: none outside none; 
+	margin: 0; 
+	padding: 0;
+}
+
+.os_sidebar nav .menu_item {
+	text-wrap: none;
+	text-overflow: ellipsis;
+	border-bottom: 1px solid #373C40;
+    height: auto;
+    line-height: normal;
+    margin: 0;
+    padding: 10px;
+	list-style: none outside none;
+}
+
+.os_sidebar nav .menu_item:hover {
+	background-color: #380606; 
+}	
+
+.os_sidebar nav .menu_item a {
+	color: #BDBFC0;
+    font-size: 12px;
+    padding-left: 8px;
+    text-transform: uppercase;		
+}
+
+.os_sidebar nav  .active {
+	background-color: #DD4814;
+}
+
+.os_sidebar nav .active a {
+	color: #FFFFFF;
+    font-size: 12px;
+	font-weight: bold;
+    text-transform: uppercase;		
+}
+
+
+.os_sidebar nav li .menu_item > div.label {
+	/*margin-right:20px;*/
+	margin-top: 4px;
+	/*float: right;*/
+	font-size: 9px;
+}	
+
+
+.os_sidebar nav .level1 { 
+	padding-left: 0px;
+	margin-left: 0px;
+}
+.os_sidebar nav .level2 {
+	padding-left: 0px;
+	margin-left: 25px;
+}		
+.os_sidebar nav .level3 {
+	padding-left: 0px;
+	margin-left: 35px;
+	border-left: 1px solid #373C40;
+}		
+.os_sidebar nav .level4 {
+	padding-left: 0px;
+	margin-left: 50px;
+	border-left: 1px solid #373C40;
+}		
+
+.os_sidebar nav .level4 a {
+	text-transform: none;
+}
+
+/**
+ * Product browser 
+ */
 
 
 		.ribbon-banner {

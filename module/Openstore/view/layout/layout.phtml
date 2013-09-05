@@ -3,7 +3,7 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<meta charset="utf-8">
-		<?php echo $this->headTitle('Webstore ' . $this->translate('Skeleton Application'))->setSeparator(' - ')->setAutoEscape(false) ?>
+		<?php echo $this->headTitle('Openstore ' . $this->translate('Skeleton Application'))->setSeparator(' - ')->setAutoEscape(false) ?>
 		<?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0') ?>
 		<meta name="description" content="">
 		<meta name="author" content="">
@@ -23,10 +23,12 @@
 
 		<?php
 		echo $this->headScript()
+				->prependFile($theme_path . '/js/main.js')
 				->prependFile($theme_path . '/resources/jquery-select2/select2.js')
 				->prependFile($theme_path . '/resources/twitter-typeahead/js/typeahead.min.js')
 				->prependFile('http://twitter.github.com/hogan.js/builds/2.0.0/hogan-2.0.0.js')
 				->prependFile($theme_path . '/resources/bootstrap/js/bootstrap.min.js')
+				->prependFile($theme_path . '/resources/jquery-color/jquery.color.js')
 				->prependFile($theme_path . '/resources/jquery/jquery.min.js')
 		?>
 		<style>
