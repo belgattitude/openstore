@@ -37,7 +37,6 @@ class Product extends BrowserAbstract
 		$lang = $this->filter->getLanguage();
 		$pricelist = $this->filter->getPricelist();
 		
-		
 		$select = new Select();
 		$select->from(array('p' => 'product'), array('product_id', 'category_id'))
 				->join(array('p18' => 'product_translation'),
@@ -55,6 +54,17 @@ class Product extends BrowserAbstract
 				->where('ppl.flag_active = 1')
 				->where("pl.reference = '$pricelist'");
 		
+		switch($params->getFilter()) {
+			case 'new' :
+				$select->where('(pl.new_product_min_date is null or pl.new_product_min_date > COALESCE(ppl.activated_at, p.activated_at))');
+				break;
+			case 'promos' :
+				
+				break;
+			case 'onstock' :
+				break;
+		}
+		
 		$select->columns(array(
 			'product_id'	=> new Expression('p.product_id'),
 			'reference'		=> new Expression('p.reference'),
@@ -66,6 +76,7 @@ class Product extends BrowserAbstract
 			'description'	=> new Expression('COALESCE(p18.description, p.description)'),
 			'characteristic'=> new Expression('COALESCE(p18.characteristic, p.characteristic)'),
 			'price'			=> new Expression('ppl.price'),
+			'flag_new'		=> new Expression('if(pl.new_product_min_date > COALESCE(ppl.activated_at, p.activated_at), 1, 0)')
 		), true);
 		
 		$select->order(array('p.reference' => $select::ORDER_ASCENDING));
