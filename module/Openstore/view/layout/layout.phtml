@@ -17,7 +17,8 @@
 				
 				->prependStylesheet($theme_path . '/resources/bootstrap-themes/united/bootstrap.min.css')
 				//->prependStylesheet('//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css')
-				->prependStylesheet('//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css')
+				->prependStylesheet($theme_path . '/resources/jquery-colorbox/example3/colorbox.css')
+				//->prependStylesheet('//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css')
 				
 				
 				//->prependStylesheet($theme_path . '/resources/bootstrap-glyphicons/css/bootstrap-glyphicons.css')
@@ -32,8 +33,9 @@
 				->prependFile($theme_path . '/js/main.js')
 				->prependFile($theme_path . '/resources/jquery-select2/select2.js')
 				->prependFile($theme_path . '/resources/twitter-typeahead/js/typeahead.min.js')
-				->prependFile('http://twitter.github.com/hogan.js/builds/2.0.0/hogan-2.0.0.js')
+				->prependFile($theme_path . '/resources/twitter-hogan/hogan-2.0.0.js')
 				->prependFile($theme_path . '/resources/bootstrap/js/bootstrap.min.js')
+				->prependFile($theme_path . '/resources/jquery-colorbox/jquery.colorbox-min.js')
 				->prependFile($theme_path . '/resources/jquery-color/jquery.color.js')
 				->prependFile($theme_path . '/resources/jquery/jquery.min.js')
 		?>
@@ -100,8 +102,10 @@
 
 		</style>
 
+		<!-- Make IE8 and below responsive by adding CSS3 MediaQuery support and html5-->
 		<!--[if lt IE 9]>
-		  <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+			<script type="text/javascript" src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
 		<![endif]-->
 
 	</head>
