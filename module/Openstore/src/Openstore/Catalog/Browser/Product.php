@@ -54,9 +54,11 @@ class Product extends BrowserAbstract
 				->where('ppl.flag_active = 1')
 				->where("pl.reference = '$pricelist'");
 		
+		$flag_new_min_date = date('2012-06-30');
+		
 		switch($params->getFilter()) {
 			case 'new' :
-				$select->where('(pl.new_product_min_date is null or pl.new_product_min_date > COALESCE(ppl.activated_at, p.activated_at))');
+				$select->where("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.activated_at, p.activated_at))");
 				break;
 			case 'promos' :
 				
@@ -76,7 +78,7 @@ class Product extends BrowserAbstract
 			'description'	=> new Expression('COALESCE(p18.description, p.description)'),
 			'characteristic'=> new Expression('COALESCE(p18.characteristic, p.characteristic)'),
 			'price'			=> new Expression('ppl.price'),
-			'flag_new'		=> new Expression('if(pl.new_product_min_date > COALESCE(ppl.activated_at, p.activated_at), 1, 0)')
+			'flag_new'		=> new Expression("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.activated_at, p.activated_at))"),
 		), true);
 		
 		$select->order(array('p.reference' => $select::ORDER_ASCENDING));

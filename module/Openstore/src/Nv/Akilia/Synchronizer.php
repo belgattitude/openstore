@@ -98,6 +98,9 @@ class Synchronizer
 					product_id,
 					pricelist_id,
 					price,
+					promo_discount,
+					promo_start_at,
+					promo_end_at,
 					stock,
 					theoretical_stock,
 					flag_active,
@@ -108,6 +111,9 @@ class Synchronizer
 				select at.id_article,
 				       pl.pricelist_id,
 					   at.prix_unit_ht,
+					   if((at.flag_promo = 1 or at.flag_liquidation = 1) and at.remise1 > 0, at.remise1, null) as promo_discount,
+					   null as promo_start_at,
+					   null as promo_end_at,
 					   at.stock,
 					   at.stock_theorique,
 					   at.flag_availability,
@@ -120,6 +126,10 @@ class Synchronizer
 				where at.prix_unit_ht > 0
 				on duplicate key update
 						price = at.prix_unit_ht,
+						promo_discount = if((at.flag_promo = 1 or at.flag_liquidation = 1) and at.remise1 > 0, at.remise1, null),
+						promo_start_at = null,
+						promo_end_at = null,
+						
 						stock = at.stock,
 						theoretical_stock = at.stock_theorique,
 						flag_active = at.flag_availability,

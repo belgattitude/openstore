@@ -63,10 +63,28 @@ class ProductPricelist implements InputFilterAwareInterface
 	 */
 	private $price;
 
+	
 	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Unit public/msrp price"})
+	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Unit public/msrp price"})
 	 */
 	private $public_price;
+	
+	/**
+	 * @ORM\Column(type="decimal", precision=8, scale=6, nullable=true, options={"comment"="Discount promo in %"})
+	 */
+	private $promo_discount;
+	
+	
+
+	/**
+	 * @ORM\Column(type="date", nullable=true, options={"comment"="Discount start at"})
+	 */
+	private $promo_start_at;	
+
+	/**
+	 * @ORM\Column(type="date", nullable=true, options={"comment"="Discount end at"})
+	 */
+	private $promo_end_at;	
 	
 	
 	/**
@@ -75,7 +93,7 @@ class ProductPricelist implements InputFilterAwareInterface
 	private $stock;	
 	
 	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Available stock"})
+	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Theoretical stock"})
 	 */
 	private $theoretical_stock;		
 	
@@ -87,7 +105,7 @@ class ProductPricelist implements InputFilterAwareInterface
 	private $flag_active;
 
 	/**
-	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Date on which product was active in this pricelist, useful to display as new product"})
+	 * @ORM\Column(type="date", nullable=true, options={"comment" = "Date on which product was active in this pricelist, useful to display as new product"})
 	 */
 	private $activated_at;
 	
@@ -236,6 +254,51 @@ class ProductPricelist implements InputFilterAwareInterface
 	public function getPublicPrice()
 	{
 		return $this->public_price;
+	}
+
+	/**
+	 * @param float $promo_discount
+	 */
+	public function setPromoDiscount($promo_discount)
+	{
+		$this->promo_discount = $promo_discount;
+		return $this;
+	}	
+	
+	/**
+	 * @return float
+	 */
+	public function getPromoDiscount()
+	{
+		return $this->promo_discount;
+	}	
+
+	/**
+	 * @param string $promo_start_at date Y-m-d H:i:s
+	 */
+	public function setPromoStartAt($promo_start_at)
+	{
+		$this->promo_start_at = $promo_start_at;
+		return $this;
+	}	
+	
+	public function getPromoStartAt()
+	{
+		return $this->promo_start_at;
+	}
+	
+	/**
+	 * @param string $promo_end_at date Y-m-d H:i:s
+	 */
+	public function setPromoEndAt($promo_end_at)
+	{
+		$this->promo_end_at = $promo_end_at;
+		return $this;
+	}	
+	
+	public function getPromoEndAt()
+	{
+		return $this->promo_end_at;
 	}
 	
 	/**

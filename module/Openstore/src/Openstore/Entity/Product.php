@@ -155,7 +155,7 @@ class Product implements InputFilterAwareInterface
 	
 	
 	/**
-	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Date on which product was actived/available"})
+	 * @ORM\Column(type="date", nullable=true, options={"comment" = "Date on which product was actived/available"})
 	 */
 	private $activated_at;	
 	
