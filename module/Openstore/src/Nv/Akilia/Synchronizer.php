@@ -98,20 +98,32 @@ class Synchronizer
 					product_id,
 					pricelist_id,
 					price,
+					stock,
+					theoretical_stock,
+					flag_active,
+					activated_at,
 					legacy_synchro_at
 				)
 
 				select at.id_article,
 				       pl.pricelist_id,
 					   at.prix_unit_ht,
+					   at.stock,
+					   at.stock_theorique,
+					   at.flag_availability,
+					   a.date_creation,
 					'{$this->legacy_synchro_at}' as legacy_synchro_at
 					
 				from $akilia1db.art_tarif as at
 				inner join $db.pricelist pl on at.id_pays = pl.legacy_mapping
-				where at.flag_availability = 1
-				and at.prix_unit_ht > 0
+				inner join $akilia1db.article a on at.id_article = a.id_article	
+				where at.prix_unit_ht > 0
 				on duplicate key update
 						price = at.prix_unit_ht,
+						stock = at.stock,
+						theoretical_stock = at.stock_theorique,
+						flag_active = at.flag_availability,
+						activated_at = a.date_creation,
 						legacy_synchro_at = '{$this->legacy_synchro_at}'
 					 ";
 		
@@ -341,7 +353,7 @@ class Synchronizer
 					
 					barcode_ean13,
 					
-					
+					activated_at,
 
 					legacy_mapping, 
 					legacy_synchro_at
@@ -368,7 +380,7 @@ class Synchronizer
 					null as height,
 					null as width,
 					a.barcode_ean13 as barcode_ean13,
-					
+					a.date_creation,
 					a.id_article as legacy_mapping,
 					'{$this->legacy_synchro_at}' as legacy_synchro_at
 						
@@ -398,6 +410,7 @@ class Synchronizer
 						height = null,
 						width = null,
 						barcode_ean13 = a.barcode_ean13,
+						activated_at = a.date_creation,
 						legacy_mapping = a.id_article,
 						legacy_synchro_at = '{$this->legacy_synchro_at}'
 					 ";

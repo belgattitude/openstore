@@ -67,6 +67,11 @@ class Pricelist implements InputFilterAwareInterface
 	
 	
 	/**
+	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Flag products as new if more recent than this date"})
+	 */
+	private $new_product_min_date;	
+	
+	/**
 	 * @ORM\Column(type="string", length=40, nullable=true)
 	 */
 	private $icon_class;

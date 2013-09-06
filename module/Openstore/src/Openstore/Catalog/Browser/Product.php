@@ -52,6 +52,7 @@ class Product extends BrowserAbstract
 				->join(array('pc' => 'product_category'),
 						new Expression('pc.category_id = p.category_id'), array())
 				->where('p.flag_active = 1')
+				->where('ppl.flag_active = 1')
 				->where("pl.reference = '$pricelist'");
 		
 		$select->columns(array(

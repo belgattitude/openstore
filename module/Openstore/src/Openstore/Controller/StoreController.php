@@ -51,6 +51,11 @@ class StoreController extends AbstractActionController
 		$categoryParams->setBrands($searchParams->getBrands());
 		
 		$categoryParams->setExpandedCategory($searchParams->getFirstCategory());
+		/*
+		echo '<pre>';
+		var_dump($categoryBrowser->getData($categoryParams)->toArray()); die();
+		 */
+		 
 		$view->categories = $categoryBrowser->getData($categoryParams);
 		
 		
@@ -66,6 +71,7 @@ class StoreController extends AbstractActionController
 		$productParams = new \Openstore\Catalog\Browser\SearchParams\Product();
 		$productParams->setQuery($searchParams->getQuery());
 		$productParams->setBrands($searchParams->getBrands());
+		//$productParams->setLimit($searchParams->getLimit());
 		
 		$productParams->setCategories($searchParams->getCategories());
 		$store = $productBrowser->getStore($productParams);

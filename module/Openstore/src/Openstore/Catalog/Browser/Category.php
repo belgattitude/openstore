@@ -43,7 +43,7 @@ class Category extends BrowserAbstract
 		
 		
 		$subselect = new Select();
-		$subselect->from(array('p' => 'product'), array('product_id', 'category_id'))
+		$subselect->from(array('p' => 'product'), array())
 				->join(array('ppl' => 'product_pricelist'),
 						new Expression('ppl.product_id = p.product_id'), array())
 				->join(array('pl' => 'pricelist'),
@@ -51,8 +51,13 @@ class Category extends BrowserAbstract
 				->join(array('pb' => 'product_brand'),
 						new Expression('pb.brand_id = p.brand_id'), array())
 				->where('p.flag_active = 1')
+				->where('ppl.flag_active = 1')
 				->where("pl.reference = '$pricelist'")
 				
+				->columns(array(
+					'product_id' => new Expression('p.product_id'), 
+					'category_id' => new Expression('p.category_id'), 
+				))
 				->group(array('p.product_id', 'p.category_id'));
 
 		$brands = $params->getBrands();
@@ -65,10 +70,10 @@ class Category extends BrowserAbstract
 			$subselect->where('(' . join(' OR ', $brand_clauses) . ')');
 		}
 		
-		
-		//echo $subselect->getSqlString();
-		//die();
-		
+		/*
+		echo $subselect->getSqlString();
+		die();
+		*/
 		$select = new Select();
 		
 		if (($expanded_category = $params->getExpandedCategory()) !== null) {
@@ -110,10 +115,11 @@ class Category extends BrowserAbstract
 			'rgt' => new Expression('parent.rgt'),
 			'is_expanded' => new Expression("parent.category_id in $open_categories")
 		);
-
+		
 		$select->columns(
 				array_merge($columns, array(
-					'count_product' => new Expression('COUNT(p.product_id)')
+					'count_product' => new Expression('COUNT(p.product_id)'),
+					'count_subcategs' => new Expression('GROUP_CONCAT(distinct if(node.lvl = parent.lvl+1, node.reference, null))')
 				)), true);
 		
 		$select->group($columns);

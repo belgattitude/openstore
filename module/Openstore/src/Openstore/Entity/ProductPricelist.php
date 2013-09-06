@@ -63,11 +63,34 @@ class ProductPricelist implements InputFilterAwareInterface
 	 */
 	private $price;
 
+	/**
+	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Unit public/msrp price"})
+	 */
+	private $public_price;
+	
 	
 	/**
 	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Available stock"})
 	 */
 	private $stock;	
+	
+	/**
+	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Available stock"})
+	 */
+	private $theoretical_stock;		
+	
+	
+	/**
+	 *
+	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the product is active in public website"})
+	 */
+	private $flag_active;
+
+	/**
+	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Date on which product was active in this pricelist, useful to display as new product"})
+	 */
+	private $activated_at;
+	
 	
 	/**
 	 * @Gedmo\Timestampable(on="create")
@@ -136,6 +159,45 @@ class ProductPricelist implements InputFilterAwareInterface
 		return $this->id;
 	}
 
+	/**
+	 * 
+	 * @return boolean
+	 */
+	public function getFlagActive()
+	{
+		return (boolean) $this->flag_active;
+	}
+
+	
+	/**
+	 * 
+	 */
+	public function setFlagActive($flag_active)
+	{
+		$this->flag_active = $flag_active;
+		return $this;
+	}	
+	
+
+	/**
+	 * 
+	 * @return date
+	 */
+	public function getActivatedAt()
+	{
+		return $this->activated_at;
+	}
+
+	
+	/**
+	 * @param string $activated_at date in Y-m-d H:i:s format
+	 */
+	public function setActivatedAt($activated_at)
+	{
+		$this->activated_at = $activated_at;
+		return $this;
+	}	
+	
 	
 	/**
 	 * 
@@ -143,12 +205,13 @@ class ProductPricelist implements InputFilterAwareInterface
 	 */
 	public function getPrice()
 	{
-		return (boolean) $this->price;
+		return $this->price;
 	}
 
 	
 	/**
-	 * 
+	 * @param float $price
+	 * @return ProductPricelist
 	 */
 	public function setPrice($price)
 	{
@@ -157,6 +220,62 @@ class ProductPricelist implements InputFilterAwareInterface
 	}
 	
 
+	/**
+	 * @param float $public_price
+	 * @return ProductPricelist
+	 */
+	public function setPublicPrice($public_price)
+	{
+		$this->public_price = $public_price;
+		return $this;
+	}
+	
+	/**
+	 * @return float
+	 */
+	public function getPublicPrice()
+	{
+		return $this->public_price;
+	}
+	
+	/**
+	 * @param float $stock
+	 * @return ProductPricelist
+	 */
+	public function setStock($stock)
+	{
+		$this->stock = $stock;
+		return $this;
+	}
+	
+	/**
+	 * @return float
+	 */
+	public function getStock()
+	{
+		return $this->stock;
+	}
+
+	
+	/**
+	 * @param float $theoretical_stock
+	 * @return ProductPricelist
+	 */
+	public function setTheoreticalStock($theoretical_stock)
+	{
+		$this->theoretical_stock = $theoretical_stock;
+		return $this;
+	}
+	
+	/**
+	 * @return float
+	 */
+	public function getTheoreticalStock()
+	{
+		return $this->theoretical_stock;
+	}
+
+	
 	/**
 	 * 
 	 * @return string

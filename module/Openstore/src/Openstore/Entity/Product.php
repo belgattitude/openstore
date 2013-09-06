@@ -155,6 +155,11 @@ class Product implements InputFilterAwareInterface
 	
 	
 	/**
+	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Date on which product was actived/available"})
+	 */
+	private $activated_at;	
+	
+	/**
 	 * @ORM\Column(type="string", length=40, nullable=true)
 	 */
 	private $icon_class;
@@ -474,6 +479,26 @@ class Product implements InputFilterAwareInterface
 		return $this;
 	}
 	
+
+	/**
+	 * 
+	 * @return date
+	 */
+	public function getActivatedAt()
+	{
+		return $this->activated_at;
+	}
+
+	
+	/**
+	 * @param string $activated_at date in Y-m-d H:i:s format
+	 */
+	public function setActivatedAt($activated_at)
+	{
+		$this->activated_at = $activated_at;
+		return $this;
+	}	
+		
 	
 
 	/**
