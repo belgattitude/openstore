@@ -60,6 +60,21 @@ class Category extends BrowserAbstract
 				))
 				->group(array('p.product_id', 'p.category_id'));
 
+		$flag_new_min_date = date('2012-06-30');
+
+		switch($params->getFilter()) {
+			case 'new' :
+				$subselect->where("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.activated_at, p.activated_at))");
+				break;
+			case 'promos' :
+				$subselect->where("(ppl.promo_discount > 0)");
+				break;
+			case 'onstock' :
+				$subselect->where("(ppl.stock > 0)");
+				break;
+		}
+		
+		
 		$brands = $params->getBrands();
 		if ($brands != '' && count($brands) > 0) {
 			$brand_clauses = array();

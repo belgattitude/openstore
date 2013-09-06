@@ -116,12 +116,17 @@
 				<div class="col-md-4" style="margin-bottom: 5px">
 					<!-- <div class="thumbnail wrapper"> -->
 					<div class="thumbnail wrapper">
-						<div class="ribbon-wrapper-green"><div class="ribbon-green"><?= $product->brand_title ?></div></div>
-							<div class="numbercircle">
-								<strong>-10%</strong><br />
-							</div>								
-						<div>
-							
+						
+						<div class="ribbon-wrapper-green">
+							<div class="ribbon-green"><?= $product->brand_title ?></div>
+						</div>
+					<div>
+					<?php if ($product->promo_discount > 0) : ?>	
+					<div class="numbercircle">
+						<strong>-<?= number_format($product->promo_discount) ?>%</strong><br />
+					</div>
+					<?php endif; ?>	
+		
 							<div style="padding: 2px 2px;  background: rgba(54, 25, 25, .5); color: white; position: absolute">
 								<span><?= $product->reference ?></span>
 							</div>	 
@@ -135,21 +140,17 @@
 							</div>
 
 						</div>
-
-							<div class="btn-group" style="float: right">
-								
-								<button class="btn btn-sm" onclick="javascript: $.colorbox({maxWidth: '90%', maxHeight: '90%', title: '<?= $escaper->escapeJs((string) $product->brand_title) . ' &raquo; ' . $escaper->escapeJs((string) $product->reference) . ' &raquo; ' . $escaper->escapeJs((string) $product->title) ?>', href: '<?= $image_baseurl . $product->product_id ?>-1024x768_90.jpg?>'})">
-									<span class="glyphicon glyphicon-zoom-in"></span> 
-								</button>
-								<button class="btn btn-sm">
-									<span class="glyphicon glyphicon-info-sign"></span> 
-								</button>
-								
-								<button class="btn btn-sm">
-									<span class="glyphicon glyphicon-heart-empty"></span> 
-								</button>
-							</div>	
-						
+						<div class="btn-group" style="float: right">
+							<button class="btn btn-sm" onclick="javascript: $.colorbox({  maxWidth: '90%', maxHeight: '90%', title: '<?= $escaper->escapeJs((string) $product->brand_title) . ' &raquo; ' . $escaper->escapeJs((string) $product->reference) . ' &raquo; ' . $escaper->escapeJs((string) $product->title) ?>', href: '<?= $image_baseurl . $product->product_id ?>-1024x768_90.jpg?>'})">
+								<span class="glyphicon glyphicon-zoom-in"></span> 
+							</button>
+							<button class="btn btn-sm">
+								<span class="glyphicon glyphicon-info-sign"></span> 
+							</button>
+							<button class="btn btn-sm">
+								<span class="glyphicon glyphicon-heart-empty"></span> 
+							</button>
+						</div>	
 						<div class="caption" style="border-top: 1px solid #DDDDDD; padding-top: 2px; margin-top: 10px; padding-bottom: 0px; margin-bottom: 0px; bckground: -moz-linear-gradient(top, rgba(54, 54, 54, .3), rgba(255, 255, 255, .1));"> 
 							<p style="color: black" href="<?= $this->url('store/product', array('product_id' => $product['product_id']), array(), false); ?>"> 
 								<?php echo $product->title ?>

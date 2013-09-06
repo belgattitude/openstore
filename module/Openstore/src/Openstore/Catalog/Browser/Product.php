@@ -61,9 +61,10 @@ class Product extends BrowserAbstract
 				$select->where("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.activated_at, p.activated_at))");
 				break;
 			case 'promos' :
-				
+				$select->where("(ppl.promo_discount > 0)");
 				break;
 			case 'onstock' :
+				$select->where("(ppl.stock > 0)");
 				break;
 		}
 		
@@ -79,6 +80,8 @@ class Product extends BrowserAbstract
 			'characteristic'=> new Expression('COALESCE(p18.characteristic, p.characteristic)'),
 			'price'			=> new Expression('ppl.price'),
 			'flag_new'		=> new Expression("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.activated_at, p.activated_at))"),
+			'promo_discount'=> new Expression('ppl.promo_discount'),
+			'stock'			=> new Expression('ppl.stock'),
 		), true);
 		
 		$select->order(array('p.reference' => $select::ORDER_ASCENDING));
