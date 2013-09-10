@@ -39,68 +39,6 @@
 				->prependFile($theme_path . '/resources/jquery-color/jquery.color.js')
 				->prependFile($theme_path . '/resources/jquery/jquery.min.js')
 		?>
-		<style>
-
-			.twitter-typeahead .tt-query,
-			.twitter-typeahead .tt-hint {
-				margin-bottom: 0;
-			}
-
-			.tt-dropdown-menu {
-				min-width: 160px;
-				margin-top: 2px;
-				padding: 5px 0;
-				background-color: #fff;
-				border: 1px solid #ccc;
-				border: 1px solid rgba(0,0,0,.2);
-				*border-right-width: 2px;
-				*border-bottom-width: 2px;
-				-webkit-border-radius: 6px;
-				-moz-border-radius: 6px;
-				border-radius: 6px;
-				-webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-				-moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-				box-shadow: 0 5px 10px rgba(0,0,0,.2);
-				-webkit-background-clip: padding-box;
-				-moz-background-clip: padding;
-				background-clip: padding-box;
-			}
-
-			.tt-suggestion {
-				display: block;
-				padding: 3px 20px;
-			}
-
-			.tt-suggestion.tt-is-under-cursor {
-				color: #fff;
-				background-color: #0081c2;
-				background-image: -moz-linear-gradient(top, #0088cc, #0077b3);
-				background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0077b3));
-				background-image: -webkit-linear-gradient(top, #0088cc, #0077b3);
-				background-image: -o-linear-gradient(top, #0088cc, #0077b3);
-				background-image: linear-gradient(to bottom, #0088cc, #0077b3);
-				background-repeat: repeat-x;
-				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientType=0)
-			}
-
-			.tt-suggestion.tt-is-under-cursor a {
-				color: #fff;
-			}
-
-			.tt-suggestion p {
-				margin: 0;
-			}
-
-			.twitter-typeahead .tt-hint {
-				display: block;
-				height: 38px;
-				padding: 8px 12px;
-				font-size: 14px;
-				line-height: 1.428571429;
-				border: 1px solid transparent;
-			}			
-
-		</style>
 
 		<!-- Make IE8 and below responsive by adding CSS3 MediaQuery support and html5-->
 		<!--[if lt IE 9]>
@@ -176,7 +114,7 @@
 						
 						?>" role="search" onsubmit="openstore_catalog_search()">
 						<div class="form-group">
-							<input class="twitter-typeahead form-control" type="text" id="livesearch2"  name="query" value="<?= $this->searchParams->getQuery() ?>"  placeholder="Search">
+							<input class="twitter-typeahead form-control" type="text" id="livesearch2"  name="query" value="<?= $this->search_keywords ?>"  placeholder="Search">
 						</div>
 						<button type="submit" class="btn btn-default">Submit</button>
 					</form>
@@ -200,7 +138,6 @@
 
 			</style>
 			<script type="text/javascript">
-
 						$('#livesearch2').typeahead({
 							name: 'twitter-oss',
 							prefetch: '<?= '/workspace/openstore/public/data/repos.json' ?>',
@@ -211,15 +148,11 @@
 							].join(''),
 							engine: Hogan
 						});
-
 			</script>
 			<div class="container">
 				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown">
-
-
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Language <b class="caret"></b></a>
-
 						<ul class="dropdown-menu">
 							<li><a href="<?= $this->url(null, array('ui_language' => 'fr'), array(), $reuseMatchedParams = true) ?>">Français</a></li>
 							<li><a href="<?= $this->url(null, array('ui_language' => 'en'), array(), $reuseMatchedParams = true) ?>">English</a></li>

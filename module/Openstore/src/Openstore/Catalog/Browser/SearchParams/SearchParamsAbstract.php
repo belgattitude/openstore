@@ -10,6 +10,16 @@ abstract class SearchParamsAbstract
 	abstract function getParams();
 	
 	
+	function setId($id)
+	{
+		$this->id = $id;
+	}
+	
+	function getId()
+	{
+		return $this->id;
+	}
+	
 	function setFilter($filter)
 	{
 		$this->filter = $filter;

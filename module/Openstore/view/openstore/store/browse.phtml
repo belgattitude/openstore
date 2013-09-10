@@ -1,10 +1,9 @@
 <?php
 	$escaper = new Zend\Escaper\Escaper('utf-8');
+	$image_baseurl = "http://akilia2.emdmusic.com/medias/products/dynamic/";
 ?>
-
 <div class="row">
 	<div class="col-md-12">
-		
 		<?php $browse_filter = $this->searchParams->getFilter() ?>
 		<ul class="nav nav-tabs">
 			<li <?= ($browse_filter == '' || $browse_filter == 'all') ? 'class="active"' : '' ?>>
@@ -80,28 +79,6 @@
 		
 		<!--<div class="row">	-->
 
-	<style>
-		
-.numbercircle {
-	position:relative;
-	float: right;
-    -webkit-border-radius: 999px;
-    -moz-border-radius: 999px;
-    border-radius: 999px;
-    width: 40px;
-	top: 100px;
-    height: 40px;
-    padding-top: 12px;
-    background: rgba(150,0,0,0.8);
-    border: 1px solid #888;
-    color: #FFF;
-    text-align: center;
-	font: 12px Arial, sans-serif
-}		
-	</style>		
-			<?php
-				$image_baseurl = "http://akilia2.emdmusic.com/medias/products/dynamic/";
-			?>
 		
 			<?php foreach ($this->products as $idx => $product) : ?>
 			<?php 

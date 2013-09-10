@@ -36,7 +36,9 @@ class Product extends SearchParamsAbstract
 	function getLimit()
 	{
 		return $this->limit;
-	}	
+	}
+	
+	
 		
 	
 	function setBrands($brands)

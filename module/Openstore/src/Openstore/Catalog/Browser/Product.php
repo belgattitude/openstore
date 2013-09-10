@@ -52,11 +52,14 @@ class Product extends BrowserAbstract
 						new Expression('pl.pricelist_id = ppl.pricelist_id'), array())
 				->join(array('ps' => 'product_stock'),
 						new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'), array())
-				
 				->join(array('pb' => 'product_brand'),
 						new Expression('pb.brand_id = p.brand_id'), array())
 				->join(array('pc' => 'product_category'),
 						new Expression('pc.category_id = p.category_id'), array())
+				->join(array('pc18' => 'product_category_translation'),
+						new Expression("pc.category_id = pc18.category_id and pc18.lang = '$lang'"), 
+						array(), $select::JOIN_LEFT)
+				
 				->where('p.flag_active = 1')
 				->where('ppl.flag_active = 1')
 				->where("pl.reference = '$pricelist'");
@@ -74,6 +77,9 @@ class Product extends BrowserAbstract
 			'brand_id'			=> new Expression('p.brand_id'),
 			'brand_reference'	=> new Expression('pb.reference'),
 			'brand_title'		=> new Expression('pb.title'),
+			'category_reference'=> new Expression('pc.reference'),
+			'category_title'	=> new Expression('COALESCE(pc18.title, pc.title)'),
+			
 			'title'				=> new Expression('COALESCE(p18.title, p.title)'),
 			'invoice_title'		=> new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
 			'description'		=> new Expression('COALESCE(p18.description, p.description)'),
@@ -88,6 +94,11 @@ class Product extends BrowserAbstract
 		
 		$select->limit(50);
 
+		$product_id = $params->getId();
+		if ($product_id != '') {
+			$select->where("p.product_id = $product_id");
+		}
+		
 		$brands = $params->getBrands();
 		if (count($brands) > 0) {
 			$brand_clauses = array();

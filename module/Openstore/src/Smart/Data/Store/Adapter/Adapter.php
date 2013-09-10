@@ -29,9 +29,13 @@ abstract class Adapter {
 
 
 	/**
+	 * 
+	 * @param \Smart\Data\Store\Options $options
+	 * @return \Smart\Data\Store\ResultSet\ResultSet;
 	 */
 	abstract public function getData(Smart\Data\Store\Options $options = null);
 
+	
 
 	/**
 	 * Return the total affected rows (SQL_CALC_FOUND_ROWS)

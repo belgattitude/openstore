@@ -1,10 +1,9 @@
 <?php
 	$escaper = new Zend\Escaper\Escaper('utf-8');
+	$image_baseurl = "http://akilia2.emdmusic.com/medias/products/dynamic/";	
 ?>
-
 <div class="row">
 	<div class="col-md-12">
-		
 		<?php $browse_filter = $this->searchParams->getFilter() ?>
 		<ul class="nav nav-tabs">
 			<li <?= ($browse_filter == '' || $browse_filter == 'all') ? 'class="active"' : '' ?>>
@@ -76,44 +75,10 @@
 			</div>
 			<?php endif; ?>	 
 		</div>	
-		
-		
-		<!--<div class="row">	-->
 
-	<style>
-		
-.numbercircle {
-	position:relative;
-	float: right;
-    -webkit-border-radius: 999px;
-    -moz-border-radius: 999px;
-    border-radius: 999px;
-    width: 40px;
-	top: 100px;
-    height: 40px;
-    padding-top: 12px;
-    background: rgba(150,0,0,0.8);
-    border: 1px solid #888;
-    color: #FFF;
-    text-align: center;
-	font: 12px Arial, sans-serif
-}		
-	</style>		
-			<?php
-				$image_baseurl = "http://akilia2.emdmusic.com/medias/products/dynamic/";
-			?>
-		
-			<?php foreach ($this->products as $idx => $product) : ?>
-			<?php 
-				//echo "<h3>" . $idx % 3 . "</h3>";
-				$columns = 3;
-				$break = ($idx % $columns) == 0;	
-				$last_idx = count($this->products);
-			?>
-			<?php if ($break) : ?>
-<div class="row"> <!-- start row <?php echo "idx" . $idx . " --- ($idx % 3)" ?> -->	
-			<?php endif; ?>	
-				<div class="col-md-4" style="margin-bottom: 5px">
+		<div class="row">
+				
+				<div class="col-md-12" style="margin-bottom: 5px">
 					<!-- <div class="thumbnail wrapper"> -->
 					<div class="thumbnail wrapper">
 						
@@ -175,9 +140,6 @@
 									<span class="label label-info price"><?= $this->currencyFormat($product->price, "EUR", "fr_FR") . ' / ' . 'PC'?></span>
 
 								</div>					
-								
-
-								
 								<div class="input-group input-group" style="width: 120px; ">
 									
 								  <input type="text" class="form-control" placeholder="Qty">
@@ -196,21 +158,9 @@
 						</div>
 					</div>
 				</div>
-<?php if (((($idx+1) % $columns) == 0) || $idx+1 == $last_idx) : ?>				
-</div> <!-- end row -->	
+	</div> <!-- end row -->	
 
-<?php endif; ?>
-			<?php endforeach; ?>
 
-		<!--</div>-->
-
-		<div class="row">
-			<div class="col-md-12">
-				<?php
-				echo $this->paginationControl($this->products->getPaginator(), 'Sliding', 'snippets/pagination_control', array('route' => 'test'));
-				?>
-			</div>	
-		</div>
 
 	</div>
 

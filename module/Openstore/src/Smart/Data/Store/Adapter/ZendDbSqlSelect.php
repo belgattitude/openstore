@@ -100,8 +100,8 @@ class ZendDbSqlSelect extends StoreAdapter {
 	
 	/**
 	 * 
-	 * @param type $options
-	 * @return Zend\Db\ResultSet\ResultSet
+	 * @param \Smart\Data\Store\Options $options
+	 * @return \Smart\Data\Store\ResultSet\ResultSet;
 	 */
 	function getData(Smart\Data\Store\Options $options = null)
 	{
