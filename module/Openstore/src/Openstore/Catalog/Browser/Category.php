@@ -48,6 +48,8 @@ class Category extends BrowserAbstract
 						new Expression('ppl.product_id = p.product_id'), array())
 				->join(array('pl' => 'pricelist'),
 						new Expression('pl.pricelist_id = ppl.pricelist_id'), array())
+				->join(array('ps' => 'product_stock'),
+						new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'), array())
 				->join(array('pb' => 'product_brand'),
 						new Expression('pb.brand_id = p.brand_id'), array())
 				->where('p.flag_active = 1')

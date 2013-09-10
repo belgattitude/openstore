@@ -50,6 +50,9 @@ class Product extends BrowserAbstract
 						new Expression('ppl.product_id = p.product_id'), array())
 				->join(array('pl' => 'pricelist'),
 						new Expression('pl.pricelist_id = ppl.pricelist_id'), array())
+				->join(array('ps' => 'product_stock'),
+						new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'), array())
+				
 				->join(array('pb' => 'product_brand'),
 						new Expression('pb.brand_id = p.brand_id'), array())
 				->join(array('pc' => 'product_category'),
@@ -66,19 +69,20 @@ class Product extends BrowserAbstract
 		$flag_new_min_date = ProductFilter::getParam('flag_new_minimum_date');
 		
 		$select->columns(array(
-			'product_id'	=> new Expression('p.product_id'),
-			'reference'		=> new Expression('p.reference'),
-			'brand_id'		=> new Expression('p.brand_id'),
+			'product_id'		=> new Expression('p.product_id'),
+			'reference'			=> new Expression('p.reference'),
+			'brand_id'			=> new Expression('p.brand_id'),
 			'brand_reference'	=> new Expression('pb.reference'),
-			'brand_title'	=> new Expression('pb.title'),
-			'title'			=> new Expression('COALESCE(p18.title, p.title)'),
-			'invoice_title'	=> new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
-			'description'	=> new Expression('COALESCE(p18.description, p.description)'),
-			'characteristic'=> new Expression('COALESCE(p18.characteristic, p.characteristic)'),
-			'price'			=> new Expression('ppl.price'),
-			'flag_new'		=> new Expression("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.activated_at, p.activated_at))"),
-			'promo_discount'=> new Expression('ppl.promo_discount'),
-			'stock'			=> new Expression('ppl.stock'),
+			'brand_title'		=> new Expression('pb.title'),
+			'title'				=> new Expression('COALESCE(p18.title, p.title)'),
+			'invoice_title'		=> new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
+			'description'		=> new Expression('COALESCE(p18.description, p.description)'),
+			'characteristic'	=> new Expression('COALESCE(p18.characteristic, p.characteristic)'),
+			'price'				=> new Expression('ppl.price'),
+			'flag_new'			=> new Expression("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.activated_at, p.activated_at))"),
+			'promo_discount'	=> new Expression('ppl.promo_discount'),
+			'available_stock'	=> new Expression('ps.available_stock'),
+			'theoretical_stock'	=> new Expression('ps.theoretical_stock'),
 		), true);
 		
 		

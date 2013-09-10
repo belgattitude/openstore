@@ -82,6 +82,7 @@ class Synchronizer
 		$this->synchronizeProduct();
 		$this->synchronizeProductTranslation();
 		$this->synchronizeProductPricelist();
+		$this->synchronizeProductStock();
 		
 		
 		
@@ -101,8 +102,6 @@ class Synchronizer
 					promo_discount,
 					promo_start_at,
 					promo_end_at,
-					stock,
-					theoretical_stock,
 					flag_active,
 					activated_at,
 					legacy_synchro_at
@@ -114,8 +113,6 @@ class Synchronizer
 					   if((at.flag_promo = 1 or at.flag_liquidation = 1) and at.remise1 > 0, at.remise1, null) as promo_discount,
 					   null as promo_start_at,
 					   null as promo_end_at,
-					   at.stock,
-					   at.stock_theorique,
 					   at.flag_availability,
 					   a.date_creation,
 					'{$this->legacy_synchro_at}' as legacy_synchro_at
@@ -130,8 +127,6 @@ class Synchronizer
 						promo_start_at = null,
 						promo_end_at = null,
 						
-						stock = at.stock,
-						theoretical_stock = at.stock_theorique,
 						flag_active = at.flag_availability,
 						activated_at = a.date_creation,
 						legacy_synchro_at = '{$this->legacy_synchro_at}'
@@ -148,26 +143,75 @@ class Synchronizer
 		
 	}
 	
+	function synchronizeProductStock()
+	{
+		$akilia1db = $this->akilia1Db;
+		$db = $this->openstoreDb;
+
+		$stock_id = 1;
+		
+		$replace = " insert
+		             into $db.product_stock
+					(
+					product_id,
+					stock_id,
+					available_stock,
+					theoretical_stock,
+					legacy_synchro_at
+				)
+
+				select at.id_article,
+				       1 as stock_id,
+					   at.stock,
+					   at.stock_theorique,
+					'{$this->legacy_synchro_at}' as legacy_synchro_at
+					
+				from $akilia1db.art_tarif as at
+				inner join $akilia1db.article a on at.id_article = a.id_article
+				inner join $db.pricelist pl on at.id_pays = pl.legacy_mapping	
+				on duplicate key update
+						available_stock = at.stock,
+						theoretical_stock = at.stock_theorique,
+						legacy_synchro_at = '{$this->legacy_synchro_at}'
+					 ";
+		
+		$this->executeSQL("Replace product stock", $replace);
+
+		// 2. Deleting - old links in case it changes
+		$delete = "
+		    delete from $db.product_stock
+			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+
+		$this->executeSQL("Delete eventual removed product_stock", $delete);		
+		
+	}
+	
+	
 	function synchronizePricelist()
 	{
 		$akilia1db = $this->akilia1Db;
 		$db = $this->openstoreDb;
 
+		$stock_id = '1';
+		
 		$replace = " insert
 		             into $db.pricelist
 					(
 					reference,
+					stock_id,
 					legacy_mapping, 
 					legacy_synchro_at
 				)
 
-				select distinct at.id_pays,
+				select 
+					distinct at.id_pays,
+					$stock_id as stock_id,
 					at.id_pays as legacy_mapping,
 					'{$this->legacy_synchro_at}' as legacy_synchro_at
 					
 				from $akilia1db.art_tarif as at
 				on duplicate key update
-						
+						stock_id = $stock_id,
 						legacy_synchro_at = '{$this->legacy_synchro_at}'
 					 ";
 		

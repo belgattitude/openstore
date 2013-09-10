@@ -10,10 +10,21 @@ class LoadUserData implements FixtureInterface
 {
     public function load(ObjectManager $manager)
     {
+		$this->importStock($manager);
         $this->importLanguages($manager);
 		$this->importProductUnit($manager);
 		$this->importUserRoles($manager);
     }
+	
+	function importStock(ObjectManager $manager) {
+		
+		$stock = new Entity\Stock();
+		$stock->setId(1);
+		$stock->setReference('DEFAULT');
+		$stock->setTitle('Default warehouse');
+		$manager->persist($stock);
+		$manager->flush();		
+	}
 	
 	function importUserRoles(ObjectManager $manager)
 	{

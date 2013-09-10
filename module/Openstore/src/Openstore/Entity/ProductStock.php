@@ -14,15 +14,19 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="pricelist",
+ *   name="product_stock",
  *   uniqueConstraints={
- *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
+ *     @ORM\UniqueConstraint(name="unique_product_price_idx",columns={"stock_id", "product_id"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
  *   }, 
- *   options={"comment" = "Pricelist table"}
+ *   indexes={
+ *     @ORM\Index(name="available_stock_idx", columns={"available_stock"}),
+ *     @ORM\Index(name="theoretical_stock_idx", columns={"theoretical_stock"}),
+ *   },
+ *   options={"comment" = "Product stock"}
  * )
  */
-class Pricelist implements InputFilterAwareInterface
+class ProductStock implements InputFilterAwareInterface
 {
 	
 	/**
@@ -30,84 +34,49 @@ class Pricelist implements InputFilterAwareInterface
 	 */
 	protected $inputFilter;
 
-    /**
-     * @ORM\OneToMany(targetEntity="ProductBrandTranslation", mappedBy="brand_id")
-     **/
-    private $translations;	
 	
 	/**
 	 * @ORM\Id
-	 * @ORM\Column(name="pricelist_id", type="integer", nullable=false, options={"unsigned"=true})
+	 * @ORM\Column(name="id", type="bigint", nullable=false, options={"unsigned"=true})
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
-	private $pricelist_id;
+	private $id;
+
+
+	/**
+	 * 
+     * @ORM\ManyToOne(targetEntity="Stock", inversedBy="products", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="stock_id", referencedColumnName="stock_id", onDelete="CASCADE", nullable=false)
+	 */
+	private $stock_id;
+	
 	
 	/**
 	 * 
-     * @ORM\ManyToOne(targetEntity="Stock", inversedBy="stocks", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="stock_id", referencedColumnName="stock_id", onDelete="CASCADE", nullable=false)
+     * @ORM\ManyToOne(targetEntity="Product", inversedBy="products", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="product_id", referencedColumnName="product_id", onDelete="CASCADE", nullable=false)
 	 */
-	private $stock_id;	
-
-	/**
-	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
-	 */
-	private $reference;
-
-
-	/**
-	 * @ORM\Column(type="string", length=80, nullable=true)
-	 */
-	private $title;
-
-	/**
-	 * @ORM\Column(type="string", length=15000, nullable=true)
-	 */
-	private $description;
+	private $product_id;
 
 	
 	
 	/**
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the brand is active in public website"})
+	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Available stock"})
 	 */
-	private $flag_active;
-	
+	private $available_stock;	
 	
 	/**
-	 * @ORM\Column(type="date", nullable=true, options={"comment" = "Flag products as new if more recent than this date"})
+	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Theoretical stock"})
 	 */
-	private $new_product_min_date;	
+	private $theoretical_stock;		
 	
-	/**
-	 * @ORM\Column(type="string", length=40, nullable=true)
-	 */
-	private $icon_class;
-	
-	
-	/**
-	 * @Gedmo\Timestampable(on="create")
-	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record creation timestamp"})
-	 */
-	private $created_at;
 
 	/**
 	 * @Gedmo\Timestampable(on="update")
 	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record last update timestamp"})
 	 */
 	private $updated_at;
-
-	/**
-	 * @Gedmo\Blameable(on="create")
-	 * @ORM\Column(type="string", length=40, nullable=true, options={"comment" = "Creator name"})
-	 */
-	private $created_by;
-
-	/**
-	 * @Gedmo\Blameable(on="update")
-	 * @ORM\Column(type="string", length=40, nullable=true, options={"comment" = "Last updater name"})
-	 */
-	private $updated_by;
-
+	
 	/**
 	 * @ORM\Column(type="string",length=40,nullable=true, options={"comment" = "Unique reference of this record taken from legacy system"})
 	 */
@@ -122,11 +91,9 @@ class Pricelist implements InputFilterAwareInterface
 	
 	public function __construct()
 	{
-		 $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
-		 /**
-		  * Default value for flag_active
-		  */
-		 $this->flag_active = true; 
+		 
+		 
+		 
 	}
 
 	/**
@@ -148,124 +115,50 @@ class Pricelist implements InputFilterAwareInterface
 		return $this->id;
 	}
 
-	/**
-	 * Set reference
-	 * @param string $reference
-	 */
-	public function setReference($reference)
-	{
-		$this->reference = $reference;
-		return $this;
-	}
-
-	/**
-	 * Return reference 
-	 * @return string
-	 */
-	public function getReference()
-	{
-		return $this->reference;
-	}
-
-
-	/**
-	 * 
-	 * @param string $title
-	 */
-	public function setTitle($title)
-	{
-		$this->title = $title;
-		return $this;
-	}
-
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getTitle()
-	{
-		return $this->title;
-	}
-
-	/**
-	 * 
-	 * @param string $description
-	 */
-	public function setDescription($description)
-	{
-		$this->description = $description;
-		return $this;
-	}
-
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getDescription()
-	{
-		return $this->description;
-	}
 	
-
+	
+	
 	/**
 	 * 
-	 * @return string
+	 * @return float
 	 */
-	public function setIconClass($icon_class)
+	public function getAvailableStock()
 	{
-		$this->icon_class = $icon_class;
+		return $this->available_stock;
+	}
+
+	
+	/**
+	 * @param float $available_stock
+	 * @return ProductPricelist
+	 */
+	public function setAvailableStock($available_stock)
+	{
+		$this->available_stock = $available_stock;
 		return $this;
 	}
 	
 	
 	/**
-	 * 
-	 * @return string
+	 * @param float $theoretical_stock
+	 * @return ProductPricelist
 	 */
-	public function getIconClass()
+	public function setTheoreticalStock($theoretical_stock)
 	{
-		return $this->icon_class;
-	}
-	
-	/**
-	 * 
-	 * @return boolean
-	 */
-	public function getFlagActive()
-	{
-		return (boolean) $this->flag_active;
-	}
-
-	
-	/**
-	 * 
-	 */
-	public function setFlagActive($flag_active)
-	{
-		$this->flag_active = $flag_active;
+		$this->theoretical_stock = $theoretical_stock;
 		return $this;
 	}
 	
+	/**
+	 * @return float
+	 */
+	public function getTheoreticalStock()
+	{
+		return $this->theoretical_stock;
+	}
+
 	
 
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getCreatedAt()
-	{
-		return $this->created_at;
-	}
-
-	/**
-	 * 
-	 * @param string $created_at
-	 */
-	public function setCreatedAt($created_at)
-	{
-		$this->created_at = $created_at;
-		return $this;
-	}
 
 	/**
 	 * 
@@ -285,44 +178,9 @@ class Pricelist implements InputFilterAwareInterface
 		$this->updated_at = $updated_at;
 		return $this;
 	}
+	
+	
 
-	/**
-	 * Return creator username
-	 * @return string
-	 */
-	public function getCreatedBy()
-	{
-		return $this->created_by;
-	}
-
-	/**
-	 * Set creator username
-	 * @param string $created_by
-	 */
-	public function setCreatedBy($created_by)
-	{
-		$this->created_by = $created_by;
-		return $this;
-	}
-
-	/**
-	 * Return last updater username
-	 * @return string
-	 */
-	public function getUpdatedBy()
-	{
-		return $this->updated_by;
-	}
-
-	/**
-	 * Set the last updater username
-	 * @param string $updated_by
-	 */
-	public function setUpdatedBy($updated_by)
-	{
-		$this->updated_by = $updated_by;
-		return $this;
-	}
 
 	/**
 	 * Return legacy mapping 
@@ -378,7 +236,7 @@ class Pricelist implements InputFilterAwareInterface
 	 */
 	public function __toString()
 	{
-		return $this->getTitle();
+		return $this->getAvailableStock();
 	}
 
 	

@@ -13,7 +13,7 @@ class OnstockProducts extends AllProducts
 	 * @return \Openstore\Catalog\Browser\ProductFilter\FilterAbstract
 	 */
 	function setConstraints(Select $select) {
-		$select->where("(ppl.stock > 0)");
+		$select->where("(ps.available_stock > 0)");
 		return $this;
 	}
 	

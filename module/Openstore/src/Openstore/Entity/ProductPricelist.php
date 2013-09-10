@@ -16,7 +16,7 @@ use Zend\InputFilter\InputFilterInterface;
  * @ORM\Table(
  *   name="product_pricelist",
  *   uniqueConstraints={
- *     @ORM\UniqueConstraint(name="unique_product_price_idx",columns={"product_id", "pricelist_id"}),
+ *     @ORM\UniqueConstraint(name="unique_product_price_idx",columns={"pricelist_id", "product_id"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
  *   }, 
  *   indexes={
@@ -41,7 +41,13 @@ class ProductPricelist implements InputFilterAwareInterface
 	 */
 	private $id;
 
-	
+
+	/**
+	 * 
+     * @ORM\ManyToOne(targetEntity="Pricelist", inversedBy="products", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="pricelist_id", referencedColumnName="pricelist_id", onDelete="CASCADE", nullable=false)
+	 */
+	private $pricelist_id;	
 	
 	/**
 	 * 
@@ -50,12 +56,7 @@ class ProductPricelist implements InputFilterAwareInterface
 	 */
 	private $product_id;
 
-	/**
-	 * 
-     * @ORM\ManyToOne(targetEntity="Pricelist", inversedBy="products", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="pricelist_id", referencedColumnName="pricelist_id", onDelete="CASCADE", nullable=false)
-	 */
-	private $pricelist_id;
+
 	
 	
 	/**
@@ -87,15 +88,6 @@ class ProductPricelist implements InputFilterAwareInterface
 	private $promo_end_at;	
 	
 	
-	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Available stock"})
-	 */
-	private $stock;	
-	
-	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Theoretical stock"})
-	 */
-	private $theoretical_stock;		
 	
 	
 	/**
@@ -301,43 +293,6 @@ class ProductPricelist implements InputFilterAwareInterface
 		return $this->promo_end_at;
 	}
 	
-	/**
-	 * @param float $stock
-	 * @return ProductPricelist
-	 */
-	public function setStock($stock)
-	{
-		$this->stock = $stock;
-		return $this;
-	}
-	
-	/**
-	 * @return float
-	 */
-	public function getStock()
-	{
-		return $this->stock;
-	}
-
-	
-	/**
-	 * @param float $theoretical_stock
-	 * @return ProductPricelist
-	 */
-	public function setTheoreticalStock($theoretical_stock)
-	{
-		$this->theoretical_stock = $theoretical_stock;
-		return $this;
-	}
-	
-	/**
-	 * @return float
-	 */
-	public function getTheoreticalStock()
-	{
-		return $this->theoretical_stock;
-	}
-
 	
 	/**
 	 * 

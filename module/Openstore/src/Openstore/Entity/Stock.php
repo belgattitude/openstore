@@ -14,15 +14,15 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="pricelist",
+ *   name="stock",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
  *   }, 
- *   options={"comment" = "Pricelist table"}
+ *   options={"comment" = "Stock warehouse"}
  * )
  */
-class Pricelist implements InputFilterAwareInterface
+class Stock implements InputFilterAwareInterface
 {
 	
 	/**
@@ -30,24 +30,14 @@ class Pricelist implements InputFilterAwareInterface
 	 */
 	protected $inputFilter;
 
-    /**
-     * @ORM\OneToMany(targetEntity="ProductBrandTranslation", mappedBy="brand_id")
-     **/
-    private $translations;	
+
 	
 	/**
 	 * @ORM\Id
-	 * @ORM\Column(name="pricelist_id", type="integer", nullable=false, options={"unsigned"=true})
+	 * @ORM\Column(name="stock_id", type="integer", nullable=false, options={"unsigned"=true})
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
-	private $pricelist_id;
-	
-	/**
-	 * 
-     * @ORM\ManyToOne(targetEntity="Stock", inversedBy="stocks", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="stock_id", referencedColumnName="stock_id", onDelete="CASCADE", nullable=false)
-	 */
-	private $stock_id;	
+	private $stock_id;
 
 	/**
 	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
@@ -56,7 +46,7 @@ class Pricelist implements InputFilterAwareInterface
 
 
 	/**
-	 * @ORM\Column(type="string", length=80, nullable=true)
+	 * @ORM\Column(type="string", length=80, nullable=false)
 	 */
 	private $title;
 
@@ -68,15 +58,10 @@ class Pricelist implements InputFilterAwareInterface
 	
 	
 	/**
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the brand is active in public website"})
+	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the stock warehouse is active in public website"})
 	 */
 	private $flag_active;
 	
-	
-	/**
-	 * @ORM\Column(type="date", nullable=true, options={"comment" = "Flag products as new if more recent than this date"})
-	 */
-	private $new_product_min_date;	
 	
 	/**
 	 * @ORM\Column(type="string", length=40, nullable=true)
