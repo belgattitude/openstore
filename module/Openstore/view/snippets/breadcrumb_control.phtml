@@ -1,0 +1,38 @@
+<?php
+?>
+<div class="row">	
+			<?php
+			$breadcrumb = $this->category_breadcrumb->toArray();
+			$last_idx = count($breadcrumb) - 1;
+			?>
+			<?php if (count($breadcrumb) > 0) : ?>
+			<div class="col-md-12">
+				<ul class="breadcrumb">
+					<?php foreach ($breadcrumb as $idx => $category) : ?>
+						<?php if ($idx == $last_idx) : ?>
+							<li class="active"><?= $category['title'] ?>
+							<?php else: ?>
+							<li><a href="<?=
+								$this->url('store/browse', array(
+									'categories' => $category['reference'],
+									'page' => 1
+										), array(), $reuseMatchedParams = true)
+								?>"><?= $category['title'] ?></a></li>
+						<?php endif; ?>
+					<?php endforeach; ?>
+					<?php
+						$breadcrumb_brands = array();
+						foreach ($this->brands as $brand) {
+							if (in_array($brand['reference'], (array)  $this->searchParams->getBrands())) {
+								$breadcrumb_brands[] = $brand['title'];
+							} 
+						}
+					?>
+					<?php if (count($breadcrumb_brands) > 0 && count($breadcrumb) > 0): ?>	
+						<!-- <span class="pull-right"><a><?= '('  . join(', ', $breadcrumb_brands) . ')' ?></a></span> -->
+					<?php endif; ?>
+							
+				</ul>
+			</div>
+			<?php endif; ?>	 
+		</div>	
