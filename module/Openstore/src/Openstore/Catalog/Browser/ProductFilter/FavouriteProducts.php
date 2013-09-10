@@ -6,7 +6,7 @@ use Openstore\Catalog\Browser\ProductFilter;
 use Openstore\Catalog\Browser\ProductFilter\FilterAbstract;
 use Zend\Db\Sql\Select;
 
-class FavouritesProducts extends FilterAbstract
+class FavouriteProducts extends FilterAbstract
 {
 	
 	
