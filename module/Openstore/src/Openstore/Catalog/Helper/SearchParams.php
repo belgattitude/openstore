@@ -21,7 +21,11 @@ class SearchParams
 	 */
 	static function createFromRequest(\Zend\Mvc\Controller\Plugin\Params $params) {
 		$searchParams = new SearchParams();
-		$searchParams->setFilter($params->fromRoute('filter', 'all'));
+		
+		if (($filter = $params->fromRoute('filter')) == '') {
+			$filter = 'all';
+		}
+		$searchParams->setFilter($filter);
 		//var_dump($params->fromRoute('categories')); die();
 		$categories = $params->fromRoute('categories');
 		if (trim($categories) == '') {

@@ -53,18 +53,9 @@ class Brand extends BrowserAbstract
 				->where('ppl.flag_active = 1')
 				->where("pl.reference = '$pricelist'");
 
-		$flag_new_min_date = date('2012-06-30');
-		
-		switch($params->getFilter()) {
-			case 'new' :
-				$select->where("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.activated_at, p.activated_at))");
-				break;
-			case 'promos' :
-				$select->where("(ppl.promo_discount > 0)");
-				break;
-			case 'onstock' :
-				$select->where("(ppl.stock > 0)");
-				break;
+		$productFilter = ProductFilter::getFilter($params->getFilter());
+		if ($productFilter !== null) {
+			$productFilter->setConstraints($select);
 		}
 		
 		

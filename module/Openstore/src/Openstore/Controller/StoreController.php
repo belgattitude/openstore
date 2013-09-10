@@ -10,6 +10,7 @@
 namespace Openstore\Controller;
 
 use Openstore\Entity;
+use Openstore\Catalog\Browser\ProductFilter;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -25,6 +26,18 @@ use Openstore\Catalog\Helper\SearchParams;
 
 class StoreController extends AbstractActionController
 {
+	
+	public function __construct()
+	{
+		// Setting configuration
+		
+		ProductFilter::setParam('flag_new_minimum_date', date('2012-06-30'));
+		ProductFilter::registerFilter('all',	new \Openstore\Catalog\Browser\ProductFilter\AllProducts());
+		ProductFilter::registerFilter('new',	new \Openstore\Catalog\Browser\ProductFilter\NewProducts());
+		ProductFilter::registerFilter('promos',	new \Openstore\Catalog\Browser\ProductFilter\PromoProducts());
+		ProductFilter::registerFilter('onstock',new \Openstore\Catalog\Browser\ProductFilter\OnstockProducts());
+		
+	}
 	
 	public function indexAction()
 	{

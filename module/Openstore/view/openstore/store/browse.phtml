@@ -7,7 +7,7 @@
 		
 		<?php $browse_filter = $this->searchParams->getFilter() ?>
 		<ul class="nav nav-tabs">
-			<li <?= ($browse_filter == '') ? 'class="active"' : '' ?>>
+			<li <?= ($browse_filter == '' || $browse_filter == 'all') ? 'class="active"' : '' ?>>
 				<a href="<?= $this->url('store/browse', array('page' => 1, 'filter' => null)); ?>">All products</a>
 			</li>
 			<li <?= ($browse_filter == 'promos') ? 'class="active"' : '' ?>>

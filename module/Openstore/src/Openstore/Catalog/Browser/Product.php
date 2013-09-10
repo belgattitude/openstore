@@ -5,10 +5,12 @@
 namespace Openstore\Catalog\Browser;
 
 use Openstore\Catalog\Browser\SearchParams\SearchParamsAbstract as SearchParams; 
+use Openstore\Catalog\Browser\ProductFilter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
+
 
 class Product extends BrowserAbstract
 {
@@ -23,6 +25,8 @@ class Product extends BrowserAbstract
 		
 		return $params;
 	}	
+	
+	
 	
 	/**
 	 * 
@@ -53,20 +57,13 @@ class Product extends BrowserAbstract
 				->where('p.flag_active = 1')
 				->where('ppl.flag_active = 1')
 				->where("pl.reference = '$pricelist'");
-		
-		$flag_new_min_date = date('2012-06-30');
-		
-		switch($params->getFilter()) {
-			case 'new' :
-				$select->where("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.activated_at, p.activated_at))");
-				break;
-			case 'promos' :
-				$select->where("(ppl.promo_discount > 0)");
-				break;
-			case 'onstock' :
-				$select->where("(ppl.stock > 0)");
-				break;
+
+		$productFilter = ProductFilter::getFilter($params->getFilter());
+		if ($productFilter !== null) {
+			$productFilter->setConstraints($select);
+			$productFilter->addDefaultSortClause($select);
 		}
+		$flag_new_min_date = ProductFilter::getParam('flag_new_minimum_date');
 		
 		$select->columns(array(
 			'product_id'	=> new Expression('p.product_id'),
@@ -84,7 +81,7 @@ class Product extends BrowserAbstract
 			'stock'			=> new Expression('ppl.stock'),
 		), true);
 		
-		$select->order(array('p.reference' => $select::ORDER_ASCENDING));
+		
 		$select->limit(50);
 
 		$brands = $params->getBrands();
