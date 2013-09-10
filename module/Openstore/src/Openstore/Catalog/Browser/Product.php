@@ -85,6 +85,7 @@ class Product extends BrowserAbstract
 			'description'		=> new Expression('COALESCE(p18.description, p.description)'),
 			'characteristic'	=> new Expression('COALESCE(p18.characteristic, p.characteristic)'),
 			'price'				=> new Expression('ppl.price'),
+			'list_price'		=> new Expression('ppl.price'),
 			'flag_new'			=> new Expression("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.activated_at, p.activated_at))"),
 			'promo_discount'	=> new Expression('ppl.promo_discount'),
 			'available_stock'	=> new Expression('ps.available_stock'),

@@ -35,8 +35,6 @@
 		))
 		?>
 	</div>
-
-
 	<div class="col-md-9">
 		<?php
 		echo $this->partial('snippets/breadcrumb_control', array(
@@ -45,9 +43,7 @@
 			'brands'				=> $this->brands
 		))
 		?>
-
 		<div class="row">
-				
 				<div class="col-md-12" style="margin-bottom: 5px">
 					<!-- <div class="thumbnail wrapper"> -->
 					<div class="thumbnail wrapper">
@@ -67,13 +63,10 @@
 							</div>	 
 							
 							<div style="width: 100%; max-height: 200px; min-height: 80px; line-height: 150px; text-align: center;">
-								
 								<a href="<?= $this->url('store/product', array('product_id' => $product['product_id']), array(), false); ?>">
 									<img style="vertical-align: middle" src="<?= $image_baseurl . $product->product_id ?>-170x200_90.jpg" alt="" />
 								</a>
-								
 							</div>
-
 						</div>
 						<div class="btn-group" style="float: right">
 							<button class="btn btn-sm" onclick="javascript: $.colorbox({  maxWidth: '90%', maxHeight: '90%', title: '<?= $escaper->escapeJs((string) $product->brand_title) . ' &raquo; ' . $escaper->escapeJs((string) $product->reference) . ' &raquo; ' . $escaper->escapeJs((string) $product->title) ?>', href: '<?= $image_baseurl . $product->product_id ?>-1024x768_90.jpg?>'})">
@@ -96,15 +89,10 @@
 									}
 								?>
 							</p>
-							
-							<!--
 							<div style="max-height: 80px; text-overflow: ellipsis; overflow:hidden">
 								<?php echo $product->description ?>
 							</div>
-							-->
-							<!--
 							<div><?php echo $product->characteristic ?></div>
-							-->
 							<div>
 								<div style="float: right">								
 									<span class="label label-info price"><?= $this->currencyFormat($product->price, "EUR", "fr_FR") . ' / ' . 'PC'?></span>
