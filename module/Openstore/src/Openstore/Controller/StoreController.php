@@ -32,10 +32,11 @@ class StoreController extends AbstractActionController
 		// Setting configuration
 		
 		ProductFilter::setParam('flag_new_minimum_date', date('2012-06-30'));
-		ProductFilter::registerFilter('all',	new \Openstore\Catalog\Browser\ProductFilter\AllProducts());
-		ProductFilter::registerFilter('new',	new \Openstore\Catalog\Browser\ProductFilter\NewProducts());
-		ProductFilter::registerFilter('promos',	new \Openstore\Catalog\Browser\ProductFilter\PromoProducts());
-		ProductFilter::registerFilter('onstock',new \Openstore\Catalog\Browser\ProductFilter\OnstockProducts());
+		ProductFilter::registerFilter('all',		new \Openstore\Catalog\Browser\ProductFilter\AllProducts());
+		ProductFilter::registerFilter('new',		new \Openstore\Catalog\Browser\ProductFilter\NewProducts());
+		ProductFilter::registerFilter('promos',		new \Openstore\Catalog\Browser\ProductFilter\PromoProducts());
+		ProductFilter::registerFilter('onstock',	new \Openstore\Catalog\Browser\ProductFilter\OnstockProducts());
+		ProductFilter::registerFilter('favourite',	new \Openstore\Catalog\Browser\ProductFilter\FavouriteProducts());
 		
 	}
 	

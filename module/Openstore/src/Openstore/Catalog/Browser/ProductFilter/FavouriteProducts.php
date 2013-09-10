@@ -3,10 +3,10 @@
 namespace Openstore\Catalog\Browser\ProductFilter;
 
 use Openstore\Catalog\Browser\ProductFilter;
-use Openstore\Catalog\Browser\ProductFilter\FilterAbstract;
+use Openstore\Catalog\Browser\ProductFilter\AllProducts;
 use Zend\Db\Sql\Select;
 
-class FavouriteProducts extends FilterAbstract
+class FavouriteProducts extends AllProducts
 {
 	
 	

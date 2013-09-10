@@ -19,7 +19,7 @@
 			<li <?= ($browse_filter == 'onstock') ? 'class="active"' : '' ?>>
 				<a href="<?= $this->url('store/browse', array('page' => 1, 'filter' => 'onstock'), array(), $reuseMatchedParams = true); ?>">On stock</a>
 			</li>			
-			<li <?= ($browse_filter == 'favourites') ? 'class="active pull-right"' : 'class="pull-right"' ?>>
+			<li <?= ($browse_filter == 'favourite') ? 'class="active pull-right"' : 'class="pull-right"' ?>>
 				<a href="<?= $this->url('store/browse', array('page' => 1, 'filter' => 'favourites'), array(), $reuseMatchedParams = true); ?>"><span class="glyphicon glyphicon-heart"></span> Favorites</a> 
 			</li>
 		</ul>
