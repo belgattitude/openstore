@@ -119,15 +119,12 @@
 								<div style="float: right">								
 									<span class="label label-info price"><?= $this->currencyFormat($product->price, "EUR", "fr_FR") . ' / ' . $product->unit_reference ?></span>
 								</div>					
-								
 								<div class="input-group input-group" style="width: 120px; ">
-									
 								  <input type="text" class="form-control" placeholder="Qty">
 								  <span class="input-group-addon">
-		  
 								  <button class=" btn btn-warning btn-xs" style="margin: 0">
 									  <span class="glyphicon glyphicon-shopping-cart"></span> 
-									  Add
+									  <?= $this->translate('Add') ?>
 								  </button>
 								  </span>
 								</div>								

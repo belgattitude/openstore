@@ -11,6 +11,7 @@
 namespace Openstore;
 
 use Zend\Mvc\ModuleRouteListener;
+use Zend\ModuleManager\ModuleManager;
 use Zend\Mvc\MvcEvent;
 
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
@@ -22,11 +23,40 @@ use Zend\Console\Adapter\AdapterInterface;
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface, ConsoleUsageProviderInterface
 {
 
+	public function init(ModuleManager $moduleManager)
+	{
+		
+	}
+	
 	public function onBootstrap(MvcEvent $e)
 	{
 		$eventManager = $e->getApplication()->getEventManager();
 		$moduleRouteListener = new ModuleRouteListener();
 		$moduleRouteListener->attach($eventManager);
+		
+		$eventManager->attach(MvcEvent::EVENT_DISPATCH, array($this, 'onPreDispatch'), 100);
+		
+		$translator = $e->getApplication()->getServiceManager()->get('translator');
+		//$translator->setLocale('en_US');
+        //$translator->setFallbackLocale('fr_FR');    		
+	}
+	
+	public function onPreDispatch(MvcEvent $e) {
+		$app      = $e->getTarget();
+		
+		// TODO
+		$language = $e->getRouteMatch()->getParam('ui_language');
+		$supported_langs = array(
+			'fr' => 'fr_FR',
+			'en' => 'en_US',
+			'nl' => 'nl_NL',
+			'de' => 'de_DE'
+		);
+		if ($language != '' && array_key_exists($language, $supported_langs)) {
+	        $serviceManager  = $app->getServiceManager();
+			$serviceManager->get('translator')->setLocale($supported_langs[$language]);
+		}
+		
 	}
 
     /**
@@ -54,11 +84,13 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 
 	public function getConfig()
 	{
-		return array_merge(
+		
+		$config = array_merge(
 				include __DIR__ . '/config/module.config.php',
 				include __DIR__ . '/config/routes.config.php',
 				include __DIR__ . '/config/openstore.config.php'
 		);
+		return $config;
 	}
 
 	public function getAutoloaderConfig()
