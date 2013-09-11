@@ -24,6 +24,7 @@ use Openstore\Catalog\Helper\SearchParams;
 
 use Zend\Stdlib\Hydrator;
 
+use Smart\Data\Store\Adapter\ZendDbSqlSelect;
 
 
 class SearchController extends AbstractActionController
@@ -71,7 +72,23 @@ class SearchController extends AbstractActionController
 		$productBrowser	= new \Openstore\Catalog\Browser\Product($this->adapter, $this->getFilter());
 		$productParams = new \Openstore\Catalog\Browser\SearchParams\Product();
 		$productParams->setQuery($this->params()->fromQuery('query'));
-		$store = $productBrowser->getStore($productParams);
+		$select = $productBrowser->getSelect($productParams);
+		$select->reset($select::COLUMNS);
+		$select->columns(array(
+			'product_id'		=> new Expression('p.product_id'),
+			'reference'			=> new Expression('p.reference'),
+			'brand_title'		=> new Expression('pb.title'),
+			'category_reference'=> new Expression('pc.reference'),
+			'category_title'	=> new Expression('COALESCE(pc18.title, pc.title)'),
+			'title'				=> new Expression('COALESCE(p18.title, p.title)'),
+			'invoice_title'		=> new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
+			'flag_new'			=> new Expression("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.activated_at, p.activated_at))"),
+			'promo_discount'	=> new Expression('ppl.promo_discount'),
+		));
+		$store = new ZendDbSqlSelect(['select'  => $select,
+									  'adapter' => $this->adapter]);		
+		//$store = $productBrowser->getStore($productParams);
+		
 		$store->getOptions()->setLimit($searchParams->getLimit())
 							->setOffset(($searchParams->getPage() - 1) * $searchParams->getLimit());
 		$writer = new \Smart\Data\Store\Writer\Zend\JsonModel($store);

@@ -118,9 +118,9 @@ class Stock implements InputFilterAwareInterface
 	 * 
 	 * @param integer $id
 	 */
-	public function setId($id)
+	public function setStockId($stock_id)
 	{
-		$this->id = $id;
+		$this->stock_id = $stock_id;
 		return $this;
 	}	
 	
@@ -128,9 +128,9 @@ class Stock implements InputFilterAwareInterface
 	 * 
 	 * @return integer
 	 */
-	public function getId()
+	public function getStockId()
 	{
-		return $this->id;
+		return $this->stock_id;
 	}
 
 	/**

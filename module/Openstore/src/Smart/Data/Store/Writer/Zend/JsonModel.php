@@ -28,7 +28,8 @@ class JsonModel {
 			'total'		 => $data->getTotalRows(), 
 			'start'		 => $data->getStore()->getOptions()->getOffset(),
 			'limit'		 => $data->getStore()->getOptions()->getLimit(),
-			'data'		 => $data->toArray()		
+			'data'		 => $data->toArray(),
+			'query'		 => $data->getStore()->getQueryString()
 		));
 		return $json;
 	}

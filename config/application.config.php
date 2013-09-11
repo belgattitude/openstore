@@ -10,9 +10,10 @@ return array(
 		'BjyProfiler',
 		'DoctrineDataFixtureModule',
 		//'AsseticBundle',
-		'ZfcBase',
-        'ZfcUser', 
-        'ZfcUserDoctrineORM',  		
+		//'ZfcBase',
+        //'ZfcUser', 
+        //'ZfcUserDoctrineORM',  	
+		'CsnUser'
 		//'BjyAuthorize',
     ),
 

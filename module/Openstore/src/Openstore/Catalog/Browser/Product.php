@@ -50,6 +50,15 @@ class Product extends BrowserAbstract
 						new Expression('ppl.product_id = p.product_id'), array())
 				->join(array('pl' => 'pricelist'),
 						new Expression('pl.pricelist_id = ppl.pricelist_id'), array())
+				->join(array('pt' => 'product_type'),
+						new Expression('p.type_id = pt.type_id'), 
+						array(), $select::JOIN_LEFT)
+				->join(array('c' => 'currency'),
+						new Expression('c.currency_id = pl.currency_id'), 
+						array(), $select::JOIN_LEFT)
+				->join(array('pu' => 'product_unit'),
+						new Expression('pu.unit_id = p.unit_id'), 
+						array(), $select::JOIN_LEFT)
 				->join(array('ps' => 'product_stock'),
 						new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'), array())
 				->join(array('pb' => 'product_brand'),
@@ -89,6 +98,9 @@ class Product extends BrowserAbstract
 			'promo_discount'	=> new Expression('ppl.promo_discount'),
 			'available_stock'	=> new Expression('ps.available_stock'),
 			'theoretical_stock'	=> new Expression('ps.theoretical_stock'),
+			'currency_reference'=> new Expression('c.reference'),
+			'unit_reference'	=> new Expression('pu.reference'),
+			'type_reference'	=> new Expression('pt.reference'),
 		), true);
 		
 		
@@ -132,7 +144,7 @@ class Product extends BrowserAbstract
 			}
 		}
 		
-		if (($query = $params->getQuery()) != null) {
+		if (($query = trim($params->getQuery())) != "") {
 			$query = str_replace(' ', '%', trim($query));				
 			$q = $this->adapter->getPlatform()->quoteValue($query . '%');
 			$select->where("p.reference like $q");

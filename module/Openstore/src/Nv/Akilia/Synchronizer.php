@@ -48,6 +48,11 @@ class Synchronizer
 	 */
 	protected $zendDb;
 	
+	protected $default_currency_id = 1;
+	protected $default_stock_id = 1;
+	protected $default_unit_id = 1;	
+	protected $default_product_type_id = 1;
+	
 	protected $legacy_synchro_at;
 	
 	function __construct(\Doctrine\ORM\EntityManager $em, \Zend\Db\Adapter\Adapter $zendDb)
@@ -98,6 +103,7 @@ class Synchronizer
 					(
 					product_id,
 					pricelist_id,
+					
 					price,
 					promo_discount,
 					promo_start_at,
@@ -192,12 +198,13 @@ class Synchronizer
 		$akilia1db = $this->akilia1Db;
 		$db = $this->openstoreDb;
 
-		$stock_id = '1';
+		$stock_id = $this->default_stock_id;
 		
 		$replace = " insert
 		             into $db.pricelist
 					(
 					reference,
+					currency_id,
 					stock_id,
 					legacy_mapping, 
 					legacy_synchro_at
@@ -205,6 +212,7 @@ class Synchronizer
 
 				select 
 					distinct at.id_pays,
+					{$this->default_currency_id} as currency_id,
 					$stock_id as stock_id,
 					at.id_pays as legacy_mapping,
 					'{$this->legacy_synchro_at}' as legacy_synchro_at
@@ -212,6 +220,7 @@ class Synchronizer
 				from $akilia1db.art_tarif as at
 				on duplicate key update
 						stock_id = $stock_id,
+						currency_id = {$this->default_currency_id},
 						legacy_synchro_at = '{$this->legacy_synchro_at}'
 					 ";
 		
@@ -389,6 +398,7 @@ class Synchronizer
 					group_id,
 					category_id,
 					unit_id,
+					type_id,
 					reference, 
 					slug,
 					title,
@@ -418,7 +428,8 @@ class Synchronizer
 					brand.brand_id as brand_id,
 					product_group.group_id as group_id,
 					category.category_id as category_id,
-					null as unit_id,
+					{$this->default_unit_id} as unit_id,
+					{$this->default_product_type_id} as type_id,
 					upper(a.reference) as reference,
 					null as slug,
 					if(trim(i.libelle_1) = '', null, trim(i.libelle_1)) as title,
@@ -448,10 +459,11 @@ class Synchronizer
 				on duplicate key update
 						brand_id = brand.brand_id,
 						group_id = product_group.group_id,
-						unit_id = null,
+						unit_id = {$this->default_unit_id},
 						category_id = category.category_id,
 						reference = upper(a.reference),
 						slug = null,
+						type_id = {$this->default_product_type_id},
 						title = if(trim(i.libelle_1) = '', null, trim(i.libelle_1)),
 						invoice_title = if(trim(a.libelle_1) = '', null, trim(a.libelle_1)),
 						description = if(trim(i.desc_1) = '', null, trim(i.desc_1)),

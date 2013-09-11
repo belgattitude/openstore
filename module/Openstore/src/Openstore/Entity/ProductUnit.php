@@ -123,11 +123,11 @@ class ProductUnit implements InputFilterAwareInterface
 
 	/**
 	 * 
-	 * @param integer $id
+	 * @param integer $unit_id
 	 */
-	public function setId($id)
+	public function setUnitId($unit_id)
 	{
-		$this->id = $id;
+		$this->unit_id = $unit_id;
 		return $this;
 	}	
 	
@@ -135,9 +135,9 @@ class ProductUnit implements InputFilterAwareInterface
 	 * 
 	 * @return integer
 	 */
-	public function getId()
+	public function getUnitId()
 	{
-		return $this->id;
+		return $this->unit_id;
 	}
 
 	/**

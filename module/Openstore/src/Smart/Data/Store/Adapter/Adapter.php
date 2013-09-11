@@ -69,5 +69,11 @@ abstract class Adapter {
 	public function getIdentifier() {
 		return $this->identifier;
 	}
+	
+	/**
+	 * 
+	 * @return string
+	 */
+	abstract public function getQueryString();
 
 }

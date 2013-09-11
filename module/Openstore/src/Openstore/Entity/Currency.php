@@ -14,15 +14,17 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="pricelist",
+ *   name="currency",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
- *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
+ *     @ORM\UniqueConstraint(name="unique_title_idx",columns={"title"}),
  *   }, 
- *   options={"comment" = "Pricelist table"}
+ *   indexes={
+ *   },
+ *   options={"comment" = "Currency table"}
  * )
  */
-class Pricelist implements InputFilterAwareInterface
+class Currency implements InputFilterAwareInterface
 {
 	
 	/**
@@ -30,32 +32,14 @@ class Pricelist implements InputFilterAwareInterface
 	 */
 	protected $inputFilter;
 
-    /**
-     * @ORM\OneToMany(targetEntity="ProductBrandTranslation", mappedBy="brand_id")
-     **/
-    private $translations;	
 	
 	/**
 	 * @ORM\Id
-	 * @ORM\Column(name="pricelist_id", type="integer", nullable=false, options={"unsigned"=true})
+	 * @ORM\Column(name="currency_id", type="integer", nullable=false, options={"unsigned"=true})
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
-	private $pricelist_id;
-	
-	/**
-	 * 
-     * @ORM\ManyToOne(targetEntity="Stock", inversedBy="stocks", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="stock_id", referencedColumnName="stock_id", onDelete="CASCADE", nullable=false)
-	 */
-	private $stock_id;	
+	private $currency_id;
 
-	/**
-	 * 
-     * @ORM\ManyToOne(targetEntity="Currency", inversedBy="pricelists", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="currency_id", referencedColumnName="currency_id", nullable=false)
-	 */
-	private $currency_id;		
-	
 	/**
 	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
 	 */
@@ -67,23 +51,6 @@ class Pricelist implements InputFilterAwareInterface
 	 */
 	private $title;
 
-	/**
-	 * @ORM\Column(type="string", length=15000, nullable=true)
-	 */
-	private $description;
-
-	
-	
-	/**
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the brand is active in public website"})
-	 */
-	private $flag_active;
-	
-	
-	/**
-	 * @ORM\Column(type="date", nullable=true, options={"comment" = "Flag products as new if more recent than this date"})
-	 */
-	private $new_product_min_date;	
 	
 	/**
 	 * @ORM\Column(type="string", length=40, nullable=true)
@@ -129,20 +96,17 @@ class Pricelist implements InputFilterAwareInterface
 	
 	public function __construct()
 	{
-		 $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
-		 /**
-		  * Default value for flag_active
-		  */
-		 $this->flag_active = true; 
+		
+		 
 	}
 
 	/**
 	 * 
 	 * @param integer $id
 	 */
-	public function setId($id)
+	public function setCurrencyId($currency_id)
 	{
-		$this->id = $id;
+		$this->currency_id = $currency_id;
 		return $this;
 	}	
 	
@@ -150,9 +114,9 @@ class Pricelist implements InputFilterAwareInterface
 	 * 
 	 * @return integer
 	 */
-	public function getId()
+	public function getCurrencyId()
 	{
-		return $this->id;
+		return $this->currency_id;
 	}
 
 	/**
@@ -196,26 +160,6 @@ class Pricelist implements InputFilterAwareInterface
 
 	/**
 	 * 
-	 * @param string $description
-	 */
-	public function setDescription($description)
-	{
-		$this->description = $description;
-		return $this;
-	}
-
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getDescription()
-	{
-		return $this->description;
-	}
-	
-
-	/**
-	 * 
 	 * @return string
 	 */
 	public function setIconClass($icon_class)
@@ -232,25 +176,6 @@ class Pricelist implements InputFilterAwareInterface
 	public function getIconClass()
 	{
 		return $this->icon_class;
-	}
-	
-	/**
-	 * 
-	 * @return boolean
-	 */
-	public function getFlagActive()
-	{
-		return (boolean) $this->flag_active;
-	}
-
-	
-	/**
-	 * 
-	 */
-	public function setFlagActive($flag_active)
-	{
-		$this->flag_active = $flag_active;
-		return $this;
 	}
 	
 	

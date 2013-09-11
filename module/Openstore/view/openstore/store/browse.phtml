@@ -117,11 +117,8 @@
 							-->
 							<div>
 								<div style="float: right">								
-									<span class="label label-info price"><?= $this->currencyFormat($product->price, "EUR", "fr_FR") . ' / ' . 'PC'?></span>
-
+									<span class="label label-info price"><?= $this->currencyFormat($product->price, "EUR", "fr_FR") . ' / ' . $product->unit_reference ?></span>
 								</div>					
-								
-
 								
 								<div class="input-group input-group" style="width: 120px; ">
 									

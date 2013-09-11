@@ -14,24 +14,17 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="product",
+ *   name="product_type",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *     @ORM\UniqueConstraint(name="unique_slug_idx",columns={"slug"})
  *   }, 
  *   indexes={
- *     @ORM\Index(name="title_idx", columns={"title"}),
- *     @ORM\Index(name="description_idx", columns={"description"}),
- *     @ORM\Index(name="characteristic_idx", columns={"characteristic"}),
- *     @ORM\Index(name="keywords_idx", columns={"keywords"}),
- *     @ORM\Index(name="slug_idx", columns={"slug"}),
  *   },
- *   options={"comment" = "Product table"}
+ *   options={"comment" = "Product type table"}
  * )
- * @Gedmo\SoftDeleteable(fieldName="deleted_at")
  */
-class Product implements InputFilterAwareInterface
+class ProductType implements InputFilterAwareInterface
 {
 	
 	/**
@@ -39,132 +32,31 @@ class Product implements InputFilterAwareInterface
 	 */
 	protected $inputFilter;
 
-    /**
-     * @ORM\OneToMany(targetEntity="ProductTranslation", mappedBy="product_id")
-     **/
-    private $translations;	
 	
 	/**
 	 * @ORM\Id
-	 * @ORM\Column(name="product_id", type="bigint", nullable=false, options={"unsigned"=true})
+	 * @ORM\Column(name="type_id", type="integer", nullable=false, options={"unsigned"=true})
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
-	private $product_id;
+	private $type_id;
 
 	/**
 	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
 	 */
 	private $reference;
-	
-	
-	/**
-	 * 
-     * @ORM\ManyToOne(targetEntity="ProductBrand", inversedBy="products", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="brand_id", referencedColumnName="brand_id", onDelete="CASCADE", nullable=true)
-	 */
-	private $brand_id;
+
 
 	/**
-	 * 
-     * @ORM\ManyToOne(targetEntity="ProductGroup", inversedBy="products", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="group_id", referencedColumnName="group_id", onDelete="CASCADE", nullable=true)
-	 */
-	private $group_id;
-	
-	/**
-	 * 
-     * @ORM\ManyToOne(targetEntity="ProductCategory", inversedBy="products", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="category_id", referencedColumnName="category_id", onDelete="CASCADE", nullable=true)
-	 */
-	private $category_id;
-
-	/**
-	 * Type id
-     * @ORM\ManyToOne(targetEntity="ProductType", inversedBy="products", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", onDelete="CASCADE", nullable=true)
-	 */
-	private $type_id;		
-	
-	/**
-	 * Sales unit
-     * @ORM\ManyToOne(targetEntity="ProductUnit", inversedBy="products", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="unit_id", referencedColumnName="unit_id", onDelete="CASCADE", nullable=true)
-	 */
-	private $unit_id;	
-
-	/**
-	 * @Gedmo\Slug(fields={"title"})
-	 * @ORM\Column(length=64, nullable=true, options={"comment" = "Unique slug for this record"})
-	 */
-	private $slug;
-
-	/**
-	 * @ORM\Column(type="string", length=150, nullable=true)
+	 * @ORM\Column(type="string", length=80, nullable=true)
 	 */
 	private $title;
-	
-	/**
-	 * @ORM\Column(type="string", length=100, nullable=true)
-	 */
-	private $invoice_title;	
-	
 
 	/**
 	 * @ORM\Column(type="string", length=15000, nullable=true)
 	 */
 	private $description;
 
-	/**
-	 * @ORM\Column(type="string", length=150, nullable=true)
-	 */
-	private $characteristic;
-
-
-	/**
-	 * @ORM\Column(type="string", length=255, nullable=true)
-	 */
-	private $keywords;	
 	
-	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Volume per sales unit in m3"})
-	 */
-	private $volume;
-
-	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Weight per sales unit in Kg"})
-	 */
-	private $weight;
-	
-	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Length per sales unit in meter"})
-	 */
-	private $length;
-
-	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Heigth per sales unit in meter"})
-	 */
-	private $height;
-	
-	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Width per sales unit in meter"})
-	 */
-	private $width;
-	
-	/**
-	 * @ORM\Column(type="string", length=13, nullable=true, options={"comment"="EAN 13 barcode"})
-	 */
-	private $barcode_ean13;	
-	
-	/**
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the product is active in public website"})
-	 */
-	private $flag_active;
-	
-	
-	/**
-	 * @ORM\Column(type="date", nullable=true, options={"comment" = "Date on which product was actived/available"})
-	 */
-	private $activated_at;	
 	
 	/**
 	 * @ORM\Column(type="string", length=40, nullable=true)
@@ -183,11 +75,6 @@ class Product implements InputFilterAwareInterface
 	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record last update timestamp"})
 	 */
 	private $updated_at;
-	
-	/**
-	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record deletion date"})
-	 */
-	private $deleted_at;
 
 	/**
 	 * @Gedmo\Blameable(on="create")
@@ -216,8 +103,6 @@ class Product implements InputFilterAwareInterface
 	public function __construct()
 	{
 		
-		 $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
-		 
 		 /**
 		  * Default value for flag_active
 		  */
@@ -228,11 +113,11 @@ class Product implements InputFilterAwareInterface
 
 	/**
 	 * 
-	 * @param integer $product_id
+	 * @param integer $id
 	 */
-	public function setProductId($product_id)
+	public function setTypeId($type_id)
 	{
-		$this->product_id = $product_id;
+		$this->type_id = $type_id;
 		return $this;
 	}	
 	
@@ -240,9 +125,9 @@ class Product implements InputFilterAwareInterface
 	 * 
 	 * @return integer
 	 */
-	public function getProductId()
+	public function getTypeId()
 	{
-		return $this->product_id;
+		return $this->type_id;
 	}
 
 	/**
@@ -264,23 +149,6 @@ class Product implements InputFilterAwareInterface
 		return $this->reference;
 	}
 
-	/**
-	 * @param string $slug
-	 */
-	public function setSlug($slug)
-	{
-		$this->slug = $slug;
-		return $this;
-	}
-
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getSlug()
-	{
-		return $this->slug;
-	}
 
 	/**
 	 * 
@@ -319,150 +187,7 @@ class Product implements InputFilterAwareInterface
 	{
 		return $this->description;
 	}
-
-	/**
-	 * 
-	 * @param float $type_id
-	 * @return \Openstore\Entity\Product
-	 */
-	function setTypeId($type_id) {
-		$this->type_id = $type_id;
-		return $this;
-	}
 	
-	/**
-	 * @return integer
-	 */
-	function getTypeId()
-	{
-		return $this->type_id;
-	}
-	
-	/**
-	 * 
-	 * @param float $unit_id
-	 * @return \Openstore\Entity\Product
-	 */
-	function setUnitId($unit_id) {
-		$this->unit_id = $unit_id;
-		return $this;
-	}
-	
-	/**
-	 * @return integer
-	 */
-	function getUnitId()
-	{
-		return $this->unit_id;
-	}
-	/**
-	 * Set volume
-	 * @return Product
-	 */
-	function setVolume($volume) {
-		$this->volume = $volume;
-		return $this;
-	}
-	
-	/**
-	 * 
-	 * @return float
-	 */
-	function getVolume()
-	{
-		return $this->volume;
-	}
-	
-	/**
-	 * Set weight
-	 * @return Product
-	 */
-	function setWeight($weight) {
-		$this->weight = $weight;
-		return $this;
-	}
-	
-	/**
-	 * 
-	 * @return float
-	 */
-	function getWeight()
-	{
-		return $this->weight;
-	}
-	
-	/**
-	 * Set length
-	 * @return Product
-	 */
-	function setLength($length) {
-		$this->length = $length;
-		return $this;
-	}
-	
-	/**
-	 * 
-	 * @return float
-	 */
-	function getLength()
-	{
-		return $this->length;
-	}
-	
-	/**
-	 * Set height
-	 * @return Product
-	 */
-	function setHeight($height) {
-		$this->height = $height;
-		return $this;
-	}
-	
-	/**
-	 * 
-	 * @return decimal
-	 */
-	function getHeight()
-	{
-		return $this->height;
-	}
-
-	/**
-	 * Set width
-	 * @return Product
-	 */
-	function setWidth($width) {
-		$this->width = $with;
-		return $this;
-	}
-	
-	/**
-	 * 
-	 * @return decimal
-	 */
-	function getWidth()
-	{
-		return $this->width;
-	}
-
-	/**
-	 * Set barcode_ean13
-	 * @param string $barcode_ean13
-	 * @return Product
-	 */
-	function setBarcodeEan13($barcode_ean13) {
-		$this->barcode_ean13 = $barcode_ean13;
-		return $this;
-	}
-	
-	/**
-	 * 
-	 * @return string
-	 */
-	function getBarcodeEan13()
-	{
-		return $this->barcode_ean13;
-	}	
 	
 
 	/**
@@ -504,26 +229,6 @@ class Product implements InputFilterAwareInterface
 		return $this;
 	}
 	
-
-	/**
-	 * 
-	 * @return date
-	 */
-	public function getActivatedAt()
-	{
-		return $this->activated_at;
-	}
-
-	
-	/**
-	 * @param string $activated_at date in Y-m-d H:i:s format
-	 */
-	public function setActivatedAt($activated_at)
-	{
-		$this->activated_at = $activated_at;
-		return $this;
-	}	
-		
 	
 
 	/**
@@ -563,26 +268,6 @@ class Product implements InputFilterAwareInterface
 		$this->updated_at = $updated_at;
 		return $this;
 	}
-	
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getDeletedAt()
-	{
-		return $this->deleted_at;
-	}
-
-	/**
-	 * 
-	 * @param string $updated_at
-	 */
-	public function setDeletedAt($deleted_at)
-	{
-		$this->deleted_at = $deleted_at;
-		return $this;
-	}
-	
 
 	/**
 	 * Return creator username

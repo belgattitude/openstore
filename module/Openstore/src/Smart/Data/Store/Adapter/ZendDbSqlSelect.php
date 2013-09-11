@@ -43,6 +43,13 @@ class ZendDbSqlSelect extends StoreAdapter {
 	 */
 	protected $params;
 	
+	
+	/**
+	 *
+	 * @var string 
+	 */
+	protected $query_string;
+	
 	/**
 	 * 
 	 * @param array|ArrayObject $params
@@ -112,6 +119,10 @@ class ZendDbSqlSelect extends StoreAdapter {
 		
 		$sql = new Sql($this->adapter);
 		$sql_string = $sql->getSqlStringForSqlObject($select);
+		if ($sql_string == '') {
+			throw new Exception\EmptyQueryException('Query was empty');
+		}
+		$this->query_string = $sql_string;
 		//var_dump($sql_string);
 		try {			
 			
@@ -136,4 +147,15 @@ class ZendDbSqlSelect extends StoreAdapter {
 		return $r;
 	}
 	
+	
+	/**
+	 * @return string
+	 */
+	public function getQueryString()
+	{
+		if ($this->query_string == '') {
+			throw new Exception\InvalidUsageException("Invalid usage, getQueryString must be called after data has been loaded (performance reason).");
+		}
+		return $this->query_string;
+	}
 }
