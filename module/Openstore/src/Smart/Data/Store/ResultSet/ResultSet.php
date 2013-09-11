@@ -116,6 +116,10 @@ class ResultSet extends AbstractResultSet
 	{
 		return $this->totalRows;
 	}
+	
+	
+	
+	
 
     /**
      * Set the row object prototype

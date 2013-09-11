@@ -128,18 +128,6 @@ class StoreController extends AbstractActionController
         return $view;
     }
 	
-	public function searchAction()
-	{
-		$options = array(
-			'query' => $this->params()->fromQuery('query')
-		);
-		$products = $this->getProducts($options);
-		$json = new JsonModel(array(
-					'products'	 => $products->toArray()
-                ));	
-        return $json;
-		
-	}
 	
 	
 	

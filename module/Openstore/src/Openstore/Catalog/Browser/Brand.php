@@ -96,6 +96,13 @@ class Brand extends BrowserAbstract
 			$select->where('(' . join(' or ', $category_clauses) . ')');
 		}
 		
+		if (($query = trim($params->getQuery())) != "") {
+			$query = str_replace(' ', '%', trim($query));				
+			$q = $this->adapter->getPlatform()->quoteValue('%' . $query . '%');
+			$select->where("pb.title like $q");
+		}
+		
+		
 		return $select;
 	}
 }

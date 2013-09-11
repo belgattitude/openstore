@@ -9,7 +9,13 @@ class Brand extends SearchParamsAbstract
 	 * @var array
 	 */
 	protected $categories;
+
 	
+	/**
+	 *
+	 * @var string 
+	 */
+	protected $query;
 	
 	
 	function getParams()
@@ -17,6 +23,16 @@ class Brand extends SearchParamsAbstract
 		return array(
 			'categories' => $this->getCategories(),
 		);
+	}
+	
+	function setQuery($query)
+	{
+		$this->query = $query;
+	}
+	
+	function getQuery()
+	{
+		return $this->query;
 	}
 	
 	/**

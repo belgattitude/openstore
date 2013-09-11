@@ -34,6 +34,7 @@ return array(
 		'invokables' => array(
 			'Openstore\Controller\Index' => 'Openstore\Controller\IndexController',
 			'Openstore\Controller\Store' => 'Openstore\Controller\StoreController',
+			'Openstore\Controller\Search' => 'Openstore\Controller\SearchController',
 			'Openstore\Controller\Shopcart' => 'Openstore\Controller\ShopcartController',
 			'Openstore\Controller\Console' => 'Openstore\Controller\ConsoleController',
 		),

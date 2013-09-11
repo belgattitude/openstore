@@ -64,7 +64,6 @@ return array(
 	),
 	'router' => array(
 		'routes' => array(
-			
 			'store' => array(
 				'type' => 'Zend\Mvc\Router\Http\Segment',
 				'options' => array(
@@ -86,6 +85,24 @@ return array(
 				),
 				'may_terminate' => true,
 				'child_routes' => array(
+					'search' => array(
+						'type' => 'segment',
+						'options' => array(
+							'route' => '/search[/:action]',
+							'constraints' => array(
+								'controller' => 'Api',
+								'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
+							),
+							'defaults' => array(
+								//'module' => 'Front',
+								//'controller' => 'Front\Controller\Index',
+								//'action' => 'index'
+								//'__NAMESPACE__' => 'Openstore\Controller',
+								'controller' => 'Search',
+								
+							)
+						)
+					),
 					'product' => array(
 						'type' => 'segment',
 						'options' => array(
@@ -100,37 +117,37 @@ return array(
 						'options' => array(
 							'route' => '/browse[/filter/:filter][/brands/:brands][/categories/:categories][/page/:page][/limit/:limit][/sortBy/:sortBy][/sortDir/:sortDir]',
 							'defaults' => array(
-								'action'	=> 'browse',
+								'action' => 'browse',
 								//'query'		=> null,
-								'filter'	=> null,
-								'brands'	=> '',
-								'categories'=> '',
-								'page'		=> 1,
+								'filter' => null,
+								'brands' => '',
+								'categories' => '',
+								'page' => 1,
 								//'limit'	=> 10, // better in the controller
-								'sortBy'	=> "test",
-								'sortDir'	=> "ASC",								
+								'sortBy' => "test",
+								'sortDir' => "ASC",
 							),
 						),
 					),
-					/*
-					'category' => array(
-						'type' => 'segment',
-						'options' => array(
-							'route' => '/category[/:category_reference]',
-							'defaults' => array(
-								'action' => 'index',
-							)
-						),
-					),
-					'brand' => array(
-						'type' => 'segment',
-						'options' => array(
-							'route' => '/brand[/:brand_reference]',
-							'defaults' => array(
-								'action' => 'index',
-							)
-						),
-					),*/
+				/*
+				  'category' => array(
+				  'type' => 'segment',
+				  'options' => array(
+				  'route' => '/category[/:category_reference]',
+				  'defaults' => array(
+				  'action' => 'index',
+				  )
+				  ),
+				  ),
+				  'brand' => array(
+				  'type' => 'segment',
+				  'options' => array(
+				  'route' => '/brand[/:brand_reference]',
+				  'defaults' => array(
+				  'action' => 'index',
+				  )
+				  ),
+				  ), */
 				),
 			),
 			'shopcart' => array(

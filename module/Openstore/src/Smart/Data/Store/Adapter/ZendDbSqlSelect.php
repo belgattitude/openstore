@@ -123,6 +123,7 @@ class ZendDbSqlSelect extends StoreAdapter {
 			if ($options->hasLimit()) {
 				$row = $this->adapter->query('select FOUND_ROWS() as total_count')->execute()->current();
 				$r->setTotalRows($row['total_count']);
+				
 			} else {
 				$r->setTotalRows($r->count());
 			}

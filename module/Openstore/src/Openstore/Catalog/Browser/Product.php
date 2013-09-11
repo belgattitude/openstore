@@ -79,7 +79,6 @@ class Product extends BrowserAbstract
 			'brand_title'		=> new Expression('pb.title'),
 			'category_reference'=> new Expression('pc.reference'),
 			'category_title'	=> new Expression('COALESCE(pc18.title, pc.title)'),
-			
 			'title'				=> new Expression('COALESCE(p18.title, p.title)'),
 			'invoice_title'		=> new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
 			'description'		=> new Expression('COALESCE(p18.description, p.description)'),
