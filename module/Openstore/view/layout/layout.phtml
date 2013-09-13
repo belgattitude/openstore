@@ -11,9 +11,16 @@
 		$theme_path = $this->basePath() . '/themes/openstore'
 		?>
 		<?php
+		$bootstrap_theme = 'united';
+		$bootstrap_theme = 'flatly';
+//		$bootstrap_theme = 'cyborg';
+		$bootstrap_theme = 'slate';
+//		$bootstrap_theme = 'spacelab';
+		
 		echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
 				->prependStylesheet($theme_path . '/css/main.css')
-				->prependStylesheet($theme_path . '/resources/bootstrap-themes/united/bootstrap.min.css')
+				
+				->prependStylesheet($theme_path . '/resources/bootstrap-themes/' . $bootstrap_theme . '/bootstrap.min.css')
 				//->prependStylesheet('//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css')
 				->prependStylesheet($theme_path . '/resources/jquery-colorbox/example3/colorbox.css')
 				//->prependStylesheet('//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css')

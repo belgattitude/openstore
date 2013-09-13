@@ -2,10 +2,25 @@
 	$escaper = new Zend\Escaper\Escaper('utf-8');
 	$image_baseurl = "http://akilia2.emdmusic.com/medias/products/dynamic/";
 ?>
-<div class="row">
+
+
+<div class="row" style="margin-top: 5px">	
+	<div class="col-md-3">
+		<?php
+		echo $this->partial('snippets/sidebar_navigation', array(
+			'categories'	=> $this->categories,
+			'brands'		=> $this->brands,
+			'searchParams'	=> $this->searchParams
+		))
+		?>
+	</div>
+
+	<div class="col-md-9">
+
+<div class="row"">
 	<div class="col-md-12">
 		<?php $browse_filter = $this->searchParams->getFilter() ?>
-		<ul class="nav nav-tabs">
+		<ul class="nav nav-tabs pull-right">
 			<li <?= ($browse_filter == '' || $browse_filter == 'all') ? 'class="active"' : '' ?>>
 				<a href="<?= $this->url('store/browse', array('page' => 1, 'filter' => null)); ?>">All products</a>
 			</li>
@@ -18,27 +33,34 @@
 			<li <?= ($browse_filter == 'onstock') ? 'class="active"' : '' ?>>
 				<a href="<?= $this->url('store/browse', array('page' => 1, 'filter' => 'onstock'), array(), $reuseMatchedParams = true); ?>">On stock</a>
 			</li>			
-			<li <?= ($browse_filter == 'favourite') ? 'class="active pull-right"' : 'class="pull-right"' ?>>
+			<li <?= ($browse_filter == 'favourite') ? 'class="active"' : '' ?>>
 				<a href="<?= $this->url('store/browse', array('page' => 1, 'filter' => 'favourites'), array(), $reuseMatchedParams = true); ?>"><span class="glyphicon glyphicon-heart"></span> Favorites</a> 
 			</li>
 		</ul>
 	</div>
-</div>
-<br />
-<div class="row">	
-	<div class="col-md-3">
-		<?php
-		echo $this->partial('snippets/sidebar_navigation', array(
-			'categories'	=> $this->categories,
-			'brands'		=> $this->brands,
-			'searchParams'	=> $this->searchParams
-		))
-		?>
+</div>		
+		
+
+<div class="row"">
+	<div class="col-md-12">
+		
+				<form class="navbar-form" action="<?=
+				$this->url('store/browse', array(
+					'page' => 1,
+					'brands' => null,
+					'filter' => null,
+					'categories' => null,
+					'query' => null
+						), array(), $reuseMatchedParams = true);
+				?>" role="search" onsubmit="openstore_catalog_search()">
+					<div class="form-group">
+						<input class="twitter-typeahead form-control" type="text" id="livesearch2"  name="query" value="<?= $this->search_keywords ?>"  placeholder="Search">
+					</div>
+					<button type="submit" class="btn btn-default">Submit</button>
+				</form>		
+		
 	</div>
-
-
-	<div class="col-md-9">
-
+</div>				
 		
 		<?php
 		echo $this->partial('snippets/breadcrumb_control', array(
@@ -56,11 +78,11 @@
 				$last_idx = count($this->products);
 			?>
 			<?php if ($break) : ?>
-<div class="row"> <!-- start row <?php echo "idx" . $idx . " --- ($idx % 3)" ?> -->	
+<div class="row" > <!-- start row <?php echo "idx" . $idx . " --- ($idx % 3)" ?> -->	
 			<?php endif; ?>	
 				<div class="col-md-4" style="margin-bottom: 5px">
 					<!-- <div class="thumbnail wrapper"> -->
-					<div class="thumbnail wrapper">
+					<div class="thumbnail wrapper" style="background-color: white">
 						
 						<div class="ribbon-wrapper-green">
 							<div class="ribbon-green"><?= $product->brand_title ?></div>
