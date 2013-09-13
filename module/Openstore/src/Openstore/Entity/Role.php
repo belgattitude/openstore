@@ -19,19 +19,21 @@ class Role implements HierarchicalRoleInterface
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
+    protected $role_id;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255, unique=true, nullable=true)
+     * @ORM\Column(type="string", length=80, unique=true, nullable=true)
      */
-    protected $roleId;
+    protected $reference;
 
     /**
      * @var Role
      * @ORM\ManyToOne(targetEntity="Openstore\Entity\Role")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="role_id", onDelete="RESTRICT", nullable=true)	 
+     
      */
-    protected $parent;
+    protected $parent_id;
 
     /**
      * Get the id.
@@ -40,7 +42,7 @@ class Role implements HierarchicalRoleInterface
      */
     public function getId()
     {
-        return $this->id;
+        return $this->role_id;
     }
 
     /**
@@ -52,17 +54,43 @@ class Role implements HierarchicalRoleInterface
      */
     public function setId($id)
     {
-        $this->id = (int)$id;
+        $this->role_id = (int) $id;
     }
 
     /**
-     * Get the role id.
-     *
-     * @return string
+     * Get the reference name.
+	 * 
+	 * WARNING
+     * FOR BjyAuthorize\Provider\Role\ObjectRepositoryProvider
+	 * LINE 50 !!!
+	 * 
+     * @return int
      */
     public function getRoleId()
     {
-        return $this->roleId;
+        return $this->reference;
+    }
+
+    /**
+     * Set the id.
+     *
+     * @param int $id
+     *
+     * @return void
+     */
+    public function setRoleId($reference)
+    {
+        $this->reference = $reference;
+    }
+	
+	
+    /**
+     *
+     * @return string
+     */
+    public function getReference()
+    {
+        return $this->reference;
     }
 
     /**
@@ -72,9 +100,9 @@ class Role implements HierarchicalRoleInterface
      *
      * @return void
      */
-    public function setRoleId($roleId)
+    public function setReference($reference)
     {
-        $this->roleId = (string) $roleId;
+        $this->reference = (string) $reference;
     }
 
     /**
@@ -84,7 +112,7 @@ class Role implements HierarchicalRoleInterface
      */
     public function getParent()
     {
-        return $this->parent;
+        return $this->parent_id;
     }
 
     /**
@@ -96,6 +124,6 @@ class Role implements HierarchicalRoleInterface
      */
     public function setParent(Role $parent)
     {
-        $this->parent = $parent;
+        $this->parent_id = $parent;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 return array(
     'bjyauthorize' => array(
 
@@ -11,8 +12,9 @@ return array(
          *
          * for ZfcUser, this will be your default identity provider
          */
-        'identity_provider' => 'BjyAuthorize\Provider\Identity\ZfcUserZendDb',
-
+        //'identity_provider' => 'BjyAuthorize\Provider\Identity\ZfcUserZendDb',
+		'identity_provider' => 'Openstore\Authorize\Provider\Identity\OpenstoreDb', 
+		//'identity_provider' => new \Openstore\Authorize\Provider\Identity\OpenstoreDb(),
         /* If you only have a default role and an authenticated role, you can
          * use the 'AuthenticationIdentityProvider' to allow/restrict access
          * with the guards based on the state 'logged in' and 'not logged in'.
@@ -41,12 +43,19 @@ return array(
 
             // this will load roles from the user_role table in a database
             // format: user_role(role_id(varchar), parent(varchar))
-            'BjyAuthorize\Provider\Role\ZendDb' => array(
+			'BjyAuthorize\Provider\Role\ZendDb' => array(
                 'table'             => 'user_role',
                 'role_id_field'     => 'role_id',
-                'parent_role_field' => 'parent',
+                'parent_role_field' => 'parent_id',
             ),
+			
+			/*
 
+            'BjyAuthorize\Provider\Role\ObjectRepositoryProvider' => array(
+                'object_manager'    => 'doctrine.entitymanager.orm_default',
+                'role_entity_class' => 'Openstore\Entity\Role',
+             ),
+			*/
             // this will load roles from the 'BjyAuthorize\Provider\Role\Doctrine'
             // service
             //'BjyAuthorize\Provider\Role\Doctrine' => array(),
@@ -71,7 +80,7 @@ return array(
                 'allow' => array(
                     // allow guests and users (and admins, through inheritance)
                     // the "wear" privilege on the resource "pants"
-                    array(array('guest', 'user'), 'pants', 'wear')
+                   // array(array('guest', 'user'), 'pants', 'wear')
                 ),
 
                 // Don't mix allow/deny rules if you are using role inheritance.
@@ -91,6 +100,7 @@ return array(
              * access to all controllers and actions unless they are specified here.
              * You may omit the 'action' index to allow access to the entire controller
              */
+			/*
             'BjyAuthorize\Guard\Controller' => array(
                 array('controller' => 'index', 'action' => 'index', 'roles' => array('guest','user')),
                 array('controller' => 'index', 'action' => 'stuff', 'roles' => array('user')),
@@ -110,7 +120,7 @@ return array(
                 // Below is the default index action used by the ZendSkeletonApplication
                 // array('controller' => 'Application\Controller\Index', 'roles' => array('guest', 'user')),
             ),
-
+*/
             /* If this guard is specified here (i.e. it is enabled), it will block
              * access to all routes unless they are specified here.
              */
@@ -121,6 +131,16 @@ return array(
                 array('route' => 'zfcuser/register', 'roles' => array('guest')),
                 // Below is the default index action used by the ZendSkeletonApplication
                 array('route' => 'home', 'roles' => array('guest', 'user')),
+				
+				// Openstore route
+				array('route' => 'store/browse', 'roles' => array('admin')),
+				array('route' => 'store/search', 'roles' => array('guest')),
+				array('route' => 'store/product', 'roles' => array('guest')),
+				
+				// Console routes
+				array('route' => 'openstore-recreatedb', 'roles' => array('guest')),
+				array('route' => 'openstore-updatedb', 'roles' => array('guest')),
+				array('route' => 'akilia-syncdb', 'roles' => array('guest')),
             ),
         ),
     ),

@@ -99,7 +99,6 @@ return array(
 								//'action' => 'index'
 								//'__NAMESPACE__' => 'Openstore\Controller',
 								'controller' => 'Search',
-								
 							)
 						)
 					),
@@ -173,6 +172,78 @@ return array(
 							'defaults' => array(
 							),
 						),
+					),
+				),
+			),
+			
+			
+			/**
+			 * BJYAuthorize
+			 */
+			
+			'zfcuser' => array(
+				'type' => 'Zend\Mvc\Router\Http\Literal',
+				'options' => array(
+					'route' => '', // the route is void isntead of default 'user'
+				),
+			),
+			'zfcuser/login' => array(
+				'type' => 'Literal',
+				'options' => array(
+					'route' => '/login',
+					'defaults' => array(
+						'controller' => 'zfcuser',
+						'action' => 'login',
+					),
+				),
+			),
+			'zfcuser/authenticate' => array(
+				'type' => 'Literal',
+				'options' => array(
+					'route' => '/authenticate',
+					'defaults' => array(
+						'controller' => 'zfcuser',
+						'action' => 'authenticate',
+					),
+				),
+			),
+			'zfcuser/logout' => array(
+				'type' => 'Literal',
+				'options' => array(
+					'route' => '/logout',
+					'defaults' => array(
+						'controller' => 'zfcuser',
+						'action' => 'logout',
+					),
+				),
+			),
+			'zfcuser/register' => array(
+				'type' => 'Literal',
+				'options' => array(
+					'route' => '/register',
+					'defaults' => array(
+						'controller' => 'zfcuser',
+						'action' => 'register',
+					),
+				),
+			),
+			'zfcuser/changepassword' => array(
+				'type' => 'Literal',
+				'options' => array(
+					'route' => '/change-password',
+					'defaults' => array(
+						'controller' => 'zfcuser',
+						'action' => 'changepassword',
+					),
+				),
+			),
+			'zfcuser/changeemail' => array(
+				'type' => 'Literal',
+				'options' => array(
+					'route' => '/change-email',
+					'defaults' => array(
+						'controller' => 'zfcuser',
+						'action' => 'changeemail',
 					),
 				),
 			),

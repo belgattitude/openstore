@@ -50,9 +50,91 @@ class Customer implements InputFilterAwareInterface
 	 * @ORM\Column(type="string", length=80, nullable=false)
 	 */
 	private $name;
+
+	/**
+	 * @ORM\Column(type="string", length=40, nullable=true)
+	 */
+	private $first_name;
 	
 	/**
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the brand is active in public website"})
+	 * @ORM\Column(type="string", length=80, nullable=true)
+	 */
+	private $street;
+	
+	/**
+	 * @ORM\Column(type="string", length=80, nullable=true)
+	 */
+	private $street_2;
+	
+	/**
+	 * @ORM\Column(type="string", length=10, nullable=true)
+	 */
+	private $street_number;
+	
+	/**
+	 * @ORM\Column(type="string", length=10, nullable=true)
+	 */
+	private $po_box;
+	
+	/**
+	 * @ORM\Column(type="string", length=20, nullable=true)
+	 */
+	private $zipcode;
+
+	/**
+	 * @ORM\Column(type="string", length=60, nullable=true)
+	 */
+	private $city;	
+	
+	/**
+	 * 
+     * @ORM\ManyToOne(targetEntity="Country", inversedBy="customers", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="country_id", referencedColumnName="country_id", nullable=true)
+	 */
+	private $country_id;
+	/**
+	 * @ORM\Column(type="string", length=20, nullable=true)
+	 */
+	private $phone;
+	
+	/**
+	 * @ORM\Column(type="string", length=20, nullable=true)
+	 */
+	private $phone_2;
+	
+	/**
+	 * @ORM\Column(type="string", length=20, nullable=true)
+	 */
+	private $mobile;
+	
+	/**
+	 * @ORM\Column(type="string", length=20, nullable=true)
+	 */
+	private $mobile_2;
+	
+	/**
+	 * @ORM\Column(type="string", length=20, nullable=true)
+	 */
+	private $fax;
+	
+	/**
+	 * @ORM\Column(type="string", length=20, nullable=true)
+	 */
+	private $fax_2;
+	
+	/**
+	 * @ORM\Column(type="string", length=50, nullable=true)
+	 */
+	private $email;
+	
+	/**
+	 * @ORM\Column(type="string", length=50, nullable=true)
+	 */
+	private $email_2;
+	
+	
+	/**
+	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the customer is active in public website"})
 	 */
 	private $flag_active;
 	
@@ -103,11 +185,11 @@ class Customer implements InputFilterAwareInterface
 
 	/**
 	 * 
-	 * @param integer $id
+	 * @param integer $customer_id
 	 */
-	public function setId($id)
+	public function setId($customer_id)
 	{
-		$this->id = $id;
+		$this->customer_id = $customer_id;
 		return $this;
 	}	
 	
@@ -115,9 +197,9 @@ class Customer implements InputFilterAwareInterface
 	 * 
 	 * @return integer
 	 */
-	public function getId()
+	public function getCustomerId()
 	{
-		return $this->id;
+		return $this->customer_id;
 	}
 
 	/**
@@ -160,7 +242,25 @@ class Customer implements InputFilterAwareInterface
 	}
 
 	
+	/**
+	 * 
+	 * @param string $first_name
+	 */
+	public function setFirstName($first_name)
+	{
+		$this->first_name = $first_name;
+		return $this;
+	}
 
+	/**
+	 * 
+	 * @return string
+	 */
+	public function getFirstName()
+	{
+		return $this->first_name;
+	}
+	
 	
 	/**
 	 * 

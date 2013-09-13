@@ -17,10 +17,10 @@ class User implements UserInterface, ProviderInterface
     /**
      * @var int
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=false)
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
+    protected $user_id;
 
     /**
      * @var string
@@ -55,8 +55,8 @@ class User implements UserInterface, ProviderInterface
      * @var \Doctrine\Common\Collections\Collection
      * @ORM\ManyToMany(targetEntity="Openstore\Entity\Role")
      * @ORM\JoinTable(name="user_role",
-     * joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
-     * inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
+     * joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="user_id")},
+     * inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="role_id")}
      * )
      */
     protected $roles;
@@ -69,14 +69,24 @@ class User implements UserInterface, ProviderInterface
         $this->roles = new ArrayCollection();
     }
 
+	public function getId()
+	{
+		return $this->user_id;
+	}
+	
+	public function setId($id)
+	{
+		$this->user_id = $id;
+	}
+	
     /**
      * Get id.
      *
      * @return int
      */
-    public function getId()
+    public function getUserId()
     {
-        return $this->id;
+        return $this->user_id;
     }
 
     /**
@@ -86,9 +96,9 @@ class User implements UserInterface, ProviderInterface
      *
      * @return void
      */
-    public function setId($id)
+    public function setUserId($user_id)
     {
-        $this->id = (int) $id;
+        $this->user_id = (int) $user_id;
     }
 
     /**

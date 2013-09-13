@@ -3,11 +3,7 @@
  * 
  * @author Vanvelthem Sébastien
  */
-
-
 namespace Nv\Akilia;
-
-
 
 class Synchronizer 
 {
@@ -80,6 +76,8 @@ class Synchronizer
 	
 	function synchronizeAll()
 	{
+		$this->synchronizeCountry();
+		$this->synchronizeCustomer();
 		$this->synchronizePricelist();
 		$this->synchronizeProductGroup();
 		$this->synchronizeProductBrand();
@@ -89,6 +87,107 @@ class Synchronizer
 		$this->synchronizeProductPricelist();
 		$this->synchronizeProductStock();
 		
+	}
+	
+	function synchronizeCountry()
+	{
+		$akilia2db = $this->akilia2Db;
+		$db = $this->openstoreDb;
+
+		$replace = " insert
+		             into $db.country
+					(
+					country_id,
+					reference,
+					name,
+					legacy_synchro_at
+				)
+
+				select id,
+					   iso_3166_1,
+					   name,
+						'{$this->legacy_synchro_at}' as legacy_synchro_at
+					
+				from $akilia2db.base_country co
+				on duplicate key update
+						reference = co.iso_3166_1,
+						name = co.name,
+						legacy_synchro_at = '{$this->legacy_synchro_at}'
+					 ";
+		
+		$this->executeSQL("Replace countries", $replace);
+
+		// 2. Deleting - old links in case it changes
+		$delete = "
+		    delete from $db.country 
+			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+
+		$this->executeSQL("Delete eventual removed countries", $delete);		
+		
+	}
+	
+	
+	function synchronizeCustomer()
+	{
+
+		$akilia2db = $this->akilia2Db;
+		$db = $this->openstoreDb;
+
+		$replace = " insert
+		             into $db.customer
+					(
+					customer_id,
+					reference,
+					name,
+					first_name,
+					flag_active,
+					street,
+					street_2,
+					street_number,
+					zipcode,
+					city,
+					country_id,
+					legacy_mapping,
+					legacy_synchro_at
+				)
+
+				select bc.id,
+					   bc.reference,
+				       bc.name,
+					   bc.first_name,
+					   if (bc.flag_archived = 1, 0, 1) as flag_active,
+					   bc.street,
+					   bc.street_2,
+					   bc.street_number,
+					   bc.zipcode,
+					   bc.city,
+					   bc.country_id,
+					   bc.id as legacy_mapping,
+					   '{$this->legacy_synchro_at}' as legacy_synchro_at
+					
+				from $akilia2db.base_customer bc
+				on duplicate key update
+					   reference = bc.reference,
+				       name = bc.name,
+					   first_name = bc.first_name,
+					   flag_active = if (bc.flag_archived = 1, 0, 1),
+					   street = bc.street,
+					   street_2 = bc.street_2,
+					   street_number = bc.street_number,
+					   zipcode = bc.zipcode,
+					   city = bc.city,
+					   country_id = bc.country_id,				
+					   legacy_synchro_at = '{$this->legacy_synchro_at}'
+					 ";
+		
+		$this->executeSQL("Replace customers", $replace);
+
+		// 2. Deleting - old links in case it changes
+		$delete = "
+		    delete from $db.country 
+			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+
+		$this->executeSQL("Delete eventual removed customers", $delete);		
 		
 		
 	}

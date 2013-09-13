@@ -14,19 +14,15 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="language",
+ *   name="country",
  *   uniqueConstraints={
- *     @ORM\UniqueConstraint(name="unique_lang_idx",columns={"lang"}),
+ *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *     @ORM\UniqueConstraint(name="unique_flag_default_idx",columns={"flag_default"}),
  *   }, 
- *   indexes={
- *     @ORM\Index(name="title_idx", columns={"title"}),
- *   },
- *   options={"comment" = "Language table"}
+ *   options={"comment" = "Country table"}
  * )
  */
-class Language implements InputFilterAwareInterface
+class Country implements InputFilterAwareInterface
 {
 	
 	/**
@@ -34,34 +30,35 @@ class Language implements InputFilterAwareInterface
 	 */
 	protected $inputFilter;
 
+    /**
+     * @ORM\OneToMany(targetEntity="ProductBrandTranslation", mappedBy="brand_id")
+     **/
+    private $translations;	
+	
 	/**
 	 * @ORM\Id
-	 * @ORM\Column(name="id", type="integer", nullable=false, options={"unsigned"=true, "comment" = "Primary key"})
+	 * @ORM\Column(name="country_id", type="integer", nullable=false, options={"unsigned"=true})
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
-	private $id;
-
+	private $country_id;
+	
+	
 	/**
-	 * @ORM\Column(type="string", length=2, nullable=false, options={"comment" = "iso_631_1 language code 2 digits"})
+	 * @ORM\Column(type="string", length=2, nullable=false, options={"comment" = "ISO country code"})
 	 */
-	private $lang;
+	private $reference;
+
 
 	/**
-	 * @ORM\Column(type="string", length=40, nullable=true)
+	 * @ORM\Column(type="string", length=40, nullable=false)
 	 */
-	private $title;
+	private $name;
 
+	
 	/**
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the language is active"})
+	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the brand is country in public website"})
 	 */
 	private $flag_active;
-	
-
-	/**
-	 * @ORM\Column(type="boolean", nullable=true, options={"default"=null, "comment"="Is the language default"})
-	 */
-	private $flag_default;
-	
 	
 	
 	/**
@@ -108,17 +105,20 @@ class Language implements InputFilterAwareInterface
 	
 	public function __construct()
 	{
-		$this->flag_active = true;
-		$this->flag_default = null;
+		 $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+		 /**
+		  * Default value for flag_active
+		  */
+		 $this->flag_active = true; 
 	}
 
 	/**
 	 * 
-	 * @param integer $id
+	 * @param integer $country_id
 	 */
-	public function setId($id)
+	public function setCountryId($country_id)
 	{
-		$this->id = $id;
+		$this->country_id = $country_id;
 		return $this;
 	}	
 	
@@ -126,37 +126,38 @@ class Language implements InputFilterAwareInterface
 	 * 
 	 * @return integer
 	 */
-	public function getId()
+	public function getCountryId()
 	{
-		return $this->id;
+		return $this->country_id;
 	}
 
 	/**
-	 * Set lang
-	 * @param string $lang
+	 * Set reference
+	 * @param string $reference
 	 */
-	public function setLang($lang)
+	public function setReference($reference)
 	{
-		$this->lang = $lang;
+		$this->reference = $reference;
 		return $this;
 	}
 
 	/**
-	 * Return lang
+	 * Return reference 
 	 * @return string
 	 */
-	public function getLang()
+	public function getReference()
 	{
-		return $this->lang;
+		return $this->reference;
 	}
+
 
 	/**
 	 * 
-	 * @param string $title
+	 * @param string $name
 	 */
-	public function setTitle($title)
+	public function setName($name)
 	{
-		$this->title = $title;
+		$this->name = $name;
 		return $this;
 	}
 
@@ -164,11 +165,12 @@ class Language implements InputFilterAwareInterface
 	 * 
 	 * @return string
 	 */
-	public function getTitle()
+	public function getName()
 	{
-		return $this->title;
+		return $this->name;
 	}
 
+	
 
 	/**
 	 * 
@@ -180,6 +182,15 @@ class Language implements InputFilterAwareInterface
 		return $this;
 	}
 	
+	
+	/**
+	 * 
+	 * @return string
+	 */
+	public function getIconClass()
+	{
+		return $this->icon_class;
+	}
 	
 	/**
 	 * 
@@ -199,36 +210,7 @@ class Language implements InputFilterAwareInterface
 		$this->flag_active = $flag_active;
 		return $this;
 	}
-
-	/**
-	 * 
-	 * @return boolean
-	 */
-	public function getFlagDefault()
-	{
-		return (boolean) $this->flag_default;
-	}
-
 	
-	/**
-	 * 
-	 */
-	public function setFlagDefault($flag_default)
-	{
-		$this->flag_default = $flag_default;
-		return $this;
-	}
-	
-	
-	
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getIconClass()
-	{
-		return $this->icon_class;
-	}
 	
 
 	/**
@@ -416,7 +398,7 @@ class Language implements InputFilterAwareInterface
 								'options' => array(
 									'encoding' => 'UTF-8',
 									'min' => 1,
-									'max' => 5,
+									'max' => 60,
 								),
 							),
 						),

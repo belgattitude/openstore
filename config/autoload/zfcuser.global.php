@@ -193,7 +193,8 @@ $settings = array(
      * 
      * Should user's state be used in the registration/login process?
      */
-    //'enable_user_state' => true,
+	// TODO SEB, put it again as false
+    'enable_user_state' => false,
     
     /**
      * Default user state upon registration

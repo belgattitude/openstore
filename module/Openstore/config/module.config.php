@@ -12,6 +12,10 @@ namespace Openstore;
 
 return array(
 	'service_manager' => array(
+        'factories' => array(
+            'Openstore\Authorize\Provider\Identity\OpenstoreDb'
+                => 'Openstore\Authorize\Service\OpenstoreDbIdentityProviderServiceFactory',            
+		),
 		'abstract_factories' => array(
 			'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
 			'Zend\Log\LoggerAbstractServiceFactory',
@@ -19,6 +23,7 @@ return array(
 		'aliases' => array(
 			'translator' => 'MvcTranslator',
 		),
+		
 	),
 	'translator' => array(
 		'locale' => 'fr_FR',

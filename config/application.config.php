@@ -10,11 +10,10 @@ return array(
 		'BjyProfiler',
 		'DoctrineDataFixtureModule',
 		//'AsseticBundle',
-		//'ZfcBase',
-        //'ZfcUser', 
-        //'ZfcUserDoctrineORM',  	
-		'CsnUser'
-		//'BjyAuthorize',
+		'ZfcBase',
+		'ZfcUser', 
+        'ZfcUserDoctrineORM',  	
+		'BjyAuthorize',
     ),
 
     // These are various options for the listeners attached to the ModuleManager
