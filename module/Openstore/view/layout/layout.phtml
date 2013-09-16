@@ -13,10 +13,10 @@
 		<?php
 		$bootstrap_theme = 'united';
 		$bootstrap_theme = 'flatly';
-//			$bootstrap_theme = 'cyborg';
+		$bootstrap_theme = 'cyborg';
 		$bootstrap_theme = 'slate';
-//		$bootstrap_theme = 'spacelab';
-		
+		//$bootstrap_theme = 'spacelab';
+		//$bootstrap_theme = "";
 		echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
 				->prependStylesheet($theme_path . '/css/main.css')
 				
@@ -82,91 +82,6 @@
 				}
 
 			</style>
-			<?php
-				$escaper = new Zend\Escaper\Escaper('utf-8');
-				$image_baseurl = "http://akilia2.emdmusic.com/medias/products/dynamic/";
-			?>
-			<script type="text/javascript">
-							$('#livesearch2').typeahead([
-									
-							{
-								name: 'dataset_product_globalsearch',
-								valueKey: 'reference',
-								limit: 5,
-								minLength: 1,
-								header: '<h5 class="league-name">Products</h5>',
-								remote: {
-									url: '<?=
-													$this->url('store/search', array(
-														'action' => 'product'
-															//'categories' => $category['reference'],
-															//'page' => 1
-															), array(), $reuseMatchedParams = true)
-										?>?query=%QUERY',
-									cache: true,
-									timeout: 3000,
-									filter: function(response) {
-										//console.log('response', response);
-										return response.data;
-									}
-								},
-								template: [
-									'<div>',
-									'<div style=";">',
-									'<img src="<?= $image_baseurl  ?>{{product_id}}-30x30_85.jpg" />',
-									'<div style="float: right; style="width: 40px; height: 40px; overflow: hidden; border: 1px solid #E6E6E6; margin-right: 5px;>',
-									'{{reference}}',	
-									'</div>',
-									'</div>',
-									'</div>'
-								].join(''),
-								engine: Hogan
-							}, {
-								name: 'dataset_brand_globalsearch',
-								valueKey: 'reference',
-								limit: 5,
-								minLength: 2,
-								header: '<h5 class="league-name">Brands</h5>',
-								remote: {
-									url: '<?=
-													$this->url('store/search', array(
-														'action' => 'brand'
-															//'categories' => $category['reference'],
-															//'page' => 1
-															), array(), $reuseMatchedParams = true)
-										?>?query=%QUERY',
-									cache: true,
-									timeout: 3000,
-									filter: function(response) {
-										//console.log('response', response);
-										return response.data;
-									}
-								},
-								template: [
-									'<div>',
-									'{{title}}',	
-									'</div>'
-								].join(''),
-								engine: Hogan
-							
-							}]
-							
-							).on('typeahead:selected', function(e, data, data_set) { 
-								var new_location = '';
-								if (data_set == 'dataset_brand_globalsearch') {
-									var brand_reference = data.reference;
-									new_location = '<?= $this->url('store/browse', array(), array(), false); ?>' + '/brands/' + brand_reference;
-								} else if (data_set == 'dataset_product_globalsearch') {
-									var product_id = data.product_id;
-									new_location = '<?= $this->url('store/product', array('product_id' => ''), array(), false); ?>' +  product_id;
-								}	
-								if (new_location != '') {
-									document.location.href = new_location;
-								}
-								return false;
-							}
-						);
-			</script>
 			<div class="container">
 <?php echo $this->content; ?>		
 			</div>	

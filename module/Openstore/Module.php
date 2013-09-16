@@ -13,6 +13,7 @@ namespace Openstore;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\ModuleManager\ModuleManager;
 use Zend\Mvc\MvcEvent;
+use HTMLPurifier;
 
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 //use Zend\ModuleManager\Feature\ServiceProviderInterface;
@@ -35,10 +36,61 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 		$moduleRouteListener->attach($eventManager);
 		
 		$eventManager->attach(MvcEvent::EVENT_DISPATCH, array($this, 'onPreDispatch'), 100);
+		$eventManager->attach(MvcEvent::EVENT_FINISH, array($this, 'onFinish'), 100);
 		
 		$translator = $e->getApplication()->getServiceManager()->get('translator');
 		//$translator->setLocale('en_US');
         //$translator->setFallbackLocale('fr_FR');    		
+	}
+	
+	public function onFinish(MvcEvent $e) {
+		
+		
+		$purify_method = 'htmlpurifier';
+		//$purify_method = 'domdocument';
+		$purify_method = '';
+		switch ($purify_method) {
+			case 'htmlpurifier' :
+				$response = $e->getResponse();
+				$content = $response->getBody();
+				
+				$config = \HTMLPurifier_Config::createDefault();
+				$config->set('Cache.SerializerPath', dirname(__FILE__) . '/../../data/cache');
+				$purifier = new \HTMLPurifier($config);
+				$clean_html = $purifier->purify($content);				
+				if ($clean_html !== false) { 
+					$response->setContent($clean_html);
+				}
+				
+				break;
+			
+			case 'domdocument' :
+				
+				$response = $e->getResponse();
+				$content = $response->getBody();
+
+				$dom = new \DOMDocument();
+				$dom->preserveWhiteSpace = false;
+				$dom->formatOutput = false;
+				$dom->recover = false;
+				$dom->strictErrorChecking = false;				
+				$dom->formatOutput = true;
+				
+				$dom->loadHTML($content, LIBXML_NOBLANKS);
+
+				// do stuff here
+				$clean_html = $dom->saveHTML();
+
+				if ($clean_html !== false) { 
+					$response->setContent($clean_html);
+				}
+				
+				break;
+			
+		}
+		
+		
+		
 	}
 	
 	public function onPreDispatch(MvcEvent $e) {

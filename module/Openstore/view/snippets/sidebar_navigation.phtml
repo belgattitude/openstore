@@ -1,62 +1,74 @@
 <!-- start sidebar -->
-<div  id="affix_sidebar">
-<ul class="nav nav-pills nav-stacked" >
-	<div class="os_sidebar">
-		<nav>
-			<div class="box_header">Brands</div>
-			<div class="box_content" style="padding: 5px 5px 5px 5px">
 
-				<select multiple="multiple" id="os_brand_selector" style="width: 90%">
-					
-						<?php foreach ($this->brands as $brand) : ?>				
-							<option value="<?= $brand['reference'] ?>"
-									<?php
-									if (in_array($brand['reference'], (array)  $this->searchParams->getBrands())) {
-										echo ' selected="selected" ';
-									}
-									?>
-									><?= $brand['title'] ?></option>
-								<?php endforeach; ?>			
-					
-				</select>				
-				<!--
-				<select id="os_brand_selector" style="width: 90%">
-					
-					<option value="<?=
-					$this->url('store/browse', array('brands' => null,
-						'page' => 1), array(), $reuseMatchedParams = true)
-					?>">All brands</option>
-					<optgroup label="Brands">
-					
-						<?php foreach ($this->brands as $brand) : ?>				
+<div  id="affix_sidebar">
+<div class="panel panel-default">
+    <div class="panel-heading">
+		<h4 class="panel-title">
+			<?= $this->translate('Brands') ?>
+		</h4>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in">
+		<div class="panel-body">
+			<select multiple="multiple" id="os_brand_selector" style="width: 90%">
+
+				<?php foreach ($this->brands as $brand) : ?>				
+					<option value="<?= $brand['reference'] ?>"
+					<?php
+					if (in_array($brand['reference'], (array) $this->searchParams->getBrands())) {
+						echo ' selected="selected" ';
+					}
+					?>
+							><?= $brand['title'] ?></option>
+						<?php endforeach; ?>			
+
+			</select>				
+			<!--
+			<select id="os_brand_selector" style="width: 90%">
+				
+				<option value="<?=
+			$this->url('store/browse', array('brands' => null,
+				'page' => 1), array(), $reuseMatchedParams = true)
+			?>">All brands</option>
+				<optgroup label="Brands">
+				
+			<?php foreach ($this->brands as $brand) : ?>				
 							<option value="<?=
-							$this->url('store/browse', array(
-								'brands' => $brand['reference'],
-								'categories' => null,
-								'page' => 1
-									), array(), $reuseMatchedParams = true)
-							?>"
-									<?php
-									if ($brand['reference'] == $this->searchParams->getFirstBrand()) {
-										echo ' selected="selected" ';
-									}
-									?>
+				$this->url('store/browse', array(
+					'brands' => $brand['reference'],
+					'categories' => null,
+					'page' => 1
+						), array(), $reuseMatchedParams = true)
+				?>"
+				<?php
+				if ($brand['reference'] == $this->searchParams->getFirstBrand()) {
+					echo ' selected="selected" ';
+				}
+				?>
 									><?= $brand['title'] ?></option>
-								<?php endforeach; ?>			
-					
-					</optgroup>
-					
-				</select>
-				-->
-			</div>
-		</nav>
-	</div>
-	<p></p>
-	<div class ="os_sidebar">
+			<?php endforeach; ?>			
+				
+				</optgroup>
+				
+			</select>
+			-->
+		</div>
+    </div>
+    <div class="panel-heading">
+		<h4 class="panel-title">
+			 <a class="accordion-toggle" data-toggle="collapse" data-target="collapsible_categories">
+			<?= $this->translate('Categories') ?>
+			 </a>	 
+		</h4>
+		<!--
+<button type="button" class="btn btn-default" data-toggle="collapse" data-target="#demo">
+  collapse
+</button>	-->	
+    </div>
+    <div id="collapsible_categories" class="panel-collapse collapse in os_sidebar" >
 		<nav>
-			<div class="box_header">Categories</div>
-			<div class="box_content">
-				<ul>
+		<div class="panel-body box_content" >
+	
+				<ul> 
 					<?php foreach ($this->categories as $categ) : ?>
 						<?php if ($categ['lvl'] > 0) : ?>
 							<li class="menu_item level<?= $categ['lvl'] ?> <?php if ($categ['is_expanded']) : ?>active<?php endif; ?>">
@@ -73,13 +85,45 @@
 						<?php endif; ?>
 					<?php endforeach; ?>
 				</ul>
-			</div>	
-		</nav>		
-	</div>	
-</ul>	
-</div>	
+		</div>
+		</nav>
+	</div>
+	
+</div>
+</div>
 
+<!--
+	<ul class="nav nav-pills nav-stacked" >
+		<p></p>
+		<div class ="os_sidebar">
+			<nav>
+				<div class="box_header">Categories</div>
+				<div class="box_content">
+					<ul>
+						<?php foreach ($this->categories as $categ) : ?>
+							<?php if ($categ['lvl'] > 0) : ?>
+								<li class="menu_item level<?= $categ['lvl'] ?> <?php if ($categ['is_expanded']) : ?>active<?php endif; ?>">
+									<a href="<?=
+									$this->url('store/browse', array(
+										'categories' => $categ['reference'],
+										'page' => 1
+											), array(), $reuseMatchedParams = true)
+									?>">
+										   <?= $categ['title'] ?>
+										<span class="badge pull-right"><?= $categ['count_product'] ?></span>
+									</a>
+								</li>
+							<?php endif; ?>
+						<?php endforeach; ?>
+					</ul>
+				</div>	
+			</nav>		
+		</div>	
+	</ul>	
+
+-->
 <script type="text/javascript">
+	/*
 	$(function() {
 		$('.menu_item').mouseover(function() {
 			if (!$(this).hasClass('active')) {
@@ -102,60 +146,62 @@
 			}
 		});
 	});
-
+*/
 	$(function() {
 		$("#os_brand_selector").select2(
 				{
 					allowClear: true
-					
+
 
 				});
 		$("#os_brand_selector").on(
 				"change", function(e) {
-					console.log("change "+JSON.stringify({val:e.val, added:e.added, removed:e.removed}));
-					if ($.isArray(e.val)) {
-						console.log('val', e.val);
-						var url = "<?= $this->url('store/browse', array(
-								'brands' => '$BRANDS',
-								'categories' => null,
-								'page' => 1
-									), array(), $reuseMatchedParams = true)
-							?>";
-						var noBrandUrl = "<?= $this->url('store/browse', array(
-								'brands' => null,
-								'categories' => null,
-								'page' => 1
-									), array(), $reuseMatchedParams = true)
-							?>"; 					
-						//console.log('url', url);
-						if (e.val.length == 0) {
-							url = noBrandUrl;
-						} else {
-							var brands = e.val.join(',');
-							url = url.replace('$BRANDS', brands);
-						}	
-						
-						document.location.href = url;
-						//alert(url.replace('$BRANDS', brands));
-					} else {
-						var val = e.val;
-						console.log('val', val);
-						//document.location.href = val;
-					}
-			//document.location.href = val;
+			console.log("change " + JSON.stringify({val: e.val, added: e.added, removed: e.removed}));
+			if ($.isArray(e.val)) {
+				console.log('val', e.val);
+				var url = "<?=
+						$this->url('store/browse', array(
+							'brands' => '$BRANDS',
+							'categories' => null,
+							'page' => 1
+								), array(), $reuseMatchedParams = true)
+						?>";
+				var noBrandUrl = "<?=
+						$this->url('store/browse', array(
+							'brands' => null,
+							'categories' => null,
+							'page' => 1
+								), array(), $reuseMatchedParams = true)
+						?>";
+				//console.log('url', url);
+				if (e.val.length == 0) {
+					url = noBrandUrl;
+				} else {
+					var brands = e.val.join(',');
+					url = url.replace('$BRANDS', brands);
 				}
-		);
-	/*		
-		$('#affix_sidebar').affix({
-		  offset: {
-			top: 50
-		  , bottom: function () {
-			  return (this.bottom = $('.bs-footer').outerHeight(true))
+
+				document.location.href = url;
+				//alert(url.replace('$BRANDS', brands));
+			} else {
+				var val = e.val;
+				console.log('val', val);
+				//document.location.href = val;
 			}
-		  }
-		})
-	*/		
-			
-			
+			//document.location.href = val;
+		}
+		);
+			/*
+		 $('#affix_sidebar').affix({
+		 offset: {
+		 top: 150
+		 , bottom: function () {
+		 return (this.bottom = $('.bs-footer').outerHeight(true))
+		 }
+		 }
+		 })
+		*/
+
+
 	});
 </script>	
