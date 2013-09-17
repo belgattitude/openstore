@@ -26,11 +26,41 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 
 	public function init(ModuleManager $moduleManager)
 	{
-		
+		/*
+		$sharedEvents = $moduleManager->getEventManager()->getSharedManager();
+        $sharedEvents->attach('ZfcUser', 'dispatch', function(MvcEvent $e) {
+			$controller = $e->getTarget();
+			var_dump(get_class_methods($controller));
+			echo '<pre>';
+            $serviceManager = $e->getApplication()->getServiceManager();
+			var_dump($e->getViewModel()->getOptions());
+            $templatePathResolver = $serviceManager->get('Zend\View\Resolver\TemplatePathStack');
+			
+			$t = $controller->getServiceLocator()->get('Zend\View\Resolver\TemplateMapResolver');
+			
+			var_dump($t);
+			
+			//$path =  $templatePathResolver->getPaths()->pop();
+			//$templatePathResolver->getPaths()->unshift($path);
+			$paths = $templatePathResolver->getPaths();
+			foreach($paths as $idx => $path) {
+				var_dump($path);
+				 
+			}
+			//$templatePathResolver->getPaths()->push(__DIR__ . '/view'); // here is your skin name
+			
+			var_dump($templatePathResolver);
+			echo '</pre>';
+			var_dump(__DIR__);
+            //$templatePathResolver->addPaths(array(__DIR__ . '/view/zfc-user')); // here is your skin name
+
+        }, 200); 		
+		*/
 	}
 	
 	public function onBootstrap(MvcEvent $e)
 	{
+		
 		$eventManager = $e->getApplication()->getEventManager();
 		$moduleRouteListener = new ModuleRouteListener();
 		$moduleRouteListener->attach($eventManager);

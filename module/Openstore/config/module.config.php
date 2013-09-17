@@ -53,6 +53,10 @@ return array(
 		'template_map' => array(
 			'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
 			'openstore/index/index' => __DIR__ . '/../view/openstore/index/index.phtml',
+			
+			'zfc-user/user/login' => __DIR__ . '/../view/zfc-user/user/login.phtml',
+			
+			
 			'error/404' => __DIR__ . '/../view/error/404.phtml',
 			'error/index' => __DIR__ . '/../view/error/index.phtml',
 			// Various snippets
@@ -60,7 +64,7 @@ return array(
 			'snippets/main_carousel' => __DIR__ . '/../view/snippets/main_carousel.phtml',
 		),
 		'template_path_stack' => array(
-			__DIR__ . '/../view',
+			realpath(__DIR__ . '/../view'),
 		),
 		'strategies' => array(
 			'ViewJsonStrategy',
@@ -127,6 +131,7 @@ return array(
         'user_entity_class'       => 'Openstore\Entity\User',
         // telling ZfcUserDoctrineORM to skip the entities it defines
         'enable_default_entities' => false,
+	   
     ),
 
     'bjyauthorize' => array(

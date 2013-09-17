@@ -9,11 +9,15 @@ return array(
 		'ZendDeveloperTools',
 		'BjyProfiler',
 		'DoctrineDataFixtureModule',
+		
 		//'AsseticBundle',
 		'ZfcBase',
+		
 		'ZfcUser', 
+		
         'ZfcUserDoctrineORM',  	
 		'BjyAuthorize',
+		
     ),
 
     // These are various options for the listeners attached to the ModuleManager

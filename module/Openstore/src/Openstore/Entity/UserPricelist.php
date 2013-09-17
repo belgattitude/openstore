@@ -14,18 +14,15 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="product_pricelist",
+ *   name="user_pricelist",
  *   uniqueConstraints={
- *     @ORM\UniqueConstraint(name="unique_product_price_idx",columns={"pricelist_id", "product_id"}),
+ *     @ORM\UniqueConstraint(name="unique_user_pricelist_idx",columns={"pricelist_id", "user_id"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
  *   }, 
- *   indexes={
- *     @ORM\Index(name="price_idx", columns={"price"}),
- *   },
- *   options={"comment" = "Product pricelist"}
+ *   options={"comment" = "User pricelists"}
  * )
  */
-class ProductPricelist implements InputFilterAwareInterface
+class UserPricelist implements InputFilterAwareInterface
 {
 	
 	/**
@@ -44,60 +41,26 @@ class ProductPricelist implements InputFilterAwareInterface
 
 	/**
 	 * 
-     * @ORM\ManyToOne(targetEntity="Pricelist", inversedBy="products", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="Pricelist", inversedBy="users", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="pricelist_id", referencedColumnName="pricelist_id", onDelete="CASCADE", nullable=false)
 	 */
 	private $pricelist_id;	
 	
 	/**
 	 * 
-     * @ORM\ManyToOne(targetEntity="Product", inversedBy="products", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="product_id", referencedColumnName="product_id", onDelete="CASCADE", nullable=false)
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="pricelists", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="user_id", onDelete="CASCADE", nullable=false)
 	 */
-	private $product_id;
+	private $user_id;
 
-
-	
-	
-	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Unit sales price"})
-	 */
-	private $price;
-
-	
-	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Unit public/msrp price"})
-	 */
-	private $public_price;
-	
-	/**
-	 * @ORM\Column(type="decimal", precision=8, scale=6, nullable=true, options={"comment"="Discount promo in %"})
-	 */
-	private $promo_discount;
-	
-	
-
-	/**
-	 * @ORM\Column(type="date", nullable=true, options={"comment"="Discount start at"})
-	 */
-	private $promo_start_at;	
-
-	/**
-	 * @ORM\Column(type="date", nullable=true, options={"comment"="Discount end at"})
-	 */
-	private $promo_end_at;	
-	
-	
-	
-	
 	/**
 	 *
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the product is active in public website"})
+	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the user can activate the pricelist"})
 	 */
 	private $flag_active;
 
 	/**
-	 * @ORM\Column(type="date", nullable=true, options={"comment" = "Date on which product was active in this pricelist, useful to display as new product"})
+	 * @ORM\Column(type="date", nullable=true, options={"comment" = "Date on which this pricelist was activated"})
 	 */
 	private $activated_at;
 	
@@ -114,10 +77,6 @@ class ProductPricelist implements InputFilterAwareInterface
 	 */
 	private $updated_at;
 	
-	/**
-	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record deletion date"})
-	 */
-	private $deleted_at;
 
 	/**
 	 * @Gedmo\Blameable(on="create")
@@ -168,7 +127,7 @@ class ProductPricelist implements InputFilterAwareInterface
 	{
 		return $this->id;
 	}
-
+	
 	/**
 	 * 
 	 * @param integer $pricelist_id
@@ -190,11 +149,11 @@ class ProductPricelist implements InputFilterAwareInterface
 	
 	/**
 	 * 
-	 * @param integer $product_id
+	 * @param integer $user_id
 	 */
-	public function setProductId($product_id)
+	public function setUserId($user_id)
 	{
-		$this->product_id = $product_id;
+		$this->user_id = $user_id;
 		return $this;
 	}	
 	
@@ -202,13 +161,13 @@ class ProductPricelist implements InputFilterAwareInterface
 	 * 
 	 * @return integer
 	 */
-	public function getProductId()
+	public function getUserId()
 	{
-		return $this->product_id;
+		return $this->user_id;
 	}
 	
 	
-	
+
 	/**
 	 * 
 	 * @return boolean
@@ -249,89 +208,6 @@ class ProductPricelist implements InputFilterAwareInterface
 	}	
 	
 	
-	/**
-	 * 
-	 * @return float
-	 */
-	public function getPrice()
-	{
-		return $this->price;
-	}
-
-	
-	/**
-	 * @param float $price
-	 * @return ProductPricelist
-	 */
-	public function setPrice($price)
-	{
-		$this->price = $price;
-		return $this;
-	}
-	
-
-	/**
-	 * @param float $public_price
-	 * @return ProductPricelist
-	 */
-	public function setPublicPrice($public_price)
-	{
-		$this->public_price = $public_price;
-		return $this;
-	}
-	
-	/**
-	 * @return float
-	 */
-	public function getPublicPrice()
-	{
-		return $this->public_price;
-	}
-
-	/**
-	 * @param float $promo_discount
-	 */
-	public function setPromoDiscount($promo_discount)
-	{
-		$this->promo_discount = $promo_discount;
-		return $this;
-	}	
-	
-	/**
-	 * @return float
-	 */
-	public function getPromoDiscount()
-	{
-		return $this->promo_discount;
-	}	
-
-	/**
-	 * @param string $promo_start_at date Y-m-d H:i:s
-	 */
-	public function setPromoStartAt($promo_start_at)
-	{
-		$this->promo_start_at = $promo_start_at;
-		return $this;
-	}	
-	
-	public function getPromoStartAt()
-	{
-		return $this->promo_start_at;
-	}
-	
-	/**
-	 * @param string $promo_end_at date Y-m-d H:i:s
-	 */
-	public function setPromoEndAt($promo_end_at)
-	{
-		$this->promo_end_at = $promo_end_at;
-		return $this;
-	}	
-	
-	public function getPromoEndAt()
-	{
-		return $this->promo_end_at;
-	}
 	
 	
 	/**
