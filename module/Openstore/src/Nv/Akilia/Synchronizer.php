@@ -442,9 +442,10 @@ class Synchronizer
 
 		$replace = "insert into $db.product_brand
 				(brand_id, reference, title, url, legacy_mapping, legacy_synchro_at)
-		        select bpb.id, bpb.reference, bpb.name, bpb.url, bpb.legacy_mapping, '{$this->legacy_synchro_at}'
+		        select bpb.id, TRIM(bpb.reference), bpb.name, bpb.url, bpb.legacy_mapping, '{$this->legacy_synchro_at}'
 			from $akilia2db.base_product_brand bpb
 			on duplicate key update
+				reference = trim(bpb.reference),
 				title = bpb.name, 
 				url = bpb.url,
 			    legacy_synchro_at = '{$this->legacy_synchro_at}'";
@@ -466,9 +467,10 @@ class Synchronizer
 
 		$replace = "insert into $db.product_group
 				(group_id, reference, title, legacy_mapping, legacy_synchro_at)
-		        select null, f.id_famille, f.libelle_1, f.id_famille, '{$this->legacy_synchro_at}'
+		        select null, TRIM(f.id_famille), f.libelle_1, f.id_famille, '{$this->legacy_synchro_at}'
 			from $akilia1Db.famille f
 			on duplicate key update
+				reference = trim(f.id_famille),
 				title = f.libelle_1, 
 			    legacy_synchro_at = '{$this->legacy_synchro_at}'";
 		
@@ -529,7 +531,7 @@ class Synchronizer
 					category.category_id as category_id,
 					{$this->default_unit_id} as unit_id,
 					{$this->default_product_type_id} as type_id,
-					upper(a.reference) as reference,
+					upper(TRIM(a.reference)) as reference,
 					null as slug,
 					if(trim(i.libelle_1) = '', null, trim(i.libelle_1)) as title,
 					if(trim(a.libelle_1) = '', null, trim(a.libelle_1)) as invoice_title,

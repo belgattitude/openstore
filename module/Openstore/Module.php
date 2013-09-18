@@ -160,12 +160,12 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
             'factories' => array(
                 'Openstore\Configuration'	=> 'Openstore\ConfigurationFactory',
 				'Openstore\Service'			=> 'Openstore\ServiceFactory',
-				/*
+				
 				'Openstore\Permission' => function($sm) {
 					$permission = new Permission();
 					$permission->setServiceLocator($sm);
                     return $permission;
-				},*/
+				},
             ),
         );
     }

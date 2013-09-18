@@ -42,7 +42,21 @@ class Service implements ServiceLocatorAwareInterface
 	 * 
 	 * @param Openstore\Catalog\BrowserAbstract
 	 */
-	function getCatalogBrowser($key) {
+	function getBrowser($key) {
+		
+		switch (strtolower($key)) {
+			case 'brand' :
+				
+				break;
+			case 'product' :
+				
+				break;
+			case 'category' :
+				
+				break;
+			default:
+				throw new \Exception("Cannot find browser with key '$key'");
+		}
 		
 		//$browser = $this->getServiceLocator($key);
 		

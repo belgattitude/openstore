@@ -65,20 +65,9 @@ class StoreController extends AbstractActionController
 		
 		$this->adapter		= $sl->get('Zend\Db\Adapter\Adapter');	
 		$this->service		= $sl->get('Openstore\Service');		
-		$this->service		= $sl->get('Openstore\Configuration');		
+		$this->configuration= $sl->get('Openstore\Configuration');		
+		$this->permission	= $sl->get('Openstore\Permission');
 		
-		
-		
-		//$this->permission	= $sl->get('Openstore\Permission');
-		
-		//$this->service		= $sl->get('Openstore\Service');		
-		
-		
-		
-		//echo '<pre>';
-		//var_dump(get_class($this->params())); die();getPost($param, $default)->toArray();
-		//var_dump($this->getServiceLocator()->get('router')->getParams());
-		//die();
 		parent::onDispatch($e);
 	}
 	
