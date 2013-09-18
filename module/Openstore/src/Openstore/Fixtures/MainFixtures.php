@@ -16,16 +16,79 @@ class LoadUserData implements FixtureInterface
 	
     public function load(ObjectManager $manager)
     {
-		$this->importRoles($manager);
-		$this->importUser($manager);
+		
+		$this->importLanguages($manager);
 		
 		$this->importCountries($manager);
 		$this->importStock($manager);
-        $this->importLanguages($manager);
+
+		$this->importCurrencies($manager);
+		
+		$this->importPricelists($manager);
+		
+		
+		$this->importRoles($manager);
+		
+		$this->importUser($manager);
+		
+        
 		$this->importProductUnit($manager);
 		
-		$this->importCurrencies($manager);
     }
+
+	function importStock(ObjectManager $manager) {
+		
+		$stock = new Entity\Stock();
+
+		$stock->setStockId($this->default_stock_id);
+		$stock->setReference('DEFAULT');
+		$stock->setTitle('Default warehouse');
+		$manager->persist($stock);
+		
+		$metadata = $manager->getClassMetaData(get_class($stock));
+		$metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
+		
+		$manager->flush();		
+	}
+	
+	
+	function importPricelists(ObjectManager $manager) {
+		$stock_id = $this->default_stock_id;
+		$currency_id = $this->default_currency_id;
+		$pricelists = array(
+			1 => array('reference' => 'BE', 'title' => 'Belgium Pricelist', 'stock_id' => $stock_id, 'currency_id' => $currency_id),
+			2 => array('reference' => 'FR', 'title' => 'French Pricelist', 'stock_id' => $stock_id, 'currency_id' => $currency_id),
+			3 => array('reference' => 'NL', 'title' => 'NL Pricelist', 'stock_id' => $stock_id, 'currency_id' => $currency_id),
+			
+		);
+		
+		$manager->getConnection()->executeUpdate("DELETE FROM pricelist where pricelist_id in (" . join(',', array_keys($pricelists)) . ')');
+		foreach($pricelists as $id => $infos) {
+			$stock = $manager->getRepository('Openstore\Entity\Stock')->find($infos['stock_id']);
+			
+			$currency = $manager->getRepository('Openstore\Entity\Currency')->find($infos['currency_id']);
+			
+			$pricelist = new Entity\Pricelist();
+			$pricelist->setPricelistId($id);
+			$pricelist->setStock($stock);
+			$pricelist->setCurrency($currency);
+			
+			//$pricelist->stock_id = $infos['stock_id'];
+			//$pricelist->currency_id = $infos['currency_id'];
+			
+			$pricelist->setReference($infos['reference']);
+			$pricelist->setLegacyMapping($infos['reference']);
+			$pricelist->setTitle($infos['title']);
+			$manager->persist($pricelist);
+		}
+
+		$metadata = $manager->getClassMetaData(get_class($pricelist));
+		$metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
+		
+		$manager->flush();
+		
+		
+	}
 	
 	function importRoles(ObjectManager $manager)
 	{
@@ -55,16 +118,27 @@ class LoadUserData implements FixtureInterface
 			1 => array('username' => 'admin', 'email' => 's.vanvelthem@gmail.com', 'password' => 'intelart',
 						'roles' => array(
 							'admin'
+						),
+						'pricelists' => array(
+							'BE', 'FR', 'NL'
 						)),
 			2 => array('username' => 'testcustomer', 'email' => 'sebastien@nuvolia.com', 'password' => 'intelart',
 						'roles' => array(
 							'customer'
+						),
+						'pricelists' => array(
+							'BE'
 						)),
 			
 		);
 		
+		$manager->getConnection()->executeUpdate("DELETE FROM user_role where user_id in (" . join(',', array_keys($users)) . ')');
+		$manager->getConnection()->executeUpdate("DELETE FROM user where user_id in (" . join(',', array_keys($users)) . ')');
+		
 		$bcrypt = new Bcrypt();
 		$bcrypt->setCost(14); // Needs to match password cost in ZfcUser options
+		
+		
 		
 		foreach($users as $id => $infos) {
 			$user = new Entity\User();
@@ -72,6 +146,7 @@ class LoadUserData implements FixtureInterface
 			$user->setUsername($infos['username']);
 			$user->setEmail($infos['email']);
 			$roles = $infos['roles'];
+			$pricelists = $infos['pricelists'];
 			
 			if (count($roles) > 0) {
 				foreach($roles as $role_ref) {
@@ -81,13 +156,38 @@ class LoadUserData implements FixtureInterface
 					}
 				}
 			}
+
 			$password = $infos['password'];
 			
 			$newPassword = $bcrypt->create($password);			
 			
 			$user->setPassword($newPassword);
+			
 			$manager->persist($user);
+			
+			if (count($pricelists) > 0) {
+				foreach($pricelists as $pricelist_ref) {
+					
+					$pricelist = $manager->getRepository('Openstore\Entity\Pricelist')->findOneBy(array('reference' => $pricelist_ref));
+					if ($pricelist) {
+						//$user->addPricelist($pricelist);
+						
+						$user_pricelist = new Entity\UserPricelist();
+						$user_pricelist->setUserId($user);
+						$user_pricelist->setPricelistId($pricelist);
+						$user_pricelist->setFlagActive(1);
+						$manager->persist($user_pricelist);
+						
+					}
+				}
+			}
+			
+			
 		}
+		
+		$metadata = $manager->getClassMetaData(get_class($user));
+		$metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
+		
 		$manager->flush();
 		
 		
@@ -98,18 +198,25 @@ class LoadUserData implements FixtureInterface
 		$countries = array(
 			1 => array('reference' => 'BE', 'name' => 'Belgium')
 		);
+		$manager->getConnection()->executeUpdate("DELETE FROM country where country_id in (" . join(',', array_keys($countries)) . ')');
+		
 		foreach($countries as $id => $infos) {
 			$country = new Entity\Country();
+			$country->setCountryId($id);
 			$country->setReference($infos['reference']);
 			$country->setName($infos['name']);
 			$manager->persist($country);
 		}
+		
+		$metadata = $manager->getClassMetaData(get_class($country));
+		$metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
+		
 		$manager->flush();
 	}
 
 	function importProductTypes(ObjectManager $manager) {
 		$product_types = array(
-			$this->default_product_type_id => array('PRODUCT' => 'Product', 'title' => 'Sellable product'),
+			$this->default_product_type_id => array('reference' => 'Product', 'title' => 'Sellable product'),
 			2 => array('reference' => 'VIRTUAL', 'title' => 'Virtual product'),
 			3 => array('reference' => 'SERIE', 'title' => 'Virtual product serie'),
 		);
@@ -117,11 +224,14 @@ class LoadUserData implements FixtureInterface
 		
 		foreach($product_types as $id => $infos) {
 			$type = new Entity\ProductType();
-			$type->setTypeId($symbol);
+			$type->setTypeId($id);
 			$type->setReference($infos['reference']);
 			$type->setTitle($infos['title']);
 			$manager->persist($type);
 		}
+		
+		$metadata = $manager->getClassMetaData(get_class($type));
+		$metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
 		
 		$manager->flush();
 		
@@ -135,7 +245,7 @@ class LoadUserData implements FixtureInterface
 			3 => array('reference' => 'GBP', 'title' => 'British pound'),
 		);
 		
-		
+		$manager->getConnection()->executeUpdate("DELETE FROM currency where currency_id in (" . join(',', array_keys($currencies)) . ')');
 		foreach($currencies as $id => $infos) {
 			$currency = new Entity\Currency();
 			$currency->setCurrencyId($id);
@@ -144,19 +254,13 @@ class LoadUserData implements FixtureInterface
 			$manager->persist($currency);
 		}
 		
+		$metadata = $manager->getClassMetaData(get_class($currency));
+		$metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
+		
 		$manager->flush();
 		
 	}
 	
-	function importStock(ObjectManager $manager) {
-		
-		$stock = new Entity\Stock();
-		$stock->setStockId($this->default_stock_id);
-		$stock->setReference('DEFAULT');
-		$stock->setTitle('Default warehouse');
-		$manager->persist($stock);
-		$manager->flush();		
-	}
 	
 	
 	function importProductUnit(ObjectManager $manager)
@@ -174,6 +278,10 @@ class LoadUserData implements FixtureInterface
 			$unit->setTitle($infos['title']);
 			$manager->persist($unit);
 		}
+		
+		$metadata = $manager->getClassMetaData(get_class($unit));
+		$metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
+		
 		$manager->flush();
 	}
 	

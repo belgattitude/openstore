@@ -37,9 +37,9 @@ class Category extends BrowserAbstract
 	{
 		if ($params === null) $params = $this->getDefaultParams();
 		
-		$lang		= $this->filter->getLanguage();
-		
-		$pricelist	= $this->filter->getPricelist();
+		$lang = $params->getLanguage();
+		$pricelist = $params->getPricelist();
+
 		
 		
 		$subselect = new Select();
@@ -86,7 +86,7 @@ class Category extends BrowserAbstract
 		if (($expanded_category = $params->getExpandedCategory()) !== null) {
 			
 			$open_categories = array();
-			$ancestors = $this->getAncestors($expanded_category);
+			$ancestors = $this->getAncestors($expanded_category, $lang);
 			foreach($ancestors as $ancestor) {
 				$open_categories[$ancestor['category_id']] = $ancestor['reference'];
 			}
@@ -137,7 +137,7 @@ class Category extends BrowserAbstract
 //echo "(parent.lvl <= $depth or parent.id in $open_categories or (parent.lft between $parent_left and $parent_right)"; die();
 				//$select->where("(parent.lvl <= $depth or parent.id in $open_categories");
 				
-				$ancestors = $this->getAncestors($expanded_category)->toArray();				
+				$ancestors = $this->getAncestors($expanded_category, $lang)->toArray();				
 
 				// close all levels
 				
@@ -193,11 +193,9 @@ class Category extends BrowserAbstract
 	}
 	
 	
-	function getAncestors($category)
+	function getAncestors($category, $lang)
 	{
 		$adapter = $this->adapter;
-		
-		$lang		= $this->filter->getLanguage();
 		
 		$sql = new Sql($adapter);
 		
@@ -242,7 +240,8 @@ class Category extends BrowserAbstract
 	function getParent($category)
 	{
 		$adapter = $this->adapter;
-		$lang		= $this->filter->getLanguage();
+		$lang = $params->getLanguage();
+
 		
 		$sql = new Sql($adapter);
 		

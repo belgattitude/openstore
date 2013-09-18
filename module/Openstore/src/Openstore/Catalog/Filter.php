@@ -4,32 +4,20 @@ namespace Openstore\Catalog;
 
 class Filter
 {
-	protected $pricelist;
-	protected $language;
+	protected $customer_id;
 	
-	function __construct($pricelist, $language) {
-		$this->setLanguage($language);
-		$this->setPricelist($pricelist);
+	function __construct() {
 	}
 	
-	function setLanguage($language)
+	function setCustomer($customer_id)
 	{
-		$this->language = $language;
+		$this->customer_id = $customer_id;
 	}
 	
-	function getLanguage()
+	function getCustomer()
 	{
-		return $this->language;
+		return $this->customer_id;
 	}
 	
-	function setPricelist($pricelist)
-	{
-		$this->pricelist = $pricelist;
-	}
-	
-	function getPricelist()
-	{
-		return $this->pricelist;
-	}
 	
 }

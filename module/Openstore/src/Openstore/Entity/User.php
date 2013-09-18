@@ -45,6 +45,13 @@ class User implements UserInterface, ProviderInterface
      * @ORM\Column(type="string", length=128)
      */
     protected $password;
+	
+	
+	/**
+	 *
+	 * @var type 
+	 */
+	protected $lang;
 
     /**
      * @var int
@@ -55,18 +62,30 @@ class User implements UserInterface, ProviderInterface
      * @var \Doctrine\Common\Collections\Collection
      * @ORM\ManyToMany(targetEntity="Openstore\Entity\Role")
      * @ORM\JoinTable(name="user_role",
-     * joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="user_id")},
-     * inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="role_id")}
+     *		joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="user_id")},
+     *		inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="role_id")}
      * )
      */
     protected $roles;
+	
+	
 
+    /** 
+	 * @var \Doctrine\Common\Collections\Collection
+	 * @ORM\OneToMany(targetEntity="Openstore\Entity\UserPricelist", mappedBy="user_id") 
+	 */
+    protected $pricelists;	
+
+	
     /**
      * Initialies the roles variable.
      */
     public function __construct()
     {
         $this->roles = new ArrayCollection();
+		$this->pricelists = new ArrayCollection();
+		
+		
     }
 
 	public function getId()
@@ -228,8 +247,22 @@ class User implements UserInterface, ProviderInterface
      *
      * @return void
      */
-    public function addRole($role)
+    public function addRole(Role $role)
     {
         $this->roles[] = $role;
     }
+	
+	
+	
+	/**
+	 * 
+	 * @return \Doctrine\Common\Collections\Collection
+	 */
+	public function getPricelists() 
+	{
+		return $this->pricelists;
+	}
+	
+	
+	
 }

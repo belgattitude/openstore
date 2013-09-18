@@ -4,6 +4,10 @@ namespace Openstore\Catalog\Browser\SearchParams;
 
 abstract class SearchParamsAbstract
 {
+	protected $language;
+	protected $pricelist;
+	protected $id;
+	
 	/**
 	 * @return array
 	 */
@@ -19,6 +23,26 @@ abstract class SearchParamsAbstract
 	{
 		return $this->id;
 	}
+	
+	function setLanguage($language)
+	{
+		$this->language = $language;
+	}
+	
+	function setPricelist($pricelist)
+	{
+		$this->pricelist = $pricelist;
+	}
+
+	function getLanguage()
+	{
+		return $this->language;
+	}
+	
+	function getPricelist()
+	{
+		return $this->pricelist;
+	}	
 	
 	function setFilter($filter)
 	{

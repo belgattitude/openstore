@@ -138,11 +138,11 @@ class Pricelist implements InputFilterAwareInterface
 
 	/**
 	 * 
-	 * @param integer $id
+	 * @param integer $pricelist_id
 	 */
-	public function setId($id)
+	public function setPricelistId($pricelist_id)
 	{
-		$this->id = $id;
+		$this->pricelist_id = $pricelist_id;
 		return $this;
 	}	
 	
@@ -150,11 +150,51 @@ class Pricelist implements InputFilterAwareInterface
 	 * 
 	 * @return integer
 	 */
-	public function getId()
+	public function getPricelistId()
 	{
-		return $this->id;
+		return $this->pricelist_id;
 	}
 
+	
+	/**
+	 * 
+	 * @param Currency $currency_id
+	 */
+	public function setCurrency(Currency $currency_id)
+	{
+		$this->currency_id = $currency_id;
+		return $this;
+	}	
+	
+	/**
+	 * 
+	 * @return integer
+	 */
+	public function getCurrencyId()
+	{
+		return $this->currency_id;
+	}
+	
+	/**
+	 * 
+	 * @param Stock $stock_id
+	 */
+	public function setStock(Stock $stock_id)
+	{
+		$this->stock_id = $stock_id;
+		return $this;
+	}	
+	
+	/**
+	 * 
+	 * @return Stock
+	 */
+	public function getStock()
+	{
+		return $this->stock_id;
+	}
+	
+	
 	/**
 	 * Set reference
 	 * @param string $reference

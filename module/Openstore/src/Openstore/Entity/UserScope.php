@@ -42,7 +42,7 @@ class UserScope implements InputFilterAwareInterface
 	
 	/**
 	 * 
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="pricelists", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="users", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="user_id", referencedColumnName="user_id", onDelete="CASCADE", nullable=false)
 	 */
 	private $user_id;

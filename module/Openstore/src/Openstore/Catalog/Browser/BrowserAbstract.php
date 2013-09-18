@@ -30,10 +30,9 @@ abstract class BrowserAbstract implements AdapterAwareInterface
 	 * @param \Zend\Db\Adapter\Adapter $adapter
 	 * @param \Openstore\Catalog\Filter $filter
 	 */
-	function __construct(Adapter $adapter, \Openstore\Catalog\Filter $filter)
+	function __construct(Adapter $adapter)
 	{
 		$this->setDbAdapter($adapter);
-		$this->filter = $filter;
 	}
 	
 	

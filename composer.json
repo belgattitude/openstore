@@ -28,7 +28,8 @@
 		"widmogrod/zf2-assetic-module": "dev-master",
 		"leafo/lessphp": "0.3.x",
 		"ezyang/htmlpurifier": ">=4.5.0",
-		"neilime/zf2-twb-bundle": "dev-master"
+		"neilime/zf2-twb-bundle": "dev-master",
+		 "ghislainf/zf2-whoops": "dev-master"
 	}
 }
 

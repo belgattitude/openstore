@@ -13,13 +13,15 @@ namespace Openstore;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\ModuleManager\ModuleManager;
 use Zend\Mvc\MvcEvent;
-use HTMLPurifier;
+use Openstore\Configuration;
 
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 //use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\Console\Adapter\AdapterInterface;
+
+use HTMLPurifier;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface, ConsoleUsageProviderInterface
 {
@@ -152,13 +154,18 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
             ),
             'invokables' => array(
                 //'ZendDeveloperTools\Report'             => 'ZendDeveloperTools\Report',
+				
+				
             ),
             'factories' => array(
-                'Openstore\Config' => function ($sm) {
-                    $config = $sm->get('Configuration');
-                    $config = isset($config['openstore']) ? $config['openstore'] : null;
-                    return new Options($config);
-                },
+                'Openstore\Configuration'	=> 'Openstore\ConfigurationFactory',
+				'Openstore\Service'			=> 'Openstore\ServiceFactory',
+				/*
+				'Openstore\Permission' => function($sm) {
+					$permission = new Permission();
+					$permission->setServiceLocator($sm);
+                    return $permission;
+				},*/
             ),
         );
     }

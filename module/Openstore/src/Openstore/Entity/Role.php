@@ -30,7 +30,7 @@ class Role implements HierarchicalRoleInterface
     /**
      * @var Role
      * @ORM\ManyToOne(targetEntity="Openstore\Entity\Role")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="role_id", onDelete="RESTRICT", nullable=true)	 
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="role_id", onDelete="CASCADE", nullable=true)	 
      
      */
     protected $parent_id;

@@ -11,6 +11,7 @@ namespace Openstore\Controller;
 
 use Openstore\Entity;
 use Openstore\Catalog\Browser\ProductFilter;
+use Openstore\Permission;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -35,6 +36,18 @@ class StoreController extends AbstractActionController
 	
 	protected $adapter;
 	
+	/**
+	 *
+	 * @var \Openstore\Permission
+	 */
+	protected $permission;
+	
+	/**
+	 *
+	 * @var \Openstore\Service
+	 */
+	protected $service;
+	
 	public function __construct()
 	{
 		
@@ -48,23 +61,45 @@ class StoreController extends AbstractActionController
 	}
 	
 	public function onDispatch(\Zend\Mvc\MvcEvent $e) {
-		$this->config	= $this->getServiceLocator()->get('Openstore/Config');
-		$this->adapter	= $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');		
+		$sl = $this->getServiceLocator();
+		
+		$this->adapter		= $sl->get('Zend\Db\Adapter\Adapter');	
+//		$this->service		= $sl->get('Openstore\Service');		
+		
+		
+		
+		//$this->permission	= $sl->get('Openstore\Permission');
+		
+		//$this->service		= $sl->get('Openstore\Service');		
+		
+		
+		
+		//echo '<pre>';
+		//var_dump(get_class($this->params())); die();getPost($param, $default)->toArray();
+		//var_dump($this->getServiceLocator()->get('router')->getParams());
+		//die();
 		parent::onDispatch($e);
 	}
 	
 	
 	protected function productAction()
 	{
+		
+		$pricelist = $this->params()->fromRoute('pricelist');
+		$language  = $this->params()->fromRoute('ui_language');
+		
 		$view = new ViewModel();
 		//$searchParams = SearchParams::createFromRequest();
 		$this->layout()->search_keywords = '';		
 
 		// Include product browser
 		
+		
 		$productBrowser	= new \Openstore\Catalog\Browser\Product($this->adapter, $this->getFilter());
 		$productParams = new \Openstore\Catalog\Browser\SearchParams\Product();
 		$productParams->setId($this->params()->fromRoute('product_id'));
+		$productParams->setLanguage($language);
+		$productParams->setPricelist($pricelist);
 		$store = $productBrowser->getStore($productParams);
 		$product = $store->getData()->current();
 		$view->product = $product;
@@ -90,6 +125,13 @@ class StoreController extends AbstractActionController
 	
     public function browseAction()
     {
+		
+		$this->config		= $this->getServiceLocator()->get('Openstore\Configuration');
+		var_dump($this->config);
+
+		$pricelist = $this->params()->fromRoute('pricelist');
+		$language  = $this->params()->fromRoute('ui_language');
+		
 		$view		  = new ViewModel();
 		$searchParams = SearchParams::createFromRequest($this->params());
 		
@@ -101,9 +143,13 @@ class StoreController extends AbstractActionController
 		$view->brands		= $browser_items['brands'];
 		
 
+		//$productBrowser = $this->service->getCatalogBrowser('Browser\Product');
+		
 		$productBrowser	= new \Openstore\Catalog\Browser\Product($this->adapter, $this->getFilter());
 		$productParams = new \Openstore\Catalog\Browser\SearchParams\Product();
 		$productParams->setQuery($searchParams->getQuery());
+		$productParams->setLanguage($language);
+		$productParams->setPricelist($pricelist);
 		$productParams->setBrands($searchParams->getBrands());
 		$productParams->setFilter($searchParams->getFilter());
 		//$productParams->setLimit($searchParams->getLimit());
@@ -120,7 +166,7 @@ class StoreController extends AbstractActionController
 		
 		
 		$catBrowser	  = new \Openstore\Catalog\Browser\Category($this->adapter, $this->getFilter());		
-		$view->category_breadcrumb = $catBrowser->getAncestors($searchParams->getFirstCategory());
+		$view->category_breadcrumb = $catBrowser->getAncestors($searchParams->getFirstCategory(), $language);
 
 		// Setting other variables
 		$view->searchParams = $searchParams;
@@ -136,11 +182,18 @@ class StoreController extends AbstractActionController
 		
 		$items = array();
 		// 1. get Categories
+		
+		$pricelist = $this->params()->fromRoute('pricelist');
+		$language  = $this->params()->fromRoute('ui_language');
+		
+		
 		$categoryBrowser = new \Openstore\Catalog\Browser\Category($this->adapter, $this->getFilter());
 		$categoryParams = new \Openstore\Catalog\Browser\SearchParams\Category();
+		$categoryParams->setLanguage($language);
+		$categoryParams->setPricelist($pricelist);
 		$categoryParams->setIncludeEmptyNodes($include_empty_nodes=false);
 		$categoryParams->setDepth($depth=1);
-		$categoryParams->setFilter($searchParams->getFilter());
+		//$categoryParams->setFilter($searchParams->getFilter());
 		$categoryParams->setBrands($searchParams->getBrands());
 		$categoryParams->setExpandedCategory($searchParams->getFirstCategory());
 		/*
@@ -154,7 +207,9 @@ class StoreController extends AbstractActionController
 		// 2. get Brands
 		$brandBrowser = new \Openstore\Catalog\Browser\Brand($this->adapter, $this->getFilter());
 		$brandParams = new \Openstore\Catalog\Browser\SearchParams\Brand();
-		$brandParams->setFilter($searchParams->getFilter());
+		$brandParams->setLanguage($language);
+		$brandParams->setPricelist($pricelist);
+		//$brandParams->setFilter($searchParams->getFilter());
 		//$brandParams->setCategories($searchParams->getCategories());
 		$items['brands'] = $brandBrowser->getData($brandParams);
 		
@@ -169,10 +224,10 @@ class StoreController extends AbstractActionController
 	 */
 	protected function getFilter()
 	{
-		$pricelist = $this->params()->fromRoute('pricelist');
-		$language  = $this->params()->fromRoute('ui_language');
+		//$pricelist = $this->params()->fromRoute('pricelist');
+		//$language  = $this->params()->fromRoute('ui_language');
 		//var_dump($language . '_' . $pricelist);
-		return new \Openstore\Catalog\Filter($pricelist, $language);
+		return new \Openstore\Catalog\Filter();
 	}
 	
 	

@@ -3,26 +3,30 @@ namespace Openstore;
 
 use Zend\Stdlib\AbstractOptions;
 
-class Options extends AbstractOptions
+class Configuration extends AbstractOptions
 {
 
     /**
      * @var array
      */
     protected $profiler = array(
-        'enabled'     => false,
+        'enabled'   => 'hh',
+		'cool'		=> 'o'
     );
+	
 
 
     /**
      * Overloading Constructor.
      *
-     * @param  array|Traversable|null $options
+     * @param  array|Traversable $options
      * @throws \Zend\Stdlib\Exception\InvalidArgumentException
      */
     public function __construct($options = null)
     {
+		
         parent::__construct($options);
+		
     }
 
     /**
@@ -35,6 +39,13 @@ class Options extends AbstractOptions
         if (isset($options['enabled'])) {
             $this->profiler['enabled'] = (bool) $options['enabled'];
         }
+        if (isset($options['cool'])) {
+            $this->profiler['cool'] = $options['cool'];
+        }
+		
     }
+	
+	
+	
 
 }

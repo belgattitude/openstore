@@ -32,8 +32,8 @@ class Brand extends BrowserAbstract
 	{
 		if ($params === null) $params = $this->getDefaultParams();		
 		
-		$lang = $this->filter->getLanguage();
-		$pricelist = $this->filter->getPricelist();
+		$lang = $params->getLanguage();
+		$pricelist = $params->getPricelist();
 		
 		$select = new Select();
 		$select->from(array('pb' => 'product_brand'), array())
