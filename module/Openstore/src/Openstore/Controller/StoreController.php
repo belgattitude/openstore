@@ -64,7 +64,8 @@ class StoreController extends AbstractActionController
 		$sl = $this->getServiceLocator();
 		
 		$this->adapter		= $sl->get('Zend\Db\Adapter\Adapter');	
-//		$this->service		= $sl->get('Openstore\Service');		
+		$this->service		= $sl->get('Openstore\Service');		
+		$this->service		= $sl->get('Openstore\Configuration');		
 		
 		
 		
@@ -126,8 +127,8 @@ class StoreController extends AbstractActionController
     public function browseAction()
     {
 		
-		$this->config		= $this->getServiceLocator()->get('Openstore\Configuration');
-		var_dump($this->config);
+		
+		
 
 		$pricelist = $this->params()->fromRoute('pricelist');
 		$language  = $this->params()->fromRoute('ui_language');

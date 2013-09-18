@@ -18,7 +18,7 @@ class ServiceFactory implements FactoryInterface
 		
         $service = new Service($configuration, $adapter);
 		
-		$service->setServiceLocator($locator);
+		$service->setServiceLocator($sl);
         return $service;
     }
 }
