@@ -51,7 +51,7 @@ class SearchController extends AbstractActionController
 	}
 	
 	public function onDispatch(\Zend\Mvc\MvcEvent $e) {
-		$this->config	= $this->getServiceLocator()->get('Openstore/Config');
+		//$this->config	= $this->getServiceLocator()->get('Openstore\Config');
 		$this->adapter	= $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');		
 		parent::onDispatch($e);
 	}
@@ -65,32 +65,37 @@ class SearchController extends AbstractActionController
 	public function productAction()
 	{
 		$searchParams = SearchParams::createFromRequest($this->params());
-		/*
-		$options = array(
-			'query' => $this->params()->fromQuery('query')
-		);*/
-		$productBrowser	= new \Openstore\Catalog\Browser\Product($this->adapter, $this->getFilter());
-		$productParams = new \Openstore\Catalog\Browser\SearchParams\Product();
-		$productParams->setQuery($this->params()->fromQuery('query'));
-		$select = $productBrowser->getSelect($productParams);
-		$select->reset($select::COLUMNS);
-		$select->columns(array(
-			'product_id'		=> new Expression('p.product_id'),
-			'reference'			=> new Expression('p.reference'),
-			'brand_title'		=> new Expression('pb.title'),
-			'category_reference'=> new Expression('pc.reference'),
-			'category_title'	=> new Expression('COALESCE(pc18.title, pc.title)'),
-			'title'				=> new Expression('COALESCE(p18.title, p.title)'),
-			'invoice_title'		=> new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
-			'flag_new'			=> new Expression("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.activated_at, p.activated_at))"),
-			'promo_discount'	=> new Expression('ppl.promo_discount'),
-		));
-		$store = new ZendDbSqlSelect(['select'  => $select,
-									  'adapter' => $this->adapter]);		
-		//$store = $productBrowser->getStore($productParams);
+		
+		$sl	= $this->getServiceLocator();
+		$productBrowser = $sl->get('Openstore\Service')->getBrowser('product')
+				->setSearchParams(
+						array(
+							'query' => $searchParams->getQuery(),
+							'language' => $searchParams->getLanguage(),
+							'pricelist' => $searchParams->getPricelist(),
+							'brands' => $searchParams->getBrands(),
+							'categories' => $searchParams->getCategories()
+						)
+				)
+				->addSearchFilter($searchParams->getFilter())
+				->setColumns(
+						array(
+							'product_id'		=> new Expression('p.product_id'),
+							'reference'			=> new Expression('p.reference'),
+							'brand_title'		=> new Expression('pb.title'),
+							'category_reference'=> new Expression('pc.reference'),
+							'category_title'	=> new Expression('COALESCE(pc18.title, pc.title)'),
+							'title'				=> new Expression('COALESCE(p18.title, p.title)'),
+							'invoice_title'		=> new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
+							'flag_new'			=> new Expression("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.activated_at, p.activated_at))"),
+							'promo_discount'	=> new Expression('ppl.promo_discount'),
+						)						
+				);
+		$store = $productBrowser->getStore();
 		
 		$store->getOptions()->setLimit($searchParams->getLimit())
 							->setOffset(($searchParams->getPage() - 1) * $searchParams->getLimit());
+		
 		$writer = new \Smart\Data\Store\Writer\Zend\JsonModel($store);
 		$json = $writer->getData();
         return $json;
@@ -99,14 +104,19 @@ class SearchController extends AbstractActionController
 	
 	public function brandAction()
 	{
+		$pricelist = $this->params()->fromRoute('pricelist');
+		$language  = $this->params()->fromRoute('ui_language');
+		
 		$searchParams = SearchParams::createFromRequest($this->params());
 		/*
 		$options = array(
 			'query' => $this->params()->fromQuery('query')
 		);*/
-		$brandBrowser	= new \Openstore\Catalog\Browser\Brand($this->adapter, $this->getFilter());
+		$brandBrowser	= new \Openstore\Catalog\Browser\Brand($this->adapter);
 		$brandParams = new \Openstore\Catalog\Browser\SearchParams\Brand();
 		$brandParams->setQuery($this->params()->fromQuery('query'));
+		$brandParams->setLanguage($language);
+		$brandParams->setPricelist($pricelist);
 		$store = $brandBrowser->getStore($brandParams);
 		$store->getOptions()->setLimit($searchParams->getLimit())
 							->setOffset(($searchParams->getPage() - 1) * $searchParams->getLimit());
@@ -125,8 +135,6 @@ class SearchController extends AbstractActionController
 	 */
 	protected function getFilter()
 	{
-		$pricelist = $this->params()->fromRoute('pricelist');
-		$language  = $this->params()->fromRoute('ui_language');
 		//var_dump($language . '_' . $pricelist);
 		return new \Openstore\Catalog\Filter($pricelist, $language);
 	}

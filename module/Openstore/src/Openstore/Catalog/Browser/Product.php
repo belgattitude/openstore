@@ -14,6 +14,76 @@ use Zend\Db\Sql\Expression;
 
 class Product extends BrowserAbstract
 {
+	/**
+	 *
+	 * @var \Opensstore\Catalog\Browser\SearchParams\Product
+	 */
+	protected $searchParams;
+	
+	/**
+	 *
+	 * @var type 
+	 */
+	protected $searchFilters;
+	
+	
+	/**
+	 * @var array 
+	 */
+	protected $columns;
+	
+	/**
+	 * 
+	 * @param \Zend\Db\Adapter\Adapter $adapter
+	 * @param \Openstore\Catalog\Filter $filter
+	 */
+	function __construct(Adapter $adapter)
+	{
+		$this->setDbAdapter($adapter);
+		$this->searchFilters = new \ArrayObject();
+		$this->columns = null;
+	}
+	
+	
+	function setColumns(array $columns)
+	{
+		$this->columns = $columns;
+		return $this;
+	}
+	/** 
+	 * 
+	 * @param array $params
+	 */
+	function setSearchParams(array $params)
+	{
+		$searchParams = $this->getDefaultParams();
+		$searchParams->setBrands($params['brands']);
+		$searchParams->setCategories($params['categories']);
+		$searchParams->setLanguage($params['language']);
+		$searchParams->setPricelist($params['pricelist']);
+		$this->searchParams = $searchParams;
+		return $this;
+	}
+	
+	function getSearchParams()
+	{
+		return $this->searchParams;
+	}
+	
+	/**
+	 * 
+	 * @param type $filter
+	 */
+	function addSearchFilter($filter)
+	{
+		$this->searchFilters = $filter;
+		return $this;
+	}
+	
+	function getSearchFilters()
+	{
+		return $this->searchFilters;
+	}
 	
 	/**
 	 * 
@@ -36,7 +106,7 @@ class Product extends BrowserAbstract
 	function getSelect(SearchParams $params=null)
 	{
 		
-		if ($params === null) $params = $this->getDefaultParams();
+		if ($params === null) $params = $this->getSearchParams();
 	
 		$lang = $params->getLanguage();
 		$pricelist = $params->getPricelist();
@@ -73,6 +143,11 @@ class Product extends BrowserAbstract
 				->where('ppl.flag_active = 1')
 				->where("pl.reference = '$pricelist'");
 
+		// Interface Searchable
+		// Interface Filterable
+		
+		//Searchable/Filterable
+		
 		$productFilter = ProductFilter::getFilter($params->getFilter());
 		if ($productFilter !== null) {
 			$productFilter->setConstraints($select);
@@ -80,29 +155,33 @@ class Product extends BrowserAbstract
 		}
 		$flag_new_min_date = ProductFilter::getParam('flag_new_minimum_date');
 		
-		$select->columns(array(
-			'product_id'		=> new Expression('p.product_id'),
-			'reference'			=> new Expression('p.reference'),
-			'brand_id'			=> new Expression('p.brand_id'),
-			'brand_reference'	=> new Expression('pb.reference'),
-			'brand_title'		=> new Expression('pb.title'),
-			'category_reference'=> new Expression('pc.reference'),
-			'category_title'	=> new Expression('COALESCE(pc18.title, pc.title)'),
-			'title'				=> new Expression('COALESCE(p18.title, p.title)'),
-			'invoice_title'		=> new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
-			'description'		=> new Expression('COALESCE(p18.description, p.description)'),
-			'characteristic'	=> new Expression('COALESCE(p18.characteristic, p.characteristic)'),
-			'price'				=> new Expression('ppl.price'),
-			'list_price'		=> new Expression('ppl.price'),
-			'flag_new'			=> new Expression("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.activated_at, p.activated_at))"),
-			'promo_discount'	=> new Expression('ppl.promo_discount'),
-			'available_stock'	=> new Expression('ps.available_stock'),
-			'theoretical_stock'	=> new Expression('ps.theoretical_stock'),
-			'currency_reference'=> new Expression('c.reference'),
-			'unit_reference'	=> new Expression('pu.reference'),
-			'type_reference'	=> new Expression('pt.reference'),
-		), true);
-		
+		if ($columns !== null && is_array($columns)) {
+			$select->columns($this->columns);
+		} else {
+
+			$select->columns(array(
+				'product_id'		=> new Expression('p.product_id'),
+				'reference'			=> new Expression('p.reference'),
+				'brand_id'			=> new Expression('p.brand_id'),
+				'brand_reference'	=> new Expression('pb.reference'),
+				'brand_title'		=> new Expression('pb.title'),
+				'category_reference'=> new Expression('pc.reference'),
+				'category_title'	=> new Expression('COALESCE(pc18.title, pc.title)'),
+				'title'				=> new Expression('COALESCE(p18.title, p.title)'),
+				'invoice_title'		=> new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
+				'description'		=> new Expression('COALESCE(p18.description, p.description)'),
+				'characteristic'	=> new Expression('COALESCE(p18.characteristic, p.characteristic)'),
+				'price'				=> new Expression('ppl.price'),
+				'list_price'		=> new Expression('ppl.price'),
+				'flag_new'			=> new Expression("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.activated_at, p.activated_at))"),
+				'promo_discount'	=> new Expression('ppl.promo_discount'),
+				'available_stock'	=> new Expression('ps.available_stock'),
+				'theoretical_stock'	=> new Expression('ps.theoretical_stock'),
+				'currency_reference'=> new Expression('c.reference'),
+				'unit_reference'	=> new Expression('pu.reference'),
+				'type_reference'	=> new Expression('pt.reference'),
+			), true);
+		}
 		
 		$select->limit(50);
 

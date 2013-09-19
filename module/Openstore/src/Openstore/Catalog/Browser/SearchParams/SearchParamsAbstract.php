@@ -8,6 +8,9 @@ abstract class SearchParamsAbstract
 	protected $pricelist;
 	protected $id;
 	
+	
+	
+	
 	/**
 	 * @return array
 	 */

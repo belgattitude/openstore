@@ -2,7 +2,7 @@
 
 namespace Openstore\Catalog\Browser\ProductFilter;
 
-use Openstore\Catalog\Browser\ProductFilter;
+
 use Openstore\Catalog\Browser\ProductFilter\FilterAbstract;
 use Zend\Db\Sql\Select;
 
@@ -11,9 +11,6 @@ class NewProducts extends FilterAbstract
 	
 	function __construct(array $params=array()) {
 		parent::__construct($params);
-		if (!array_key_exists('minimum_date', $this->params)) {
-			$this->params['minimum_date'] = ProductFilter::getParam('flag_new_minimum_date');
-		}
 		
 	}
 	

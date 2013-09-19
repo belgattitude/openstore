@@ -38,18 +38,36 @@ class Service implements ServiceLocatorAwareInterface
 		$this->setAdapter($adapter);
 	}
 	
+	
+	public function getFilters()
+	{
+		$flag_new_minimum_date = date('2012-06-30');
+		$filters = array(
+			'all'		=>	new \Openstore\Catalog\Browser\ProductFilter\AllProducts(),
+			'new'		=>	new \Openstore\Catalog\Browser\ProductFilter\NewProducts(array('minimum_date' => $flag_new_minimum_date)),
+			'promos'	=>	new \Openstore\Catalog\Browser\ProductFilter\PromoProducts(),
+			'onstock'	=>	new \Openstore\Catalog\Browser\ProductFilter\OnstockProducts(),
+			'favourite' =>	new \Openstore\Catalog\Browser\ProductFilter\FavouriteProducts()
+		);
+		return $filters;
+		
+	}
+	
 	/**
 	 * 
 	 * @param Openstore\Catalog\BrowserAbstract
 	 */
 	function getBrowser($key) {
 		
+		//$filters = $this->getFilters();
+		
 		switch (strtolower($key)) {
 			case 'brand' :
 				
 				break;
 			case 'product' :
-				
+
+				$browser = new \Openstore\Catalog\Browser\Product($this->adapter);
 				break;
 			case 'category' :
 				

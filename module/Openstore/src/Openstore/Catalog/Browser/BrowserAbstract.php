@@ -10,6 +10,7 @@ use Zend\Db\Sql\Sql;
 
 use Smart\Data\Store\Adapter\ZendDbSqlSelect;
 
+
 abstract class BrowserAbstract implements AdapterAwareInterface 
 {
 	/**
@@ -68,9 +69,6 @@ abstract class BrowserAbstract implements AdapterAwareInterface
 	 */
 	function getStore(SearchParams $params=null)
 	{
-		if ($params === null) {
-			$params = $this->getDefaultParams();
-		}
 		$select = $this->getSelect($params);
 		$store = new ZendDbSqlSelect(['select'  => $select,
 									  'adapter' => $this->adapter]);
