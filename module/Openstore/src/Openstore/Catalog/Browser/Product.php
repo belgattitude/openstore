@@ -97,6 +97,13 @@ class Product extends BrowserAbstract
 	}	
 	
 	
+	function setLimit($limit=0, $offset=null) 
+	{
+		$this->limit = $limit;
+		$this->offset = $offset;
+		return $this;
+	}
+	
 	
 	/**
 	 * 

@@ -72,6 +72,13 @@ abstract class BrowserAbstract implements AdapterAwareInterface
 		$select = $this->getSelect($params);
 		$store = new ZendDbSqlSelect(['select'  => $select,
 									  'adapter' => $this->adapter]);
+		if ($this->limit !== null) {
+			$store->getOptions()->setLimit($this->limit);
+		}
+		if ($this->offset !== null) {
+			$store->getOptions()->setOffset($this->offset);
+		}
+		
 		return $store;
 	}
 	

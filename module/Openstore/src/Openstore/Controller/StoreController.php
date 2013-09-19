@@ -133,13 +133,10 @@ class StoreController extends AbstractActionController
 							'categories' => $searchParams->getCategories()
 						)
 				)
-				->addSearchFilter($searchParams->getFilter());
-
+				->addSearchFilter($searchParams->getFilter())
+				->setLimit($searchParams->getLimit(), ($searchParams->getPage() - 1) * $searchParams->getLimit());
+		
 		$productStore = $productBrowser->getStore();
-
-		$productStore->getOptions()->setLimit($searchParams->getLimit())
-				->setOffset(($searchParams->getPage() - 1) * $searchParams->getLimit());
-
 		$view->products = $productStore->getData();
 
 
