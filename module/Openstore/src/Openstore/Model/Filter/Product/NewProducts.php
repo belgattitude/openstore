@@ -1,36 +1,32 @@
 <?php
-
-namespace Openstore\Catalog\Browser\ProductFilter;
-
-
-use Openstore\Catalog\Browser\ProductFilter\FilterAbstract;
+namespace Openstore\Model\Filter\Product;
+use Openstore\Core\Model\Browser\Filter\AbstractFilter;
 use Zend\Db\Sql\Select;
 
-class NewProducts extends FilterAbstract
+class NewProducts extends AbstractFilter
 {
 	
-	function __construct(array $params=array()) {
-		parent::__construct($params);
-		
+	public function getName() {
+		return 'new';
 	}
 	
-	
-	
 	/**
+	 * 
 	 * @param \Zend\Db\Sql\Select $select
-	 * @return \Openstore\Catalog\Browser\ProductFilter\FilterAbstract
+	 * @return \Zend\Db\Sql\Select
 	 */
-	function setConstraints(Select $select) {
-		
-		$minimum_date = $this->params['minimum_date'];
+	function filter(Select $select) {
+		//$this->getServiceLocator()->get('Openstore\Config');
+		//$config['product']['filter']['minimum_date'];
+		$minimum_date = '2012-06-01';
 		$select->where("(COALESCE(pl.new_product_min_date, '$minimum_date') <= COALESCE(ppl.activated_at, p.activated_at))");
-		return $this;
+		return $select;
 	}
 	
 	
 	/**  
 	 * @param \Zend\Db\Sql\Select $select
-	 * @return \Openstore\Catalog\Browser\ProductFilter\AllProducts
+	 * @return \Openstore\Model\Filter\Product\NewProducts
 	 */
 	function addDefaultSortClause(Select $select)
 	{
@@ -43,3 +39,5 @@ class NewProducts extends FilterAbstract
 	}
 	
 }
+	
+	

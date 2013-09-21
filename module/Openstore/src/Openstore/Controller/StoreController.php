@@ -42,27 +42,14 @@ class StoreController extends AbstractActionController
 	 */
 	protected $service;
 
-	public function __construct() {
-
-		// Setting configuration
-		$flag_new_minimum_date = date('2012-06-30');
-		ProductFilter::registerFilter('all', new \Openstore\Catalog\Browser\ProductFilter\AllProducts());
-		ProductFilter::registerFilter('new', new \Openstore\Catalog\Browser\ProductFilter\NewProducts($params = array('minimum_date' => $flag_new_minimum_date))
-		);
-		ProductFilter::registerFilter('promos', new \Openstore\Catalog\Browser\ProductFilter\PromoProducts());
-		ProductFilter::registerFilter('onstock', new \Openstore\Catalog\Browser\ProductFilter\OnstockProducts());
-		ProductFilter::registerFilter('favourite', new \Openstore\Catalog\Browser\ProductFilter\FavouriteProducts());
-	}
 
 	public function onDispatch(\Zend\Mvc\MvcEvent $e) {
 		
 		$sl = $this->getServiceLocator();
-
 		$this->adapter			= $sl->get('Zend\Db\Adapter\Adapter');
 		$this->service			= $sl->get('Openstore\Service');
 		$this->configuration	= $sl->get('Openstore\Configuration');
 		$this->permission		= $sl->get('Openstore\Permission');
-
 		parent::onDispatch($e);
 	}
 
@@ -93,6 +80,7 @@ class StoreController extends AbstractActionController
 		 * Assign other items
 		 */
 		$searchParams = new SearchParams();
+		$searchParams->setServiceLocator($this->getServiceLocator());
 		$searchParams->setLanguage($language);
 		$searchParams->setPricelist($pricelist);
 		$searchParams->setBrands($product->brand_reference);
@@ -115,7 +103,7 @@ class StoreController extends AbstractActionController
 
 
 		$view = new ViewModel();
-		$searchParams = SearchParams::createFromRequest($this->params());
+		$searchParams = SearchParams::createFromRequest($this->params(), $this->getServiceLocator());
 		$pricelist = $searchParams->getPricelist();
 		$language = $searchParams->getLanguage();
 
@@ -140,7 +128,7 @@ class StoreController extends AbstractActionController
 								'categories' => $searchParams->getCategories()
 							])
 							->setLimit($searchParams->getLimit(), $searchParams->getOffset())
-							->addFilters($searchParams->getFilters());
+							->addFilter($searchParams->getFilter());
 							
 		$view->products = $productBrowser->getStore()->getData();
 
@@ -179,7 +167,7 @@ class StoreController extends AbstractActionController
 							->setOption('depth', 1)
 							->setOption('include_empty_nodes', false)
 							->setOption('expanded_category', $searchParams->getFirstCategory())
-							->addFilters($searchParams->getFilters());
+							->addFilter($searchParams->getFilter());
 
 		$items['categories'] = $categoryBrowser->getStore()->getData();
 
@@ -192,7 +180,7 @@ class StoreController extends AbstractActionController
 								'language'	 => $language,
 								'pricelist'  => $pricelist,
 							])
-							->addFilters($searchParams->getFilters());
+							->addFilter($searchParams->getFilter());
 		
 		$items['brands'] = $brandBrowser->getStore()->getData();
 

@@ -1,7 +1,9 @@
 <?php
-
 namespace Openstore\Catalog\Helper;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
+// SHOULD BE PAGEContext UserContext ?
 class SearchParams
 {
 	/**
@@ -9,6 +11,11 @@ class SearchParams
 	 */
 	protected $params;
 	
+	/**
+	 *
+	 * @var \Zend\ServiceManager\ServiceLocatorInterface 
+	 */
+	protected $serviceLocator;
 	
 	function __construct() {
 		$this->params = new \ArrayObject();
@@ -19,8 +26,9 @@ class SearchParams
 	 * @param \Openstore\Controller\Zend\Mvc\Controller\Plugin\Params $params
 	 * @return \Openstore\Controller\searchParams
 	 */
-	static function createFromRequest(\Zend\Mvc\Controller\Plugin\Params $params) {
+	static function createFromRequest(\Zend\Mvc\Controller\Plugin\Params $params, ServiceLocatorInterface $serviceLocator) {
 		$searchParams = new SearchParams();
+		$searchParams->setServiceLocator($serviceLocator);
 		
 		if (($filter = $params->fromRoute('filter')) == '') {
 			$filter = 'all';
@@ -169,16 +177,20 @@ class SearchParams
 	function getOffset() {
 		return ($this->getPage() - 1) * $this->getLimit();
 	}
-	
+
+	/**
+	 * 
+	 * @return \Openstore\Core\Model\Browser\Filter\AbstractFilter
+	 */
 	function getFilter()
 	{
-		return $this->params['filter'];
+		$filter_name = $this->params['filter'];
+		if ($filter_name == '') $filter_name = 'all';
+		
+		return $this->getServiceLocator()->get('Openstore\Service')->getProductFilters()->getFilter($filter_name);
+		
 	}
 	
-	function getFilters() {
-		
-		return array();
-	}
 	
 	function setPage($page) {
 		
@@ -222,4 +234,23 @@ class SearchParams
 	{
 		return $this->params['sortDir'];
 	}
+	
+	/**
+	 * 
+	 * @return \Zend\ServiceManager\ServiceLocatorInterface
+	 */
+	public function getServiceLocator() {
+		return $this->serviceLocator;
+	}
+
+	/**
+	 * 
+	 * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
+	 * @return \Openstore\Core\Model\Browser\Filter\AbstractFilter
+	 */
+	public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
+		$this->serviceLocator = $serviceLocator;
+		return $this;
+	}
+	
 }

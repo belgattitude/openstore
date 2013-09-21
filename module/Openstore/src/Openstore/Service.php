@@ -4,7 +4,7 @@ namespace Openstore;
 use Zend\Db\Adapter\Adapter;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Openstore\Catalog\Filter as CatalogFilter;
+use Openstore\Catalog\ProductFilters;
 
 class Service implements ServiceLocatorAwareInterface
 {
@@ -27,6 +27,12 @@ class Service implements ServiceLocatorAwareInterface
 	 */
 	protected $adapter;
 	
+	/**
+	 *
+	 * @var \Openstore\Catatog\ProductFilters
+	 */
+	protected $productFilters;
+	
 	
 	/**
 	 * 
@@ -39,17 +45,21 @@ class Service implements ServiceLocatorAwareInterface
 	}
 	
 	
-	public function getFilters()
+	/**
+	 * 
+	 * @return \Openstore\Catalog\Browser\ProductFilter\NewProducts
+	 */
+	public function getProductFilters()
 	{
-		$flag_new_minimum_date = date('2012-06-30');
-		$filters = array(
-			'all'		=>	new \Openstore\Catalog\Browser\ProductFilter\AllProducts(),
-			'new'		=>	new \Openstore\Catalog\Browser\ProductFilter\NewProducts(array('minimum_date' => $flag_new_minimum_date)),
-			'promos'	=>	new \Openstore\Catalog\Browser\ProductFilter\PromoProducts(),
-			'onstock'	=>	new \Openstore\Catalog\Browser\ProductFilter\OnstockProducts(),
-			'favourite' =>	new \Openstore\Catalog\Browser\ProductFilter\FavouriteProducts()
-		);
-		return $filters;
+		if ($this->productFilters === null) {
+			$this->productFilters = new ProductFilters($this->serviceLocator);
+			$this->productFilters->register(new \Openstore\Model\Filter\Product\AllProducts());
+			$this->productFilters->register(new \Openstore\Model\Filter\Product\OnstockProducts());
+			$this->productFilters->register(new \Openstore\Model\Filter\Product\NewProducts());
+			$this->productFilters->register(new \Openstore\Model\Filter\Product\PromoProducts());
+			$this->productFilters->register(new \Openstore\Model\Filter\Product\FavouriteProducts());
+		}
+		return $this->productFilters;
 		
 	}
 	
