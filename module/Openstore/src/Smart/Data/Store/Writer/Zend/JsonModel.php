@@ -21,7 +21,6 @@ class JsonModel {
 	 * @return \Zend\View\Model\JsonModel
 	 */
 	function getData() {
-		
 		$data = $this->store->getData();
 		$json = new ZendJsonModel(array(
 			'success'	 => true,

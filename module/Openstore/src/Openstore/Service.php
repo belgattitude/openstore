@@ -54,6 +54,16 @@ class Service implements ServiceLocatorAwareInterface
 	}
 	
 	/**
+	 * @return \Openstore\Model\AbstractModel
+	 */
+	function getModel($name) {
+		$model = $this->serviceLocator->get($name);
+		$model->setDbAdapter($this->adapter);
+		$model->setServiceLocator($this->serviceLocator);
+		return $model;
+	}
+	
+	/**
 	 * 
 	 * @param Openstore\Catalog\BrowserAbstract
 	 */

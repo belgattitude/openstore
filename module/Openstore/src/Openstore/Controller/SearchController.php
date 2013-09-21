@@ -26,6 +26,8 @@ use Zend\Stdlib\Hydrator;
 
 use Smart\Data\Store\Adapter\ZendDbSqlSelect;
 
+use Openstore\Model\Product;
+
 
 class SearchController extends AbstractActionController
 {
@@ -61,44 +63,108 @@ class SearchController extends AbstractActionController
 		die('searchcontroller');
 	}
 	
+	public function testAction() {
+
+
+		$searchParams = SearchParams::createFromRequest($this->params());
+		
+		
+		/*
+		$sl = $this->getServiceLocator();
+		$adapter = $sl->get('Zend\Db\Adapter\Adapter');
+		
+		$product = new Product($sl, $adapter);
+		*/
+		$product = $this->getServiceLocator()->get('Openstore\Service')->getModel('Model\Product');
+		$browser = $product->getBrowser()->setSearchParams(
+							[
+								'query' => 'SW201',
+								'pricelist' => 'FR',
+								'language' => 'en'
+							])
+							->setLimit(10, $offset=0)
+							->setColumns(
+								array(
+									'product_id'		=> new Expression('p.product_id'),
+									'reference'			=> new Expression('p.reference'),
+									'brand_title'		=> new Expression('pb.title'),
+									'category_reference'=> new Expression('pc.reference'),
+									'category_title'	=> new Expression('COALESCE(pc18.title, pc.title)'),
+									'title'				=> new Expression('COALESCE(p18.title, p.title)'),
+									'invoice_title'		=> new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
+								)						
+							);
+							//->addFilter('promos');
+							
+		
+		
+		$store = $browser->getStore();
+		
+		$writer = new \Smart\Data\Store\Writer\Json($store);
+		$json = $writer->send();
+		
+		return $json;
+		
+		var_dump($store->getData());
+		die();
+		
+		die('cool');
+		
+		/*
+		$product = new Searchable\Product();
+		$configuration = new Searchable\Configuration();
+		$configuration->setAdapter();
+		$configuration->setServiceLocator();
+		$product->setConfiguration();	
+		
+		$store = $product->search()->setSearchParams()
+								   ->addFilter()
+								   ->addPlugin()
+						           ->setLimit()
+						           ->setColumns()
+						           ->getStore();
+						  
+		*/
+	}
+	
 	
 	public function productAction()
 	{
 		$searchParams = SearchParams::createFromRequest($this->params());
 		
-		$sl	= $this->getServiceLocator();
-		$productBrowser = $sl->get('Openstore\Service')->getBrowser('product')
-				->setSearchParams(
-						array(
-							'query' => $searchParams->getQuery(),
-							'language' => $searchParams->getLanguage(),
-							'pricelist' => $searchParams->getPricelist(),
-							'brands' => $searchParams->getBrands(),
-							'categories' => $searchParams->getCategories()
-						)
-				)
-				->addSearchFilter($searchParams->getFilter())
-				->setColumns(
-						array(
-							'product_id'		=> new Expression('p.product_id'),
-							'reference'			=> new Expression('p.reference'),
-							'brand_title'		=> new Expression('pb.title'),
-							'category_reference'=> new Expression('pc.reference'),
-							'category_title'	=> new Expression('COALESCE(pc18.title, pc.title)'),
-							'title'				=> new Expression('COALESCE(p18.title, p.title)'),
-							'invoice_title'		=> new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
-							'flag_new'			=> new Expression("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.activated_at, p.activated_at))"),
-							'promo_discount'	=> new Expression('ppl.promo_discount'),
-						)						
-				);
-		$store = $productBrowser->getStore();
+		/*
+		$sl = $this->getServiceLocator();
+		$adapter = $sl->get('Zend\Db\Adapter\Adapter');
 		
-		$store->getOptions()->setLimit($searchParams->getLimit())
-							->setOffset(($searchParams->getPage() - 1) * $searchParams->getLimit());
+		$product = new Product($sl, $adapter);
+		*/
+		$product = $this->getServiceLocator()->get('Openstore\Service')->getModel('Model\Product');
+		$browser = $product->getBrowser()->setSearchParams(
+							[
+								'query' => $searchParams->getQuery(),
+								'pricelist' => $searchParams->getPricelist(),
+								'language' => $searchParams->getLanguage()
+							])
+							->setLimit(20, $offset=0)
+							->setColumns(
+								array(
+									'product_id'		=> new Expression('p.product_id'),
+									'reference'			=> new Expression('p.reference'),
+									'brand_title'		=> new Expression('pb.title'),
+									'category_reference'=> new Expression('pc.reference'),
+									'category_title'	=> new Expression('COALESCE(pc18.title, pc.title)'),
+									'title'				=> new Expression('COALESCE(p18.title, p.title)'),
+									'invoice_title'		=> new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
+								)						
+							);
+							//->addFilter('promos');
+							
 		
-		$writer = new \Smart\Data\Store\Writer\Zend\JsonModel($store);
-		$json = $writer->getData();
-        return $json;
+		
+		$store = $browser->getStore();
+		
+		$writer = new \Smart\Data\Store\Writer\Json($store);
+		$json = $writer->send();
 	}
 
 	

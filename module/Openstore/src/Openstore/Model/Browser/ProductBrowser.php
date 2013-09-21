@@ -1,127 +1,42 @@
 <?php
-/**
- * 
- */
-namespace Openstore\Catalog\Browser;
+namespace Openstore\Model\Browser;
 
-use Openstore\Catalog\Browser\SearchParams\SearchParamsAbstract as SearchParams; 
-use Openstore\Catalog\Browser\ProductFilter;
+use Openstore\Core\Model\Browser\AbstractBrowser;
+//use Openstore\Catalog\Browser\SearchParams\SearchParamsAbstract as SearchParams; 
+//use Openstore\Catalog\Browser\ProductFilter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
 
 
-class Product extends BrowserAbstract
-{
-	/**
-	 *
-	 * @var \Opensstore\Catalog\Browser\SearchParams\Product
-	 */
-	protected $searchParams;
-	
-	/**
-	 *
-	 * @var type 
-	 */
-	protected $searchFilters;
+class ProductBrowser extends AbstractBrowser {
 	
 	
 	/**
-	 * @var array 
+	 * @return array
 	 */
-	protected $columns;
-	
-	/**
-	 * 
-	 * @param \Zend\Db\Adapter\Adapter $adapter
-	 * @param \Openstore\Catalog\Filter $filter
-	 */
-	function __construct(Adapter $adapter)
-	{
-		$this->setDbAdapter($adapter);
-		$this->searchFilters = new \ArrayObject();
-		$this->columns = null;
+	function getSearchableParams() {
+		return array(
+			'language'		=> array('required' => true),
+			'pricelist'		=> array('required' => true),
+			'query'			=> array('required' => false),
+			'brands'		=> array('required' => false),
+			'categories'	=> array('required' => false),
+			'id'			=> array('required' => false)
+		);
 	}
 	
 	/**
 	 * 
-	 * @param array $columns
-	 * @return \Openstore\Catalog\Browser\Product
-	 */
-	function setColumns(array $columns)
-	{
-		$this->columns = $columns;
-		return $this;
-	}
-	/** 
-	 * 
-	 * @param array $params
-	 */
-	function setSearchParams(array $params)
-	{
-		$searchParams = $this->getDefaultParams();
-		$searchParams->setBrands($params['brands']);
-		$searchParams->setQuery($params['query']);
-		$searchParams->setCategories($params['categories']);
-		$searchParams->setLanguage($params['language']);
-		$searchParams->setPricelist($params['pricelist']);
-		$this->searchParams = $searchParams;
-		return $this;
-	}
-	
-	function getSearchParams()
-	{
-		return $this->searchParams;
-	}
-	
-	/**
-	 * 
-	 * @param type $filter
-	 */
-	function addSearchFilter($filter)
-	{
-		$this->searchFilters = $filter;
-		return $this;
-	}
-	
-	function getSearchFilters()
-	{
-		return $this->searchFilters;
-	}
-	
-	/**
-	 * 
-	 * @return \Openstore\Catalog\Browser\SearchParams\Product
-	 */
-	function getDefaultParams()
-	{
-		$params = new \Openstore\Catalog\Browser\SearchParams\Product();		
-		
-		return $params;
-	}	
-	
-	
-	function setLimit($limit=0, $offset=null) 
-	{
-		$this->limit = $limit;
-		$this->offset = $offset;
-		return $this;
-	}
-	
-	
-	/**
-	 * 
-	 * @param \Openstore\Catalog\Browser\SearchParams\Product $params
 	 * @return \Zend\Db\Sql\Select
 	 */
-	function getSelect(SearchParams $params=null)
+	function getSelect()
 	{
-		
-		if ($params === null) $params = $this->getSearchParams();
+		$params = $this->getSearchParams();
 	
-		$lang = $params->getLanguage();
-		$pricelist = $params->getPricelist();
+		$lang		= $params->get('language');
+		$pricelist	= $params->get('pricelist');
 		
 		$select = new Select();
 		$select->from(array('p' => 'product'), array('product_id', 'category_id'))
@@ -159,14 +74,16 @@ class Product extends BrowserAbstract
 		// Interface Filterable
 		
 		//Searchable/Filterable
-		
+/*		
 		$productFilter = ProductFilter::getFilter($params->getFilter());
 		if ($productFilter !== null) {
 			$productFilter->setConstraints($select);
 			$productFilter->addDefaultSortClause($select);
 		}
+ * 
+ 
 		$flag_new_min_date = ProductFilter::getParam('flag_new_minimum_date');
-		
+*/		
 		if ($this->columns !== null && is_array($this->columns)) {
 			$select->columns($this->columns);
 		} else {
@@ -197,12 +114,12 @@ class Product extends BrowserAbstract
 		
 		$select->limit(50);
 
-		$product_id = $params->getId();
+		$product_id = $params->get('id');
 		if ($product_id != '') {
 			$select->where("p.product_id = $product_id");
 		}
 		
-		$brands = $params->getBrands();
+		$brands = $params->get('brands');
 		if (count($brands) > 0) {
 			$brand_clauses = array();
 			foreach($brands as $brand_reference) {
@@ -211,7 +128,7 @@ class Product extends BrowserAbstract
 			$select->where('(' . join(' OR ', $brand_clauses) . ')');
 		}
 		
-		$categories = $params->getCategories();
+		$categories = $params->get('categories');
 		if ($categories !== null && count($categories) > 0) {
 			
 			$sql = new Sql($this->adapter);
@@ -235,15 +152,15 @@ class Product extends BrowserAbstract
 			}
 		}
 		
-		if (($query = trim($params->getQuery())) != "") {
-			
+		if (($query = trim($params->get('query'))) != "") {
+			$platform = $this->adapter->getPlatform();
 			$query = str_replace(' ', '%', trim($query));				
-			$q = $this->adapter->getPlatform()->quoteValue($query . '%');
-			$select->where("p.reference like $q");
+			$qRef = $platform->quoteValue($query . '%');
+			$qTitle = $platform()->quoteValue('%' . $query . '%');
+			$select->where("(p.reference like $qRef or p.title like $qTitle or p18.title like $qTitle)");
 		}
 		
 		return $select;
 	}
 	
-		
 }
