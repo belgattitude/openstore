@@ -70,18 +70,9 @@ class ProductBrowser extends AbstractBrowser {
 				->where('ppl.flag_active = 1')
 				->where("pl.reference = '$pricelist'");
 
-		// Interface Searchable
-		// Interface Filterable
+		$this->assignFilters($select);
 		
-		//Searchable/Filterable
-/*		
-		$productFilter = ProductFilter::getFilter($params->getFilter());
-		if ($productFilter !== null) {
-			$productFilter->setConstraints($select);
-			$productFilter->addDefaultSortClause($select);
-		}
- * 
- 
+		/* 
 		$flag_new_min_date = ProductFilter::getParam('flag_new_minimum_date');
 */		
 		if ($this->columns !== null && is_array($this->columns)) {
@@ -112,7 +103,6 @@ class ProductBrowser extends AbstractBrowser {
 			), true);
 		}
 		
-		$select->limit(50);
 
 		$product_id = $params->get('id');
 		if ($product_id != '') {
@@ -156,7 +146,7 @@ class ProductBrowser extends AbstractBrowser {
 			$platform = $this->adapter->getPlatform();
 			$query = str_replace(' ', '%', trim($query));				
 			$qRef = $platform->quoteValue($query . '%');
-			$qTitle = $platform()->quoteValue('%' . $query . '%');
+			$qTitle = $platform->quoteValue('%' . $query . '%');
 			$select->where("(p.reference like $qRef or p.title like $qTitle or p18.title like $qTitle)");
 		}
 		

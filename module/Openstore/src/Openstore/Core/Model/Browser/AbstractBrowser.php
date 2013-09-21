@@ -9,12 +9,17 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 use Openstore\Core\Model\AbstractModel;
 use Openstore\Core\Model\Browser\SearchableInterface;
+use Openstore\Core\Model\Browser\FilterableInterface;
+use Openstore\Core\Model\Browser\Filter\FilterInterface;
 use Openstore\Core\Model\Browser\Search\Params;
+
+use Zend\Db\Sql\Select;
 
 use Smart\Data\Store\Adapter\ZendDbSqlSelect;
 
 
-abstract class AbstractBrowser implements SearchableInterface, ServiceLocatorAwareInterface, AdapterAwareInterface {
+abstract class AbstractBrowser implements SearchableInterface, 
+		FilterableInterface, ServiceLocatorAwareInterface, AdapterAwareInterface {
 	
 	/**
 	 *
@@ -104,6 +109,50 @@ abstract class AbstractBrowser implements SearchableInterface, ServiceLocatorAwa
 	 */
 	abstract protected function getSelect();
 
+	
+	/**
+	 * @param \Zend\Db\Sql\Select
+	 * @return \Zend\Db\Sql\Select
+	 */
+	protected function assignFilters(Select $select)
+	{
+		$filters = $this->getFilters();
+		foreach($filters as $filter) {
+			$filter->filter($select);			
+		}
+		return $select;
+	}
+	
+	/**
+	 * @return array
+	 */
+	function getFilters() {
+		if ($this->filters === null) $this->filters = array();
+		return $this->filters;
+	}
+	
+	/**
+	 * @param array $filters
+	 * @return \Openstore\Core\Model\Browser\AbstractBrowser
+	 */
+	function addFilters(array $filters) {
+		foreach ($filters as $filter) {
+			$this->addFilter($filter);
+		}
+		return $this;
+	}
+	
+	/**
+	 * 
+	 * @param \Openstore\Core\Model\Browser\Filter\FilterInterface $filter
+	 * @return \Openstore\Core\Model\Browser\AbstractBrowser
+	 */
+	function addFilter(FilterInterface $filter) {
+		if ($this->filters === null) $this->filters = array();
+		$this->filters[] = $filter;
+		return $this;
+	}
+	
 	
 	/**
 	 * @param array $columns

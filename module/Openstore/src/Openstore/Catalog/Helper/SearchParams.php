@@ -171,6 +171,11 @@ class SearchParams
 		return $this->params['filter'];
 	}
 	
+	function getFilters() {
+		
+		return array();
+	}
+	
 	function setPage($page) {
 		
 		$this->params['page'] = $page;

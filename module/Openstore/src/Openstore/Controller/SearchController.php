@@ -132,12 +132,6 @@ class SearchController extends AbstractActionController
 	{
 		$searchParams = SearchParams::createFromRequest($this->params());
 		
-		/*
-		$sl = $this->getServiceLocator();
-		$adapter = $sl->get('Zend\Db\Adapter\Adapter');
-		
-		$product = new Product($sl, $adapter);
-		*/
 		$product = $this->getServiceLocator()->get('Openstore\Service')->getModel('Model\Product');
 		$browser = $product->getBrowser()->setSearchParams(
 							[
@@ -156,11 +150,9 @@ class SearchController extends AbstractActionController
 									'title'				=> new Expression('COALESCE(p18.title, p.title)'),
 									'invoice_title'		=> new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
 								)						
-							);
-							//->addFilter('promos');
+							)
+							->addFilters($searchParams->getFilters());
 							
-		
-		
 		$store = $browser->getStore();
 		
 		$writer = new \Smart\Data\Store\Writer\Json($store);
@@ -170,29 +162,22 @@ class SearchController extends AbstractActionController
 	
 	public function brandAction()
 	{
-		$pricelist = $this->params()->fromRoute('pricelist');
-		$language  = $this->params()->fromRoute('ui_language');
-		
 		$searchParams = SearchParams::createFromRequest($this->params());
-		/*
-		$options = array(
-			'query' => $this->params()->fromQuery('query')
-		);*/
-		$brandBrowser	= new \Openstore\Catalog\Browser\Brand($this->adapter);
-		$brandParams = new \Openstore\Catalog\Browser\SearchParams\Brand();
-		$brandParams->setQuery($this->params()->fromQuery('query'));
-		$brandParams->setLanguage($language);
-		$brandParams->setPricelist($pricelist);
-		$store = $brandBrowser->getStore($brandParams);
-		$store->getOptions()->setLimit($searchParams->getLimit())
-							->setOffset(($searchParams->getPage() - 1) * $searchParams->getLimit());
-
 		
-		$writer = new \Smart\Data\Store\Writer\Zend\JsonModel($store);
-		$json = $writer->getData();
+		$brand = $this->getServiceLocator()->get('Openstore\Service')->getModel('Model\Brand');
+		$browser = $brand->getBrowser()->setSearchParams(
+							[
+								'query' => $searchParams->getQuery(),
+								'pricelist' => $searchParams->getPricelist(),
+								'language' => $searchParams->getLanguage()
+							])
+							->setLimit(20, $offset=0)
+							->addFilters($searchParams->getFilters());
+							
+		$store = $browser->getStore();
 		
-        return $json;
-		
+		$writer = new \Smart\Data\Store\Writer\Json($store);
+		$json = $writer->send();
 	}	
 
 	/**

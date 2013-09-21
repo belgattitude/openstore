@@ -153,9 +153,10 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
                 //'ZendDeveloperTools\ReportInterface' => 'ZendDeveloperTools\Report',
             ),
             'invokables' => array(
-                'Model\Product'		=> 'Openstore\Model\Product',
-				
-				
+                'Model\Product'				=> 'Openstore\Model\Product',
+				'Model\Category'			=> 'Openstore\Model\Category',
+				'Model\Brand'				=> 'Openstore\Model\Brand',
+				'Model\ProductSerie'		=> 'Openstore\Model\ProductSerie',
             ),
             'factories' => array(
                 'Openstore\Configuration'	=> 'Openstore\ConfigurationFactory',
