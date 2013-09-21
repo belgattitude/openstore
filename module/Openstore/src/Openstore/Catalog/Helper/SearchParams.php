@@ -166,6 +166,10 @@ class SearchParams
 		
 	}
 	
+	function getOffset() {
+		return ($this->getPage() - 1) * $this->getLimit();
+	}
+	
 	function getFilter()
 	{
 		return $this->params['filter'];

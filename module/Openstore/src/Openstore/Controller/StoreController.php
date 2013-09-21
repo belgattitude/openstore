@@ -77,17 +77,24 @@ class StoreController extends AbstractActionController
 
 		// Include product browser
 
-
-		$productBrowser = new \Openstore\Catalog\Browser\Product($this->adapter, $this->getFilter());
-		$productParams = new \Openstore\Catalog\Browser\SearchParams\Product();
-		$productParams->setId($this->params()->fromRoute('product_id'));
-		$productParams->setLanguage($language);
-		$productParams->setPricelist($pricelist);
-		$store = $productBrowser->getStore($productParams);
-		$product = $store->getData()->current();
+		$product = $this->service->getModel('Model\Product');
+		$productBrowser = $product->getBrowser()->setSearchParams(
+							[
+								'id'		 => $this->params()->fromRoute('product_id'),
+								'language'	 => $language,
+								'pricelist'  => $pricelist,
+							]);
+							
+		$product = $productBrowser->getStore()->getData()->current();
 		$view->product = $product;
 
+		
+		/**
+		 * Assign other items
+		 */
 		$searchParams = new SearchParams();
+		$searchParams->setLanguage($language);
+		$searchParams->setPricelist($pricelist);
 		$searchParams->setBrands($product->brand_reference);
 		$searchParams->setCategories($product->category_reference);
 
@@ -98,8 +105,8 @@ class StoreController extends AbstractActionController
 		// Setting other variables
 		$view->searchParams = $searchParams;
 
-		$catBrowser = new \Openstore\Catalog\Browser\Category($this->adapter, $this->getFilter());
-		$view->category_breadcrumb = $catBrowser->getAncestors($searchParams->getFirstCategory());
+		$category = $this->service->getModel('Model\Category');
+		$view->category_breadcrumb = $category->getAncestors($searchParams->getFirstCategory(), $language);
 
 		return $view;
 	}
@@ -107,95 +114,90 @@ class StoreController extends AbstractActionController
 	public function browseAction() {
 
 
-
-
-		$pricelist = $this->params()->fromRoute('pricelist');
-		$language = $this->params()->fromRoute('ui_language');
-
 		$view = new ViewModel();
 		$searchParams = SearchParams::createFromRequest($this->params());
+		$pricelist = $searchParams->getPricelist();
+		$language = $searchParams->getLanguage();
 
+		
 		$this->layout()->search_keywords = $searchParams->getQuery();
 
-		$browser_items = $this->getBrowserItems($searchParams);
-
-		$view->categories = $browser_items['categories'];
-		$view->brands = $browser_items['brands'];
-
-
-		$productBrowser = $this->service->getBrowser('product')
-				->setSearchParams(
-						array(
-							'query'		 => $searchParams->getQuery(),
-							'language'	 => $language,
-							'pricelist'  => $pricelist,
-							'brands'	 => $searchParams->getBrands(),
-							'categories' => $searchParams->getCategories()
-						)
-				)
-				->addSearchFilter($searchParams->getFilter())
-				->setLimit($searchParams->getLimit(), ($searchParams->getPage() - 1) * $searchParams->getLimit());
+		$browserItems = $this->getBrowserItems($searchParams);
+		$view->categories = $browserItems['categories'];
+		$view->brands = $browserItems['brands'];
 		
-		$productStore = $productBrowser->getStore();
-		$view->products = $productStore->getData();
+		
+		/**
+		 * Product Browser
+		 */
+		$product = $this->service->getModel('Model\Product');
+		$productBrowser = $product->getBrowser()->setSearchParams(
+							[
+								'query'		 => $searchParams->getQuery(),
+								'language'	 => $language,
+								'pricelist'  => $pricelist,
+								'brands'	 => $searchParams->getBrands(),
+								'categories' => $searchParams->getCategories()
+							])
+							->setLimit($searchParams->getLimit(), $searchParams->getOffset())
+							->addFilters($searchParams->getFilters());
+							
+		$view->products = $productBrowser->getStore()->getData();
 
-
-		$catBrowser = new \Openstore\Catalog\Browser\Category($this->adapter, $this->getFilter());
-		$view->category_breadcrumb = $catBrowser->getAncestors($searchParams->getFirstCategory(), $language);
+		/**
+		 * Breadcrumb
+		 */
+		$category = $this->service->getModel('Model\Category');
+		$view->category_breadcrumb = $category->getAncestors($searchParams->getFirstCategory(), $language);
 
 		// Setting other variables
 		$view->searchParams = $searchParams;
 
 		return $view;
 	}
-
+	
+	
 	protected function getBrowserItems($searchParams) {
 
 		$items = array();
-		// 1. get Categories
+		
 
-		$pricelist = $this->params()->fromRoute('pricelist');
-		$language = $this->params()->fromRoute('ui_language');
+		$language = $searchParams->getLanguage();
+		$pricelist = $searchParams->getPricelist();
 
 
-		$categoryBrowser = new \Openstore\Catalog\Browser\Category($this->adapter, $this->getFilter());
-		$categoryParams = new \Openstore\Catalog\Browser\SearchParams\Category();
-		$categoryParams->setLanguage($language);
-		$categoryParams->setPricelist($pricelist);
-		$categoryParams->setIncludeEmptyNodes($include_empty_nodes = false);
-		$categoryParams->setDepth($depth = 1);
-		//$categoryParams->setFilter($searchParams->getFilter());
-		$categoryParams->setBrands($searchParams->getBrands());
-		$categoryParams->setExpandedCategory($searchParams->getFirstCategory());
-		/*
-		  echo '<pre>';
-		  var_dump($categoryBrowser->getData($categoryParams)->toArray()); die();
+		/**
+		 * Category browser
 		 */
+		$category = $this->service->getModel('Model\Category');
+		$categoryBrowser = $category->getBrowser()->setSearchParams(
+							[
+								'language'	 => $language,
+								'pricelist'  => $pricelist,
+								'brands'	 => $searchParams->getBrands()
+							])
+							->setOption('depth', 1)
+							->setOption('include_empty_nodes', false)
+							->setOption('expanded_category', $searchParams->getFirstCategory())
+							->addFilters($searchParams->getFilters());
 
-		$items['categories'] = $categoryBrowser->getData($categoryParams);
+		$items['categories'] = $categoryBrowser->getStore()->getData();
 
-
-		// 2. get Brands
-		$brandBrowser = new \Openstore\Catalog\Browser\Brand($this->adapter, $this->getFilter());
-		$brandParams = new \Openstore\Catalog\Browser\SearchParams\Brand();
-		$brandParams->setLanguage($language);
-		$brandParams->setPricelist($pricelist);
-		//$brandParams->setFilter($searchParams->getFilter());
-		//$brandParams->setCategories($searchParams->getCategories());
-		$items['brands'] = $brandBrowser->getData($brandParams);
+		/**
+		 * Brand browser
+		 */
+		$brand = $this->service->getModel('Model\Brand');
+		$brandBrowser = $brand->getBrowser()->setSearchParams(
+							[
+								'language'	 => $language,
+								'pricelist'  => $pricelist,
+							])
+							->addFilters($searchParams->getFilters());
+		
+		$items['brands'] = $brandBrowser->getStore()->getData();
 
 		return $items;
 	}
 
-	/**
-	 * 
-	 * @return \Openstore\Catalog\Filter
-	 */
-	protected function getFilter() {
-		//$pricelist = $this->params()->fromRoute('pricelist');
-		//$language  = $this->params()->fromRoute('ui_language');
-		//var_dump($language . '_' . $pricelist);
-		return new \Openstore\Catalog\Filter();
-	}
 
 }
