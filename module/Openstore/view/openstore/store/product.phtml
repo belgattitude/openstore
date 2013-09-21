@@ -4,7 +4,7 @@
 ?>
 <div class="row">
 	<div class="col-md-12">
-		<?php $browse_filter = $this->searchParams->getFilter() ?>
+		<?php $browse_filter = $this->searchParams->getFilter()->getName(); ?>
 		<ul class="nav nav-tabs">
 			<li <?= ($browse_filter == '' || $browse_filter == 'all') ? 'class="active"' : '' ?>>
 				<a href="<?= $this->url('store/browse', array('page' => 1, 'filter' => null)); ?>">All products</a>
