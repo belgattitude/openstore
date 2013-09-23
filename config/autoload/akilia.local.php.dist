@@ -1,0 +1,33 @@
+<?php
+return array(
+	/**
+	 * Configuration for Akilia
+	 */
+	'akilia' => array(
+		
+		/**
+		 * Synchronizer settings
+		 */
+		'synchronizer' => array(
+			/**
+			 * Akilia2 database name
+			 */
+			'db_akilia2' => '',
+			
+			/**
+			 * Akilia1 database name
+			 */
+			'db_akilia1' => '',
+			
+			/**
+			 * Map of languages between lang code and akilia1 column suffixes
+			 */
+			'akilia1_language_map' => 	array(
+				'fr' => '_1',
+				'en' => '_3',
+				'nl' => '_2',
+				'de' => '_4'
+			)				
+		)
+	),
+);

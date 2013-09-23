@@ -54,23 +54,18 @@ class Synchronizer
 	function __construct(\Doctrine\ORM\EntityManager $em, \Zend\Db\Adapter\Adapter $zendDb)
 	{
 		$this->em = $em;
-		$this->akilia2Db = 'akilia2_emd';
-		$this->akilia1Db = 'emd00';
-		$this->akilia1lang = array(
-			'fr' => '_1',
-			'en' => '_3',
-			'nl' => '_2',
-			'de' => '_4'
-		);
-		
+
 		$this->openstoreDb = $em->getConnection()->getDatabase();
 		$this->mysqli = $em->getConnection()->getWrappedConnection()->getWrappedResourceHandle();
 		$this->zendDb = $zendDb;
 		$this->legacy_synchro_at = date('Y-m-d H:i:s');
 		
-		
-		
-		
+	}
+	
+	function setConfiguration(array $config) {
+		$this->akilia2Db	= $config['db_akilia2'];
+		$this->akilia1Db	= $config['db_akilia1'];
+		$this->akilia1lang	= $config['akilia1_language_map'];
 	}
 	
 	

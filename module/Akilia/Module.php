@@ -79,8 +79,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 		
 		$config = array_merge(
 				include __DIR__ . '/config/module.config.php',
-				include __DIR__ . '/config/routes.config.php',
-				include __DIR__ . '/config/akilia.config.php'
+				include __DIR__ . '/config/routes.config.php'
 		);
 		return $config;
 	}
