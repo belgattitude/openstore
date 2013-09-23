@@ -9,7 +9,7 @@ use Openstore\ConfigurationAwareInterface;
 use Openstore\Catalog\ProductFilters;
 
 
-class Service implements ServiceLocatorAwareInterface, AdapterAwareInterface, ConfigurationAwareInterface
+class PriceManager implements ServiceLocatorAwareInterface, AdapterAwareInterface, ConfigurationAwareInterface
 {
 	/**
 	 * @var ServiceLocatorInterface
@@ -30,12 +30,6 @@ class Service implements ServiceLocatorAwareInterface, AdapterAwareInterface, Co
 	 */
 	protected $adapter;
 	
-	/**
-	 *
-	 * @var \Openstore\Catatog\ProductFilters
-	 */
-	protected $productFilters;
-	
 	
 	/**
 	 * 
@@ -48,33 +42,7 @@ class Service implements ServiceLocatorAwareInterface, AdapterAwareInterface, Co
 	}
 	
 	
-	/**
-	 * 
-	 * @return \Openstore\Catalog\Browser\ProductFilter\NewProducts
-	 */
-	public function getProductFilters()
-	{
-		if ($this->productFilters === null) {
-			$this->productFilters = new ProductFilters($this->serviceLocator);
-			$this->productFilters->register(new \Openstore\Model\Filter\Product\AllProducts());
-			$this->productFilters->register(new \Openstore\Model\Filter\Product\OnstockProducts());
-			$this->productFilters->register(new \Openstore\Model\Filter\Product\NewProducts());
-			$this->productFilters->register(new \Openstore\Model\Filter\Product\PromoProducts());
-			$this->productFilters->register(new \Openstore\Model\Filter\Product\FavouriteProducts());
-		}
-		return $this->productFilters;
-		
-	}
 	
-	/**
-	 * @return \Openstore\Model\AbstractModel
-	 */
-	function getModel($name) {
-		$model = $this->serviceLocator->get($name);
-		$model->setDbAdapter($this->adapter);
-		$model->setServiceLocator($this->serviceLocator);
-		return $model;
-	}
 	
 	
 	/**
@@ -99,7 +67,7 @@ class Service implements ServiceLocatorAwareInterface, AdapterAwareInterface, Co
 	/**
 	 * 
 	 * @param \Zend\Db\Adapter\Adapter $adapter
-	 * @return \Openstore\Service
+	 * @return \Openstore\Catalog\PriceManager
 	 */
 	public function setDbAdapter(Adapter $adapter) {
 		$this->adapter = $adapter;
@@ -119,7 +87,7 @@ class Service implements ServiceLocatorAwareInterface, AdapterAwareInterface, Co
 	/**
 	 * 
 	 * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
-	 * @return \Openstore\Service
+	 * @return \Openstore\Catalog\PriceManager
 	 */
     public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
     {

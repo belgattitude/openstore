@@ -11,6 +11,7 @@
 	"require": {
 		"php": ">=5.4.4",
 		"zendframework/zendframework": "2.2.*",
+		"belgattitude/smartcomponents": "dev-master",
         "doctrine/orm": "2.4.*",
         "doctrine/dbal": "2.4.*",
         "doctrine/common": "2.4.*",		
@@ -30,6 +31,7 @@
 		"ezyang/htmlpurifier": ">=4.5.0",
 		"neilime/zf2-twb-bundle": "dev-master",
 		 "ghislainf/zf2-whoops": "dev-master"
+		 
 	}
 }
 

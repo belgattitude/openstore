@@ -77,6 +77,9 @@ $image_baseurl = "http://akilia2.emdmusic.com/medias/products/dynamic/";
 			</div>
 		</div>				
 
+		
+		
+		
 		<?php
 		echo $this->partial('snippets/breadcrumb_control', array(
 			'category_breadcrumb' => $this->category_breadcrumb,
@@ -84,6 +87,75 @@ $image_baseurl = "http://akilia2.emdmusic.com/medias/products/dynamic/";
 			'brands' => $this->brands
 		))
 		?>
+		
+		
+<div class="panel panel-primary">
+  <div class="panel-body" style="padding: 1px ">
+		<div class="btn-group btn-group-sm">
+		  <button type="button" class="btn btn-default dropdown-toggle  btn-navbar" data-toggle="dropdown">
+			Action <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu" role="menu">
+			<li><a href="#">Action</a></li>
+			<li><a href="#">Another action</a></li>
+			<li><a href="#">Something else here</a></li>
+			<li class="divider"></li>
+			<li><a href="#">Separated link</a></li>
+		  </ul>
+		</div>	  
+		<div class="pull-right">
+				<form role="search" class="navbar-form">
+					<div class="input-group input-group-sm">
+						<input type="text" class="form-control" placeholder="Filter" name="filter">
+						<div class="input-group-btn">
+							<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+						</div>
+					</div>
+				</form>
+		</div>
+	  
+		<div class="pull-right">
+				<form role="search"  class="navbar-form">
+					<div class="input-group input-group-sm">
+						<input type="text" class="form-control" placeholder="Filter" name="filter">
+						<div class="input-group-btn">
+							<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+						</div>
+					</div>
+				</form>
+		</div>
+
+  </div>
+  
+</div>
+		
+<div class="row"">
+	<div class="col-md-12">
+
+		<div class="navbar navbar-inverse" role="navigation">
+
+
+			<div class="collapse navbar-collapse navbar-ex1-collapse">
+				<!--
+				<ul class="nav navbar-nav navbar-">
+					<li><a href="/topic/notes/">/notes</a></li>
+				</ul>
+				-->
+							<div class="col-sm-4 col-md-4 pull-right">
+								<form class="navbar-form" role="search">
+									<div class="input-group input-group-sm">
+										<input type="text" class="form-control" placeholder="Filter" name="filter">
+										<div class="input-group-btn">
+											<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+										</div>
+									</div>
+								</form>
+							</div>
+
+			</div>
+		</div>		
+	</div>
+</div>
 		<!--<div class="row">	-->
 		<?php foreach ($this->products as $idx => $product) : ?>
 			<?php

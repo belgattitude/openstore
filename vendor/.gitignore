@@ -1,6 +1,7 @@
 !.gitignore
 .composer
 composer
+belgattitude
 bjyoungblood
 doctrine
 doctrine/data-fixtures/*

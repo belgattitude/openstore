@@ -161,6 +161,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
             'factories' => array(
                 'Openstore\Configuration'	=> 'Openstore\ConfigurationFactory',
 				'Openstore\Service'			=> 'Openstore\ServiceFactory',
+				'Openstore\PriceManager'	=> 'Openstore\Catalog\PriceManagerFactory',
+				'Openstore\StockManager'	=> 'Openstore\Catalog\StockManagerFactory',
 				
 				'Openstore\Permission' => function($sm) {
 					$permission = new Permission();
@@ -190,7 +192,6 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 				'namespaces' => array(
 					__NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
 					'Nv' => __DIR__ . '/src/Nv',
-					'Smart' => __DIR__ . '/src/Smart'
 				),
 			),
 		);
