@@ -37,18 +37,19 @@ class UserPricelist implements InputFilterAwareInterface
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
 	private $id;
+	
 
 
 	/**
 	 * 
-     * @ORM\ManyToOne(targetEntity="Pricelist", inversedBy="users", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="Pricelist", inversedBy="userpricelists", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="pricelist_id", referencedColumnName="pricelist_id", onDelete="CASCADE", nullable=false)
 	 */
 	private $pricelist_id;	
 	
 	/**
 	 * 
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="pricelists", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="userpricelists", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="user_id", referencedColumnName="user_id", onDelete="CASCADE", nullable=false)
 	 */
 	private $user_id;

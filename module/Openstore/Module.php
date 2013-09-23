@@ -1,13 +1,5 @@
 <?php
 
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
-
 namespace Openstore;
 
 use Zend\Mvc\ModuleRouteListener;
@@ -157,6 +149,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 				'Model\Category'			=> 'Openstore\Model\Category',
 				'Model\Brand'				=> 'Openstore\Model\Brand',
 				'Model\ProductSerie'		=> 'Openstore\Model\ProductSerie',
+				'Model\User'				=> 'Openstore\Model\User',
             ),
             'factories' => array(
                 'Openstore\Configuration'	=> 'Openstore\ConfigurationFactory',
@@ -224,11 +217,6 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
         return array(
 			'openstore recreatedb' => 'Recreate database schema and load initial fixtures.',
 			'openstore updatedb' => 'Update database schema and reload initial fixtures.',
-			/*
-			'akilia setup' => 'Dummy setup action.',
-            'akilia syncdb' => 'Synchronize with akilia database.',
-			 * 
-			 */
             
         );
     }

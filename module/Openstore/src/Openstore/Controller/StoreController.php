@@ -50,10 +50,16 @@ class StoreController extends AbstractActionController
 		$this->service			= $sl->get('Openstore\Service');
 		$this->configuration	= $sl->get('Openstore\Configuration');
 		$this->permission		= $sl->get('Openstore\Permission');
+		//var_dump($this->permission);
+		//die();
 		parent::onDispatch($e);
 	}
+	
+	public function indexAction() {
+		
+	}
 
-	protected function productAction() {
+	public function productAction() {
 
 		$pricelist = $this->params()->fromRoute('pricelist');
 		$language = $this->params()->fromRoute('ui_language');

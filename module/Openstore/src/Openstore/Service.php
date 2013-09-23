@@ -7,6 +7,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Db\Adapter\AdapterAwareInterface;
 use Openstore\ConfigurationAwareInterface;
 use Openstore\Catalog\ProductFilters;
+use Openstore\UserContext;
 
 
 class Service implements ServiceLocatorAwareInterface, AdapterAwareInterface, ConfigurationAwareInterface
@@ -76,6 +77,19 @@ class Service implements ServiceLocatorAwareInterface, AdapterAwareInterface, Co
 		return $model;
 	}
 	
+	
+	/**
+	 * 
+	 * @return \Openstore\UserContext
+	 */
+	function getUserContext()
+	{
+		$userContext = new UserContext();
+		$userContext->setServiceLocator($this->getServiceLocator());
+		$userContext->initialize();
+		
+		return $userContext;	
+	}
 	
 	/**
 	 * 

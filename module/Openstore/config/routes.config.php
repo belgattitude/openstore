@@ -47,6 +47,18 @@ return array(
 	),
 	'router' => array(
 		'routes' => array(
+			
+			'home' => array(
+					   'type' => 'Zend\Mvc\Router\Http\Literal',
+					   'options' => array(
+						   'route' => '/',
+						   'defaults' => array(
+							   'controller' => 'Openstore\Controller\Index',
+							   'action' => 'index',
+						   ),
+					   ),
+				   ),			
+			
 			'store' => array(
 				'type' => 'Zend\Mvc\Router\Http\Segment',
 				'options' => array(
