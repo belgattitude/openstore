@@ -140,10 +140,13 @@ return array(
 				// Console routes
 				array('route' => 'openstore-recreatedb', 'roles' => array('guest')),
 				array('route' => 'openstore-updatedb', 'roles' => array('guest')),
-				array('route' => 'akilia-syncdb', 'roles' => array('guest')),
+				
 				
 				// special debug routes
 				array('route' => 'doctrine_orm_module_yuml', 'roles' => array('guest')),				
+				
+				// akilia synchronizer route
+				array('route' => 'syncdb', 'roles' => array('guest')),				
             ),
         ),
     ),

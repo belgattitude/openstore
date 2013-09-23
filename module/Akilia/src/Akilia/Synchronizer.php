@@ -3,7 +3,7 @@
  * 
  * @author Vanvelthem Sébastien
  */
-namespace Nv\Akilia;
+namespace Akilia;
 
 class Synchronizer 
 {

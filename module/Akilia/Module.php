@@ -1,19 +1,10 @@
 <?php
-
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
-
-namespace Openstore;
+namespace Akilia;
 
 use Zend\Mvc\ModuleRouteListener;
 use Zend\ModuleManager\ModuleManager;
 use Zend\Mvc\MvcEvent;
-use Openstore\Configuration;
+//use Openstore\Configuration;
 
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 //use Zend\ModuleManager\Feature\ServiceProviderInterface;
@@ -21,13 +12,14 @@ use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\Console\Adapter\AdapterInterface;
 
-use HTMLPurifier;
+
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface, ConsoleUsageProviderInterface
 {
 
 	public function init(ModuleManager $moduleManager)
 	{
+		
 		/*
 		$sharedEvents = $moduleManager->getEventManager()->getSharedManager();
         $sharedEvents->attach('ZfcUser', 'dispatch', function(MvcEvent $e) {
@@ -63,86 +55,9 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 	public function onBootstrap(MvcEvent $e)
 	{
 		
-		$eventManager = $e->getApplication()->getEventManager();
-		$moduleRouteListener = new ModuleRouteListener();
-		$moduleRouteListener->attach($eventManager);
-		
-		$eventManager->attach(MvcEvent::EVENT_DISPATCH, array($this, 'onPreDispatch'), 100);
-		$eventManager->attach(MvcEvent::EVENT_FINISH, array($this, 'onFinish'), 100);
-		
-		$translator = $e->getApplication()->getServiceManager()->get('translator');
-		//$translator->setLocale('en_US');
-        //$translator->setFallbackLocale('fr_FR');    		
+    		
 	}
 	
-	public function onFinish(MvcEvent $e) {
-		
-		
-		$purify_method = 'htmlpurifier';
-		//$purify_method = 'domdocument';
-		$purify_method = '';
-		switch ($purify_method) {
-			case 'htmlpurifier' :
-				$response = $e->getResponse();
-				$content = $response->getBody();
-				
-				$config = \HTMLPurifier_Config::createDefault();
-				$config->set('Cache.SerializerPath', dirname(__FILE__) . '/../../data/cache');
-				$purifier = new \HTMLPurifier($config);
-				$clean_html = $purifier->purify($content);				
-				if ($clean_html !== false) { 
-					$response->setContent($clean_html);
-				}
-				
-				break;
-			
-			case 'domdocument' :
-				
-				$response = $e->getResponse();
-				$content = $response->getBody();
-
-				$dom = new \DOMDocument();
-				$dom->preserveWhiteSpace = false;
-				$dom->formatOutput = false;
-				$dom->recover = false;
-				$dom->strictErrorChecking = false;				
-				$dom->formatOutput = true;
-				
-				$dom->loadHTML($content, LIBXML_NOBLANKS);
-
-				// do stuff here
-				$clean_html = $dom->saveHTML();
-
-				if ($clean_html !== false) { 
-					$response->setContent($clean_html);
-				}
-				
-				break;
-			
-		}
-		
-		
-		
-	}
-	
-	public function onPreDispatch(MvcEvent $e) {
-		$app      = $e->getTarget();
-		
-		// TODO
-		$language = $e->getRouteMatch()->getParam('ui_language');
-		$supported_langs = array(
-			'fr' => 'fr_FR',
-			'en' => 'en_US',
-			'nl' => 'nl_NL',
-			'de' => 'de_DE'
-		);
-		if ($language != '' && array_key_exists($language, $supported_langs)) {
-	        $serviceManager  = $app->getServiceManager();
-			$serviceManager->get('translator')->setLocale($supported_langs[$language]);
-		}
-		
-	}
-
     /**
      * @inheritdoc
      */
@@ -152,23 +67,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
             'aliases' => array(
                 //'ZendDeveloperTools\ReportInterface' => 'ZendDeveloperTools\Report',
             ),
-            'invokables' => array(
-                'Model\Product'				=> 'Openstore\Model\Product',
-				'Model\Category'			=> 'Openstore\Model\Category',
-				'Model\Brand'				=> 'Openstore\Model\Brand',
-				'Model\ProductSerie'		=> 'Openstore\Model\ProductSerie',
-            ),
             'factories' => array(
-                'Openstore\Configuration'	=> 'Openstore\ConfigurationFactory',
-				'Openstore\Service'			=> 'Openstore\ServiceFactory',
-				'Openstore\PriceManager'	=> 'Openstore\Catalog\PriceManagerFactory',
-				'Openstore\StockManager'	=> 'Openstore\Catalog\StockManagerFactory',
-				
-				'Openstore\Permission' => function($sm) {
-					$permission = new Permission();
-					$permission->setServiceLocator($sm);
-                    return $permission;
-				},
+                //'Openstore\Configuration'	=> 'Openstore\ConfigurationFactory',
             ),
         );
     }
@@ -180,7 +80,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 		$config = array_merge(
 				include __DIR__ . '/config/module.config.php',
 				include __DIR__ . '/config/routes.config.php',
-				include __DIR__ . '/config/openstore.config.php'
+				include __DIR__ . '/config/akilia.config.php'
 		);
 		return $config;
 	}
@@ -191,7 +91,6 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 			'Zend\Loader\StandardAutoloader' => array(
 				'namespaces' => array(
 					__NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-					//'Nv' => __DIR__ . '/src/Nv',
 				),
 			),
 		);
@@ -220,16 +119,9 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
      */
     public function getConsoleUsage(AdapterInterface $console)
     {
-		
         return array(
-			'openstore recreatedb' => 'Recreate database schema and load initial fixtures.',
-			'openstore updatedb' => 'Update database schema and reload initial fixtures.',
-			/*
 			'akilia setup' => 'Dummy setup action.',
             'akilia syncdb' => 'Synchronize with akilia database.',
-			 * 
-			 */
-            
         );
     }
 			

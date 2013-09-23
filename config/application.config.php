@@ -4,7 +4,9 @@ return array(
     'modules' => array(
         //'Application',
 		 'Zf2Whoops',
+		
 		'Openstore',
+		'Akilia',
 		'DoctrineModule',
 		'DoctrineORMModule',
 		'ZendDeveloperTools',

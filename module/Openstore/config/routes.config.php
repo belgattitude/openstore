@@ -19,16 +19,7 @@ return array(
 	'console' => array(
 		'router' => array(
 			'routes' => array(
-				'setup' => array(
-					'options' => array(
-						'route' => 'akilia setup',
-						'defaults' => array(
-							//'__NAMESPACE__' => 'Openstore\Controller',
-							'controller' => 'Openstore\Controller\Console',
-							'action' => 'setup'
-						)
-					)
-				),
+				
 				'openstore-updatedb' => array(
 					'options' => array(
 						'route' => 'openstore updatedb',
@@ -39,6 +30,8 @@ return array(
 						)
 					)
 				),
+				 
+				 
 				'openstore-recreatedb' => array(
 					'options' => array(
 						'route' => 'openstore recreatedb',
@@ -46,16 +39,6 @@ return array(
 							//'__NAMESPACE__' => 'Openstore\Controller',
 							'controller' => 'Openstore\Controller\Console',
 							'action' => 'recreatedb'
-						)
-					)
-				),
-				'akilia-syncdb' => array(
-					'options' => array(
-						'route' => 'akilia syncdb',
-						'defaults' => array(
-							//'__NAMESPACE__' => 'Openstore\Controller',
-							'controller' => 'Openstore\Controller\Console',
-							'action' => 'akiliasyncdb'
 						)
 					)
 				),
