@@ -74,6 +74,7 @@ class Synchronizer
 		$this->synchronizeCountry();
 		$this->synchronizeCustomer();
 		$this->synchronizePricelist();
+		$this->synchronizeCustomerPricelist();		
 		$this->synchronizeProductGroup();
 		$this->synchronizeProductBrand();
 		$this->synchronizeProductCategory();
@@ -179,13 +180,54 @@ class Synchronizer
 
 		// 2. Deleting - old links in case it changes
 		$delete = "
-		    delete from $db.country 
+		    delete from $db.customer
 			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
 		$this->executeSQL("Delete eventual removed customers", $delete);		
 		
 		
 	}
+	
+	function synchronizeCustomerPricelist()
+	{
+		$akilia2db = $this->akilia2Db;
+		$db = $this->openstoreDb;
+
+		$replace = " insert
+		             into $db.customer_pricelist
+					(
+					pricelist_id,
+					customer_id,
+					flag_active,
+					legacy_synchro_at
+				)
+
+				select
+					pl.pricelist_id,
+					c.customer_id,
+					1 as flag_active,
+				   '{$this->legacy_synchro_at}' as legacy_synchro_at
+					
+				from $akilia2db.base_customer_pricelist bcpl
+				inner join $akilia2db.base_pricelist bpl on bcpl.pricelist_id = bpl.id
+				inner join $db.pricelist	pl on pl.reference = bpl.reference
+				inner join $db.customer c on c.legacy_mapping = bcpl.customer_id
+				on duplicate key update
+					   flag_active = 1,
+					   legacy_synchro_at = '{$this->legacy_synchro_at}'
+					 ";
+		
+		$this->executeSQL("Replace customer pricelists", $replace);
+
+		// 2. Deleting - old links in case it changes
+		$delete = "
+		    delete from $db.customer_pricelist 
+			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+
+		$this->executeSQL("Delete eventual removed customer pricelists", $delete);		
+		
+	}
+	
 	
 	function synchronizeProductPricelist()
 	{
@@ -248,7 +290,7 @@ class Synchronizer
 		$akilia1db = $this->akilia1Db;
 		$db = $this->openstoreDb;
 
-		$stock_id = 1;
+		$stock_id = $this->default_stock_id;
 		
 		$replace = " insert
 		             into $db.product_stock
