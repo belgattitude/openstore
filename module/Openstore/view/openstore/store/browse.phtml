@@ -55,14 +55,14 @@ $image_baseurl = "http://akilia2.emdmusic.com/medias/products/dynamic/";
 							'categories' => null,
 							'query' => null
 								), array(), $reuseMatchedParams = true);
-						?>" role="search" onsubmit="openstore_catalog_search()">
+						?>" role="search">
 
 							<div class="input-group">
 
-								<input class="form-control" type="text" id="product_search"  name="query" value="<?= $this->searchParams->getQuery() ?>"  placeholder="Search">
+								<input class="form-control" type="text" id="product_search" name="query" value="<?= $this->searchParams->getQuery() ?>"  placeholder="Search">
 
 								<span class="input-group-btn">
-									<button class="btn btn-default" type="button">Go!</button>
+									<button class="btn btn-default" type="submit"><?= $this->translate('Go!') ?></button>
 								</span>
 
 
@@ -88,7 +88,7 @@ $image_baseurl = "http://akilia2.emdmusic.com/medias/products/dynamic/";
 		))
 		?>
 		
-		
+<!--		
 <div class="panel panel-primary">
   <div class="panel-body" style="padding: 1px ">
 		<div class="btn-group btn-group-sm">
@@ -136,11 +136,6 @@ $image_baseurl = "http://akilia2.emdmusic.com/medias/products/dynamic/";
 
 
 			<div class="collapse navbar-collapse navbar-ex1-collapse">
-				<!--
-				<ul class="nav navbar-nav navbar-">
-					<li><a href="/topic/notes/">/notes</a></li>
-				</ul>
-				-->
 							<div class="col-sm-4 col-md-4 pull-right">
 								<form class="navbar-form" role="search">
 									<div class="input-group input-group-sm">
@@ -156,6 +151,7 @@ $image_baseurl = "http://akilia2.emdmusic.com/medias/products/dynamic/";
 		</div>		
 	</div>
 </div>
+-->
 		<!--<div class="row">	-->
 		<?php foreach ($this->products as $idx => $product) : ?>
 			<?php

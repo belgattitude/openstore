@@ -150,18 +150,14 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 				'Model\Brand'				=> 'Openstore\Model\Brand',
 				'Model\ProductSerie'		=> 'Openstore\Model\ProductSerie',
 				'Model\User'				=> 'Openstore\Model\User',
+				'Model\Pricelist'			=> 'Openstore\Model\Pricelist',
             ),
             'factories' => array(
                 'Openstore\Configuration'	=> 'Openstore\ConfigurationFactory',
 				'Openstore\Service'			=> 'Openstore\ServiceFactory',
 				'Openstore\PriceManager'	=> 'Openstore\Catalog\PriceManagerFactory',
 				'Openstore\StockManager'	=> 'Openstore\Catalog\StockManagerFactory',
-				
-				'Openstore\Permission' => function($sm) {
-					$permission = new Permission();
-					$permission->setServiceLocator($sm);
-                    return $permission;
-				},
+				'Openstore\UserCapabilities'=> 'Openstore\Permission\UserCapabilitiesFactory'
             ),
         );
     }

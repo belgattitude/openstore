@@ -46,11 +46,7 @@ class UserContext implements ServiceLocatorAwareInterface
 		$userModel = $this->getUserModel();
 		$user_pricelists = $userModel->getUserPricelists($user_id);
 		
-		var_dump($user_pricelists);
-		
-		//$c = $userModel->getCustomers();
-		
-		die();
+		$this->pricelists = array_column($user_pricelists, 'reference', 'pricelist_id');		
 		
 	}
 	

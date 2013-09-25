@@ -20,12 +20,11 @@ class IndexController extends AbstractActionController
     {
 		$service = $this->getServiceLocator()->get('Openstore\Service');
 		$view = new ViewModel();
+		$capabilities = $this->getServiceLocator()->get('Openstore\UserCapabilities');
+//		echo '<pre>';
+		var_dump($capabilities->getPricelists());
+		var_dump($capabilities->getCustomers());
 		
-		$userContext = $service->getUserContext();
-		
-		// get the associated customer_id and the pricelist_id
-		
-		var_dump($userContext->getCustomerId());
 		
 		
 		$view->test		= 'hello';

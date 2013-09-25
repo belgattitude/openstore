@@ -8,6 +8,7 @@ use Zend\Db\Adapter\AdapterAwareInterface;
 use Openstore\ConfigurationAwareInterface;
 use Openstore\Catalog\ProductFilters;
 use Openstore\UserContext;
+use Openstore\Permission;
 
 
 class Service implements ServiceLocatorAwareInterface, AdapterAwareInterface, ConfigurationAwareInterface
@@ -77,6 +78,21 @@ class Service implements ServiceLocatorAwareInterface, AdapterAwareInterface, Co
 		return $model;
 	}
 	
+	/**
+	 * 
+	 * @return int
+	 */
+	function getLoggedInUserId() {
+		
+		$auth = $this->serviceLocator->get('zfcuser_auth_service');
+		if (!$auth->hasIdentity()) {
+			throw new \Exception('Not logged in user');
+		}
+		$user_id = $auth->getIdentity()->getUserId();		
+		return $user_id;
+	}
+	
+
 	
 	/**
 	 * 
