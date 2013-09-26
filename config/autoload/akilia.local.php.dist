@@ -20,13 +20,18 @@ return array(
 			'db_akilia1' => '',
 			
 			/**
+			 * Intelaccess database name
+			 */
+			'db_intelaccess' => '',
+			
+			/**
 			 * Map of languages between lang code and akilia1 column suffixes
 			 */
 			'akilia1_language_map' => 	array(
 				'fr' => '_1',
-				'en' => '_3',
 				'nl' => '_2',
-				'de' => '_4'
+				'de' => '_4',
+				'en' => '_3',
 			)				
 		)
 	),

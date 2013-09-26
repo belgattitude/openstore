@@ -23,8 +23,6 @@ class UserContext implements ServiceLocatorAwareInterface
 	protected $container;
 	
 	
-	
-	
 	function __construct(\Zend\Session\Container $container)
 	{
 		$this->container = $container;
