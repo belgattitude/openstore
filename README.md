@@ -15,6 +15,8 @@ Clone in a directory
 
 Create configuration files
 
+ Rename all .dist config files and adapt with database name...
+
 Installing database
 
 ```sh
