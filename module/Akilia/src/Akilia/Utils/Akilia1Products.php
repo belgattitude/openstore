@@ -46,7 +46,7 @@ class Akilia1Products implements ServiceLocatorAwareInterface, AdapterAwareInter
 			   ->where('a.flag_archive <> 1');
 
 		$select->columns(array(
-				'id_article'	=> new Expression('a.id_article'),
+				'id_article'	=> new Expression('TRIM(a.id_article)'),
 				'reference'		=> new Expression('a.reference'),
 				'id_marque'		=> new Expression('a.id_marque')
 			), true);
@@ -76,8 +76,9 @@ class Akilia1Products implements ServiceLocatorAwareInterface, AdapterAwareInter
 		
 		$images = array();
 		foreach (glob("$image_path/*.jpg") as $filename) {
-				$basename = basename($filename);
-				$product_id = preg_replace('/(\_\d){0,1}\.jpg$/', '', $basename);
+			$basename = basename($filename);
+				
+				$product_id = trim(preg_replace('/(\_\d){0,1}\.jpg$/', '', $basename));
 				
 				preg_match('/(\_)(\d){0,1}\.jpg$/', $basename, $matches);				
 				if (count($matches) === 3) {

@@ -33,6 +33,9 @@ return array(
 				'de' => '_4',
 				'en' => '_3',
 			)				
-		)
+		),
+		'product_picture_path' => '/tmp/product/picture/directory',
+		'archive_product_picture_path' => '/rmp/product/picture/archive'
+		
 	),
 );
