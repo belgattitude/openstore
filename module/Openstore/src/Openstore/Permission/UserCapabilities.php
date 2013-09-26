@@ -33,7 +33,7 @@ class UserCapabilities implements ServiceLocatorAwareInterface
 	 * 
 	 * @param integer $user_id
 	 */
-	function __construct($user_id=null) {
+	function __construct($user_id) {
 		
 		$this->setUserId($user_id);
 		
@@ -45,7 +45,7 @@ class UserCapabilities implements ServiceLocatorAwareInterface
 	 * @param integer $user_id
 	 * @return \Openstore\Permission\Capabilities
 	 */
-	public function setUserId($user_id) {
+	protected function setUserId($user_id) {
 		$this->user_id = $user_id;
 		return $this;
 	}
@@ -61,13 +61,8 @@ class UserCapabilities implements ServiceLocatorAwareInterface
 	 * @return array
 	 */
 	function getRoles() {
-		$user_id = $this->getUserId();
-		if ($user_id === null) {
-			$roles =  array('1' => 'guest');
-		} else {
-			$userModel = $this->getService()->getModel('Model\User');
-			$roles = array_column($userModel->getUserRoles($user_id), 'reference', 'role_id');	
-		}
+		$userModel = $this->getService()->getModel('Model\User');
+		$roles = array_column($userModel->getUserRoles($this->getUserId()), 'reference', 'role_id');	
 		return $roles;
 	}
 	
@@ -94,21 +89,31 @@ class UserCapabilities implements ServiceLocatorAwareInterface
 	function getPricelists() {
 		
 		$pricelists = array();
+		
+		$user_id = $this->getUserId();
+		
 		if ($this->hasRole('admin')) {
 			$plModel = $this->getService()->getModel('Model\Pricelist');
 			$pricelists = array_column($plModel->getPricelists(), 'reference', 'pricelist_id');	
 		} elseif ($this->hasRole('customer')) {
-			$userModel = $this->getService()->get('Openstore\Service')->getModel('Model\User');
-			$user_id = $this->getUserId();
+			$customerModel = $this->getService()->getModel('Model\Customer');
+			$userModel = $this->getService()->getModel('Model\User');
+			$customer_id = $userModel->getCustomerId();
+			$pricelists = array_column($customerModel->getCustomerPricelists($customer_id), 'reference', 'pricelist_id');	
+		} else {
+			// ($this->hasRole('user')) Default behaviour
+			$userModel = $this->getService()->getModel('Model\User');
 			$pricelists = array_column($userModel->getUserPricelists($user_id), 'reference', 'pricelist_id');	
-		} elseif ($this->hasRole('user')) {
-			$userModel = $this->getService()->get('Openstore\Service')->getModel('Model\User');
-			$user_id = $this->getUserId();
-			$pricelists = array_column($userModel->getUserPricelists($user_id), 'reference', 'pricelist_id');	
-		} elseif ($this->hasRole('guest')) {
-			
-		}
-		return $pricelists;
+		} 
+	}
+	
+	/**
+	 * 
+	 * @param string $pricelist
+	 * @return boolean
+	 */
+	function hasPricelist($pricelist) {
+		return in_array($pricelist, $this->getPricelists());
 	}
 	
 	/**

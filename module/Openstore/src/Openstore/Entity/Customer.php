@@ -39,13 +39,12 @@ class Customer implements InputFilterAwareInterface
 	private $customer_id;
 	
 
+	
 	/**
 	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
 	 */
 	private $reference;
 
-
-	
 	/**
 	 * @ORM\Column(type="string", length=80, nullable=false)
 	 */

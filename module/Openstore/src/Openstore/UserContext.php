@@ -5,7 +5,9 @@ use Zend\Db\Adapter\Adapter;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
+use Zend\Session\Container;
 
+use Openstore\Permission\UserCapabilities;
 
 class UserContext implements ServiceLocatorAwareInterface
 {
@@ -16,80 +18,45 @@ class UserContext implements ServiceLocatorAwareInterface
 	
 	/**
 	 *
-	 * @var ArrayObject
+	 * @var \Zend\Session\Container
 	 */
-	protected $context;
+	protected $container;
 	
-	function __construct()
+	
+	
+	
+	function __construct(\Zend\Session\Container $container)
 	{
-		$this->context = new \ArrayObject();
-		
-	}
-
-	/**
-	 * @return \Openstore\Model\User
-	 */
-	function getUserModel()
-	{
-		$userModel = $this->getServiceLocator()->get('Openstore\Service')->getModel('Model\User');
-		return $userModel;
+		$this->container = $container;
 	}
 	
-	function initialize()
+	public function initialize()
 	{
-		$auth = $this->serviceLocator->get('zfcuser_auth_service');
-		if (!$auth->hasIdentity()) {
-			throw new \Exception('Not logged in user');
+		if (!$this->container['is_initialized']) {
+			$user_id = $this->container['user_id'];
+			if ($user_id !== null) {
+				$userCap = new UserCapabilities($user_id);
+				$userCap->setServiceLocator($this->getServiceLocator());
+						
+				$this->container['roles']	   = $userCap->getRoles();
+				$this->container['pricelists'] = $userCap->getPricelists();
+				//$this->container['customers']  =	
+				
+			} else {
+				// PUBLIC capabilitities
+				// TODO get pricelist from table
+				$this->container['roles'] = array('guest');
+				$this->container['pricelists'] = array('FR');
+				$this->container['customers'] = array();
+			}
+			$this->container['is_initalized'] = true;
 		}
-		$user_id = $auth->getIdentity()->getUserId();
-		
-		$userModel = $this->getUserModel();
-		$user_pricelists = $userModel->getUserPricelists($user_id);
-		
-		$this->pricelists = array_column($user_pricelists, 'reference', 'pricelist_id');		
-		
 	}
 	
-	/**
-	 * 
-	 * @param int $customer_id
-	 * @return \Openstore\UserContext
-	 */
-	function setCustomerId($customer_id) 
-	{
-		$this->context['customer_id'] = $customer_id;
-		return $this;
+	
+	function getAllowedPricelists() {
+		return $this->container['pricelists'];
 	}
-	
-	/**
-	 * 
-	 * @return int
-	 */
-	function getCustomerId()
-	{
-		return $this->context['customer_id'];
-	}
-	
-	/**
-	 * 
-	 * @param string $pricelist
-	 * @return \Openstore\UserContext
-	 */
-	function setPricelist($pricelist) 
-	{
-		$this->context['pricelist'] = $pricelist;
-		return $this;
-	}
-	
-	/**
-	 * 
-	 * @return int
-	 */
-	function getPricelist()
-	{
-		return $this->context['pricelist'];
-	}	
-	
 	
 	
 	

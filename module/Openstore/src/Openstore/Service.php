@@ -102,7 +102,13 @@ class Service implements ServiceLocatorAwareInterface, AdapterAwareInterface, Co
 	{
 		$userContext = new UserContext();
 		$userContext->setServiceLocator($this->getServiceLocator());
-		$userContext->initialize();
+		//$userContext->initialize();
+		
+		//$userCapabilities = $this->getServiceLocator()->get('Openstore\UserCapabilities');
+		//$customers = $user->getCustomers();
+		
+		
+		//$userContext->setCustomerId($customer_id);
 		
 		return $userContext;	
 	}

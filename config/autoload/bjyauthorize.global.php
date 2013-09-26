@@ -133,9 +133,9 @@ return array(
                 array('route' => 'home', 'roles' => array('guest', 'user')),
 				
 				// Openstore route
-				array('route' => 'store/browse', 'roles' => array('admin')),
-				array('route' => 'store/search', 'roles' => array('guest')),
-				array('route' => 'store/product', 'roles' => array('guest')),
+				array('route' => 'store/browse', 'roles' => array('admin', 'customer')),
+				array('route' => 'store/search', 'roles' => array('guest', 'customer')),
+				array('route' => 'store/product', 'roles' => array('guest', 'customer')),
 				
 				// Console routes
 				array('route' => 'openstore-recreatedb', 'roles' => array('guest')),

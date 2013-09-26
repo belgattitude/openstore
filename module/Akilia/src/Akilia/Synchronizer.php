@@ -74,7 +74,7 @@ class Synchronizer
 		$this->synchronizeCountry();
 		$this->synchronizeCustomer();
 		$this->synchronizePricelist();
-		$this->synchronizeCustomerPricelist();		
+		$this->synchronizeCustomerPricelist();
 		$this->synchronizeProductGroup();
 		$this->synchronizeProductBrand();
 		$this->synchronizeProductCategory();
@@ -82,6 +82,26 @@ class Synchronizer
 		$this->synchronizeProductTranslation();
 		$this->synchronizeProductPricelist();
 		$this->synchronizeProductStock();
+		
+/**
+		 
+INSERT INTO `nuvolia`.`user_scope` (
+`id` ,
+`user_id` ,
+`customer_id` ,
+`flag_active` ,
+`created_at` ,
+`updated_at` ,
+`created_by` ,
+`updated_by` ,
+`legacy_mapping` ,
+`legacy_synchro_at`
+)
+VALUES (
+NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
+);
+		 		  
+*/
 		
 	}
 	
