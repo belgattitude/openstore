@@ -27,7 +27,9 @@ return array(
 				'en' => '_3',
 				'nl' => '_2',
 				'de' => '_4'
-			)				
+			),	
+			'product_picture_path' => '',
+			'archive_product_picture_path' => ''
 		)
 	),
 );

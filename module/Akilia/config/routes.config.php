@@ -7,6 +7,27 @@ return array(
 	'console' => array(
 		'router' => array(
 			'routes' => array(
+				'archiveproductpictures' => array(
+					'options' => array(
+						'route' => 'akilia archiveproductpictures',
+						'defaults' => array(
+							//'__NAMESPACE__' => 'Openstore\Controller',
+							'controller' => 'Akilia\Controller\Console',
+							'action' => 'archiveproductpictures'
+						)
+					)
+				),
+				
+				'listproductpictures' => array(
+					'options' => array(
+						'route' => 'akilia listproductpictures',
+						'defaults' => array(
+							//'__NAMESPACE__' => 'Openstore\Controller',
+							'controller' => 'Akilia\Controller\Console',
+							'action' => 'listproductpictures'
+						)
+					)
+				),
 
 				'syncdb' => array(
 					'options' => array(
