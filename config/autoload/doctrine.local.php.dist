@@ -7,9 +7,9 @@ return array(
                 'params' => array(
                     'host'     => 'localhost',
                     'port'     => '3306',
-                    'user'     => 'root',
-                    'password' => 'lemmings',
-                    'dbname'   => 'nuvolia',
+                    'user'     => 'user',
+                    'password' => 'password',
+                    'dbname'   => 'database',
 					'charset'  => 'UTF8',
                 )
             )
