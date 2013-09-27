@@ -85,7 +85,16 @@ class Akilia1Products implements ServiceLocatorAwareInterface, AdapterAwareInter
 					$index = null;
 				}
 				$product_active = array_key_exists($product_id, $pcache);
-				$images[$basename] = array('product_id' => $product_id, 'filename' => $filename, 'product_active' => $product_active, 'alternate_index' => $index);
+				$images[$basename] = array(
+					'product_id' => $product_id, 
+					'filename' => $filename, 
+					'basename' => $basename,
+					'product_active' => $product_active, 
+					'alternate_index' => $index,
+					'filemtime' => filemtime($filename),
+					'filesize' => filesize($filename),
+					'md5' => md5($filename) 
+				);
 		}
 		return $images;
 	}

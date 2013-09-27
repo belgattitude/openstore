@@ -49,6 +49,7 @@ class LoadUserData implements FixtureInterface
 		);
 		
 		
+		
 		foreach($product_media_types as $id => $infos) {
 			$type = new Entity\ProductMediaType();
 			$type->setTypeId($id);
@@ -56,6 +57,7 @@ class LoadUserData implements FixtureInterface
 			$type->setTitle($infos['title']);
 			$manager->persist($type);
 		}
+		
 		
 		$metadata = $manager->getClassMetaData(get_class($type));
 		$metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);

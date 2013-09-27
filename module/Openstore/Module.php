@@ -157,6 +157,15 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 				'Model\Customer' => 'Openstore\Model\Customer',
 			),
 			'factories' => array(
+				'MMan\Storage' => 'MMan\Service\StorageFactory',
+				'MMan\MediaManager' => function ($sm) {
+					$storage = $sm->get('MMan\Storage');
+					$mediaManager = new MediaManager();
+					$mediaManager->setStorage($storage);
+					$mediaManager->setDbAdapter($sm->get('Zend\Db\Adapter\Adapter'));
+					
+					return $mediaManager;
+				 },
 				'Openstore\Configuration' => 'Openstore\ConfigurationFactory',
 				'Openstore\Service' => 'Openstore\ServiceFactory',
 				'Openstore\PriceManager' => 'Openstore\Catalog\PriceManagerFactory',

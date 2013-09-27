@@ -4,6 +4,7 @@ use Openstore\Core\Model\AbstractModel;
 use Openstore\Core\Model\BrowsableInterface;
 use Openstore\Model\Browser\ProductBrowser;
 
+
 class Product extends AbstractModel implements BrowsableInterface {
 	
 	/**
@@ -13,5 +14,6 @@ class Product extends AbstractModel implements BrowsableInterface {
 	{
 		return new ProductBrowser($this);
 	}
+	
 	
 }

@@ -180,17 +180,27 @@ class ProductMedia implements InputFilterAwareInterface
 		return $this->type_id;
 	}
 
-	
-	
+
 	/**
-	 * Set reference
-	 * @param string $reference
+	 * 
+	 * @return int
 	 */
-	public function setReference($reference)
+	public function getSortIndex()
 	{
-		$this->reference = $reference;
-		return $this;
+		return $this->sort_index;
 	}
+
+	/**
+	 * 
+	 * @param int $sort_index
+	 */
+	public function setSortIndex($sort_index)
+	{
+		$this->sort_index = $sort_index;
+		return $this;
+	}		
+	
+
 
 
 	/**

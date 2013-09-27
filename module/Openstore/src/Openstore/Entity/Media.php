@@ -58,7 +58,11 @@ class Media implements InputFilterAwareInterface
 	 */
 	private $filesize;
 	
-	
+
+	/**
+	 * @ORM\Column(type="integer", nullable=true, options={"unsigned" = true})
+	 */
+	private $filemtime;	
 	
 	/**
 	 * @ORM\Column(type="string", length=100, nullable=true)
@@ -119,6 +123,7 @@ class Media implements InputFilterAwareInterface
 		 
 	}
 
+	
 	/**
 	 * 
 	 * @param integer $media_id
@@ -140,6 +145,25 @@ class Media implements InputFilterAwareInterface
 	}
 
 
+	/**
+	 * 
+	 * @param string $filename
+	 */
+	public function setFilename($filename)
+	{
+		$this->filename = $filename;
+		return $this;
+	}
+
+	/**
+	 * 
+	 * @return string
+	 */
+	public function getFilename()
+	{
+		return $this->filename;
+	}	
+	
 
 	/**
 	 * 
@@ -178,7 +202,45 @@ class Media implements InputFilterAwareInterface
 	{
 		return $this->description;
 	}
+	/**
+	 * 
+	 * @return int
+	 */
+	public function getFilesize()
+	{
+		return $this->filesize;
+	}
 
+	/**
+	 * 
+	 * @param int $filesize
+	 */
+	public function setFilesize($filesize)
+	{
+		$this->filesize = $filesize;
+		return $this;
+	}	
+	
+	
+	
+	/**
+	 * 
+	 * @return int
+	 */
+	public function getFilemtime()
+	{
+		return $this->filemtime;
+	}
+
+	/**
+	 * 
+	 * @param int $filemtime
+	 */
+	public function setFilemtime($filemtime)
+	{
+		$this->filemtime = $filemtime;
+		return $this;
+	}	
 
 	/**
 	 * 
