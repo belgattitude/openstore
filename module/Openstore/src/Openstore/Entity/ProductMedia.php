@@ -17,6 +17,7 @@ use Zend\InputFilter\InputFilterInterface;
  *   name="product_media",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_product_media_type_idx",columns={"product_id", "media_id", "type_id"}),
+ *     @ORM\UniqueConstraint(name="unique_product_type_flag_primary_idx",columns={"type_id", "product_id", "flag_primary"}),
  *   }, 
  *   indexes={
  *     @ORM\Index(name="sort_index_idx", columns={"sort_index"}),
@@ -61,6 +62,12 @@ class ProductMedia implements InputFilterAwareInterface
      * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", onDelete="CASCADE", nullable=false)
 	 */
 	private $type_id;	
+	
+	/**
+	 *
+     * @ORM\Column(name="flag_primary", type="boolean", nullable=true)	  
+	 */
+	private $flag_primary;		
 	
 	/**
 	 *

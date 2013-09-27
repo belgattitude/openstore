@@ -40,7 +40,7 @@ class ConsoleController extends AbstractActionController
 		
 		$list = $products->getProductPictures();
 		
-		foreach($list as $basename => $infos) {
+		foreach($list as $infos) {
 			echo str_pad($infos['product_id'], 10) . "\t" .  
 				($infos['alternate_index'] === null ? "0" : $infos['alternate_index']) . "\t" . 
 				($infos['product_active'] ? "        " : "ARCHIVED") . "\t" . 

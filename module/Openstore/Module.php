@@ -160,7 +160,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 				'MMan\Storage' => 'MMan\Service\StorageFactory',
 				'MMan\MediaManager' => function ($sm) {
 					$storage = $sm->get('MMan\Storage');
-					$mediaManager = new MediaManager();
+					$mediaManager = new \MMan\MediaManager();
 					$mediaManager->setStorage($storage);
 					$mediaManager->setDbAdapter($sm->get('Zend\Db\Adapter\Adapter'));
 					

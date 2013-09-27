@@ -126,8 +126,36 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 	}
 	
 	
+	function synchronizeProductMedia()
+	{
+		$sl = $this->getServiceLocator();
+		$configuration = $sl->get('Configuration');
+		if (!is_array($configuration['akilia'])) {
+			throw new \Exception("Cannot find akilia configuration, please see you global config files");
+		}
+		$configuration =  $configuration['akilia'];		
+		$products = new Akilia1Products($configuration);
+		$products->setServiceLocator($this->getServiceLocator());
+		$products->setDbAdapter($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
+		$list = $products->getProductPictures();
+		
+		$mediaManager = $this->getServiceLocator()->get('MMan/MediaManager');
+		
+		$count = count($list);
+		for ($i = 0; ($i < 10 && $i < $count); $i++) {
+			$infos = $list[$i];
+			var_dump($infos);
+			$importElement = new \MMan\Import\Element();
+			$importElement->setFilename($infos['filename']);
+			
+			$mediaManager->import($importElement);
+			
+			
+		}
+		
+	}
 	
-	function synchronizeProductMedia() 
+	function synchronizeProductMedia2() 
 	{
 	
 		
