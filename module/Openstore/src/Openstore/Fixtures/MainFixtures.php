@@ -17,6 +17,8 @@ class LoadUserData implements FixtureInterface
     public function load(ObjectManager $manager)
     {
 		
+		$this->importProductMediaTypes($manager);
+		
 		$this->importLanguages($manager);
 		
 		$this->importCountries($manager);
@@ -35,6 +37,31 @@ class LoadUserData implements FixtureInterface
 		$this->importProductUnit($manager);
 		
     }
+	
+	function importProductMediaTypes(ObjectManager $manager) {
+		
+		$product_media_types = array(
+			1 => array('reference' => 'PICTURE', 'title' => 'Official picture'),
+			2 => array('reference' => 'ALTERNATE_PICTURE', 'title' => 'Alternate pictures'),
+			3 => array('reference' => 'VIDEO', 'title' => 'Video'),
+			4 => array('reference' => 'SOUND', 'title' => 'Sounds and recordings'),
+			5 => array('reference' => 'DOCUMENT', 'title' => 'Documents'),
+		);
+		
+		
+		foreach($product_media_types as $id => $infos) {
+			$type = new Entity\ProductMediaType();
+			$type->setTypeId($id);
+			$type->setReference($infos['reference']);
+			$type->setTitle($infos['title']);
+			$manager->persist($type);
+		}
+		
+		$metadata = $manager->getClassMetaData(get_class($type));
+		$metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
+		
+		$manager->flush();
+	}
 
 	function importStock(ObjectManager $manager) {
 		

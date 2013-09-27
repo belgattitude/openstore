@@ -24,6 +24,7 @@ class ConsoleController extends AbstractActionController
 		$em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 		$zendDb      = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
 		$synchronizer = new Akilia\Synchronizer($em, $zendDb);
+		$synchronizer->setServiceLocator($this->getServiceLocator());
 		$synchronizer->setConfiguration($configuration['synchronizer']);
 		$synchronizer->synchronizeAll();	
     }

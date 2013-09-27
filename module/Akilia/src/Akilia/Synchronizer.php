@@ -5,7 +5,16 @@
  */
 namespace Akilia;
 
-class Synchronizer 
+use Openstore\Entity;
+use Akilia\Utils\Akilia1Products;
+
+use Zend\Db\Adapter\Adapter;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Db\Adapter\AdapterAwareInterface;
+
+
+class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterface 
 {
 	
 	/**
@@ -42,7 +51,7 @@ class Synchronizer
 	 *
 	 * @var \Zend\Db\Adapter\Adapter
 	 */
-	protected $zendDb;
+	protected $adapter;
 	
 	protected $default_currency_id = 1;
 	protected $default_stock_id = 1;
@@ -51,13 +60,18 @@ class Synchronizer
 	
 	protected $legacy_synchro_at;
 	
-	function __construct(\Doctrine\ORM\EntityManager $em, \Zend\Db\Adapter\Adapter $zendDb)
+	/**
+	 * 
+	 * @param \Doctrine\ORM\EntityManager $em
+	 * @param \Zend\Db\Adapter\Adapter $zendDb
+	 */
+	function __construct(\Doctrine\ORM\EntityManager $em, Adapter $zendDb)
 	{
 		$this->em = $em;
 
 		$this->openstoreDb = $em->getConnection()->getDatabase();
 		$this->mysqli = $em->getConnection()->getWrappedConnection()->getWrappedResourceHandle();
-		$this->zendDb = $zendDb;
+		$this->setDbAdapter($zendDb);
 		$this->legacy_synchro_at = date('Y-m-d H:i:s');
 		
 	}
@@ -71,6 +85,8 @@ class Synchronizer
 	
 	function synchronizeAll()
 	{
+		$this->synchronizeProductMedia();
+		
 		$this->synchronizeCountry();
 		$this->synchronizeCustomer();
 		$this->synchronizePricelist();
@@ -82,6 +98,7 @@ class Synchronizer
 		$this->synchronizeProductTranslation();
 		$this->synchronizeProductPricelist();
 		$this->synchronizeProductStock();
+		$this->synchronizeProductMedia();
 		
 /**
 		 
@@ -103,6 +120,35 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		 		  
 */
 		
+	}
+	
+	function synchronizeProductMedia() 
+	{
+	
+		$sl = $this->getServiceLocator();
+		$configuration = $sl->get('Configuration');
+		if (!is_array($configuration['akilia'])) {
+			throw new \Exception("Cannot find akilia configuration, please see you global config files");
+		}
+		$configuration =  $configuration['akilia'];		
+		
+		$products = new Akilia1Products($configuration);
+		$products->setServiceLocator($this->getServiceLocator());
+		$products->setDbAdapter($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
+		
+		$list = $products->getProductPictures();
+		
+		foreach($list as $basename => $infos) {
+			
+			
+			echo str_pad($infos['product_id'], 10) . "\t" .  
+				($infos['alternate_index'] === null ? "0" : $infos['alternate_index']) . "\t" . 
+				($infos['product_active'] ? "        " : "ARCHIVED") . "\t" . 
+				$infos['filename'] . "\n"; 
+			
+			$media = new \MMan\Media();
+		}		
+		die();
 	}
 	
 	function synchronizeCountry()
@@ -770,6 +816,46 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 	{
 	    echo "$message\n";
 	}	
+	
+	
+	/**
+	 * 
+	 * @param \Zend\Db\Adapter\Adapter $adapter
+	 */
+	public function setDbAdapter(Adapter $adapter) {
+		$this->adapter = $adapter;
+		return $this;
+	}
+	
+	
+	/**
+	 * 
+	 * @return Zend\Db\Adapter\Adapter
+	 */
+	function getDbAdapter()
+	{
+		return $this->adapter;
+	}
+	
+	/**
+	 * 
+	 * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
+	 */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+        return $this;
+    }
+
+	/**
+	 * 
+	 * @return \Zend\ServiceManager\ServiceLocatorInterface
+	 */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
+	
 	
 	
 }

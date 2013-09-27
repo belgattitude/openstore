@@ -56,19 +56,16 @@ class Akilia1Products implements ServiceLocatorAwareInterface, AdapterAwareInter
 									  'adapter' => $this->getDbAdapter()]);
 		
 		$data = $store->getData();
-		return $data;
-		
+		return $data;		
 	}
 	
 	function getProductPictures() {
-
 		
 		$image_path = $this->configuration['product_picture_path'];
 		
 		if (!is_dir($image_path)) {
 			throw new \Exception("Image path '$image_path' is not correct update your config");
 		}
-		
 		
 		$products = $this->getActiveProducts()->toArray();
 		$pcache = array_column($products, 'reference', 'id_article');
@@ -87,14 +84,10 @@ class Akilia1Products implements ServiceLocatorAwareInterface, AdapterAwareInter
 				} else {
 					$index = null;
 				}
-				
 				$product_active = array_key_exists($product_id, $pcache);
 				$images[$basename] = array('product_id' => $product_id, 'filename' => $filename, 'product_active' => $product_active, 'alternate_index' => $index);
-				
 		}
-
 		return $images;
-		
 	}
 	
 	
@@ -135,7 +128,5 @@ class Akilia1Products implements ServiceLocatorAwareInterface, AdapterAwareInter
     {
         return $this->serviceLocator;
     }
-	
-	
+		
 }
-
