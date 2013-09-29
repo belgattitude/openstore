@@ -16,11 +16,23 @@ class Element {
 	function setFilename($filename) 
 	{
 		$this->filename = $filename;
+		return $this;
 	}
 	
 	function getFilename()
 	{
 		return $this->filename;
+	}
+	
+	function getLegacyMapping() 
+	{
+		return $this->legacy_mapping;
+	}
+	
+	function setLegacyMapping($legacy_mapping) 
+	{
+		$this->legacy_mapping = $legacy_mapping;
+		return $this;
 	}
 	
 }

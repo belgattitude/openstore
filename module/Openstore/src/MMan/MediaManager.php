@@ -36,7 +36,6 @@ class MediaManager
 		$fs = $this->storage->getFilesystem();
 
 		// STEP 1 : Adding into database
-		
 		$this->adapter->getDriver()->getConnection()->beginTransaction();		
 		
 		$sql = new Sql($this->adapter);
@@ -46,12 +45,13 @@ class MediaManager
 			'filename'  => basename($filename),
 			'filemtime' => filemtime($filename),
 			'filesize'  => filesize($filename),
+			'legacy_mapping' => $element->getLegacyMapping()
 		);
 		$insert->values($data);
 
 		$statement = $sql->prepareStatementForSqlObject($insert);
-		$result= $statement->execute();      		
-		$media_id = $this->adapter->getDriver()->getLastGeneratedValue();
+		$result    = $statement->execute();
+		$media_id  = $this->adapter->getDriver()->getLastGeneratedValue();
 		
 		// Step 2 : Adding into filesystem
 		try {
@@ -64,6 +64,8 @@ class MediaManager
 		$this->adapter->getDriver()->getConnection()->commit();		
 		return $media_id;
 	}
+	
+
 
 	/**
 	 * 

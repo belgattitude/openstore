@@ -144,9 +144,10 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		$count = count($list);
 		for ($i = 0; ($i < 10 && $i < $count); $i++) {
 			$infos = $list[$i];
-			var_dump($infos);
+			//var_dump($infos);
 			$importElement = new \MMan\Import\Element();
 			$importElement->setFilename($infos['filename']);
+			$importElement->setLegacyMapping($infos['md5']);
 			
 			$mediaManager->import($importElement);
 			
