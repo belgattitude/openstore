@@ -88,7 +88,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 	function synchronizeAll()
 	{
 		
-		
+		/*
 		$this->synchronizeCountry();
 		$this->synchronizeCustomer();
 		$this->synchronizePricelist();
@@ -100,7 +100,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 		$this->synchronizeProductTranslation();
 		$this->synchronizeProductPricelist();
 		$this->synchronizeProductStock();
-		
+		*/
 		$this->synchronizeProductMedia();
 		
 /**
@@ -155,6 +155,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 			
 			$importElement->setFilename($infos['filename']);
 			$importElement->setLegacyMapping($infos['md5']);
+
 			$mediaManager->import($importElement, $container['container_id']);
 		}
 		

@@ -106,6 +106,7 @@ class MediaManager
 			'filename'  => basename($filename),
 			'filemtime' => $element->getFilemtime(),
 			'filesize'  => $element->getFilesize(),
+			'container_id' => $container_id,
 			'legacy_mapping' => $element->getLegacyMapping()
 		);
 		
