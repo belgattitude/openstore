@@ -35,6 +35,7 @@ return array(
 			'Openstore\Controller\Shopcart' => 'Openstore\Controller\ShopcartController',
 			'Openstore\Controller\Console'	=> 'Openstore\Controller\ConsoleController',
 			'Openstore\Controller\Admin'	=> 'Openstore\Controller\AdminController',
+			'Openstore\Controller\Media'	=> 'Openstore\Controller\MediaController',
 		),
 	),
 	'view_manager' => array(

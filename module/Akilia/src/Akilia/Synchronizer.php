@@ -145,7 +145,10 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		if (!$container) {
 			throw new \Exception("Cannot find media container 'PRODUCT_MEDIAS'");
 		}
-		$limit_to_import = 100000;
+		
+		$media_type_id = $tableManager->findOneBy('product_media_type', 'reference', 'PICTURE')->offsetGet('type_id');
+		
+		$limit_to_import = 10;
 		$count = count($list);
 		for ($i = 0; ($i < $limit_to_import && $i < $count); $i++) {
 			$infos = $list[$i];
@@ -155,7 +158,19 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 			$importElement->setFilename($infos['filename']);
 			$importElement->setLegacyMapping($infos['md5']);
 
-			$mediaManager->import($importElement, $container['container_id']);
+			$media_id = $mediaManager->import($importElement, $container['container_id']);
+			
+			$data = array(
+				'media_id'		=> $media_id,
+				'product_id'	=> $infos['product_id'],
+				'flag_primary'	=> $infos['alternate_index'] == '' ? 1 : null,
+				'sort_index'	=> $infos['alternate_index'] == '' ? 0 : $infos['alternate_index'],
+				'type_id'		=> $media_type_id,
+				'updated_at'	=> date('Y-m-d H:i:s')
+			);
+			
+			$productMedia = $tableManager->insertOnDuplicateKey('product_media', $data, $duplicate_exclude=array());
+			
 		}
 		
 	}

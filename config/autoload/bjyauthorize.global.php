@@ -137,6 +137,9 @@ return array(
 				array('route' => 'store/search', 'roles' => array('guest', 'customer')),
 				array('route' => 'store/product', 'roles' => array('guest', 'customer')),
 				
+				// Special route
+				array('route' => 'media', 'roles' => array('guest')),
+				
 				// Console routes
 				array('route' => 'openstore-recreatedb', 'roles' => array('guest')),
 				array('route' => 'openstore-updatedb', 'roles' => array('guest')),

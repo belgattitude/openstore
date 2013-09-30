@@ -19,7 +19,6 @@ return array(
 	'console' => array(
 		'router' => array(
 			'routes' => array(
-				
 				'openstore-updatedb' => array(
 					'options' => array(
 						'route' => 'openstore updatedb',
@@ -30,8 +29,6 @@ return array(
 						)
 					)
 				),
-				 
-				 
 				'openstore-recreatedb' => array(
 					'options' => array(
 						'route' => 'openstore recreatedb',
@@ -47,18 +44,27 @@ return array(
 	),
 	'router' => array(
 		'routes' => array(
-			
 			'home' => array(
-					   'type' => 'Zend\Mvc\Router\Http\Literal',
-					   'options' => array(
-						   'route' => '/',
-						   'defaults' => array(
-							   'controller' => 'Openstore\Controller\Index',
-							   'action' => 'index',
-						   ),
-					   ),
-				   ),			
-			
+				'type' => 'Zend\Mvc\Router\Http\Literal',
+				'options' => array(
+					'route' => '/',
+					'defaults' => array(
+						'controller' => 'Openstore\Controller\Index',
+						'action' => 'index',
+					),
+				),
+			),
+			'media' => array(
+				'type' => 'Zend\Mvc\Router\Http\Segment',
+				'options' => array(
+					'route' => '/media[/:media_id]',
+					'defaults' => array(
+						'controller' => 'Openstore\Controller\Media',
+						'action' => 'media',
+					),
+				),
+				'may_terminate' => true,
+			),
 			'store' => array(
 				'type' => 'Zend\Mvc\Router\Http\Segment',
 				'options' => array(
@@ -170,12 +176,9 @@ return array(
 					),
 				),
 			),
-			
-			
 			/**
 			 * BJYAuthorize
 			 */
-			
 			'zfcuser' => array(
 				'type' => 'Zend\Mvc\Router\Http\Literal',
 				'options' => array(
