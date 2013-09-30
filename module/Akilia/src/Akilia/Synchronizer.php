@@ -145,9 +145,9 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		if (!$container) {
 			throw new \Exception("Cannot find media container 'PRODUCT_MEDIAS'");
 		}
-		
+		$limit_to_import = 100000;
 		$count = count($list);
-		for ($i = 0; ($i < 10 && $i < $count); $i++) {
+		for ($i = 0; ($i < $limit_to_import && $i < $count); $i++) {
 			$infos = $list[$i];
 			//var_dump($infos);
 			$importElement = new \MMan\Import\Element();
