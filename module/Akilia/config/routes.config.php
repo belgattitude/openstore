@@ -39,6 +39,17 @@ return array(
 						)
 					)
 				),
+				
+				'syncmedia' => array(
+					'options' => array(
+						'route' => 'akilia syncmedia',
+						'defaults' => array(
+							//'__NAMESPACE__' => 'Openstore\Controller',
+							'controller' => 'Akilia\Controller\Console',
+							'action' => 'syncmedia'
+						)
+					)
+				),				
 			)
 		)
 	),

@@ -42,7 +42,6 @@ class MediaManager
 		$fs = $this->storage->getFilesystem();
 
 		// STEP 1 : Adding into database
-		$this->adapter->getDriver()->getConnection()->beginTransaction();		
 		
 		$table = new Table($this->adapter);
 		
@@ -51,31 +50,29 @@ class MediaManager
 		$unchanged = false;
 		if ($media !== false) {
 			// test if media has changed
-			if ($media['filemtime'] != $element->getFilemtime() ||
-				$media['filesize'] != $element->getFilesize()) {
+			if ($media['filemtime'] == $element->getFilemtime() &&
+				$media['filesize'] == $element->getFilesize()) {
 				$unchanged = true;
 			}
 		}
-
-		$filename = $element->getFilename();
-		$data  = array(
-			'filename'  => basename($filename),
-			'filemtime' => $element->getFilemtime(),
-			'filesize'  => $element->getFilesize(),
-			'container_id' => $container_id,
-			'legacy_mapping' => $element->getLegacyMapping()
-		);
-		
 		
 		if (!$unchanged) {
+			$this->adapter->getDriver()->getConnection()->beginTransaction();					
+			
+			$filename = $element->getFilename();
+			$data  = array(
+				'filename'  => basename($filename),
+				'filemtime' => $element->getFilemtime(),
+				'filesize'  => $element->getFilesize(),
+				'container_id' => $container_id,
+				'legacy_mapping' => $element->getLegacyMapping()
+			);
+			
+			
 			$media = $table->insertOnDuplicateKey('media', $data, $duplicate_exclude=array('legacy_mapping'));
 			$media_id = $media['media_id'];
-
-			
-			
 			
 			// Step 3 : Generate media manager filename
-
 			
 			$mediaLocation = $this->getMediaLocation($container_id, $media_id, $filename);
 			
@@ -97,10 +94,11 @@ class MediaManager
 			$media->save();
 			
 			$this->adapter->getDriver()->getConnection()->commit();		
-			return $media_id;
+			
 			
 		}
 		
+		return $media['media_id'];
 	}
 	
 
@@ -119,9 +117,8 @@ class MediaManager
 		}
 		$container_folder = $container['folder'];
 		
-		
 		if ($media_id == '') {
-			throw new \Exception("Media id '$media_id' is required");
+			throw new \Exception("Cannot create media location, media_id '$media_id' is required");
 		}
 		$pathinfo = pathinfo($filename);
 		

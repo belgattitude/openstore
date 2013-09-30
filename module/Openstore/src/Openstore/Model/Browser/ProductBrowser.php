@@ -66,22 +66,24 @@ class ProductBrowser extends AbstractBrowser {
 						new Expression("pc.category_id = pc18.category_id and pc18.lang = '$lang'"), 
 						array(), $select::JOIN_LEFT)
 				->join(array('pm' => 'product_media'),
-						new Expression("pm.product_id = p.product_id"), 
+						new Expression("pm.product_id = p.product_id and pm.flag_primary=1"), 
 						array(), $select::JOIN_LEFT)
-				->join(array('m' => 'media'),
-						new Expression("m.media_id = pm.media_id"), 
+				->join(array('pmt' => 'product_media_type'),
+						new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), 
 						array(), $select::JOIN_LEFT)
-
+				
 				
 				->where('p.flag_active = 1')
 				->where('ppl.flag_active = 1')
+				
+				
 				->where("pl.reference = '$pricelist'");
 
 		$this->assignFilters($select);
 		
 		/* 
 		$flag_new_min_date = ProductFilter::getParam('flag_new_minimum_date');
-*/		
+		*/		
 		if ($this->columns !== null && is_array($this->columns)) {
 			$select->columns($this->columns);
 		} else {
@@ -107,8 +109,8 @@ class ProductBrowser extends AbstractBrowser {
 				'currency_reference'=> new Expression('c.reference'),
 				'unit_reference'	=> new Expression('pu.reference'),
 				'type_reference'	=> new Expression('pt.reference'),
-				'media_id'			=> new Expression('m.media_id'),
-				'picture_name'		=> new Expression('m.filename'),
+				'picture_media_id'	=> new Expression('pm.media_id'),
+				
 			), true);
 		}
 

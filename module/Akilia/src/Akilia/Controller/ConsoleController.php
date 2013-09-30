@@ -29,6 +29,21 @@ class ConsoleController extends AbstractActionController
 		$synchronizer->synchronizeAll();	
     }
 	
+    public function syncmediaAction()
+	{
+		$configuration = $this->getAkiliaConfiguration();
+		if (!is_array($configuration['synchronizer'])) {
+			throw new \Exception("Cannot find akilia synchronize configuration, please see you global config files");
+		}
+
+		$em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+		$zendDb      = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+		$synchronizer = new Akilia\Synchronizer($em, $zendDb);
+		$synchronizer->setServiceLocator($this->getServiceLocator());
+		$synchronizer->setConfiguration($configuration['synchronizer']);
+		$synchronizer->synchronizeProductMedia();	
+    }
+
 	
 	public function listproductpicturesAction() {
 		$sl = $this->getServiceLocator();

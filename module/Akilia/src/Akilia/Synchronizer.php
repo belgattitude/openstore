@@ -100,7 +100,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 		$this->synchronizeProductPricelist();
 		$this->synchronizeProductStock();
 		
-		$this->synchronizeProductMedia();
+		//$this->synchronizeProductMedia();
 		
 /**
 		 
@@ -150,6 +150,8 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		
 		$limit_to_import = 10000;
 		$count = count($list);
+		$product_ids = array_column($tableManager->fetchAll('product', array('product_id')), 'product_id', 'product_id');
+		
 		for ($i = 0; ($i < $limit_to_import && $i < $count); $i++) {
 			$infos = $list[$i];
 			//var_dump($infos);
@@ -159,17 +161,21 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 			$importElement->setLegacyMapping($infos['md5']);
 
 			$media_id = $mediaManager->import($importElement, $container['container_id']);
-			
-			$data = array(
-				'media_id'		=> $media_id,
-				'product_id'	=> $infos['product_id'],
-				'flag_primary'	=> $infos['alternate_index'] == '' ? 1 : null,
-				'sort_index'	=> $infos['alternate_index'] == '' ? 0 : $infos['alternate_index'],
-				'type_id'		=> $media_type_id,
-				'updated_at'	=> date('Y-m-d H:i:s')
-			);
-			
-			$productMedia = $tableManager->insertOnDuplicateKey('product_media', $data, $duplicate_exclude=array());
+
+			if (array_key_exists($infos['product_id'], $product_ids)) {
+				
+				$data = array(
+					'media_id'		=> $media_id,
+					'product_id'	=> $infos['product_id'],
+					'flag_primary'	=> $infos['alternate_index'] == '' ? 1 : null,
+					'sort_index'	=> $infos['alternate_index'] == '' ? 0 : $infos['alternate_index'],
+					'type_id'		=> $media_type_id,
+					'updated_at'	=> date('Y-m-d H:i:s')
+				);
+					
+				$productMedia = $tableManager->insertOnDuplicateKey('product_media', $data, $duplicate_exclude=array());
+				
+			}
 			
 		}
 		
