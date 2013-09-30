@@ -32,7 +32,8 @@
 		"neilime/zf2-twb-bundle": "dev-master",
 		"ghislainf/zf2-whoops": "dev-master",
 		"knplabs/gaufrette": "0.1.x",
-		"imagine/Imagine" : "0.x"
+		"imagine/Imagine" : "0.x",
+		"phpseclib/phpseclib" : "0.3.x"
 		 
 	}
 }
