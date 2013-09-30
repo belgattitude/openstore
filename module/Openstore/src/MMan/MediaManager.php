@@ -29,58 +29,14 @@ class MediaManager
 	}
 	
 	
-	/**
-	 * 
-	 * @param type $media_id
-	 * @param type $filename
-	 * @return string
-	 */
-	function getMediaFilename($container_id, $media_id, $filename) {
-
-		$table = new Table($this->adapter);
-		$container = $table->find('media_container', $container_id);
-		if ($container ===  false) {
-			throw new \Exception("Cannot locate container '$container_id'");
-		}
-		$container_folder = $container['folder'];
-		
-		
-		if ($media_id == '') {
-			throw new \Exception("Media id '$media_id' is required");
-		}
-		$pathinfo = pathinfo($filename);
-		
-		if ($pathinfo['extension'] == '') {
-			$ext = '';
-		} else {
-			$ext = '.' . $pathinfo['extension'];
-		}
-		
-		// Should better be handled by iconv with translate but need a dependency
-		$qf = preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $pathinfo['filename']);
-		
-		$media_directory = $this->getMediaDirectory($media_id);
-		$media_filename = $container_folder . '/' . $media_directory . '/' . "$media_id-" . substr($qf, 0, 40) . $ext;
-		return $media_filename;
-	}
-	
-	function getMediaDirectory($media_id) {
-		
-		$dirs = array();
-		$dirs[] = str_pad(substr($media_id, 0, 2), 2, 0, STR_PAD_LEFT);
-		$dirs[] = str_pad(substr($media_id, 2, 4), 2, 0, STR_PAD_LEFT);
-		$dir = join('/', $dirs);
-		return $dir;
-	}
-	
 
 	/**
 	 * 
 	 * @param \MMan\Import\Element $element
 	 * @param int $container_id
-	 * @param type $folder
+	 * @param boolean $overwrite
 	 */
-	function import(ImportElement $element, $container_id) {
+	function import(ImportElement $element, $container_id, $overwrite=true) {
 
 		
 		$fs = $this->storage->getFilesystem();
@@ -120,11 +76,13 @@ class MediaManager
 			
 			// Step 3 : Generate media manager filename
 
-			$media_filename = $this->getMediaFilename($container_id, $media_id, $filename);
-
+			
+			$mediaLocation = $this->getMediaLocation();
+			
 			// Step 2 : Adding into filesystem
 			try {
-				$fs->write($media_filename, file_get_contents($filename));
+				$fs->write($mediaLocation['filename'], file_get_contents($filename), $overwrite);
+				
 			} catch (\Exception $e) {
 				// If something goes wrong throw an exception
 				$this->adapter->getDriver()->getConnection()->rollback();		
@@ -132,7 +90,10 @@ class MediaManager
 			}
 
 			// @todo make a super try catch ;)
-			$media['location'] = $media_filename;
+			/*
+			 * Relative location of file
+			 */
+			$media['location'] = $mediaLocation['location'];
 			$media->save();
 			
 			$this->adapter->getDriver()->getConnection()->commit();		
@@ -143,6 +104,64 @@ class MediaManager
 	}
 	
 
+	/**
+	 * @param int $container_id
+	 * @param int $media_id
+	 * @param string $filename
+	 * @return array
+	 */
+	function getMediaLocation($container_id, $media_id, $filename) {
+
+		$table = new Table($this->adapter);
+		$container = $table->find('media_container', $container_id);
+		if ($container ===  false) {
+			throw new \Exception("Cannot locate container '$container_id'");
+		}
+		$container_folder = $container['folder'];
+		
+		
+		if ($media_id == '') {
+			throw new \Exception("Media id '$media_id' is required");
+		}
+		$pathinfo = pathinfo($filename);
+		
+		if ($pathinfo['extension'] == '') {
+			$ext = '';
+		} else {
+			$ext = '.' . $pathinfo['extension'];
+		}
+		
+		// Should better be handled by iconv with translate but need a dependency
+		$qf = preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $pathinfo['filename']);
+		
+		$media_directory = $this->getMediaDirectory($media_id);
+		$media_location = $media_directory . '/' . "$media_id-" . substr($qf, 0, 40) . $ext;
+		$media_filename = $container_folder . '/' . $media_location;
+		
+		$location = array(
+			'filename' => $media_filename,
+			'location' => $media_location
+		);
+		
+		return $location;
+	}
+	
+	/**
+	 * 
+	 * @param int $media_id
+	 * @return string
+	 */
+	protected function getMediaDirectory($media_id) {
+		
+		$dirs = array();
+		$dirs[] = str_pad(substr($media_id, 0, 2), 2, 0, STR_PAD_LEFT);
+		$dirs[] = str_pad(substr($media_id, 2, 4), 2, 0, STR_PAD_LEFT);
+		$dir = join('/', $dirs);
+		return $dir;
+	}
+	
+	
+	
 
 	/**
 	 * 
