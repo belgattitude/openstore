@@ -148,7 +148,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		
 		$media_type_id = $tableManager->findOneBy('product_media_type', 'reference', 'PICTURE')->offsetGet('type_id');
 		
-		$limit_to_import = 10;
+		$limit_to_import = 10000;
 		$count = count($list);
 		for ($i = 0; ($i < $limit_to_import && $i < $count); $i++) {
 			$infos = $list[$i];
