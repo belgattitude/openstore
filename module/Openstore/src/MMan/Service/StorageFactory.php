@@ -20,6 +20,9 @@ class StorageFactory implements FactoryInterface
     {
         $config = $serviceLocator->get('Config');
         $config = isset($config['mediamanager']) ? $config['mediamanager'] : array();
+		if (empty($config)) {
+			throw new \Exception("Cannot locate media manager configuration, please review your configuration.");
+		}
 		
 		$adapterConfig = $config['adapter'];
 		$adapterClass   = $adapterConfig['class'];
@@ -34,7 +37,7 @@ class StorageFactory implements FactoryInterface
 				$adapter = new GAdapter\SafeLocal($basePath);
 				break;
 			default: 
-				throw new \Exception("Cannot load mediamanager adapter '$adapterClass'");
+				throw new \Exception("Cannot load mediamanager adapter '$adapterClass', adapter is not supported");
 		}
 		$manager = new Storage();
 		$manager->setAdapter($adapter);
