@@ -1,8 +1,8 @@
 <?php
 return array(
 	'mediamanager' => array(
-		'default' => array(
-			'adapter' => 'Gaufrette\Adapter\Local',
+		'adapter' => array(
+			'class' => 'Gaufrette\Adapter\Local',
 			'options' => array(
 				'basePath' => '/web/data/images/mediamanager'
 			)
