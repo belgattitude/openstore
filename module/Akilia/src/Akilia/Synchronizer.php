@@ -88,7 +88,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 	function synchronizeAll()
 	{
 		
-		/*
+		
 		$this->synchronizeCountry();
 		$this->synchronizeCustomer();
 		$this->synchronizePricelist();
@@ -100,7 +100,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 		$this->synchronizeProductTranslation();
 		$this->synchronizeProductPricelist();
 		$this->synchronizeProductStock();
-		*/
+		
 		$this->synchronizeProductMedia();
 		
 /**
@@ -141,132 +141,25 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		
 		$mediaManager = $this->getServiceLocator()->get('MMan/MediaManager');
 		
+		$tableManager = new \Smart\Model\Table($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
+		$container = $tableManager->findOneBy('media_container', 'reference', 'PRODUCT_MEDIAS');
+		if (!$container) {
+			throw new \Exception("Cannot find media container 'PRODUCT_MEDIAS'");
+		}
+		
 		$count = count($list);
 		for ($i = 0; ($i < 10 && $i < $count); $i++) {
 			$infos = $list[$i];
 			//var_dump($infos);
 			$importElement = new \MMan\Import\Element();
+			
 			$importElement->setFilename($infos['filename']);
 			$importElement->setLegacyMapping($infos['md5']);
-			
-			$mediaManager->import($importElement);
-			
-			
+			$mediaManager->import($importElement, $container['container_id']);
 		}
 		
 	}
 	
-	function synchronizeProductMedia2() 
-	{
-	
-		
-		$sl = $this->getServiceLocator();
-		$configuration = $sl->get('Configuration');
-		if (!is_array($configuration['akilia'])) {
-			throw new \Exception("Cannot find akilia configuration, please see you global config files");
-		}
-		$configuration =  $configuration['akilia'];		
-		
-		$products = new Akilia1Products($configuration);
-		$products->setServiceLocator($this->getServiceLocator());
-		$products->setDbAdapter($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
-		
-		
-		/*
-		$mman = $this->getMManManager();
-		$fs = $mman->getFilesystem();
-		try {
-			$fs->write('/test/image.jpg', 'hello', true);
-			var_dump($fs->listKeys());
-			$a = $fs->read('image.jpg');
-		} catch (GException\FileNotFound $e) {
-			
-		}
-		var_dump($a);
-		die();
-		*/
-		
-		$typeRepository = $this->em->getRepository('Openstore\Entity\ProductMediaType');
-		$types = array();
-		foreach ($typeRepository->findAll() as $type) {
-			$types[$type->getReference()] = $type->getTypeId();
-		};
-		
-		$mediaRepository = $this->em->getRepository('Openstore\Entity\Media');
-		$productRepository = $this->em->getRepository('Openstore\Entity\Product');
-		
-		$list = $products->getProductPictures();
-		
-		$folder = 'product';
-		
-		foreach($list as $basename => $infos) {
-			
-			$md5 = $infos['md5'];
-			
-			$media = $mediaRepository->findOneBy(array('legacy_mapping' => $md5));
-			
-			if (!$media) {
-				
-				$media = new Entity\Media();
-				$media->setFilemtime($infos['filemtime'])
-					  ->setLegacyMapping($md5)
-					  ->setFilesize($infos['filesize'])
-					  //->setTitle($infos['basename'])
-					  ->setFilename($infos['basename']);
-				$this->em->persist($media);
-				//$this->em->flush();
-				
-				//$media_id = $media->getMediaId();
-				
-				$product_id = $infos['product_id'];
-				$alternate_index = $infos['alternate_index'];
-				$type_id = $alternate_index !== null ? $types['PICTURE'] : $types['ALTERNATE_PICTURE'];
-				
-				try {
-					$product = $productRepository->find($product_id);
-					if ($product) {
-						
-						
-						$productMedia = new Entity\ProductMedia();
-						//$productMedia->setMediaId($this->em->getReference('Openstore\Entity\Media', $media_id));
-						$productMedia->setMediaId($media);
-						$productMedia->setProductId($product);
-						$productMedia->setTypeId($this->em->getReference('Openstore\Entity\ProductMediaType', $type_id));
-						$productMedia->setSortIndex($alternate_index);
-						
-						$this->em->persist($productMedia);
-						$this->em->flush();
-						
-					} else {
-						
-					}
-				} catch (\Exception $e) {
-					
-					echo 'Removing media:' . $media_id . "\n";
-					//$this->em->remove($media);
-					//$this->em->flush();
-					
-				}
-				
-				
-			} else if ($media->getFilemtime() != $infos['filemtime'])  {
-				
-				
-			}
-			
-			/*
-			echo str_pad($infos['product_id'], 10) . "\t" .  
-				($infos['alternate_index'] === null ? "0" : $infos['alternate_index']) . "\t" . 
-				($infos['product_active'] ? "        " : "ARCHIVED") . "\t" . 
-				$infos['filename'] . "\n"; 
-			*/
-			
-			
-			//$media = new \MMan\MediaManager();
-			//$media->add($infos['filename']);
-		}		
-		die();
-	}
 	
 	function synchronizeCountry()
 	{

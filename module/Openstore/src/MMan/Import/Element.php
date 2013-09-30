@@ -24,6 +24,16 @@ class Element {
 		return $this->filename;
 	}
 	
+	function getFilesize()
+	{
+		return filesize($this->filename);
+	}
+	
+	function getFilemtime()
+	{
+		return filemtime($this->filename);
+	}
+	
 	function getLegacyMapping() 
 	{
 		return $this->legacy_mapping;

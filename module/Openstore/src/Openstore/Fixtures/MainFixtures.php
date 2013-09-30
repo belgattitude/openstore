@@ -17,6 +17,7 @@ class LoadUserData implements FixtureInterface
     public function load(ObjectManager $manager)
     {
 		
+		$this->importMediaContainers($manager);
 		$this->importProductMediaTypes($manager);
 		
 		$this->importLanguages($manager);
@@ -37,6 +38,33 @@ class LoadUserData implements FixtureInterface
 		$this->importProductUnit($manager);
 		
     }
+	
+	
+	function importMediaContainers(ObjectManager $manager) {
+		
+		$containers = array(
+			1 => array('reference' => 'PRODUCT_MEDIAS', 'folder' => '/product_medias', 'title' => 'Catalog product medias container'),
+			2 => array('reference' => 'PRIVATE', 'folder' => '/private', 'title' => 'Private media container'),
+		);
+		
+		
+		
+		foreach($containers as $id => $infos) {
+			$container = new Entity\MediaContainer();
+			$container->setContainerId($id);
+			$container->setReference($infos['reference']);
+			$container->setFolder($infos['folder']);
+			$container->setTitle($infos['title']);
+			$manager->persist($container);
+		}
+		
+		
+		$metadata = $manager->getClassMetaData(get_class($container));
+		$metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
+		
+		$manager->flush();
+	}
+	
 	
 	function importProductMediaTypes(ObjectManager $manager) {
 		

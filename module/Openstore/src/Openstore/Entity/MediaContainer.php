@@ -14,19 +14,20 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="media",
+ *   name="media_container",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
+ *     @ORM\UniqueConstraint(name="unique_folder_idx",columns={"folder"}),
+ *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *   }, 
  *   indexes={
  *     @ORM\Index(name="title_idx", columns={"title"}),
  *     @ORM\Index(name="description_idx", columns={"description"}),
  *   },
- *   options={"comment" = "Media table"}
+ *   options={"comment" = "Media container table"}
  * )
- * @Gedmo\SoftDeleteable(fieldName="deleted_at")
  */
-class Media implements InputFilterAwareInterface
+class MediaContainer implements InputFilterAwareInterface
 {
 	
 	/**
@@ -37,44 +38,22 @@ class Media implements InputFilterAwareInterface
 	
 	/**
 	 * @ORM\Id
-	 * @ORM\Column(name="media_id", type="bigint", nullable=false, options={"unsigned"=true})
+	 * @ORM\Column(name="container_id", type="bigint", nullable=false, options={"unsigned"=true})
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
-	private $media_id;
+	private $container_id;
+
+	/**
+	 * @ORM\Column(type="string", length=50, nullable=false)
+	 */
+	private $reference;
+	
 	
 	/**
-	 * 
-     * @ORM\ManyToOne(targetEntity="MediaContainer", inversedBy="medias", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="container_id", referencedColumnName="container_id", onDelete="CASCADE", nullable=false)
+	 * @ORM\Column(type="string", length=255, nullable=false)
 	 */
-	private $container_id;	
+	private $folder;
 
-	/**
-	 * @ORM\Column(type="string", length=60, nullable=true)
-	 */
-	private $mimetype;
-
-	/**
-	 * @ORM\Column(type="string", length=120, nullable=true)
-	 */
-	private $filename;
-
-	/**
-	 * @ORM\Column(type="string", length=255, nullable=true)
-	 */
-	private $location;	
-	
-
-	/**
-	 * @ORM\Column(type="bigint", nullable=true, options={"unsigned" = true})
-	 */
-	private $filesize;
-	
-
-	/**
-	 * @ORM\Column(type="integer", nullable=true, options={"unsigned" = true})
-	 */
-	private $filemtime;	
 	
 	/**
 	 * @ORM\Column(type="string", length=100, nullable=true)
@@ -138,12 +117,12 @@ class Media implements InputFilterAwareInterface
 	
 	/**
 	 * 
-	 * @param integer $media_id
-	 * @return \Openstore\Entity\Media
+	 * @param integer $container_id
+	 * @return \Openstore\Entity\MediaContainer
 	 */
-	public function setMediaId($media_id)
+	public function setContainerId($container_id)
 	{
-		$this->media_id = $media_id;
+		$this->container_id = $container_id;
 		return $this;
 	}	
 	
@@ -151,19 +130,19 @@ class Media implements InputFilterAwareInterface
 	 * 
 	 * @return integer
 	 */
-	public function getMediaId()
+	public function getContainerId()
 	{
-		return $this->media_id;
+		return $this->container_id;
 	}
 
 
 	/**
 	 * 
-	 * @param string $filename
+	 * @param string $folder
 	 */
-	public function setFilename($filename)
+	public function setFolder($folder)
 	{
-		$this->filename = $filename;
+		$this->folder = $folder;
 		return $this;
 	}
 
@@ -171,19 +150,19 @@ class Media implements InputFilterAwareInterface
 	 * 
 	 * @return string
 	 */
-	public function getFilename()
+	public function getFolder()
 	{
-		return $this->filename;
+		return $this->folder;
 	}	
 	
 
 	/**
 	 * 
-	 * @param string $location
+	 * @param string $reference
 	 */
-	public function setLocation($location)
+	public function setReference($reference)
 	{
-		$this->location = $location;
+		$this->reference = $reference;
 		return $this;
 	}
 
@@ -191,10 +170,11 @@ class Media implements InputFilterAwareInterface
 	 * 
 	 * @return string
 	 */
-	public function getLocation()
+	public function getReference()
 	{
-		return $this->location;
-	}	
+		return $this->reference;
+	}
+
 	
 	
 	/**
@@ -234,45 +214,6 @@ class Media implements InputFilterAwareInterface
 	{
 		return $this->description;
 	}
-	/**
-	 * 
-	 * @return int
-	 */
-	public function getFilesize()
-	{
-		return $this->filesize;
-	}
-
-	/**
-	 * 
-	 * @param int $filesize
-	 */
-	public function setFilesize($filesize)
-	{
-		$this->filesize = $filesize;
-		return $this;
-	}	
-	
-	
-	
-	/**
-	 * 
-	 * @return int
-	 */
-	public function getFilemtime()
-	{
-		return $this->filemtime;
-	}
-
-	/**
-	 * 
-	 * @param int $filemtime
-	 */
-	public function setFilemtime($filemtime)
-	{
-		$this->filemtime = $filemtime;
-		return $this;
-	}	
 
 	/**
 	 * 
@@ -323,7 +264,7 @@ class Media implements InputFilterAwareInterface
 
 	/**
 	 * 
-	 * @param string $deleted_at
+	 * @param string $updated_at
 	 */
 	public function setDeletedAt($deleted_at)
 	{
@@ -492,6 +433,3 @@ class Media implements InputFilterAwareInterface
 	}
 	
 }
-
-
-
