@@ -77,7 +77,7 @@ class MediaManager
 			// Step 3 : Generate media manager filename
 
 			
-			$mediaLocation = $this->getMediaLocation();
+			$mediaLocation = $this->getMediaLocation($container_id, $media_id, $filename);
 			
 			// Step 2 : Adding into filesystem
 			try {
