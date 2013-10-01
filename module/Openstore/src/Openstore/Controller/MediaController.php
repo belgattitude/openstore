@@ -108,8 +108,29 @@ class MediaController extends AbstractActionController
 				$height = (int) ($size->getHeight() / $max_ratio);
 				
 				$newSize = new Box($width, $height);
+				
+				// For size it's good, but quality of colors need to be checked
+				//$image->strip();
+				/*
+				             ImageInterface::INTERLACE_NONE      => \Imagick::INTERLACE_NO,
+            ImageInterface::INTERLACE_LINE      => \Imagick::INTERLACE_LINE,
+            ImageInterface::INTERLACE_PLANE     => \Imagick::INTERLACE_PLANE,
+            ImageInterface::INTERLACE_PARTITION => \Imagick::INTERLACE_PARTITION,
+
+				 */
+				$image->interlace(ImageInterface::INTERLACE_LINE);
+				//$image->strip();
+				
 				$image->resize($newSize, $filter);
-				$cache->setItem($cache_key, $image->get($format, array('quality' => $quality)));
+				$options = array(
+					'quality' => $quality,
+					'flatten' => true,
+					//'resolution-units' => ImageInterface::RESOLUTION_PIXELSPERINCH,
+					//'resolution-y' => 72,
+					//'resolution-x' => 72,
+				);
+				
+				$cache->setItem($cache_key, $image->get($format, $options));
 				
 			}
 
