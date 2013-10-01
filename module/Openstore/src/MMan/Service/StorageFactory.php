@@ -41,6 +41,7 @@ class StorageFactory implements FactoryInterface
 		}
 		$manager = new Storage();
 		$manager->setAdapter($adapter);
+		$manager->setAdapterOptions($adapterOptions);
 		$manager->setServiceLocator($serviceLocator);
 
         return $manager;

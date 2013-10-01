@@ -48,8 +48,7 @@ class MediaManager
 			throw new \Exception("Cannot locate media '$media_id'");
 		}
 		$container_record = $media_record->getParent('media_container');
-		
-		$media = new Media();
+		$media = new Media($this);
 		$media->setProperties(array(
 			'filename'		=> $media_record->filename,
 			'filesize'		=> $media_record->filesize,
@@ -58,10 +57,11 @@ class MediaManager
 			'title'			=> $media_record->title,
 			'description'	=> $media_record->description,
 			'created_at'	=> $media_record->created_at,
-			'updated_at'	=> $media_record->update_at,
+			'updated_at'	=> $media_record->updated_at,
 			'container_id'	=> $media_record->container_id,
 			'folder'		=> $container_record->folder
 		));
+		
 		
 		return $media;
 		
@@ -199,6 +199,15 @@ class MediaManager
 	
 	
 
+	/**
+	 * \MMan\Service\Storage $storage
+	 * @return 
+	 */
+	function getStorage()
+	{
+		return $this->storage;
+	}
+	
 	/**
 	 * 
 	 * @param \MMan\Service\Storage $storage

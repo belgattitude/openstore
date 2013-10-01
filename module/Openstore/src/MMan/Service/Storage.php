@@ -21,6 +21,11 @@ class Storage implements ServiceLocatorAwareInterface
 	protected $adapter;
 	
 	/**
+	 * @var array
+	 */
+	protected $adapterOptions;
+	
+	/**
 	 *
 	 * @var \Gaufrette\Filesystem
 	 */
@@ -41,6 +46,7 @@ class Storage implements ServiceLocatorAwareInterface
 	function getFilesystem() {
 		if ($this->filesystemInstance === null) {
 			$this->filesystemInstance = new Filesystem($this->getAdapter());
+			
 		}
 		return $this->filesystemInstance;
 	}
@@ -66,7 +72,24 @@ class Storage implements ServiceLocatorAwareInterface
 	function getAdapter() {
 		return $this->adapter;
 	}
+
+	/**
+	 * 
+	 * @param array $adapterOptions
+	 * @return \MMan\Service\Storage
+	 */
+	function setAdapterOptions(array $adapterOptions) {
+		$this->adapterOptions = $adapterOptions;
+		return $this;
+	}
 	
+	/**
+	 * 
+	 * @return array
+	 */
+	function getAdapterOptions() {
+		return $this->adapterOptions;
+	}
 	
 	/**
 	 * 
