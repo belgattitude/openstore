@@ -85,9 +85,7 @@ class MediaController extends AbstractActionController
 		$mediaManager = $this->getServiceLocator()->get('MMan\MediaManager');
 		try {
 			$media = $mediaManager->get($media_id);
-			
 			$cacheMd = $cache->getMetadata($cache_key);
-			
 			if ($cache_enabled && $cache->hasItem($cache_key) && $cacheMd !== false && $cacheMd['mtime'] > $media->getFilemtime()) {
 
 				// DO nothing it's in cache
@@ -143,6 +141,7 @@ class MediaController extends AbstractActionController
 					break;
 				case 'gif':
 					$content_type = 'image/gif';
+					break;
 				default:
 					throw new \Exception("Unsupported format '$format'");
 			}
