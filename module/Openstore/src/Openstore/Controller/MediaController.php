@@ -17,10 +17,17 @@ class MediaController extends AbstractActionController
 		
 		$media_id = $this->params()->fromRoute('media_id');
 		$mediaManager = $this->getServiceLocator()->get('MMan\MediaManager');
-		$mediaManager->get($media_id);
+		try {
+			$media = $mediaManager->get($media_id);
+			$path = $media->getPath();
+		} catch (\Exception $e) {
+			// ERROR 403 ?
+			//var_dump($e);
+			//die();
+			throw $e;
+			
+		}
 		
-		
-		die('cool');
 		
 	}
 	

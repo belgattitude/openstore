@@ -8,8 +8,9 @@ use MMan\Import\Element as ImportElement;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Stdlib;
-
 use Smart\Model\Table;
+
+
 
 class MediaManager
 {
@@ -23,11 +24,48 @@ class MediaManager
 	 * @var \Zend\Db\Adapter\Adapter
 	 */
 	protected $adapter;
+	
+	/**
+	 *
+	 * @var Table
+	 */
+	protected $tableManager;
 
 	function __construct() {
 		
 	}
 	
+	
+	/**
+	 * 
+	 * @param integer $media_id
+	 * @return \MMan\Media
+	 */
+	function get($media_id) {
+		$tableManager = $this->getTableManager();
+		$media_record = $tableManager->find('media', $media_id);
+		if (!$media_record) {
+			throw new \Exception("Cannot locate media '$media_id'");
+		}
+		$container_record = $media_record->getParent('media_container');
+		
+		$media = new Media();
+		$media->setProperties(array(
+			'filename'		=> $media_record->filename,
+			'filesize'		=> $media_record->filesize,
+			'mimetype'		=> $media_record->mimetype,
+			'location'		=> $media_record->location,
+			'title'			=> $media_record->title,
+			'description'	=> $media_record->description,
+			'created_at'	=> $media_record->created_at,
+			'updated_at'	=> $media_record->update_at,
+			'container_id'	=> $media_record->container_id,
+			'folder'		=> $container_record->folder
+		));
+		
+		return $media;
+		
+	}
 	
 
 	/**
@@ -43,9 +81,10 @@ class MediaManager
 
 		// STEP 1 : Adding into database
 		
-		$table = new Table($this->adapter);
+		$tableManager = $this->getTableManager();
 		
-		$media = $table->findOneBy('media', 'legacy_mapping', $element->getLegacyMapping());
+		
+		$media = $tableManager->findOneBy('media', 'legacy_mapping', $element->getLegacyMapping());
 		
 		$unchanged = false;
 		if ($media !== false) {
@@ -69,7 +108,7 @@ class MediaManager
 			);
 			
 			
-			$media = $table->insertOnDuplicateKey('media', $data, $duplicate_exclude=array('legacy_mapping'));
+			$media = $tableManager->insertOnDuplicateKey('media', $data, $duplicate_exclude=array('legacy_mapping'));
 			$media_id = $media['media_id'];
 			
 			// Step 3 : Generate media manager filename
@@ -111,7 +150,7 @@ class MediaManager
 	function getMediaLocation($container_id, $media_id, $filename) {
 
 		$table = new Table($this->adapter);
-		$container = $table->find('media_container', $container_id);
+		$container = $tableManager->find('media_container', $container_id);
 		if ($container ===  false) {
 			throw new \Exception("Cannot locate container '$container_id'");
 		}
@@ -178,6 +217,18 @@ class MediaManager
 	function setDbAdapter(Adapter $adapter) {
 		$this->adapter = $adapter;
 		return $this;
+	}
+	
+
+	/**
+	 * 
+	 * @return \Smart\Model\Table
+	 */
+	function getTableManager() {
+		if ($this->tableManager === null) {
+			$this->tableManager = new Table($this->adapter);
+		}
+		return $this->tableManager;
 	}
 
 }
