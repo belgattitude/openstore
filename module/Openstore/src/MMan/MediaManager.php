@@ -43,8 +43,9 @@ class MediaManager
 	 */
 	function get($media_id) {
 		$tableManager = $this->getTableManager();
-		$media_record = $tableManager->find('media', $media_id);
-		if (!$media_record) {
+		try {
+			$media_record = $tableManager->find('media', $media_id);
+		} catch (\Smart\Model\Exception\RecordNotFoundException $e) {
 			throw new \Exception("Cannot locate media '$media_id'");
 		}
 		$container_record = $media_record->getParent('media_container');
