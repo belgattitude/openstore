@@ -22,6 +22,8 @@ class MediaManagerFactory implements FactoryInterface
 		$mediaManager = new MediaManager();
 		$mediaManager->setStorage($storage);
 		$mediaManager->setDbAdapter($serviceLocator->get('Zend\Db\Adapter\Adapter'));
+
+		$mediaManager->setTableManager($serviceLocator->get('Smart\Model\Table'));
 		return $mediaManager;
     }
 }

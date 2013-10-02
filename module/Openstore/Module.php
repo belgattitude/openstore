@@ -159,6 +159,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 			'factories' => array(
 				'MMan\Storage' => 'MMan\Service\StorageFactory',
 				'MMan\MediaManager' => 'MMan\Service\MediaManagerFactory',
+				'Smart\Model\Table' => 'Smart\Model\Service\TableFactory',
 				'Openstore\Configuration' => 'Openstore\ConfigurationFactory',
 				'Openstore\Service' => 'Openstore\ServiceFactory',
 				'Openstore\PriceManager' => 'Openstore\Catalog\PriceManagerFactory',

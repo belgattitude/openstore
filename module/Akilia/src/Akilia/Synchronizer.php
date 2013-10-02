@@ -141,12 +141,12 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		$mediaManager = $this->getServiceLocator()->get('MMan/MediaManager');
 		
 		$tableManager = new \Smart\Model\Table($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
-		$container = $tableManager->findOneBy('media_container', 'reference', 'PRODUCT_MEDIAS');
+		$container = $tableManager->findOneBy('media_container', array('reference' => 'PRODUCT_MEDIAS'));
 		if (!$container) {
 			throw new \Exception("Cannot find media container 'PRODUCT_MEDIAS'");
 		}
 		
-		$media_type_id = $tableManager->findOneBy('product_media_type', 'reference', 'PICTURE')->offsetGet('type_id');
+		$media_type_id = $tableManager->findOneBy('product_media_type', array('reference' => 'PICTURE'))->offsetGet('type_id');
 		
 		$limit_to_import = 10000;
 		$count = count($list);

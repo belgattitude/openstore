@@ -84,7 +84,7 @@ class MediaManager
 		$tableManager = $this->getTableManager();
 		
 		
-		$media = $tableManager->findOneBy('media', 'legacy_mapping', $element->getLegacyMapping());
+		$media = $tableManager->findOneBy('media', array('legacy_mapping' => $element->getLegacyMapping()));
 		
 		$unchanged = false;
 		if ($media !== false) {
@@ -149,7 +149,8 @@ class MediaManager
 	 */
 	function getMediaLocation($container_id, $media_id, $filename) {
 
-		$table = new Table($this->adapter);
+		$tableManager = new Table($this->adapter);
+		
 		$container = $tableManager->find('media_container', $container_id);
 		if ($container ===  false) {
 			throw new \Exception("Cannot locate container '$container_id'");
@@ -238,6 +239,11 @@ class MediaManager
 			$this->tableManager = new Table($this->adapter);
 		}
 		return $this->tableManager;
+	}
+	
+	function setTableManager(\Smart\Model\Table $tableManager) {
+		$this->tableManager = $tableManager;
+		return $this;
 	}
 
 }
