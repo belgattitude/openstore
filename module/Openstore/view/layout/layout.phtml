@@ -1,5 +1,10 @@
-<?php echo $this->doctype(); ?>
-<html lang="en">
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html lang="en" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="en" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="en" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<?php //echo $this->doctype(); ?>
+<?php $theme_path = $this->basePath() . '/themes/openstore'	?>
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<meta charset="utf-8">
@@ -7,9 +12,7 @@
 		<?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0') ?>
 		<meta name="description" content="">
 		<meta name="author" content="">
-		<?php
-		$theme_path = $this->basePath() . '/themes/openstore'
-		?>
+		<link rel="shortcut icon" href="<?= $theme_path . "/icon/favicon.ico" ?>" />
 		<?php
 		//$bootstrap_theme = 'united';
 		//$bootstrap_theme = 'flatly';
@@ -20,27 +23,28 @@
 		echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
 				->prependStylesheet($theme_path . '/css/main.css')
 				
-				->prependStylesheet($theme_path . '/resources/bootstrap-themes/' . $bootstrap_theme . '/bootstrap.min.css')
+				->prependStylesheet($theme_path . '/assets/bootstrap-themes/' . $bootstrap_theme . '/bootstrap.min.css')
 				//->prependStylesheet('//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css')
-				->prependStylesheet($theme_path . '/resources/jquery-colorbox/example3/colorbox.css')
+				->prependStylesheet($theme_path . '/assets/jquery-colorbox/example3/colorbox.css')
 				//->prependStylesheet('//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css')
 				//->prependStylesheet($theme_path . '/resources/bootstrap-glyphicons/css/bootstrap-glyphicons.css')
-				->prependStylesheet($theme_path . '/resources/bootstrap/css/bootstrap.min.css')
+				->prependStylesheet($theme_path . '/assets/bootstrap/css/bootstrap.min.css')
 				//->prependStylesheet($theme_path . '/resources/twitter-typeahead/css/typeahead.js-bootstrap.css')
-				->prependStylesheet($theme_path . '/resources/jquery-select2/select2.css')
-				->prependStylesheet($theme_path . '/resources/jquery-select2-bootstrap/select2-bootstrap.css')
+				->prependStylesheet($theme_path . '/assets/jquery-select2/select2.css')
+				->prependStylesheet($theme_path . '/assets/jquery-select2-bootstrap/select2-bootstrap.css')
 		?>
 
 		<?php
 		echo $this->headScript()
 				->prependFile($theme_path . '/js/main.js')
-				->prependFile($theme_path . '/resources/jquery-select2/select2.js')
-				->prependFile($theme_path . '/resources/twitter-typeahead/js/typeahead.min.js')
-				->prependFile($theme_path . '/resources/twitter-hogan/hogan-2.0.0.js')
-				->prependFile($theme_path . '/resources/bootstrap/js/bootstrap.min.js')
-				->prependFile($theme_path . '/resources/jquery-colorbox/jquery.colorbox-min.js')
-				->prependFile($theme_path . '/resources/jquery-color/jquery.color.js')
-				->prependFile($theme_path . '/resources/jquery/jquery.min.js')
+				->prependFile($theme_path . '/assets/jquery-select2/select2.js')
+				->prependFile($theme_path . '/assets/twitter-typeahead/js/typeahead.min.js')
+				->prependFile($theme_path . '/assets/twitter-hogan/hogan-2.0.0.js')
+				->prependFile($theme_path . '/assets/bootstrap/js/bootstrap.min.js')
+				->prependFile($theme_path . '/assets/jquery-colorbox/jquery.colorbox-min.js')
+				->prependFile($theme_path . '/assets/jquery-color/jquery.color.js')
+				->prependFile($theme_path . '/assets/jquery/jquery.min.js')
+				->prependFile($theme_path . '/assets/modernizer/modernizr-2.6.2-respond-1.1.0.min.js');
 		?>
 
 		<!-- Make IE8 and below responsive by adding CSS3 MediaQuery support and html5-->

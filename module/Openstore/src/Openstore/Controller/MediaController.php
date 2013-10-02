@@ -5,8 +5,8 @@ namespace Openstore\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-use Imagine\Imagick\Imagine;
-//use Imagine\Gd\Imagine;
+//use Imagine\Imagick\Imagine;
+use Imagine\Gd\Imagine;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\Box;
 use Zend\Cache\StorageFactory;
@@ -59,28 +59,18 @@ class MediaController extends AbstractActionController
 		$cache->addPlugin($plugin);	
 		
 		$media_id = $this->params()->fromRoute('media_id');
+		
 		$cache_enabled = false;
-		$width = 1000;
-		$height = 1000;
+		$width = 170;
+		$height = 200;
 		$quality = 90	;
 		
-		$filter = ImageInterface::FILTER_MITCHELL;
-		//$filter = ImageInterface::FILTER_UNDEFINED;
 		
-		/**
-		 * BESSEL : 53k
-		 * LANCZOS: 54.5k
-		 * GAUSSIAN: 52k
-		 * MITCHELL: 53k
-		 jpegtran -optimize 14610.jpg > 14610_test.jpg
-		 * 
-		 * 
-		 */
 		
 		// media 2171 = product 14610
 		$format = 'jpg';
 		
-		$cache_key = md5("$media_id/$width/$height/$quality/$filter/$format");
+		$cache_key = md5("$media_id/$width/$height/$quality/$format");
 		
 		$mediaManager = $this->getServiceLocator()->get('MMan\MediaManager');
 		try {
@@ -94,6 +84,21 @@ class MediaController extends AbstractActionController
 
 				$path = $media->getPath();
 				$imagine = new Imagine();
+				
+				if ($imagine instanceof Imagine\Imagick\Imagine) {
+					$filter = ImageInterface::FILTER_MITCHELL;
+					/**
+					 * BESSEL : 53k
+					 * LANCZOS: 54.5k
+					 * GAUSSIAN: 52k
+					 * MITCHELL: 53k
+					 jpegtran -optimize 14610.jpg > 14610_test.jpg
+					 */
+					
+				} else {
+					$filter = ImageInterface::FILTER_UNDEFINED;
+				}
+				
 				$image = $imagine->open($path);
 				
 				
@@ -108,7 +113,7 @@ class MediaController extends AbstractActionController
 				$newSize = new Box($width, $height);
 				
 				// For size it's good, but quality of colors need to be checked
-				//$image->strip();
+				$image->strip();
 				/*
 				             ImageInterface::INTERLACE_NONE      => \Imagick::INTERLACE_NO,
             ImageInterface::INTERLACE_LINE      => \Imagick::INTERLACE_LINE,
