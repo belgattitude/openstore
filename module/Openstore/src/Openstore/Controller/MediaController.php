@@ -12,28 +12,6 @@ use Imagine\Image\Box;
 use Zend\Cache\StorageFactory;
 use Zend\Cache\Storage\Adapter\AdapterOptions as CacheOptions;
 
-			/*
-			 resize
-             ImageInterface::FILTER_UNDEFINED => \Imagick::FILTER_UNDEFINED,
-            ImageInterface::FILTER_BESSEL    => \Imagick::FILTER_BESSEL,
-            ImageInterface::FILTER_BLACKMAN  => \Imagick::FILTER_BLACKMAN,
-            ImageInterface::FILTER_BOX       => \Imagick::FILTER_BOX,
-            ImageInterface::FILTER_CATROM    => \Imagick::FILTER_CATROM,
-            ImageInterface::FILTER_CUBIC     => \Imagick::FILTER_CUBIC,
-            ImageInterface::FILTER_GAUSSIAN  => \Imagick::FILTER_GAUSSIAN,
-            ImageInterface::FILTER_HANNING   => \Imagick::FILTER_HANNING,
-            ImageInterface::FILTER_HAMMING   => \Imagick::FILTER_HAMMING,
-            ImageInterface::FILTER_HERMITE   => \Imagick::FILTER_HERMITE,
-            ImageInterface::FILTER_LANCZOS   => \Imagick::FILTER_LANCZOS,
-            ImageInterface::FILTER_MITCHELL  => \Imagick::FILTER_MITCHELL,
-            ImageInterface::FILTER_POINT     => \Imagick::FILTER_POINT,
-            ImageInterface::FILTER_QUADRATIC => \Imagick::FILTER_QUADRATIC,
-            ImageInterface::FILTER_SINC      => \Imagick::FILTER_SINC,
-            ImageInterface::FILTER_TRIANGLE  => \Imagick::FILTER_TRIANGLE
-
-			 * 
-			 */
-
 
 class MediaController extends AbstractActionController
 {
@@ -112,6 +90,8 @@ class MediaController extends AbstractActionController
 				
 				$newSize = new Box($width, $height);
 				
+				//$image->flipVertically();
+				//$image->rotate(270);
 				// For size it's good, but quality of colors need to be checked
 				$image->strip();
 				/*
