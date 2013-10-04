@@ -157,9 +157,11 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 				'Model\Customer' => 'Openstore\Model\Customer',
 			),
 			'factories' => array(
+				'Soluble\Normalist\SyntheticTable' => 'Soluble\Normalist\Service\SyntheticTableFactory',
+				'Soluble\Media\Converter' => 'Soluble\Media\Converter\Service\MediaConverterFactory',
 				'MMan\Storage' => 'MMan\Service\StorageFactory',
 				'MMan\MediaManager' => 'MMan\Service\MediaManagerFactory',
-				'Soluble\Normalist\SyntheticTable' => 'Soluble\Normalist\Service\SyntheticTableFactory',
+				
 				'Openstore\Configuration' => 'Openstore\ConfigurationFactory',
 				'Openstore\Service' => 'Openstore\ServiceFactory',
 				'Openstore\PriceManager' => 'Openstore\Catalog\PriceManagerFactory',

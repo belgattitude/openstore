@@ -5,8 +5,11 @@ namespace Openstore\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-//use Imagine\Imagick\Imagine;
-use Imagine\Gd\Imagine;
+use Soluble\Media\BoxDimension;
+use Soluble\Media\Converter\ImageConverter;
+
+use Imagine\Imagick\Imagine;
+//use Imagine\Gd\Imagine;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\Box;
 use Zend\Cache\StorageFactory;
@@ -21,7 +24,42 @@ class MediaController extends AbstractActionController
         return $view;
     }
 	
+	/**
+	 * 
+	 * @return ImageConverter
+	 */
+	function getImageConverter() {
+		$converter = $this->getServiceLocator()->get('Soluble\Media\Converter');
+		$imageConverter = $converter->createConverter('image');
+		return $imageConverter;
+		
+	}
+	
 	function mediaAction() {
+		
+		$mediaManager = $this->getServiceLocator()->get('MMan\MediaManager');
+		
+		$media_id = $this->params()->fromRoute('media_id');
+		
+		$width = 170;
+		$height = 200;
+		$quality = 90;
+		$format = 'jpg';
+		
+		try {
+			$imageConverter = $this->getImageConverter();
+			$box = new BoxDimension($width, $height);
+			$media = $mediaManager->get($media_id);
+			$filename = $media->getPath();
+			$imageConverter->getThumbnail($filename, $box, $format, $quality);
+			die();
+		} catch (\Exception $e) {
+			throw $e;
+		}
+		
+	}
+	
+	function mediaOldAction() {
 		
 		$cache  = StorageFactory::adapterFactory('filesystem');
 		$cache->setOptions(array(
@@ -150,9 +188,6 @@ class MediaController extends AbstractActionController
 			//die();
 			throw $e;
 			
-		}
-		
-		
+		}	
 	}
-	
 }
