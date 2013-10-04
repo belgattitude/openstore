@@ -1,0 +1,3 @@
+[submodule "Soluble"]
+	path = Soluble
+	url = git://github.com/belgattitude/solubleframework.git
