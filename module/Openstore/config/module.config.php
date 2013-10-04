@@ -142,7 +142,7 @@ return array(
     ),
 	
 	'caches' => array(
-        'Soluble\Db\Metadata\Cache' => array(
+        'Cache\SolubleDbMetadata' => array(
 			'adapter' => 'filesystem',
 			'options' => array(
 				'ttl' => 0,

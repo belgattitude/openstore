@@ -8,7 +8,7 @@ use MMan\Import\Element as ImportElement;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Stdlib;
-use Soluble\Normalist\TableManager;
+use Soluble\Normalist\SyntheticTable;
 
 
 
@@ -27,9 +27,9 @@ class MediaManager
 	
 	/**
 	 *
-	 * @var TableManager
+	 * @var SyntheticTable
 	 */
-	protected $tableManager;
+	protected $syntheticTable;
 
 	function __construct() {
 		
@@ -42,9 +42,9 @@ class MediaManager
 	 * @return \MMan\Media
 	 */
 	function get($media_id) {
-		$tableManager = $this->getTableManager();
+		$syntheticTable = $this->getSyntheticTable();
 		try {
-			$media_record = $tableManager->find('media', $media_id);
+			$media_record = $syntheticTable->find('media', $media_id);
 		} catch (\Smart\Model\Exception\RecordNotFoundException $e) {
 			throw new \Exception("Cannot locate media '$media_id'");
 		}
@@ -82,10 +82,10 @@ class MediaManager
 
 		// STEP 1 : Adding into database
 		
-		$tableManager = $this->getTableManager();
+		$syntheticTable = $this->getSyntheticTable();
 		
 		
-		$media = $tableManager->findOneBy('media', array('legacy_mapping' => $element->getLegacyMapping()));
+		$media = $syntheticTable->findOneBy('media', array('legacy_mapping' => $element->getLegacyMapping()));
 		
 		$unchanged = false;
 		if ($media !== false) {
@@ -109,7 +109,7 @@ class MediaManager
 			);
 			
 			
-			$media = $tableManager->insertOnDuplicateKey('media', $data, $duplicate_exclude=array('legacy_mapping'));
+			$media = $syntheticTable->insertOnDuplicateKey('media', $data, $duplicate_exclude=array('legacy_mapping'));
 			$media_id = $media['media_id'];
 			
 			// Step 3 : Generate media manager filename
@@ -150,9 +150,9 @@ class MediaManager
 	 */
 	function getMediaLocation($container_id, $media_id, $filename) {
 
-		$tableManager = new Table($this->adapter);
+		$syntheticTable = new Table($this->adapter);
 		
-		$container = $tableManager->find('media_container', $container_id);
+		$container = $syntheticTable->find('media_container', $container_id);
 		if ($container ===  false) {
 			throw new \Exception("Cannot locate container '$container_id'");
 		}
@@ -233,17 +233,23 @@ class MediaManager
 
 	/**
 	 * 
-	 * @return \Soluble\Normalist\Table
+	 * @return SyntheticTable
 	 */
-	function getTableManager() {
-		if ($this->tableManager === null) {
-			$this->tableManager = new TableManager($this->adapter);
+	function getSyntheticTable() {
+		if ($this->syntheticTable === null) {
+			$this->syntheticTable = new SyntheticTable($this->adapter);
 		}
-		return $this->tableManager;
+		return $this->syntheticTable;
 	}
 	
-	function setTableManager(\Soluble\Normalist\TableManager $tableManager) {
-		$this->tableManager = $tableManager;
+	
+	/**
+	 * 
+	 * @param \Soluble\Normalist\SyntheticTable $syntheticTable
+	 * @return \MMan\MediaManager
+	 */
+	function setSyntheticTable(SyntheticTable $syntheticTable) {
+		$this->syntheticTable = $syntheticTable;
 		return $this;
 	}
 

@@ -19,11 +19,12 @@ class MediaManagerFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
 		$storage = $serviceLocator->get('MMan\Storage');
+		
 		$mediaManager = new MediaManager();
 		$mediaManager->setStorage($storage);
 		$mediaManager->setDbAdapter($serviceLocator->get('Zend\Db\Adapter\Adapter'));
-
-		$mediaManager->setTableManager($serviceLocator->get('Smart\Model\Table'));
+		$mediaManager->setSyntheticTable($serviceLocator->get('Soluble\Normalist\SyntheticTable'));
+		
 		return $mediaManager;
     }
 }

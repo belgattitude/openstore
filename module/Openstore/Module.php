@@ -159,7 +159,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 			'factories' => array(
 				'MMan\Storage' => 'MMan\Service\StorageFactory',
 				'MMan\MediaManager' => 'MMan\Service\MediaManagerFactory',
-				'Smart\Model\Table' => 'Smart\Model\Service\TableFactory',
+				'Soluble\Normalist\SyntheticTable' => 'Soluble\Normalist\Service\SyntheticTableFactory',
 				'Openstore\Configuration' => 'Openstore\ConfigurationFactory',
 				'Openstore\Service' => 'Openstore\ServiceFactory',
 				'Openstore\PriceManager' => 'Openstore\Catalog\PriceManagerFactory',
@@ -282,6 +282,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 				'namespaces' => array(
 					__NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
 					'MMan' => __DIR__ . '/src/MMan',
+					'Soluble' => '/web/www/solubleframework/solubleframework/src/Soluble'
 				),
 			),
 		);
