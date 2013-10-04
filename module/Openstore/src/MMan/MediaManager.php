@@ -150,7 +150,7 @@ class MediaManager
 	 */
 	function getMediaLocation($container_id, $media_id, $filename) {
 
-		$syntheticTable = new Table($this->adapter);
+		$syntheticTable = $this->getSyntheticTable();
 		
 		$container = $syntheticTable->find('media_container', $container_id);
 		if ($container ===  false) {

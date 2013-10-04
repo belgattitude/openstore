@@ -7,7 +7,7 @@ use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-use Gaufrette\Adapter as GAdapter;
+//use Gaufrette\Adapter as GAdapter;
 
 class MediaManagerFactory implements FactoryInterface
 {
@@ -19,7 +19,6 @@ class MediaManagerFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
 		$storage = $serviceLocator->get('MMan\Storage');
-		
 		$mediaManager = new MediaManager();
 		$mediaManager->setStorage($storage);
 		$mediaManager->setDbAdapter($serviceLocator->get('Zend\Db\Adapter\Adapter'));
