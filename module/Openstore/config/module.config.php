@@ -139,5 +139,21 @@ return array(
                 'role_entity_class' => 'Openstore\Entity\Role',
              ),
         ),
+    ),
+	
+	'caches' => array(
+        'Soluble\Db\Metadata\Cache' => array(
+			'adapter' => 'filesystem',
+			'options' => array(
+				'ttl' => 0,
+				'cache_dir' => '/web/tmp/cache',
+				'dir_level' => 1,
+				'dir_permission' => 0777,
+				'file_permission' => 0666
+			),
+			'plugins' => array(
+					'exception_handler' => array('throw_exceptions' => false)
+			)							
+        ),
     ),	
 );

@@ -8,7 +8,7 @@ use MMan\Import\Element as ImportElement;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Stdlib;
-use Smart\Model\Table;
+use Soluble\Normalist\TableManager;
 
 
 
@@ -27,7 +27,7 @@ class MediaManager
 	
 	/**
 	 *
-	 * @var Table
+	 * @var TableManager
 	 */
 	protected $tableManager;
 
@@ -233,16 +233,16 @@ class MediaManager
 
 	/**
 	 * 
-	 * @return \Smart\Model\Table
+	 * @return \Soluble\Normalist\Table
 	 */
 	function getTableManager() {
 		if ($this->tableManager === null) {
-			$this->tableManager = new Table($this->adapter);
+			$this->tableManager = new TableManager($this->adapter);
 		}
 		return $this->tableManager;
 	}
 	
-	function setTableManager(\Smart\Model\Table $tableManager) {
+	function setTableManager(\Soluble\Normalist\TableManager $tableManager) {
 		$this->tableManager = $tableManager;
 		return $this;
 	}
