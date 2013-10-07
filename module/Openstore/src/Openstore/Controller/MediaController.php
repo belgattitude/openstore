@@ -51,6 +51,8 @@ class MediaController extends AbstractActionController
 			$box = new BoxDimension($width, $height);
 			$media = $mediaManager->get($media_id);
 			$filename = $media->getPath();
+			
+			
 			$imageConverter->getThumbnail($filename, $box, $format, $quality);
 			die();
 		} catch (\Exception $e) {
