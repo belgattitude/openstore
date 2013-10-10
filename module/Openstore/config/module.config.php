@@ -146,7 +146,8 @@ return array(
 			'adapter' => 'filesystem',
 			'options' => array(
 				'ttl' => 0,
-				'cache_dir' => '/web/tmp/cache',
+				'cache_dir' => './data/cache',
+				'namespace' => 'Cache\SolubleDbMetadata',
 				'dir_level' => 1,
 				'dir_permission' => 0777,
 				'file_permission' => 0666
@@ -159,7 +160,8 @@ return array(
 			'adapter' => 'filesystem',
 			'options' => array(
 				'ttl' => 0,
-				//'cache_dir' => '/web/tmp/cache',
+				'cache_dir' => './data/cache',
+				'namespace' => 'Cache\SolubleMediaConverter',
 				'dir_level' => 4,
 				'dir_permission' => 0777,
 				'file_permission' => 0666
