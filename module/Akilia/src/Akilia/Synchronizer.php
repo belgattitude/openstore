@@ -187,6 +187,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				try {	
 					echo "[+] Importing product " . $infos['product_id'] . " as media_id $media_id [" . ($i+1) . "/$count]\n";
 					$productMedia = $table->insertOnDuplicateKey('product_media', $data, $duplicate_exclude=array());
+					
 				} catch(\Exception $e) {
 					echo "[Error] Cannot insert : \n";
 					var_dump($data);
