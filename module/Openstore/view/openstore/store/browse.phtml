@@ -1,6 +1,5 @@
 <?php
 $escaper = new Zend\Escaper\Escaper('utf-8');
-$image_baseurl = "http://akilia2.emdmusic.com/medias/products/dynamic/";
 ?>
 
 
@@ -182,11 +181,16 @@ $image_baseurl = "http://akilia2.emdmusic.com/medias/products/dynamic/";
 							</div>	 
 
 							<div style="width: 100%; max-height: 200px; min-height: 80px; line-height: 150px; text-align: center;">
-
 								<a href="<?= $this->url('store/product', array('product_id' => $product['product_id']), array(), false); ?>">
-									<img style="vertical-align: middle" src="<?= $image_baseurl . $product->product_id ?>-170x200_90.jpg" alt="" />
+									<?php if ($product->picture_media_id != '') : ?>
+									<img style="vertical-align: middle" src="<?= 
+										$this->url('media/picture', array(
+														'type' => 'product', 
+														'id' => $product->product_id,
+														'size' => '170x200',
+														'quality' => 90), array(), $reuseMatchedParams = false); ?>" alt="" />
+									<?php endif; ?>
 								</a>
-
 							</div>
 
 						</div>
@@ -194,9 +198,15 @@ $image_baseurl = "http://akilia2.emdmusic.com/medias/products/dynamic/";
 							<button class="btn btn-sm" onclick="javascript: $.colorbox({maxWidth: '90%', maxHeight: '90%', title: '<?= $escaper->escapeJs((string) $product->brand_title) . ' &raquo; ' . $escaper->escapeJs((string) $product->reference) . ' &raquo; ' . $escaper->escapeJs((string) $product->title) ?>', href: '<?= $image_baseurl . $product->product_id ?>-1024x768_90.jpg?>'})">
 								<span class="glyphicon glyphicon-zoom-in"></span> 
 							</button>
+								
+							
+							
 							<button class="btn btn-sm">
+								<a href="<?= $this->url('store/product', array('product_id' => $product['product_id']), array(), false); ?>" >
 								<span class="glyphicon glyphicon-info-sign"></span> 
+								</a>
 							</button>
+								
 							<button class="btn btn-sm">
 								<span class="glyphicon glyphicon-heart-empty"></span> 
 							</button>
