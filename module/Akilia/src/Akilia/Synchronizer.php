@@ -184,9 +184,16 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 					'type_id'		=> $media_type_id,
 					'updated_at'	=> date('Y-m-d H:i:s')
 				);
-					
-				$productMedia = $table->insertOnDuplicateKey('product_media', $data, $duplicate_exclude=array());
-				echo "[+] Importing product " . $infos['product_id'] . " as media_id $media_id [" . ($i+1) . "/$count]\n";
+				try {	
+					echo "[+] Importing product " . $infos['product_id'] . " as media_id $media_id [" . ($i+1) . "/$count]\n";
+					$productMedia = $table->insertOnDuplicateKey('product_media', $data, $duplicate_exclude=array());
+				} catch(\Exception $e) {
+					echo "[Error] Cannot insert : \n";
+					var_dump($data);
+					echo "\n";
+					throw $e;
+				}
+				
 				
 			}
 			
