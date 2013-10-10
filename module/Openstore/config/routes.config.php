@@ -57,13 +57,36 @@ return array(
 			'media' => array(
 				'type' => 'Zend\Mvc\Router\Http\Segment',
 				'options' => array(
-					'route' => '/media[/:media_id]',
+					'route' => '/media',
 					'defaults' => array(
 						'controller' => 'Openstore\Controller\Media',
-						'action' => 'media',
 					),
 				),
 				'may_terminate' => true,
+				'child_routes' => array(
+					'productpicture' => array(
+						'type' => 'segment',
+						'options' => array(
+							'route' => '/productpicture[/:product_id][/width/:width][/height/:height][/quality/:quality][/format/:format]',
+							'constraints' => array(
+								'product_id' => '[0-9]{1,10}',
+								'width' => '[0-9]{1,5}',
+								'height' => '[0-9]{1,5}',
+								'quality' => '[0-9]{1,3}',
+								'format' => '(jpg|png|gif)',
+							),
+							'defaults' => array(
+								'action'	=> 'productpicture',
+								'width'		=> '1024',
+								'height'	=> '768',
+								'quality'	=> '90',
+								'format'	=> 'jpg'
+							)
+							
+						)
+						
+					),
+				),
 			),
 			'store' => array(
 				'type' => 'Zend\Mvc\Router\Http\Segment',

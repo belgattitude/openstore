@@ -139,6 +139,7 @@ return array(
 				
 				// Special route
 				array('route' => 'media', 'roles' => array('guest')),
+				array('route' => 'media/productpicture', 'roles' => array('guest')),
 				
 				// Console routes
 				array('route' => 'openstore-recreatedb', 'roles' => array('guest')),

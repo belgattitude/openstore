@@ -48,6 +48,7 @@ class MediaManager
 		} catch (\Smart\Model\Exception\RecordNotFoundException $e) {
 			throw new \Exception("Cannot locate media '$media_id'");
 		}
+		
 		$container_record = $media_record->getParent('media_container');
 		$media = new Media($this);
 		$media->setProperties(array(
