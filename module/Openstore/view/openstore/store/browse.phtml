@@ -195,10 +195,25 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 
 						</div>
 						<div class="btn-group" style="float: right">
-							<button class="btn btn-sm" onclick="javascript: $.colorbox({maxWidth: '90%', maxHeight: '90%', title: '<?= $escaper->escapeJs((string) $product->brand_title) . ' &raquo; ' . $escaper->escapeJs((string) $product->reference) . ' &raquo; ' . $escaper->escapeJs((string) $product->title) ?>', href: '<?= $image_baseurl . $product->product_id ?>-1024x768_90.jpg?>'})">
+							<?php 
+							if ($product->picture_media_id != '') {
+								$onclick = 'onclick="';
+								$href =  $this->url('media/picture', array(
+													'type' => 'product', 
+													'id' => $product->product_id,
+													'size' => '1024x768',
+													'quality' => 90), array(), $reuseMatchedParams = false);
+;
+								$onclick .= "javascript: $.colorbox({maxWidth: '90%', maxHeight: '90%', title: '" . 
+											 $escaper->escapeJs((string) $product->brand_title) . ' &raquo; ' . 
+											 $escaper->escapeJs((string) $product->reference) . ' &raquo; ' . 
+											 $escaper->escapeJs((string) $product->title) . "', href: '$href'})";
+								$onclick .= '"';
+							}
+							?>
+							<button class="btn btn-sm" <?= $onclick ?>>								
 								<span class="glyphicon glyphicon-zoom-in"></span> 
 							</button>
-								
 							
 							
 							<button class="btn btn-sm">
