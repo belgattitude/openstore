@@ -32,28 +32,39 @@ class MediaController extends AbstractActionController
 		return $syntheticTable = $this->getServiceLocator()->get('Soluble\Normalist\SyntheticTable');
 	}
 
-	function productpictureAction() {
+	function pictureAction() {
 		$table = $this->getSyntheticTable();
-		$product_id = $this->params()->fromRoute('product_id');
-		$product_medias = $table->select('product_media')
-						->join(array('pmt' => 'product_media_type'), 'pmt.type_id = product_media.type_id')
-						->where(array(
-							'product_id' => $product_id,
-							'flag_primary' => 1,
-							'pmt.reference' => 'PICTURE'
-						))->execute()->toArray();
-
-		$media_id = $product_medias[0]['media_id'];
+		$type = $this->params()->fromRoute('type');
+		$id   = $this->params()->fromRoute('id');
+		switch ($type) {
+			case 'product' :
+				$product_medias = $table->select('product_media')
+								->join(array('pmt' => 'product_media_type'), 'pmt.type_id = product_media.type_id')
+								->where(array(
+									'product_id' => $id,
+									'flag_primary' => 1,
+									'pmt.reference' => 'PICTURE'
+								))->execute()->toArray();
+				$media_id = $product_medias[0]['media_id'];
+				break;
+			
+			default:
+				die('not supported type');
+			
+		}
+		
 		if ($media_id == null) {
 			$this->getResponse()->setStatusCode(404);
 			return;
 		}
+		
+		
 		try {
-			$width  = $this->params()->fromRoute('width');
-			$height  = $this->params()->fromRoute('height');
+			$size = explode('x', $this->params()->fromRoute('size'));
+			$width = $size[0];
+			$height = $size[1];
 			$quality = $this->params()->fromRoute('quality');
 			$format  = $this->params()->fromRoute('format');
-
 			$this->flushImagePreview($media_id, $width, $height, $quality, $format);
 		} catch (\Exception $e) {
 			$this->getResponse()->setStatusCode(500);
