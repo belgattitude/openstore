@@ -124,6 +124,13 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		
 	}
 	
+	/**
+	 * @return \Soluble\Normalist\SyntheticTable
+	 */
+	function getSyntheticTable() {
+		return $syntheticTable = $this->getServiceLocator()->get('Soluble\Normalist\SyntheticTable');
+	}	
+	
 	
 	function synchronizeProductMedia()
 	{
@@ -140,17 +147,22 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		
 		$mediaManager = $this->getServiceLocator()->get('MMan/MediaManager');
 		
-		$tableManager = new \Smart\Model\Table($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
-		$container = $tableManager->findOneBy('media_container', array('reference' => 'PRODUCT_MEDIAS'));
+		//$tableManager = new \Smart\Model\Table($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
+		$table = $this->getSyntheticTable();
+		$container = $table->findOneBy('media_container', array('reference' => 'PRODUCT_MEDIAS'));
 		if (!$container) {
 			throw new \Exception("Cannot find media container 'PRODUCT_MEDIAS'");
 		}
 		
-		$media_type_id = $tableManager->findOneBy('product_media_type', array('reference' => 'PICTURE'))->offsetGet('type_id');
+		$media_type_id = $table->findOneBy('product_media_type', array('reference' => 'PICTURE'))->offsetGet('type_id');
+		
+		if ($media_type_id == '') {
+			throw new \Exception("Cannot find PICTURE product media type in your database");
+		}
 		
 		$limit_to_import = 10000;
 		$count = count($list);
-		$product_ids = array_column($tableManager->fetchAll('product', array('product_id')), 'product_id', 'product_id');
+		$product_ids = array_column($table->all('product', array('product_id'))->toArray(), 'product_id', 'product_id');
 		
 		for ($i = 0; ($i < $limit_to_import && $i < $count); $i++) {
 			$infos = $list[$i];
@@ -173,7 +185,8 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 					'updated_at'	=> date('Y-m-d H:i:s')
 				);
 					
-				$productMedia = $tableManager->insertOnDuplicateKey('product_media', $data, $duplicate_exclude=array());
+				$productMedia = $table->insertOnDuplicateKey('product_media', $data, $duplicate_exclude=array());
+				echo "[+] Importing product " . $infos['product_id'] . " as media_id $media_id [" . ($i+1) . "/$count]\n";
 				
 			}
 			
