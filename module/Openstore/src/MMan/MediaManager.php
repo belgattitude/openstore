@@ -45,7 +45,7 @@ class MediaManager
 		$syntheticTable = $this->getSyntheticTable();
 		
 		$media_record = $syntheticTable->find('media', $media_id);
-		if (!$media) {
+		if (!$media_record) {
 			throw new \Exception("Cannot locate media '$media_id'");
 		}
 		
