@@ -11,7 +11,8 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
 
-use Smart\Data\Store\Adapter\ZendDbSqlSelect;
+use Soluble\FlexStore\Source\Zend\SelectSource;
+
 
 class Akilia1Products implements ServiceLocatorAwareInterface, AdapterAwareInterface {
 	
@@ -52,7 +53,7 @@ class Akilia1Products implements ServiceLocatorAwareInterface, AdapterAwareInter
 			), true);
 		
 		
-		$store = new ZendDbSqlSelect(['select'  => $select,
+		$store = new SelectSource(['select'  => $select,
 									  'adapter' => $this->getDbAdapter()]);
 		
 		$data = $store->getData();

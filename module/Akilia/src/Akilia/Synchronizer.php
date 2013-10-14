@@ -147,7 +147,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		
 		$mediaManager = $this->getServiceLocator()->get('MMan/MediaManager');
 		
-		//$tableManager = new \Smart\Model\Table($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
+		
 		$table = $this->getSyntheticTable();
 		$container = $table->findOneBy('media_container', array('reference' => 'PRODUCT_MEDIAS'));
 		if (!$container) {

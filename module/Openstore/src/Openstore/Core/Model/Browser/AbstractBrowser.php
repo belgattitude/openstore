@@ -191,7 +191,8 @@ abstract class AbstractBrowser implements SearchableInterface,
 	 */
 	function getStore()
 	{
-		$select = $this->getSelect($params);
+		
+		$select = $this->getSelect();
 		$store = new ZendDbSqlSelect(['select'  => $select,
 									  'adapter' => $this->adapter]);
 		
