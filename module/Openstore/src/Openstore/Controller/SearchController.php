@@ -9,7 +9,7 @@ use Zend\Db\Sql\Expression;
 
 use Openstore\Catalog\Helper\SearchParams;
 
-use Smart\Data\Store\Adapter\ZendDbSqlSelect;
+use Soluble\FlexStore\Writer\Zend\Json as JsonWriter;
 
 use Openstore\Model\Product;
 
@@ -66,8 +66,9 @@ class SearchController extends AbstractActionController
 							
 		$store = $browser->getStore();
 		
-		$writer = new \Smart\Data\Store\Writer\Json($store);
+		$writer = new JsonWriter($store);
 		$json = $writer->send();
+		die();
 	}
 
 	
@@ -86,9 +87,11 @@ class SearchController extends AbstractActionController
 							->addFilter($searchParams->getFilter());
 							
 		$store = $browser->getStore();
-		
-		$writer = new \Smart\Data\Store\Writer\Json($store);
+
+		$writer = new JsonWriter($store);
 		$json = $writer->send();
+		die();
+		
 	}	
 
 		

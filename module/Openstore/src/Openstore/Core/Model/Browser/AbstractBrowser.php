@@ -15,7 +15,8 @@ use Openstore\Core\Model\Browser\Search\Params;
 
 use Zend\Db\Sql\Select;
 
-use Smart\Data\Store\Adapter\ZendDbSqlSelect;
+use Soluble\FlexStore\Source;
+
 
 
 abstract class AbstractBrowser implements SearchableInterface, 
@@ -187,14 +188,18 @@ abstract class AbstractBrowser implements SearchableInterface,
 	
 	/**
 	 * 
-	 * @return \Smart\Data\Store\Adapter\Adapter
+	 * @return \Soluble\FlexStore\Source\AbstractSource
 	 */
 	function getStore()
 	{
 		
 		$select = $this->getSelect();
-		$store = new ZendDbSqlSelect(['select'  => $select,
-									  'adapter' => $this->adapter]);
+		
+		$store = new Source\Zend\SelectSource(array(
+			'select' => $select,
+			'adapter' => $this->adapter
+			
+		));
 		
 		if ($this->limit !== null) {
 			$store->getOptions()->setLimit($this->limit);

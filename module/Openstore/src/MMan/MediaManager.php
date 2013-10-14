@@ -43,9 +43,9 @@ class MediaManager
 	 */
 	function get($media_id) {
 		$syntheticTable = $this->getSyntheticTable();
-		try {
-			$media_record = $syntheticTable->find('media', $media_id);
-		} catch (\Smart\Model\Exception\RecordNotFoundException $e) {
+		
+		$media_record = $syntheticTable->find('media', $media_id);
+		if (!$media) {
 			throw new \Exception("Cannot locate media '$media_id'");
 		}
 		
