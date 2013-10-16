@@ -63,7 +63,7 @@ class MediaService extends AbstractService {
 		$select->where("pl.reference = 'BE'");
 		 */
 		
-		
+		$select->having('active_pricelists is not null');
 		$select->order(array('p.product_id' => $select::ORDER_ASCENDING));		
 		
 		$parameters = array(
