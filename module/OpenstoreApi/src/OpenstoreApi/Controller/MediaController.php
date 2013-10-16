@@ -39,10 +39,10 @@ class MediaController extends AbstractRestfulController
 
 	public function getList() {
 		
-		$data = $this->mediaService->getList();
-		
+		$store = $this->mediaService->getList();
+		return $store;
 
-		return new JsonModel($data);
+		//return new JsonModel($data);
 	}
 
 

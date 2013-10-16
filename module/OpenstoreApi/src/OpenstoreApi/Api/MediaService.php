@@ -9,6 +9,10 @@ class MediaService extends AbstractService {
 	
 	
 	
+	/**
+	 * 
+	 * @return \Soluble\FlexStore\FlexStore
+	 */
 	function getList() {
 		
 		$select = new Select();
@@ -67,7 +71,8 @@ class MediaService extends AbstractService {
 			'select' => $select
 		);
 		$store = new FlexStore('zend\select', $parameters);
-		return $store->getSource()->getData();
+
+		return $store;
 		
 		
 	}

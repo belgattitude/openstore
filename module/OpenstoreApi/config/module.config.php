@@ -3,8 +3,14 @@
 namespace OpenstoreApi;
 
 return array(
+	'errors' => array(
+		'show_exceptions' => array(
+			'message' => true,
+			'trace' => true
+		)
+	),
 	'service_manager' => array(
-        'factories' => array(
+		'factories' => array(
 		),
 		'abstract_factories' => array(
 			'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
@@ -13,7 +19,6 @@ return array(
 		'aliases' => array(
 			'translator' => 'MvcTranslator',
 		),
-		
 	),
 	'translator' => array(
 		'locale' => 'en_GB',
@@ -27,7 +32,7 @@ return array(
 	),
 	'controllers' => array(
 		'invokables' => array(
-			'OpenstoreApi\Controller\Media'	=> 'OpenstoreApi\Controller\MediaController',
+			'OpenstoreApi\Controller\Media' => 'OpenstoreApi\Controller\MediaController',
 		),
 	),
 	'view_manager' => array(
@@ -36,5 +41,5 @@ return array(
 		'strategies' => array(
 			'ViewJsonStrategy',
 		)
-	)	
+	)
 );
