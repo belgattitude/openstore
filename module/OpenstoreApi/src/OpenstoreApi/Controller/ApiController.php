@@ -16,7 +16,6 @@ class ApiController extends AbstractActionController
     }
 	
 	
-	
 	public function productPictureAction() 
 	{
 	

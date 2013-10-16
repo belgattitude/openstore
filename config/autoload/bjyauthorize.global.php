@@ -133,9 +133,9 @@ return array(
                 array('route' => 'home', 'roles' => array('guest', 'user')),
 				
 				// Openstore route
-				array('route' => 'store/browse', 'roles' => array('admin', 'customer')),
-				array('route' => 'store/search', 'roles' => array('guest', 'customer')),
-				array('route' => 'store/product', 'roles' => array('guest', 'customer')),
+				array('route' => 'store/browse', 'roles' => array('customer', 'admin')),
+				array('route' => 'store/search', 'roles' => array('customer', 'admin')),
+				array('route' => 'store/product', 'roles' => array('customer', 'admin')),
 				
 				// Special route
 				array('route' => 'media', 'roles' => array('guest')),
@@ -151,6 +151,12 @@ return array(
 				
 				// akilia synchronizer route
 				array('route' => 'syncdb', 'roles' => array('guest')),				
+				
+				//
+				// Openstore APi routes
+				//
+				
+				array('route' => 'api/media', 'roles' => array('guest'))
             ),
         ),
     ),

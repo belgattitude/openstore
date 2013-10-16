@@ -8,6 +8,7 @@ $config = array(
 		//'Application',
 		'Zf2Whoops',
 		'Openstore',
+		'OpenstoreApi',
 		'Akilia',
 		'DoctrineModule',
 		'DoctrineORMModule',
