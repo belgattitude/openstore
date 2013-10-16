@@ -20,10 +20,13 @@ return array(
 						'options' => array(
 							'route'       => '/:controller[.:format][/:id]',
 							'constraints' => array(
-								'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+								'controller' => '[a-zA-Z][a-zA-Z0-9_-]+',
 								'format' => '[a-zA-Z][a-zA-Z0-9_-]*',
 								'id' => '[a-zA-Z0-9_-]*'
 							),
+							'defaults' => array(
+								'format'	=> 'json',
+							)							
 						),
 					),
 				),
