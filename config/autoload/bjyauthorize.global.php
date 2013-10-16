@@ -156,7 +156,7 @@ return array(
 				// Openstore APi routes
 				//
 				
-				array('route' => 'api/media', 'roles' => array('guest'))
+				array('route' => 'api/restful', 'roles' => array('guest'))
             ),
         ),
     ),

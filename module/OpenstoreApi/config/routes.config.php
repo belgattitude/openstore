@@ -2,7 +2,6 @@
 
 namespace OpenstoreApi;
 
-
 return array(
 	'router' => array(
 		'routes' => array(
@@ -16,14 +15,16 @@ return array(
 				),
 				'may_terminate' => true,
 				'child_routes' => array(
-					'media' => array(
+					'restful' => array(
 						'type' => 'Segment',
 						'options' => array(
-							'route' => '/media[/:id]',
-							'defaults' => array(
-								'controller' => 'Media'
-							)
-						)
+							'route'       => '/:controller[.:format][/:id]',
+							'constraints' => array(
+								'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+								'format' => '[a-zA-Z][a-zA-Z0-9_-]*',
+								'id' => '[a-zA-Z0-9_-]*'
+							),
+						),
 					),
 				),
 			)

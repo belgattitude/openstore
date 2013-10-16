@@ -7,6 +7,8 @@ use Zend\ModuleManager\ModuleManager;
 use Zend\Mvc\MvcEvent;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
+use Zend\Db\Adapter\AdapterAwareInterface;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 {
@@ -34,6 +36,29 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 		);
 		
 		return $config;
+	}
+	
+	public function getServiceConfig() {
+		return array(
+			'initializers' => array(
+				'db' => function($service, $sm) {
+							if ($service instanceof AdapterAwareInterface) {
+								$service->setDbAdapter($sm->get('Zend\Db\Adapter\Adapter'));
+							}
+					},
+				'sm' => function($service, $sm) {
+						if ($service instanceof ServiceLocatorAwareInterface) {
+							$service->setServiceLocator($sm);
+						}
+				}
+			),			
+			'aliases' => array(
+			
+			),
+			'invokables' => array(
+				'Api\MediaService' => 'OpenstoreApi\Api\MediaService',
+			)
+		);
 	}
 
 	public function getAutoloaderConfig() {
