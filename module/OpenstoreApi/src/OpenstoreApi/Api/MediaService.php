@@ -36,11 +36,11 @@ class MediaService extends AbstractService {
 						new Expression('ppl.pricelist_id = pl.pricelist_id'), array(), $select::JOIN_LEFT);
 	
 		$columns = array(
-			'product_id'		=> new Expression('p.product_id'),
-			'reference'			=> new Expression('p.reference'),
-			'barcode_ean13'		=> new Expression('p.barcode_ean13'),
-			'brand_reference'	=> new Expression('pb.reference'),
-			'group_reference'	=> new Expression('pg.reference'),
+			'product_id'			=> new Expression('p.product_id'),
+			'product_reference'		=> new Expression('p.reference'),
+			'product_barcode_ean13'	=> new Expression('p.barcode_ean13'),
+			'brand_reference'		=> new Expression('pb.reference'),
+			'group_reference'		=> new Expression('pg.reference'),
 			'media_type'		=> new Expression('pmt.reference'),
 			'media_id'			=> new Expression('m.media_id'),
 			'flag_primary'		=> new Expression('pm.flag_primary'),
