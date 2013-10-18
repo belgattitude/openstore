@@ -85,7 +85,6 @@ class MediaManager
 		
 		$syntheticTable = $this->getSyntheticTable();
 		
-		
 		$media = $syntheticTable->findOneBy('media', array('legacy_mapping' => $element->getLegacyMapping()));
 		
 		$unchanged = false;
@@ -119,6 +118,7 @@ class MediaManager
 			
 			// Step 2 : Adding into filesystem
 			try {
+				echo 'Writing file';
 				$fs->write($mediaLocation['filename'], file_get_contents($filename), $overwrite);
 				
 			} catch (\Exception $e) {
