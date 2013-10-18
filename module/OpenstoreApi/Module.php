@@ -97,68 +97,68 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 	 * @return null|\Zend\Http\PhpEnvironment\Response
 	 */
 	public function errorProcess(MvcEvent $e) {
+		if (php_sapi_name() != 'cli') {
+			$routeMatch = $e->getRouteMatch();
+			$format = $routeMatch->getParam('format', false);		
+			$eventParams = $e->getParams();
 
-		$routeMatch = $e->getRouteMatch();
-		$format = $routeMatch->getParam('format', false);		
-		$eventParams = $e->getParams();
+			/** @var array $configuration */
+			$configuration = $e->getApplication()->getConfig();
 
-		/** @var array $configuration */
-		$configuration = $e->getApplication()->getConfig();
-		
-		$body = array(
-			'message'	=> 'Something went wrong',
-			'success'	=> 0,
-			'error' => array(
-				'type' => $eventParams['error'],
-			)
-		);
-		
-		if (isset($eventParams['exception'])) {
-			
-			/** @var \Exception $exception */
-			$exception = $eventParams['exception'];
+			$body = array(
+				'message'	=> 'Something went wrong',
+				'success'	=> 0,
+				'error' => array(
+					'type' => $eventParams['error'],
+				)
+			);
 
-			if ($configuration['errors']['show_exceptions']['message']) {
-				$body['error']['exception_message'] = $exception->getMessage();
+			if (isset($eventParams['exception'])) {
+
+				/** @var \Exception $exception */
+				$exception = $eventParams['exception'];
+
+				if ($configuration['errors']['show_exceptions']['message']) {
+					$body['error']['exception_message'] = $exception->getMessage();
+				}
+				if ($configuration['errors']['show_exceptions']['trace']) {
+					$body['error']['exception_trace'] = $exception->getTrace();
+				}
 			}
-			if ($configuration['errors']['show_exceptions']['trace']) {
-				$body['error']['exception_trace'] = $exception->getTrace();
+
+
+			switch ($format) {
+				case 'json' :
+
+
+					$e->getResponse()->setContent(json_encode($body));
+					$e->getResponse()->getHeaders()->addHeaderLine('Content-Type', 'application/json', true);
+
+					break;
+
+				case 'xml' :
+					$e->getResponse()->setContent('<xml><response><success>0</success></response>');
+					$e->getResponse()->getHeaders()->addHeaderLine('Content-Type', 'application/xml', true);
+
+					break;
+
+				default:
+
+
 			}
-		}
-		
-		
-		switch ($format) {
-			case 'json' :
-				
-				
-				$e->getResponse()->setContent(json_encode($body));
-				$e->getResponse()->getHeaders()->addHeaderLine('Content-Type', 'application/json', true);
-				
-				break;
-			
-			case 'xml' :
-				$e->getResponse()->setContent('<xml><response><success>0</success></response>');
-				$e->getResponse()->getHeaders()->addHeaderLine('Content-Type', 'application/xml', true);
-				
-				break;
-			
-			default:
-				
-			
-		}
 
-		if (
-				$eventParams['error'] === \Zend\Mvc\Application::ERROR_CONTROLLER_NOT_FOUND ||
-				$eventParams['error'] === \Zend\Mvc\Application::ERROR_ROUTER_NO_MATCH
-		) {
-			$e->getResponse()->setStatusCode(\Zend\Http\PhpEnvironment\Response::STATUS_CODE_501);
-		} else {
-			$e->getResponse()->setStatusCode(\Zend\Http\PhpEnvironment\Response::STATUS_CODE_500);
-		}
+			if (
+					$eventParams['error'] === \Zend\Mvc\Application::ERROR_CONTROLLER_NOT_FOUND ||
+					$eventParams['error'] === \Zend\Mvc\Application::ERROR_ROUTER_NO_MATCH
+			) {
+				$e->getResponse()->setStatusCode(\Zend\Http\PhpEnvironment\Response::STATUS_CODE_501);
+			} else {
+				$e->getResponse()->setStatusCode(\Zend\Http\PhpEnvironment\Response::STATUS_CODE_500);
+			}
 
-		$e->stopPropagation();
-		return $e->getResponse();
-
+			$e->stopPropagation();
+			return $e->getResponse();
+		}	
 	}
 
 	public function getConfig() {

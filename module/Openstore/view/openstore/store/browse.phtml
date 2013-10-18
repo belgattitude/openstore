@@ -183,11 +183,12 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 							<div style="width: 100%; max-height: 200px; min-height: 80px; line-height: 150px; text-align: center;">
 								<a href="<?= $this->url('store/product', array('product_id' => $product['product_id']), array(), false); ?>">
 									<?php if ($product->picture_media_id != '') : ?>
+									
 									<img style="vertical-align: middle" src="<?= 
 										$this->url('media/picture', array(
 														'type' => 'product', 
 														'id' => $product->product_id,
-														'size' => '170x200',
+														'resolution' => '170x200',
 														'quality' => 90), array(), $reuseMatchedParams = false); ?>" alt="" />
 									<?php endif; ?>
 								</a>
@@ -201,7 +202,7 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 								$href =  $this->url('media/picture', array(
 													'type' => 'product', 
 													'id' => $product->product_id,
-													'size' => '1024x768',
+													'resolution' => '1024x768',
 													'quality' => 90), array(), $reuseMatchedParams = false);
 ;
 								$onclick .= "javascript: $.colorbox({maxWidth: '90%', maxHeight: '90%', title: '" . 

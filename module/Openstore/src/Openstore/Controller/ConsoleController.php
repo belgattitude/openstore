@@ -28,6 +28,30 @@ class ConsoleController extends AbstractActionController
 	{
 		echo 'setup done';
 	}
+	
+	
+	public function clearcacheAction() {
+		$serviceLocator = $this->getServiceLocator();
+		if ($serviceLocator->has('Cache\SolubleDbMetadata')) {
+			/** @var \Zend\Cache\Storage\StorageInterface */
+			$cache = $serviceLocator->get('Cache\SolubleDbMetadata');
+			$cache->flush();
+		}		
+		
+		
+	}
+	
+	public function clearmediacacheAction() {
+		$serviceLocator = $this->getServiceLocator();
+		if ($serviceLocator->has('Cache\SolubleMediaConverter')) {
+			/** @var \Zend\Cache\Storage\StorageInterface */
+			$cache = $serviceLocator->get('Cache\SolubleMediaConverter');
+			$cache->flush();
+			//$cache->clearByNamespace('Cache\SolubleMediaConverter');
+		}		
+		
+		
+	}	
 
 	/**
 	 * recreate db and load data fixtures

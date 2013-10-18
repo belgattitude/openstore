@@ -39,6 +39,28 @@ return array(
 						)
 					)
 				),
+				'openstore-clearcache' => array(
+					'options' => array(
+						'route' => 'openstore clearcache',
+						'defaults' => array(
+							//'__NAMESPACE__' => 'Openstore\Controller',
+							'controller' => 'Openstore\Controller\Console',
+							'action' => 'clearcache'
+						)
+					)
+				),
+				'openstore-clearmediacache' => array(
+					'options' => array(
+						'route' => 'openstore clearmediacache',
+						'defaults' => array(
+							//'__NAMESPACE__' => 'Openstore\Controller',
+							'controller' => 'Openstore\Controller\Console',
+							'action' => 'clearmediacache'
+						)
+					)
+				),
+				
+				
 			)
 		)
 	),
@@ -68,11 +90,11 @@ return array(
 						'type' => 'regex',
 						'options' => array(
 							// i.e: /public/media/picture/product/14555_800x800-95.png
-							'regex' => '/picture/(?<type>(product|brand|serie))/(?<id>[0-9]+)(\_(?<size>([0-9]+x[0-9]+)))?(\-(?<quality>([0-9]+)))?(\.(?<format>(jpg|png|gif)))?',
-							'spec' => '/picture/%type%/%id%_%size%-%quality%.%format%',
+							'regex' => '/picture/(?<type>(product|brand|serie))/(?<id>[0-9]+)(\_(?<resolution>([0-9]+x[0-9]+)))?(\-(?<quality>([0-9]+)))?(\.(?<format>(jpg|png|gif)))?',
+							'spec' => '/picture/%type%/%id%_%resolution%-%quality%.%format%',
 							'defaults' => array(
 								'action'	=> 'picture',
-								'size'		=> '1024x768',
+								'resolution'=> '1024x768',
 								'quality'	=> '90',
 								'format'	=> 'jpg'
 							)

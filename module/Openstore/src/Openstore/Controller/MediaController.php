@@ -21,8 +21,36 @@ class MediaController extends AbstractActionController
 	 */
 	function getImageConverter() {
 		$converter = $this->getServiceLocator()->get('Soluble\Media\Converter');
-		$imageConverter = $converter->createConverter('image');
+		$params = array('backend' => 'imagick');
+		$imageConverter = $converter->createConverter('image', $params);
 		return $imageConverter;
+	}
+
+	function getAcceptedFormats() {
+		$accepted = array(
+			'jpg', 'png'
+		);
+		return $accepted;
+	}
+	
+	function getAcceptedResolutions() {
+		$accepted =  array(
+			'40x40',		// for emdmusic.com typeahed (mini)
+			'65x90',		// for old emdmusic.com website 'small pictures' and browse
+			'170x200',		// for openstore browse
+			'250x750',		// for old emdmusic.com website 'thumbnails'
+			'800x800', 
+			'1024x768',		// for emdmusic.com lightbox
+			'1280x1024',	// for emdmusic.com info page
+			'1200x1200');
+		return $accepted;
+	}
+	
+	function getAcceptedQualities() {
+		$accepted = array(
+			80, 90, 95
+		);
+		return $accepted;
 	}
 
 	/**
@@ -57,18 +85,49 @@ class MediaController extends AbstractActionController
 			$this->getResponse()->setStatusCode(404);
 			return;
 		}
-		
+
+		// Testing resolution
+		try {
+			// Resolution
+			$resolution = $this->params()->fromRoute('resolution');
+			if ($resolution == '') {
+				$resolution = '1200x1200';
+			} else if (!in_array($resolution, $this->getAcceptedResolutions())) {
+				$valid = join(',', $this->getAcceptedResolutions());
+				throw new \Exception("Requested resolution '$resolution' is forbidden, supported: '$valid'.");
+			}
+			// Quality
+			$quality = $this->params()->fromRoute('quality');
+			if ($quality == '') {
+				$quality = 90;
+			} else if (!in_array($quality, $this->getAcceptedQualities())) {
+				$valid = join(',', $this->getAcceptedQualities());
+				throw new \Exception("Requested quality '$quality' is forbidden, supported: '$valid'.");
+			}
+			// Format
+			$format = $this->params()->fromRoute('format');
+			if ($format == '') {
+				$format = 'jpg';
+			} else if (!in_array($format, $this->getAcceptedFormats())) {
+				$valid = join(',', $this->getAcceptedFormats());
+				throw new \Exception("Requested format '$quality' is forbidden, supported: '$valid'.");
+			}
+		} catch (\Exception $e) {
+			$this->getResponse()->setStatusCode(403);
+			$this->getResponse()->setContent($e->getMessage());
+			return $this->getResponse();
+		}
 		
 		try {
-			$size = explode('x', $this->params()->fromRoute('size'));
+			$size = explode('x', $resolution);
 			$width = $size[0];
 			$height = $size[1];
-			$quality = $this->params()->fromRoute('quality');
-			$format  = $this->params()->fromRoute('format');
 			$this->flushImagePreview($media_id, $width, $height, $quality, $format);
 		} catch (\Exception $e) {
 			$this->getResponse()->setStatusCode(500);
-			return;
+			$this->getResponse()->setContent($e->getMessage());
+			return $this->getResponse();
+			
 		}
 	}
 

@@ -222,7 +222,15 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 			)
 		);
 	}
-	
+	/*
+	public function on2DispatchError(MvcEvent $event){
+        $response = $event->getResponse();
+        if ($response->getStatusCode() == 403) {
+            $event->getViewModel();
+        } 
+		parent::onDispatchError($event);
+    }	
+	*/
 	public function onFinish(MvcEvent $e) {
 
 
@@ -318,6 +326,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 		return array(
 			'openstore recreatedb' => 'Recreate database schema and load initial fixtures.',
 			'openstore updatedb' => 'Update database schema and reload initial fixtures.',
+			'openstore clearcache' => 'Clear all system caches.',
+			'openstore clearmediacache' => 'Clear media cache.',
 		);
 	}
 
