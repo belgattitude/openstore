@@ -2,8 +2,8 @@
 
 namespace OpenstoreApi\Controller;
 
-use OpenstoreApi\Api\MediaService;
-use Zend\Mvc\Controller\AbstractRestfulController;
+//use OpenstoreApi\Api\MediaService;
+use OpenstoreApi\Mvc\Controller\AbstractRestfulController;
 use Zend\EventManager\EventManagerInterface;
 use Zend\View\Model\JsonModel;
 use Zend\Mvc\MvcEvent;

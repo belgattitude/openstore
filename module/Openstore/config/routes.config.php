@@ -76,6 +76,7 @@ return array(
 					),
 				),
 			),
+			
 			'media' => array(
 				'type' => 'Zend\Mvc\Router\Http\Segment',
 				'options' => array(
@@ -110,7 +111,7 @@ return array(
 					//'route'       => '/[:lang]/store[:pricelist]',
 					'constraints' => array(
 						'ui_language' => '(' . join('|', $supported_languages) . ')',
-					//'pricelist' => '[A-Za-z0-9]{0,5}',
+						'pricelist' => '[A-Za-z0-9]{0,5}',
 					),
 					'defaults' => array(
 						'__NAMESPACE__' => 'Openstore\Controller',

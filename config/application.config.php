@@ -7,6 +7,7 @@ $config = array(
 	'modules' => array(
 		//'Application',
 		'Zf2Whoops',
+		
 		'Openstore',
 		'OpenstoreApi',
 		'Akilia',
