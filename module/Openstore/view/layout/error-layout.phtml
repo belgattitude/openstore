@@ -56,28 +56,10 @@
 	</head>
 
 	<body>
-        <!--[if lt IE 7]>
-            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a>.</p>
-        <![endif]-->
-		
-		
-		<?php
-		
-		
-		echo $this->partial('snippets/main_navbar', array(
-			//'categories'	=> $this->categories,
-			//'brands'		=> $this->brands,
-			'searchParams'	=> $this->searchParams
-		));
-		?>
 		
 		<div class="container">
 			<div class="container">
-<?php echo $this->content; ?>		
-				<pre>
-					<?php var_dump($_SESSION) ?>				
-				</pre>
-				
+				<?php echo $this->content; ?>		
 			</div>	
 			<footer>
 				<p>&copy; Company 2013</p>
