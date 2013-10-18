@@ -160,7 +160,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 			throw new \Exception("Cannot find PICTURE product media type in your database");
 		}
 		
-		$limit_to_import = 10000;
+		$limit_to_import = 20000;
 		$count = count($list);
 		$product_ids = array_column($table->all('product', array('product_id'))->toArray(), 'product_id', 'product_id');
 		
