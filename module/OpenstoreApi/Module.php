@@ -23,20 +23,22 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 	public function onBootstrap(MvcEvent $e) {
 
 		/** @var \Zend\ModuleManager\ModuleManager $moduleManager */
-		//$moduleManager = $e->getApplication()->getServiceManager()->get('modulemanager');
+		$moduleManager = $e->getApplication()->getServiceManager()->get('modulemanager');
 		//$moduleManager->
 		/** @var \Zend\EventManager\SharedEventManager $sharedEvents */
 		
-        //$eventManager        = $e->getApplication()->getEventManager();
+    
 		
-		//$sharedEvents = $moduleManager->getEventManager()->getSharedManager();		
-		//$sharedEvents->attach('Zend\Mvc\Controller\AbstractRestfulController', MvcEvent::EVENT_DISPATCH, array($this, 'postProcess'), -100);
-		//$sharedEvents->attach('Zend\Mvc\Application', MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'errorProcess'), 999);
+		$sharedEvents = $moduleManager->getEventManager()->getSharedManager();		
+		$sharedEvents->attach('Zend\Mvc\Controller\AbstractRestfulController', MvcEvent::EVENT_DISPATCH, array($this, 'postProcess'), -100);
+		$sharedEvents->attach('Zend\Mvc\Application', MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'errorProcess'), 999);
 		
-	//	$eventManager = $moduleManager->getEventManager();
-	//	$eventManager->attach('Zend\Mvc\Controller\AbstractRestfulController', MvcEvent::EVENT_DISPATCH, array($this, 'postProcess'), -100);
-	//	$eventManager->attach('Zend\Mvc\Application', MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'errorProcess'), 999);
-		
+		//$eventManager = $moduleManager->getEventManager();
+		/*
+		$eventManager        = $e->getApplication()->getEventManager();		
+		$eventManager->attach('Zend\Mvc\Controller\AbstractRestfulController', MvcEvent::EVENT_DISPATCH, array($this, 'postProcess'), -100);
+		$eventManager->attach('Zend\Mvc\Application', MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'errorProcess'), 999);
+		*/
 		
 		/*
 		
@@ -114,7 +116,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 	 */
 	public function errorProcess(MvcEvent $e) {
 		$routeMatch = $e->getRouteMatch();
-		if (php_sapi_name() != 'cli') {
+		if (php_sapi_name() != 'cli' && $routeMatch !== null) {
 			
 			$format = $routeMatch->getParam('format', false);		
 			$eventParams = $e->getParams();
