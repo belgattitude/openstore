@@ -15,43 +15,6 @@ class MediaController extends AbstractActionController
 		return $view;
 	}
 
-	/**
-	 * 
-	 * @return ImageConverter
-	 */
-	function getImageConverter() {
-		$converter = $this->getServiceLocator()->get('Soluble\Media\Converter');
-		$params = array('backend' => 'imagick');
-		$imageConverter = $converter->createConverter('image', $params);
-		return $imageConverter;
-	}
-
-	function getAcceptedFormats() {
-		$accepted = array(
-			'jpg', 'png'
-		);
-		return $accepted;
-	}
-	
-	function getAcceptedResolutions() {
-		$accepted =  array(
-			'40x40',		// for emdmusic.com typeahed (mini)
-			'65x90',		// for old emdmusic.com website 'small pictures' and browse
-			'170x200',		// for openstore browse
-			'250x750',		// for old emdmusic.com website 'thumbnails'
-			'800x800', 
-			'1024x768',		// for emdmusic.com lightbox
-			'1280x1024',	// for emdmusic.com info page
-			'1200x1200');
-		return $accepted;
-	}
-	
-	function getAcceptedQualities() {
-		$accepted = array(
-			80, 90, 95
-		);
-		return $accepted;
-	}
 
 	/**
 	 * @return \Soluble\Normalist\SyntheticTable
@@ -60,7 +23,8 @@ class MediaController extends AbstractActionController
 		return $syntheticTable = $this->getServiceLocator()->get('Soluble\Normalist\SyntheticTable');
 	}
 
-	function pictureAction() {
+	function pictureAction() 
+	{
 		$table = $this->getSyntheticTable();
 		$type = $this->params()->fromRoute('type');
 		$id   = $this->params()->fromRoute('id');
@@ -75,8 +39,13 @@ class MediaController extends AbstractActionController
 								))->execute()->toArray();
 				$media_id = $product_medias[0]['media_id'];
 				break;
+
+			case '' :
+				$media_id = $id;
+				break;
 			
 			default:
+				
 				die('not supported type');
 			
 		}
@@ -131,9 +100,9 @@ class MediaController extends AbstractActionController
 		}
 	}
 
-	function flushImagePreview($media_id, $width, $height, $quality, $format) {
+	protected function flushImagePreview($media_id, $width, $height, $quality, $format) 
+	{
 
-		
 		$mediaManager = $this->getServiceLocator()->get('MMan\MediaManager');
 		try {
 			$imageConverter = $this->getImageConverter();
@@ -150,25 +119,43 @@ class MediaController extends AbstractActionController
 		}
 	}
 
-	function mediaAction() {
 
-		$mediaManager = $this->getServiceLocator()->get('MMan\MediaManager');
-		$media_id = $this->params()->fromRoute('media_id');
-		$width = 170;
-		$height = 200;
-		$quality = 90;
-		$format = 'jpg';
-
-		try {
-			$imageConverter = $this->getImageConverter();
-			$box = new BoxDimension($width, $height);
-			$media = $mediaManager->get($media_id);
-			$filename = $media->getPath();
-			$imageConverter->getThumbnail($filename, $box, $format, $quality);
-			die();
-		} catch (\Exception $e) {
-			throw $e;
-		}
+	/**
+	 * 
+	 * @return ImageConverter
+	 */
+	protected function getImageConverter() {
+		$converter = $this->getServiceLocator()->get('Soluble\Media\Converter');
+		$params = array('backend' => 'imagick');
+		$imageConverter = $converter->createConverter('image', $params);
+		return $imageConverter;
 	}
 
+	protected function getAcceptedFormats() {
+		$accepted = array(
+			'jpg', 'png'
+		);
+		return $accepted;
+	}
+	
+	protected function getAcceptedResolutions() {
+		$accepted =  array(
+			'40x40',		// for emdmusic.com typeahed (mini)
+			'65x90',		// for old emdmusic.com website 'small pictures' and browse
+			'170x200',		// for openstore browse
+			'250x750',		// for old emdmusic.com website 'thumbnails'
+			'800x800', 
+			'1024x768',		// for emdmusic.com lightbox
+			'1280x1024',	// for emdmusic.com info page
+			'1200x1200');
+		return $accepted;
+	}
+	
+	protected function getAcceptedQualities() {
+		$accepted = array(
+			80, 90, 95
+		);
+		return $accepted;
+	}
+	
 }

@@ -91,7 +91,7 @@ return array(
 						'type' => 'regex',
 						'options' => array(
 							// i.e: /public/media/picture/product/14555_800x800-95.png
-							'regex' => '/picture/(?<type>(product|brand|serie))/(?<id>[0-9]+)(\_(?<resolution>([0-9]+x[0-9]+)))?(\-(?<quality>([0-9]+)))?(\.(?<format>(jpg|png|gif)))?',
+							'regex' => '/picture/((?<type>(product|brand|serie))/)?(?<id>[0-9]+)(\_(?<resolution>([0-9]+x[0-9]+)))?(\-(?<quality>([0-9]+)))?(\.(?<format>(jpg|png|gif)))?',
 							'spec' => '/picture/%type%/%id%_%resolution%-%quality%.%format%',
 							'defaults' => array(
 								'action'	=> 'picture',
