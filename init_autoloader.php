@@ -31,6 +31,7 @@ if (is_dir('vendor/ZF2/library')) {
     $zf2Path = get_cfg_var('zf2_path');
 }
 
+
 if ($zf2Path) {
     if (isset($loader)) {
         $loader->add('Zend', $zf2Path);
