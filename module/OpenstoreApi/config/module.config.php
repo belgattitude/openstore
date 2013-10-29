@@ -32,7 +32,7 @@ return array(
 	),
 	'controllers' => array(
 		'invokables' => array(
-			'OpenstoreApi\Controller\Media' => 'OpenstoreApi\Controller\MediaController',
+			'OpenstoreApi\Controller\ProductMedia' => 'OpenstoreApi\Controller\ProductMediaController',
 		),
 	),
 	'view_manager' => array(

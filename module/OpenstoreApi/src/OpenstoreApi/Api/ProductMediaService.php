@@ -5,15 +5,15 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
 use Soluble\FlexStore\FlexStore;
 
-class MediaService extends AbstractService {
+class ProductMediaService extends AbstractService {
 	
 	
 	
 	/**
-	 * 
+	 * @param array $params [types,brands,pricelists] 
 	 * @return \Soluble\FlexStore\FlexStore
 	 */
-	function getList() {
+	function getList(array $params=array()) {
 		
 		$select = new Select();
 		
@@ -49,6 +49,7 @@ class MediaService extends AbstractService {
 			'filemtime'			=> new Expression('m.filemtime'),
 			
 		);
+		
 				
 		$select->columns(array_merge($columns, array(
 			'active_pricelists' => new Expression('GROUP_CONCAT(distinct pl.reference)'),
@@ -58,6 +59,24 @@ class MediaService extends AbstractService {
 		
 		$select->where('p.flag_active = 1');
 		$select->where('ppl.flag_active = 1');
+
+		
+		if (array_key_exists('type', $params)) {
+			$select->where(array('pmt.reference' => $params['type']));
+		}
+
+
+		if (array_key_exists('types', $params)) {
+			$select->where->in('pmt.reference', explode(',', $params['types']));
+		}
+		
+		if (array_key_exists('pricelists', $params)) {
+			$select->where->in('pl.reference', explode(',', $params['pricelists']));
+		}
+
+		if (array_key_exists('brands', $params)) {
+			$select->where->in('pb.reference', explode(',', $params['brands']));
+		}		
 		
 		/*
 		$select->where("pl.reference = 'BE'");

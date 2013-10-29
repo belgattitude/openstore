@@ -206,7 +206,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 			'aliases' => array(
 			),
 			'invokables' => array(
-				'Api\MediaService' => 'OpenstoreApi\Api\MediaService',
+				'Api\ProductMediaService' => 'OpenstoreApi\Api\ProductMediaService',
 			)
 		);
 	}

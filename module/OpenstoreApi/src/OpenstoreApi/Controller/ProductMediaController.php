@@ -8,7 +8,7 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\View\Model\JsonModel;
 use Zend\Mvc\MvcEvent;
 
-class MediaController extends AbstractRestfulController
+class ProductMediaController extends AbstractRestfulController
 {
 	
 	protected $collectionOptions = array('GET');
@@ -24,22 +24,20 @@ class MediaController extends AbstractRestfulController
 	
 	
 	public function onDispatch(\Zend\Mvc\MvcEvent $e) {
-		$this->mediaService = $this->getServiceLocator()->get('Api\MediaService');
+		$this->mediaService = $this->getServiceLocator()->get('Api\ProductMediaService');
 		parent::onDispatch($e);
 	}	
 	
-	/*
+	
 	public function get($id) {
-		$response = $this->getResponseWithHeader()
-				->setContent(__METHOD__ . ' get current data with id =  ' . $id);
+		die('hello');
 		return $response;
 	}
-	 * 
-	 */
 
 	public function getList() {
 		
-		$store = $this->mediaService->getList();
+		$params = $this->params()->fromQuery();
+		$store = $this->mediaService->getList($params);
 		return $store;
 
 		//return new JsonModel($data);

@@ -153,7 +153,7 @@ class MediaController extends AbstractActionController
 	
 	protected function getAcceptedQualities() {
 		$accepted = array(
-			80, 90, 95
+			80, 85, 90, 95
 		);
 		return $accepted;
 	}
