@@ -347,52 +347,107 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 	}
 	
 	
-	function synchronizeProductPricelist()
+	function synchronizeProductPricelist($use_akilia2=true)
 	{
-		$akilia1db = $this->akilia1Db;
 		$db = $this->openstoreDb;
-
-		$replace = " insert
-		             into $db.product_pricelist
-					(
-					product_id,
-					pricelist_id,
-					
-					price,
-					promo_discount,
-					promo_start_at,
-					promo_end_at,
-					flag_active,
-					activated_at,
-					legacy_synchro_at
-				)
-
-				select at.id_article,
-				       pl.pricelist_id,
-					   at.prix_unit_ht,
-					   if((at.flag_promo = 1 or at.flag_liquidation = 1) and at.remise1 > 0, at.remise1, null) as promo_discount,
-					   null as promo_start_at,
-					   null as promo_end_at,
-					   at.flag_availability,
-					   a.date_creation,
-					'{$this->legacy_synchro_at}' as legacy_synchro_at
-					
-				from $akilia1db.art_tarif as at
-				inner join $db.pricelist pl on at.id_pays = pl.legacy_mapping
-				inner join $akilia1db.article a on at.id_article = a.id_article	
-				where at.prix_unit_ht > 0
-				on duplicate key update
-						price = at.prix_unit_ht,
-						promo_discount = if((at.flag_promo = 1 or at.flag_liquidation = 1) and at.remise1 > 0, at.remise1, null),
-						promo_start_at = null,
-						promo_end_at = null,
-						
-						flag_active = at.flag_availability,
-						activated_at = a.date_creation,
-						legacy_synchro_at = '{$this->legacy_synchro_at}'
-					 ";
 		
-		$this->executeSQL("Replace product pricelist", $replace);
+		if ($use_akilia2) {
+
+			$akilia2db = $this->akilia2Db;
+			$replace = " insert
+						 into $db.product_pricelist
+						(
+						product_id,
+						pricelist_id,
+						price,
+						promo_discount,
+						promo_start_at,
+						promo_end_at,
+						flag_active,
+						activated_at,
+						legacy_synchro_at
+					)
+
+				select 
+					bpp.product_id,
+					pl.pricelist_id,
+					bpp.price_sale as price,
+					bpp.is_promotionnal as promo_discount,
+					null as promo_start_at,
+					null as promo_end_at,
+					bpp.is_active,
+					p.created_at,
+					'{$this->legacy_synchro_at}' as legacy_synchro_at
+
+					from
+					$akilia2db.base_product_price as bpp
+						inner join
+					$akilia2db.base_pricelist bp ON bpp.pricelist_id = bp.id
+						inner join
+					$db.pricelist pl ON pl.legacy_mapping = bp.legacy_mapping
+						inner join
+					$db.product p on p.product_id = bpp.product_id
+					where bpp.price_sale > 0
+					on duplicate key update
+							price = bpp.price_sale,
+							promo_discount = bpp.is_promotionnal,
+							promo_start_at = null,
+							promo_end_at = null,
+
+							flag_active = bpp.is_active,
+							activated_at = p.created_at,
+							legacy_synchro_at = '{$this->legacy_synchro_at}'
+						 ";
+			$this->executeSQL("Replace product pricelist", $replace);
+			
+			
+		} else {
+			$akilia1db = $this->akilia1Db;
+			$replace = " insert
+						 into $db.product_pricelist
+						(
+						product_id,
+						pricelist_id,
+
+						price,
+						promo_discount,
+						promo_start_at,
+						promo_end_at,
+						flag_active,
+						activated_at,
+						legacy_synchro_at
+					)
+
+					select at.id_article,
+						   pl.pricelist_id,
+						   at.prix_unit_ht,
+						   if((at.flag_promo = 1 or at.flag_liquidation = 1) and at.remise1 > 0, at.remise1, null) as promo_discount,
+						   null as promo_start_at,
+						   null as promo_end_at,
+						   at.flag_availability,
+						   a.date_creation,
+						'{$this->legacy_synchro_at}' as legacy_synchro_at
+
+					from $akilia1db.art_tarif as at
+					inner join $db.pricelist pl on at.id_pays = pl.legacy_mapping
+					inner join $akilia1db.article a on at.id_article = a.id_article	
+					where at.prix_unit_ht > 0
+					on duplicate key update
+							price = at.prix_unit_ht,
+							promo_discount = if((at.flag_promo = 1 or at.flag_liquidation = 1) and at.remise1 > 0, at.remise1, null),
+							promo_start_at = null,
+							promo_end_at = null,
+
+							flag_active = at.flag_availability,
+							activated_at = a.date_creation,
+							legacy_synchro_at = '{$this->legacy_synchro_at}'
+						 ";
+
+			$this->executeSQL("Replace product pricelist", $replace);
+
+			
+		}
+
 
 		// 2. Deleting - old links in case it changes
 		$delete = "
@@ -447,39 +502,75 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 	}
 	
 	
-	function synchronizePricelist()
+	function synchronizePricelist($use_akilia2=true)
 	{
-		$akilia1db = $this->akilia1Db;
-		$db = $this->openstoreDb;
+		if ($use_akilia2) {
+			$akilia2db = $this->akilia2Db;
+			$db = $this->openstoreDb;
 
-		$stock_id = $this->default_stock_id;
-		
-		$replace = " insert
-		             into $db.pricelist
-					(
-					reference,
-					currency_id,
-					stock_id,
-					legacy_mapping, 
-					legacy_synchro_at
-				)
+			$stock_id = $this->default_stock_id;
 
-				select 
-					distinct at.id_pays,
-					{$this->default_currency_id} as currency_id,
-					$stock_id as stock_id,
-					at.id_pays as legacy_mapping,
-					'{$this->legacy_synchro_at}' as legacy_synchro_at
+			$replace = " insert
+						 into $db.pricelist
+						(
+						reference,
+						currency_id,
+						stock_id,
+						legacy_mapping, 
+						legacy_synchro_at
+					)
+
+					select 
 					
-				from $akilia1db.art_tarif as at
-				on duplicate key update
-						stock_id = $stock_id,
-						currency_id = {$this->default_currency_id},
-						legacy_synchro_at = '{$this->legacy_synchro_at}'
-					 ";
-		
-		$this->executeSQL("Replace pricelist", $replace);
+						bp.reference,
+						{$this->default_currency_id} as currency_id,
+						$stock_id as stock_id,
+						bp.legacy_mapping as legacy_mapping,
+						'{$this->legacy_synchro_at}' as legacy_synchro_at
 
+					from $akilia2db.base_pricelist as bp
+					on duplicate key update
+							stock_id = $stock_id,
+							currency_id = {$this->default_currency_id},
+							legacy_synchro_at = '{$this->legacy_synchro_at}'
+						 ";
+
+			$this->executeSQL("Replace pricelist", $replace);
+			
+		} else {
+		
+			$akilia1db = $this->akilia1Db;
+			$db = $this->openstoreDb;
+
+			$stock_id = $this->default_stock_id;
+
+			$replace = " insert
+						 into $db.pricelist
+						(
+						reference,
+						currency_id,
+						stock_id,
+						legacy_mapping, 
+						legacy_synchro_at
+					)
+
+					select 
+						distinct at.id_pays,
+						{$this->default_currency_id} as currency_id,
+						$stock_id as stock_id,
+						at.id_pays as legacy_mapping,
+						'{$this->legacy_synchro_at}' as legacy_synchro_at
+
+					from $akilia1db.art_tarif as at
+					on duplicate key update
+							stock_id = $stock_id,
+							currency_id = {$this->default_currency_id},
+							legacy_synchro_at = '{$this->legacy_synchro_at}'
+						 ";
+
+			$this->executeSQL("Replace pricelist", $replace);
+		}
+			
 		// 2. Deleting - old links in case it changes
 		$delete = "
 		    delete from $db.pricelist 
