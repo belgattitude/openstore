@@ -11,6 +11,7 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 use Soluble\FlexStore\FlexStoreInterface;
 use Soluble\FlexStore\Writer\Zend\Json as JsonWriter;
+use Soluble\FlexStore\Writer\CSV as CSVWriter;
 use Soluble\FlexStore\Writer\SimpleXmlWriter;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface
@@ -72,21 +73,10 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 				case 'json' :
 					if ($vars instanceof FlexStoreInterface) {
 						$jsonWriter = new JsonWriter($vars->getSource());
-						/*
-						// slow
-						$response = $e->getResponse();
-						$response->setContent($jsonWriter->getData());
-						$headers = $response->getHeaders();
-						$headers->addHeaderLine('Content-Type', 'application/json');
-						$response->setHeaders($headers);					
-						return $response;
-						 */
 						$jsonWriter->send();
 						die();
-
-
 					} else {
-						die('error');
+						throw new \Exception('Writer does not support FlexStoreInterface');
 					}
 					break;
 				case 'xml' :
@@ -95,13 +85,27 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 						$xmlWriter = new SimpleXmlWriter($vars->getSource());
 						$xmlWriter->send();
 						die();
-
-
 					} else {
-
+						throw new \Exception('Writer does not support FlexStoreInterface');
 					}
 
 					break;
+				case 'csv' :
+					if ($vars instanceof FlexStoreInterface) {
+						$options = array(
+							'charset' => 'ISO-8859-1',
+							'field_separator' => CSVWriter::SEPARATOR_TAB,
+							'line_separator' => CSVWriter::SEPARATOR_NEWLINE_UNIX,
+							
+						);
+						$csvWriter = new CSVWriter($vars->getSource());
+						$csvWriter->setOptions($options);
+						$csvWriter->send();
+						die();
+					} else {
+						throw new \Exception('Writer does not support FlexStoreInterface');
+					}
+					
 
 				default:
 					throw new \Exception('error format not supported');
@@ -156,7 +160,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 					break;
 
 				case 'xml' :
-					$e->getResponse()->setContent('<xml><response><success>0</success></response>');
+					$e->getResponse()->setContent("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<response><success>0</success></response>");
 					$e->getResponse()->getHeaders()->addHeaderLine('Content-Type', 'application/xml', true);
 
 					break;
@@ -207,6 +211,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 			),
 			'invokables' => array(
 				'Api\ProductMediaService' => 'OpenstoreApi\Api\ProductMediaService',
+				'Api\ProductCatalogService' => 'OpenstoreApi\Api\ProductCatalogService',
 			)
 		);
 	}
