@@ -6,7 +6,7 @@ $config = array(
 	// This should be an array of module namespaces used in the application.
 	'modules' => array(
 		//'Application',
-		'Zf2Whoops',
+		//'Zf2Whoops',
 		
 		'Openstore',
 		'OpenstoreApi',

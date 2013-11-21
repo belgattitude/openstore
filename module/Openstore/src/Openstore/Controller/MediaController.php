@@ -147,7 +147,9 @@ class MediaController extends AbstractActionController
 			'800x800', 
 			'1024x768',		// for emdmusic.com lightbox
 			'1280x1024',	// for emdmusic.com info page
-			'1200x1200');
+			'1200x1200',
+			'3000x3000'		// for printing in high resolution
+			); 
 		return $accepted;
 	}
 	

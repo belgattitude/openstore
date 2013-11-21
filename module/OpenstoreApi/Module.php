@@ -84,6 +84,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 					if ($vars instanceof FlexStoreInterface) {
 						$xmlWriter = new SimpleXmlWriter($vars->getSource());
 						$xmlWriter->send();
+						
 						die();
 					} else {
 						throw new \Exception('Writer does not support FlexStoreInterface');
@@ -127,20 +128,18 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 
 			/** @var array $configuration */
 			$configuration = $e->getApplication()->getConfig();
-
+			$error_message = "Something went wrong";
 			$body = array(
-				'message'	=> 'Something went wrong',
+				'message'	=> $error_message,
 				'success'	=> 0,
 				'error' => array(
 					'type' => $eventParams['error'],
 				)
 			);
-
 			if (isset($eventParams['exception'])) {
 
 				/** @var \Exception $exception */
 				$exception = $eventParams['exception'];
-
 				if ($configuration['errors']['show_exceptions']['message']) {
 					$body['error']['exception_message'] = $exception->getMessage();
 				}
@@ -153,15 +152,23 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 			switch ($format) {
 				case 'json' :
 
-
-					$e->getResponse()->setContent(json_encode($body));
 					$e->getResponse()->getHeaders()->addHeaderLine('Content-Type', 'application/json', true);
+					$e->getResponse()->setContent(json_encode($body));
+					
 
 					break;
 
 				case 'xml' :
-					$e->getResponse()->setContent("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<response><success>0</success></response>");
+					
 					$e->getResponse()->getHeaders()->addHeaderLine('Content-Type', 'application/xml', true);
+					$exception_message = $body['error']['exception_message'];
+					$error_type = $body['error']['type'];
+					$message = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+					$message .= "<response>\n\t<success>0</success>\n\t<message>$error_message</message>";
+					$message .=	"<error>\n\t<type>$error_type</type>";
+					$message .= "\t<exception_message>$exception_message</exception_message></error>\n</response>";
+					$e->getResponse()->setContent($message);
+					
 
 					break;
 
@@ -212,6 +219,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 			'invokables' => array(
 				'Api\ProductMediaService' => 'OpenstoreApi\Api\ProductMediaService',
 				'Api\ProductCatalogService' => 'OpenstoreApi\Api\ProductCatalogService',
+				'Api\ProductBrandService' => 'OpenstoreApi\Api\ProductBrandService',
 			)
 		);
 	}
