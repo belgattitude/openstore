@@ -57,6 +57,12 @@ class Product implements InputFilterAwareInterface
 	private $reference;
 	
 	
+    /**
+     * @ORM\ManyToOne(targetEntity="Product", inversedBy="children")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="product_id", onDelete="CASCADE")
+     */
+    private $parent_id;	
+	
 	/**
 	 * 
      * @ORM\ManyToOne(targetEntity="ProductBrand", inversedBy="products", cascade={"persist", "remove"})
@@ -70,6 +76,13 @@ class Product implements InputFilterAwareInterface
      * @ORM\JoinColumn(name="group_id", referencedColumnName="group_id", onDelete="CASCADE", nullable=true)
 	 */
 	private $group_id;
+
+	/**
+	 * 
+     * @ORM\ManyToOne(targetEntity="ProductModel", inversedBy="products", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="model_id", referencedColumnName="model_id", onDelete="CASCADE", nullable=true)
+	 */
+	private $model_id;	
 	
 	/**
 	 * 
@@ -149,6 +162,28 @@ class Product implements InputFilterAwareInterface
 	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Width per sales unit in meter"})
 	 */
 	private $width;
+
+	/**
+	 * @ORM\Column(type="decimal", precision=15, scale=6, nullable=true, options={"comment"="Packaging items per box"})
+	 */
+	private $pack_qty_box;
+	
+	
+	/**
+	 * @ORM\Column(type="decimal", precision=15, scale=6, nullable=true, options={"comment"="Packaging items per carton"})
+	 */
+	private $pack_qty_carton;
+	
+	/**
+	 * @ORM\Column(type="decimal", precision=15, scale=6, nullable=true, options={"comment"="Packaging items per master carton"})
+	 */
+	private $pack_qty_master_carton;
+
+	/**
+	 * @ORM\Column(type="decimal", precision=15, scale=6, nullable=true, options={"comment"="Packaging items per palet"})
+	 */
+	private $pack_qty_palet;
+	
 	
 	/**
 	 * @ORM\Column(type="string", length=13, nullable=true, options={"comment"="EAN 13 barcode"})

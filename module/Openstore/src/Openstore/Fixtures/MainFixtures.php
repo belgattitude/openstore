@@ -34,6 +34,8 @@ class LoadUserData implements FixtureInterface
 		
 		$this->importUser($manager);
 		
+		$this->importProductType($manager);
+		
         
 		$this->importProductUnit($manager);
 		
@@ -93,6 +95,32 @@ class LoadUserData implements FixtureInterface
 		$manager->flush();
 	}
 
+	function importProductType(ObjectManager $manager) {
+		
+		$product_types = array(
+			1 => array('reference' => 'REGULAR', 'title' => 'Regular product'),
+			2 => array('reference' => 'SPAREPART', 'title' => 'Spare part'),
+			3 => array('reference' => 'VIRTUAL', 'title' => 'Virtual product'),
+		);
+		
+		
+		
+		foreach($product_types as $id => $infos) {
+			$type = new Entity\ProductType();
+			$type->setTypeId($id);
+			$type->setReference($infos['reference']);
+			$type->setTitle($infos['title']);
+			$manager->persist($type);
+		}
+		
+		
+		$metadata = $manager->getClassMetaData(get_class($type));
+		$metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
+		
+		$manager->flush();
+	}
+	
+	
 	function importStock(ObjectManager $manager) {
 		
 		$stock = new Entity\Stock();

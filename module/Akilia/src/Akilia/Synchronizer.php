@@ -95,6 +95,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 		$this->synchronizeProductGroup();
 		$this->synchronizeProductBrand();
 		$this->synchronizeProductCategory();
+		$this->synchronizeProductModel();
 		$this->synchronizeProduct();
 		$this->synchronizeProductTranslation();
 		$this->synchronizeProductPricelist();
@@ -360,7 +361,14 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 						product_id,
 						pricelist_id,
 						price,
-						promo_discount,
+						list_price,
+						public_price,
+						discount_1,
+						discount_2,
+						discount_3,
+						discount_4,
+						sale_minimum_qty,
+						is_promotional,
 						promo_start_at,
 						promo_end_at,
 						flag_active,
@@ -371,8 +379,15 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				select 
 					bpp.product_id,
 					pl.pricelist_id,
-					bpp.price_sale as price,
-					bpp.is_promotionnal as promo_discount,
+					(bpp.price_sale * (1-(bpp.discount_1/100)) * (1-(bpp.discount_2/100)) * (1-(bpp.discount_3/100)) * (1-(bpp.discount_4/100))) as price,
+					bpp.price_sale as list_price,
+					bpp.price_sale_public as public_price,
+					bpp.discount_1 as discount_1,
+					bpp.discount_2 as discount_2,
+					bpp.discount_3 as discount_3,
+					bpp.discount_4 as discount_4,
+					if (bpp.sale_min_qty > 0, bpp.sale_min_qty, null) as sale_min_qty,
+					bpp.is_promotionnal as is_promotional,
 					null as promo_start_at,
 					null as promo_end_at,
 					bpp.is_active,
@@ -389,8 +404,15 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 					$db.product p on p.product_id = bpp.product_id
 					where bpp.price_sale > 0
 					on duplicate key update
-							price = bpp.price_sale,
-							promo_discount = bpp.is_promotionnal,
+							price = (bpp.price_sale * (1-(bpp.discount_1/100)) * (1-(bpp.discount_2/100)) * (1-(bpp.discount_3/100)) * (1-(bpp.discount_4/100))),
+							list_price = bpp.price_sale,
+							public_price = bpp.price_sale_public,
+							discount_1 = bpp.discount_1,
+							discount_2 = bpp.discount_2,
+							discount_3 = bpp.discount_3,
+							discount_4 = bpp.discount_4,
+							sale_minimum_qty = if (bpp.sale_min_qty > 0, bpp.sale_min_qty, null),
+							is_promotional = bpp.is_promotionnal,
 							promo_start_at = null,
 							promo_end_at = null,
 
@@ -680,6 +702,40 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		
 		
 	}
+	
+	function synchronizeProductModel() 
+	{
+		
+		$akilia1Db = $this->akilia1Db;
+		$db = $this->openstoreDb;
+
+		$replace = "insert into $db.product_model
+				(reference, brand_id, title, legacy_mapping, legacy_synchro_at)
+				select 
+				trim(m.reference) as reference,
+				pb.brand_id as brand_id,
+				m.libelle_1 as title,
+				m.id_modele as legacy_mapping,
+				'{$this->legacy_synchro_at}'
+				from $akilia1Db.modele m
+				left outer join $db.product_brand pb on pb.legacy_mapping = m.id_marque				
+			on duplicate key update
+				reference = trim(m.reference),
+				brand_id = pb.brand_id,
+				title = m.libelle_1, 
+			    legacy_synchro_at = '{$this->legacy_synchro_at}'";
+		
+		$this->executeSQL("Replace product model", $replace);
+
+		// 2. Deleting - old links in case it changes
+		$delete = "
+		    delete from $db.product_model where
+			legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+
+		$this->executeSQL("Delete eventual removed product models", $delete);
+		
+		
+	}
 
 	function synchronizeProductBrand()
 	{
@@ -736,16 +792,19 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 	{
 		
 		$akilia1db = $this->akilia1Db;
+		$akilia2db = $this->akilia2Db;
 		$db = $this->openstoreDb;
 
 		$replace = " insert
 		             into $db.product
-					(product_id, 
+					(product_id,
+					model_id,
 					brand_id,
 					group_id,
 					category_id,
 					unit_id,
 					type_id,
+					parent_id,
 					reference, 
 					slug,
 					title,
@@ -762,6 +821,10 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 					height,
 					width,
 					
+					pack_qty_box,
+					pack_qty_carton,
+					pack_qty_master_carton,
+					
 					barcode_ean13,
 					
 					activated_at,
@@ -772,11 +835,13 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 
 				select
 					a.id_article as product_id,
+					pm.model_id as model_id,
 					brand.brand_id as brand_id,
 					product_group.group_id as group_id,
 					category.category_id as category_id,
 					{$this->default_unit_id} as unit_id,
 					{$this->default_product_type_id} as type_id,
+					if (i.id_art_tete <> 0 and i.id_art_tete <> '', i.id_art_tete, null) as parent_id, 	
 					upper(TRIM(a.reference)) as reference,
 					null as slug,
 					if(trim(i.libelle_1) = '', null, trim(i.libelle_1)) as title,
@@ -791,6 +856,12 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 					null as length,
 					null as height,
 					null as width,
+					
+					bp.pack_qty_box,
+					bp.pack_qty_carton,
+					bp.pack_qty_master_carton,
+					
+
 					a.barcode_ean13 as barcode_ean13,
 					a.date_creation,
 					a.id_article as legacy_mapping,
@@ -798,15 +869,21 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 						
 					
 				from $akilia1db.article as a
+				left outer join $akilia2db.base_product bp on bp.legacy_mapping = a.id_article	
 				left outer join $akilia1db.cst_art_infos i on i.id_article = a.id_article	
 				left outer join $db.product_brand as brand on brand.legacy_mapping = a.id_marque
 				left outer join $db.product_group as product_group on product_group.legacy_mapping = a.id_famille
 				left outer join $db.product_category as category on category.legacy_mapping = a.id_categorie
+				left outer join $db.product_model as pm on pm.legacy_mapping = a.id_modele	
 				
 				on duplicate key update
+						model_id = pm.model_id,
 						brand_id = brand.brand_id,
+						type_id = {$this->default_product_type_id},
 						group_id = product_group.group_id,
 						unit_id = {$this->default_unit_id},
+						parent_id = if (i.id_art_tete <> 0 and i.id_art_tete <> '', i.id_art_tete, null), 	
+							
 						category_id = category.category_id,
 						reference = upper(a.reference),
 						slug = null,
@@ -822,6 +899,11 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 						length = null,
 						height = null,
 						width = null,
+						
+						pack_qty_box = bp.pack_qty_box,
+						pack_qty_carton = bp.pack_qty_carton,
+						pack_qty_master_carton = bp.pack_qty_master_carton,
+						
 						barcode_ean13 = a.barcode_ean13,
 						activated_at = a.date_creation,
 						legacy_mapping = a.id_article,
@@ -862,21 +944,32 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 					'$lang' as lang,
 					if (trim(i.libelle$sfx) = '', null, trim(i.libelle$sfx)) as title,
 					if (trim(a.libelle$sfx) = '', null, trim(a.libelle$sfx)) as invoice_title,	
-					if (trim(i.desc$sfx) = '', null, trim(i.desc$sfx)) as description,		
+					if (i2.id_article is not null, 
+							if (trim(i2.desc$sfx) = '', null, trim(i2.desc$sfx)),		
+							if (trim(i.desc$sfx) = '', null, trim(i.desc$sfx))
+					) as description,
 					if (trim(i.couleur$sfx) = '', null, trim(i.couleur$sfx)) as characteristic,		
 					'{$this->legacy_synchro_at}'	
 				  from $akilia1db.article a
 				  inner join $db.product p on p.legacy_mapping = a.id_article 	
-				  left outer join $akilia1db.cst_art_infos i on i.id_article = a.id_article 	
+				  left outer join $akilia1db.cst_art_infos i on i.id_article = a.id_article
+				  left outer join $akilia1db.cst_art_infos i2 on 
+					  (i.id_art_tete = i2.id_article and i.id_art_tete <> 0 and i.id_art_tete <> '')
 			     on duplicate key update
 				  title = if (trim(i.libelle$sfx) = '', null, trim(i.libelle$sfx)),
 				  invoice_title = if (trim(a.libelle$sfx) = '', null, trim(a.libelle$sfx)),
-				  description = if (trim(i.desc$sfx) = '', null, trim(i.desc$sfx)),
+				  description = if (i2.id_article is not null, 
+							if (trim(i2.desc$sfx) = '', null, trim(i2.desc$sfx)),		
+							if (trim(i.desc$sfx) = '', null, trim(i.desc$sfx))
+					),
+
 				  characteristic = if (trim(i.couleur$sfx) = '', null, trim(i.couleur$sfx)),
 				  legacy_synchro_at = '{$this->legacy_synchro_at}'	  
 			";
+				  
 		
 			$this->executeSQL("Replace product translations", $replace);
+			
 			
 		}
 		// 2. Deleting - old links in case it changes

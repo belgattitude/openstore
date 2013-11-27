@@ -16,7 +16,7 @@ class PromoProducts extends AbstractFilter
 	 * @return \Zend\Db\Sql\Select
 	 */
 	function filter(Select $select) {
-		$select->where("(ppl.promo_discount > 0)");
+		$select->where("(ppl.is_promotional = 1)");
 		return $select;
 	}
 	
@@ -24,7 +24,7 @@ class PromoProducts extends AbstractFilter
 	function addDefaultSortClause(Select $select)
 	{
 		$select->order(array(
-			'ppl.promo_discount'=> $select::ORDER_DESCENDING, 
+			'ppl.discount_1'	=> $select::ORDER_DESCENDING, 
 			'p.reference'		=> $select::ORDER_ASCENDING)
 		);
 		return $this;

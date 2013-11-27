@@ -56,45 +56,102 @@ class ProductPricelist implements InputFilterAwareInterface
 	 */
 	private $product_id;
 
-
-	
-	
 	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Unit sales price"})
+	 *
+	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the product is active in public website"})
+	 */
+	private $flag_active;
+	
+
+	/**
+	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Unit sales price discounts included"})
 	 */
 	private $price;
 
+	/**
+	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Unit sales list price wihtout discounts"})
+	 */
+	private $list_price;
 	
 	/**
 	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Unit public/msrp price"})
 	 */
 	private $public_price;
 	
+
 	/**
-	 * @ORM\Column(type="decimal", precision=8, scale=6, nullable=true, options={"comment"="Discount promo in %"})
+	 * @ORM\Column(type="decimal", precision=16, scale=6, nullable=false, options={"comment"="Sales minimum quantity"})
 	 */
-	private $promo_discount;
-	
+	private $sale_minimum_qty;
+
+	/**
+	 * @ORM\Column(type="decimal", precision=16, scale=6, nullable=true, options={"comment"="Sales multiple quantity"})
+	 */
+	private $sale_multiple_qty;
 	
 
 	/**
-	 * @ORM\Column(type="date", nullable=true, options={"comment"="Discount start at"})
+	 * @ORM\Column(type="decimal", precision=8, scale=6, nullable=false, options={"defaults"=0, "comment"="Regular discount 1"})
 	 */
-	private $promo_start_at;	
+	private $discount_1;
+	
+	/**
+	 * @ORM\Column(type="decimal", precision=8, scale=6, nullable=false, options={"defaults"=0, "comment"="Regular discount 2"})
+	 */
+	private $discount_2;
+	
+	/**
+	 * @ORM\Column(type="decimal", precision=8, scale=6, nullable=false, options={"defaults"=0, "comment"="Regular discount 3"})
+	 */
+	private $discount_3;
+	
+	/**
+	 * @ORM\Column(type="decimal", precision=8, scale=6, nullable=false, options={"defaults"=0, "comment"="Regular discount 4"})
+	 */
+	private $discount_4;
+	
+	
+	
+	/**
+	 * @ORM\Column(type="boolean", nullable=false, options={"defaults"=0, "comment"="Whether the product is considered as promotional, promotion appears in discount_1"})
+	 */
+	private $is_promotional;
+
+	/**
+	 * @ORM\Column(type="date", nullable=true, options={"comment"="Discount started at"})
+	 */
+	private $promo_start_at;
 
 	/**
 	 * @ORM\Column(type="date", nullable=true, options={"comment"="Discount end at"})
 	 */
-	private $promo_end_at;	
-	
-	
-	
-	
+	private $promo_end_at;
+
 	/**
 	 *
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the product is active in public website"})
-	 */
-	private $flag_active;
+	 * @ORM\Column(type="boolean", nullable=false, options={"default"=0, "comment"="Whether the product is considered as a new product in this pricelist"})
+	 */	
+	private $is_new;	
+
+	/**
+	 *
+	 * @ORM\Column(type="boolean", nullable=false, options={"default"=0, "comment"="Whether the product is considered as a best seller in this pricelist"})
+	 */	
+	private $is_bestseller;
+
+	/**
+	 *
+	 * @ORM\Column(type="boolean", nullable=false, options={"default"=0, "comment"="Whether the product is considered as a best value in this pricelist"})
+	 */	
+	private $is_bestvalue;
+
+	/**
+	 *
+	 * @ORM\Column(type="boolean", nullable=false, options={"default"=0, "comment"="Whether the product is considered as a hot product in this pricelist"})
+	 */	
+	private $is_hot;
+	
+
 
 	/**
 	 * @ORM\Column(type="date", nullable=true, options={"comment" = "Date on which product was active in this pricelist, useful to display as new product"})
@@ -288,22 +345,6 @@ class ProductPricelist implements InputFilterAwareInterface
 		return $this->public_price;
 	}
 
-	/**
-	 * @param float $promo_discount
-	 */
-	public function setPromoDiscount($promo_discount)
-	{
-		$this->promo_discount = $promo_discount;
-		return $this;
-	}	
-	
-	/**
-	 * @return float
-	 */
-	public function getPromoDiscount()
-	{
-		return $this->promo_discount;
-	}	
 
 	/**
 	 * @param string $promo_start_at date Y-m-d H:i:s

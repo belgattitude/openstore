@@ -14,19 +14,19 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="product_stock",
+ *   name="product_model_translation",
  *   uniqueConstraints={
- *     @ORM\UniqueConstraint(name="unique_product_price_idx",columns={"stock_id", "product_id"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
+ *     @ORM\UniqueConstraint(name="unique_translation_idx",columns={"model_id", "lang"})
  *   }, 
  *   indexes={
- *     @ORM\Index(name="available_stock_idx", columns={"available_stock"}),
- *     @ORM\Index(name="theoretical_stock_idx", columns={"theoretical_stock"}),
+ *     @ORM\Index(name="title_idx", columns={"title"}),
+ *     @ORM\Index(name="description_idx", columns={"description"}),
  *   },
- *   options={"comment" = "Product stock"}
+ *   options={"comment" = "Product model translation table"}
  * )
  */
-class ProductStock implements InputFilterAwareInterface
+class ProductModelTranslation implements InputFilterAwareInterface
 {
 	
 	/**
@@ -34,60 +34,69 @@ class ProductStock implements InputFilterAwareInterface
 	 */
 	protected $inputFilter;
 
-	
 	/**
 	 * @ORM\Id
-	 * @ORM\Column(name="id", type="bigint", nullable=false, options={"unsigned"=true})
+	 * @ORM\Column(name="id", type="bigint", nullable=false, options={"unsigned"=true, "comment" = "Primary key"})
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
 	private $id;
 
-
 	/**
 	 * 
-     * @ORM\ManyToOne(targetEntity="Stock", inversedBy="products", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="stock_id", referencedColumnName="stock_id", onDelete="CASCADE", nullable=false)
+     * @ORM\ManyToOne(targetEntity="ProductModel", inversedBy="translations", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="model_id", referencedColumnName="model_id", onDelete="CASCADE", nullable=false)
 	 */
-	private $stock_id;
+	private $model_id;
 	
 	
 	/**
-	 * 
-     * @ORM\ManyToOne(targetEntity="Product", inversedBy="products", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="product_id", referencedColumnName="product_id", onDelete="CASCADE", nullable=false)
+     * @ORM\ManyToOne(targetEntity="Language", inversedBy="product_translations", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="lang", referencedColumnName="lang", onDelete="RESTRICT", nullable=false)
 	 */
-	private $product_id;
-
+	private $lang;
 	
-	
-	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Available stock"})
-	 */
-	private $available_stock;	
-	
-	
-	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Theoretical stock"})
-	 */
-	private $theoretical_stock;		
 
 	/**
-	 * @ORM\Column(type="datetime", nullable=true, options={"comment"="Next stock arrival date"})
+	 * @Gedmo\Slug(fields={"title"})
+	 * @ORM\Column(length=64, nullable=true, options={"comment" = "Unique slug for this record"})
 	 */
-	private $next_available_stock_at;	
+	private $slug;
+
+	/**
+	 * @ORM\Column(type="string", length=80, nullable=true)
+	 */
+	private $title;
+
+	/**
+	 * @ORM\Column(type="string", length=15000, nullable=true)
+	 */
+	private $description;
+
 	
 	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Next available stock"})
+	 * @Gedmo\Timestampable(on="create")
+	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record creation timestamp"})
 	 */
-	private $next_available_stock;	
-	
+	private $created_at;
 
 	/**
 	 * @Gedmo\Timestampable(on="update")
 	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record last update timestamp"})
 	 */
 	private $updated_at;
-	
+
+	/**
+	 * @Gedmo\Blameable(on="create")
+	 * @ORM\Column(type="string", length=40, nullable=true, options={"comment" = "Creator name"})
+	 */
+	private $created_by;
+
+	/**
+	 * @Gedmo\Blameable(on="update")
+	 * @ORM\Column(type="string", length=40, nullable=true, options={"comment" = "Last updater name"})
+	 */
+	private $updated_by;
+
 	/**
 	 * @ORM\Column(type="string",length=40,nullable=true, options={"comment" = "Unique reference of this record taken from legacy system"})
 	 */
@@ -102,9 +111,6 @@ class ProductStock implements InputFilterAwareInterface
 	
 	public function __construct()
 	{
-		 
-		 
-		 
 	}
 
 	/**
@@ -126,50 +132,125 @@ class ProductStock implements InputFilterAwareInterface
 		return $this->id;
 	}
 
+
+	/**
+	 * @param string $slug
+	 */
+	public function setSlug($slug)
+	{
+		$this->slug = $slug;
+		return $this;
+	}
+
+	/**
+	 * 
+	 * @return string
+	 */
+	public function getSlug()
+	{
+		return $this->slug;
+	}
+
+	/**
+	 * 
+	 * @param string $title
+	 */
+	public function setTitle($title)
+	{
+		$this->title = $title;
+		return $this;
+	}
+
+	/**
+	 * 
+	 * @return string
+	 */
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	/**
+	 * 
+	 * @param string $description
+	 */
+	public function setDescription($description)
+	{
+		$this->description = $description;
+		return $this;
+	}
+
+	/**
+	 * 
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return $this->description;
+	}
+
 	
+
+	
+	/**
+	 * 
+	 * @param integer $product_id
+	 */
+	public function setProductId($product_id)
+	{
+		$this->product_id = $product_id;
+		return $this;
+	}	
+	
+	/**
+	 * 
+	 * @return integer
+	 */
+	public function getProductId()
+	{
+		return $this->product_id;
+	}
 	
 	
 	/**
 	 * 
-	 * @return float
+	 * @param integer $lang_id
 	 */
-	public function getAvailableStock()
+	public function setLangId($lang_id)
 	{
-		return $this->available_stock;
-	}
-
+		$this->lang_id = $lang_id;
+		return $this;
+	}	
 	
 	/**
-	 * @param float $available_stock
-	 * @return ProductPricelist
+	 * 
+	 * @return integer
 	 */
-	public function setAvailableStock($available_stock)
+	public function getLangId()
 	{
-		$this->available_stock = $available_stock;
+		return $this->lang_id;
+	}
+	
+	
+
+	/**
+	 * 
+	 * @return string
+	 */
+	public function getCreatedAt()
+	{
+		return $this->created_at;
+	}
+
+	/**
+	 * 
+	 * @param string $created_at
+	 */
+	public function setCreatedAt($created_at)
+	{
+		$this->created_at = $created_at;
 		return $this;
 	}
-	
-	
-	/**
-	 * @param float $theoretical_stock
-	 * @return ProductPricelist
-	 */
-	public function setTheoreticalStock($theoretical_stock)
-	{
-		$this->theoretical_stock = $theoretical_stock;
-		return $this;
-	}
-	
-	/**
-	 * @return float
-	 */
-	public function getTheoreticalStock()
-	{
-		return $this->theoretical_stock;
-	}
-
-	
-
 
 	/**
 	 * 
@@ -189,9 +270,44 @@ class ProductStock implements InputFilterAwareInterface
 		$this->updated_at = $updated_at;
 		return $this;
 	}
-	
-	
 
+	/**
+	 * Return creator username
+	 * @return string
+	 */
+	public function getCreatedBy()
+	{
+		return $this->created_by;
+	}
+
+	/**
+	 * Set creator username
+	 * @param string $created_by
+	 */
+	public function setCreatedBy($created_by)
+	{
+		$this->created_by = $created_by;
+		return $this;
+	}
+
+	/**
+	 * Return last updater username
+	 * @return string
+	 */
+	public function getUpdatedBy()
+	{
+		return $this->updated_by;
+	}
+
+	/**
+	 * Set the last updater username
+	 * @param string $updated_by
+	 */
+	public function setUpdatedBy($updated_by)
+	{
+		$this->updated_by = $updated_by;
+		return $this;
+	}
 
 	/**
 	 * Return legacy mapping 
@@ -247,7 +363,7 @@ class ProductStock implements InputFilterAwareInterface
 	 */
 	public function __toString()
 	{
-		return $this->getAvailableStock();
+		return $this->getTitle();
 	}
 
 	
