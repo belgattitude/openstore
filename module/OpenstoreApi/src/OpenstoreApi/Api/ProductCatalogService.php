@@ -37,6 +37,9 @@ class ProductCatalogService extends AbstractService {
 				
 				->join(array('pg' => 'product_group'),
 						new Expression('pg.group_id = p.group_id'), array(), $select::JOIN_LEFT)
+				->join(array('pg18' => 'product_group_translation'),
+						new Expression("pg18.group_id = pg.group_id and pg18.lang='$lang'"), array(), $select::JOIN_LEFT)
+				
 				->join(array('ppl' => 'product_pricelist'),
 						new Expression("ppl.product_id = p.product_id"), array(), $select::JOIN_LEFT)
 				->join(array('pl' => 'pricelist'),
@@ -60,7 +63,8 @@ class ProductCatalogService extends AbstractService {
 				
 				
 		/*
-		DateCreation		
+		    Liquidation
+			DateCreation		
 		*/
 		$columns = array(
 			'product_id'			=> new Expression('p.product_id'),
@@ -80,6 +84,8 @@ class ProductCatalogService extends AbstractService {
 			'discount_3'			=> new Expression('ppl.discount_3'),
 			'discount_4'			=> new Expression('ppl.discount_4'),
 			
+			'is_liquidation'		=> new Expression('ppl.is_liquidation'),
+			'is_promotional'		=> new Expression('ppl.is_promotional'),
 			'is_bestseller'			=> new Expression('ppl.is_bestseller'),
 			'is_hot'				=> new Expression('ppl.is_hot'),
 			'is_bestvalue'			=> new Expression('ppl.is_bestvalue'),
@@ -99,6 +105,9 @@ class ProductCatalogService extends AbstractService {
 			'brand_title'			=> new Expression('pb.title'),
 			'group_id'				=> new Expression('pg.group_id'),
 			'group_reference'		=> new Expression('pg.reference'),
+			
+			'group_title'			=> new Expression('COALESCE(pg18.title, pg.title)'),
+			
 			'category_id'			=> new Expression('p.category_id'),
 			'category_reference'	=> new Expression('pc.reference'),
 			'model_id'				=> new Expression('p.model_id'),

@@ -111,12 +111,40 @@ class ProductPricelist implements InputFilterAwareInterface
 	private $discount_4;
 	
 	
+	/**
+	 * @ORM\Column(type="boolean", nullable=true, options={"comment"="Whether the product is considered as liquidation (stock clearance), , eventual discounts will appear in discount_1,_2..."})
+	 */
+	private $is_liquidation;
+
+	/**
+	 *
+	 * @ORM\Column(type="boolean", nullable=true, options={"comment"="Whether the product is considered as a new product in this pricelist"})
+	 */	
+	private $is_new;	
+
+	/**
+	 *
+	 * @ORM\Column(type="boolean", nullable=true, options={"comment"="Whether the product is considered as a best seller in this pricelist"})
+	 */	
+	private $is_bestseller;
+
+	/**
+	 *
+	 * @ORM\Column(type="boolean", nullable=true, options={"comment"="Whether the product is considered as a best value in this pricelist"})
+	 */	
+	private $is_bestvalue;
+
+	/**
+	 *
+	 * @ORM\Column(type="boolean", nullable=true, options={"comment"="Whether the product is considered as a hot product in this pricelist"})
+	 */	
+	private $is_hot;
 	
 	/**
-	 * @ORM\Column(type="boolean", nullable=false, options={"defaults"=0, "comment"="Whether the product is considered as promotional, promotion appears in discount_1"})
+	 * @ORM\Column(type="boolean", nullable=true, options={"comment"="Whether the product is considered as promotional, eventual discounts will appear in discount_1,_2..."})
 	 */
 	private $is_promotional;
-
+	
 	/**
 	 * @ORM\Column(type="date", nullable=true, options={"comment"="Discount started at"})
 	 */
@@ -126,31 +154,6 @@ class ProductPricelist implements InputFilterAwareInterface
 	 * @ORM\Column(type="date", nullable=true, options={"comment"="Discount end at"})
 	 */
 	private $promo_end_at;
-
-	/**
-	 *
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=0, "comment"="Whether the product is considered as a new product in this pricelist"})
-	 */	
-	private $is_new;	
-
-	/**
-	 *
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=0, "comment"="Whether the product is considered as a best seller in this pricelist"})
-	 */	
-	private $is_bestseller;
-
-	/**
-	 *
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=0, "comment"="Whether the product is considered as a best value in this pricelist"})
-	 */	
-	private $is_bestvalue;
-
-	/**
-	 *
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=0, "comment"="Whether the product is considered as a hot product in this pricelist"})
-	 */	
-	private $is_hot;
-	
 
 
 	/**

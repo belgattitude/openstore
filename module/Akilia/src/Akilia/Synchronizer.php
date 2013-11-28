@@ -369,6 +369,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 						discount_4,
 						sale_minimum_qty,
 						is_promotional,
+						is_liquidation,
 						promo_start_at,
 						promo_end_at,
 						flag_active,
@@ -388,6 +389,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 					bpp.discount_4 as discount_4,
 					if (bpp.sale_min_qty > 0, bpp.sale_min_qty, null) as sale_min_qty,
 					bpp.is_promotionnal as is_promotional,
+					bpp.id_liquidation as is_liquidation,
 					null as promo_start_at,
 					null as promo_end_at,
 					bpp.is_active,
@@ -413,6 +415,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 							discount_4 = bpp.discount_4,
 							sale_minimum_qty = if (bpp.sale_min_qty > 0, bpp.sale_min_qty, null),
 							is_promotional = bpp.is_promotionnal,
+							is_liquidataion = bpp.is_liquidation,
 							promo_start_at = null,
 							promo_end_at = null,
 
