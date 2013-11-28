@@ -770,15 +770,25 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		$akilia1Db = $this->akilia1Db;
 		$db = $this->openstoreDb;
 
+		$use_upper = false;
+		if ($use_upper) {
+			$group_ref_clause = "UPPER(TRIM(f.id_famille))";
+		} else {
+			$group_ref_clause = "TRIM(f.id_famille)";
+		}
+		
 		$replace = "insert into $db.product_group
 				(group_id, reference, title, legacy_mapping, legacy_synchro_at)
-		        select null, TRIM(f.id_famille), f.libelle_1, TRIM(f.id_famille), '{$this->legacy_synchro_at}'
+		        select null, 
+					   $group_ref_clause, 
+					   f.libelle_1 as title, 
+					   $group_ref_clause as legacy_mapping, 
+					   '{$this->legacy_synchro_at}'
 			from $akilia1Db.famille f
 			on duplicate key update
-				reference = trim(f.id_famille),
+				reference = $group_ref_clause,
 				title = f.libelle_1, 
 			    legacy_synchro_at = '{$this->legacy_synchro_at}'";
-		
 		$this->executeSQL("Replace product groups", $replace);
 
 		// 2. Deleting - old links in case it changes
@@ -947,8 +957,6 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 						legacy_mapping = a.id_article,
 						legacy_synchro_at = '{$this->legacy_synchro_at}'
 					 ";
-		echo $replace;
-		die();
 		$this->executeSQL("Replace product", $replace);
 
 		// 2. Deleting - old links in case it changes

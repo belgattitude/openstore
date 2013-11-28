@@ -16,12 +16,13 @@ use Zend\InputFilter\InputFilterInterface;
  * @ORM\Table(
  *   name="product",
  *   uniqueConstraints={
- *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
+ *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference", "brand_id", "flag_active"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
  *     @ORM\UniqueConstraint(name="unique_slug_idx",columns={"slug"})
  *   }, 
  *   indexes={
  *     @ORM\Index(name="title_idx", columns={"title"}),
+ *     @ORM\Index(name="reference_idx", columns={"reference"}),
  *     @ORM\Index(name="description_idx", columns={"description"}),
  *     @ORM\Index(name="characteristic_idx", columns={"characteristic"}),
  *     @ORM\Index(name="keywords_idx", columns={"keywords"}),
