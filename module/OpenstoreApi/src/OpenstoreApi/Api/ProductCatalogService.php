@@ -60,7 +60,7 @@ class ProductCatalogService extends AbstractService {
 						new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), 
 						array(), $select::JOIN_LEFT);
 				
-				
+		$max_stock = 20;		
 				
 		/*
 		    Liquidation
@@ -94,7 +94,7 @@ class ProductCatalogService extends AbstractService {
 			'sale_minimum_qty'		=> new Expression('ppl.sale_minimum_qty'),
 			
 			'on_stock'				=> new Expression('if (ps.available_stock > 0, 1, 0)'),
-			'available_stock'		=> new Expression('ps.available_stock'),
+			'available_stock'		=> new Expression("LEAST(ps.available_stock, $max_stock)"),
 			'next_available_stock_at' => new Expression('ps.next_available_stock_at'),
 			'next_available_stock'  => new Expression('ps.next_available_stock'),
 			'stock_updated_at'		=> new Expression('ps.updated_at'),
@@ -109,7 +109,9 @@ class ProductCatalogService extends AbstractService {
 			'group_title'			=> new Expression('COALESCE(pg18.title, pg.title)'),
 			
 			'category_id'			=> new Expression('p.category_id'),
+			'category_parent_id'	=> new Expression('pc.parent_id'),
 			'category_reference'	=> new Expression('pc.reference'),
+			'category_title'		=> new Expression('pc.title'),
 			'model_id'				=> new Expression('p.model_id'),
 			'model_reference'		=> new Expression('pm.reference'),
 			'parent_id'				=> new Expression('p.parent_id'),
