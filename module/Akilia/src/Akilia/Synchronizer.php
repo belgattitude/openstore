@@ -947,7 +947,8 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 						legacy_mapping = a.id_article,
 						legacy_synchro_at = '{$this->legacy_synchro_at}'
 					 ";
-		
+		echo $replace;
+		die();
 		$this->executeSQL("Replace product", $replace);
 
 		// 2. Deleting - old links in case it changes

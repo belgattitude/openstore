@@ -80,7 +80,7 @@ class ProductPricelist implements InputFilterAwareInterface
 	
 
 	/**
-	 * @ORM\Column(type="decimal", precision=16, scale=6, nullable=false, options={"comment"="Sales minimum quantity"})
+	 * @ORM\Column(type="decimal", precision=16, scale=6, nullable=true, options={"comment"="Sales minimum quantity"})
 	 */
 	private $sale_minimum_qty;
 
