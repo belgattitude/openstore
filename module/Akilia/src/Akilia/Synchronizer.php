@@ -389,7 +389,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 					bpp.discount_4 as discount_4,
 					if (bpp.sale_min_qty > 0, bpp.sale_min_qty, null) as sale_min_qty,
 					bpp.is_promotionnal as is_promotional,
-					bpp.id_liquidation as is_liquidation,
+					bpp.is_liquidation as is_liquidation,
 					null as promo_start_at,
 					null as promo_end_at,
 					bpp.is_active,
@@ -415,7 +415,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 							discount_4 = bpp.discount_4,
 							sale_minimum_qty = if (bpp.sale_min_qty > 0, bpp.sale_min_qty, null),
 							is_promotional = bpp.is_promotionnal,
-							is_liquidataion = bpp.is_liquidation,
+							is_liquidation = bpp.is_liquidation,
 							promo_start_at = null,
 							promo_end_at = null,
 
@@ -772,7 +772,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 
 		$replace = "insert into $db.product_group
 				(group_id, reference, title, legacy_mapping, legacy_synchro_at)
-		        select null, TRIM(f.id_famille), f.libelle_1, f.id_famille, '{$this->legacy_synchro_at}'
+		        select null, TRIM(f.id_famille), f.libelle_1, TRIM(f.id_famille), '{$this->legacy_synchro_at}'
 			from $akilia1Db.famille f
 			on duplicate key update
 				reference = trim(f.id_famille),
@@ -787,6 +787,41 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 			legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
 		$this->executeSQL("Delete eventual removed groups", $delete);
+		
+		// 3. Group translations
+		
+		$langs = $this->akilia1lang;
+		foreach($langs as $lang => $sfx) {
+			$replace = "insert into product_group_translation 
+				 ( group_id,
+				   lang,
+				   title,
+				   legacy_synchro_at
+				   )
+				  
+		        select 
+						pg.group_id, 
+						'$lang' as lang, 
+						f.libelle$sfx as title, 
+						'{$this->legacy_synchro_at}'
+					from $akilia1Db.famille f
+					inner join $db.product_group pg on pg.legacy_mapping = 	TRIM(f.id_famille)
+				on duplicate key update
+					title = f.libelle$sfx, 
+					legacy_synchro_at = '{$this->legacy_synchro_at}'";
+			
+		
+			$this->executeSQL("Replace product group translations", $replace);
+			
+		}
+		// 2. Deleting - old links in case it changes
+		$delete = "
+		    delete from $db.product_group_translation 
+			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+
+		$this->executeSQL("Delete eventual removed product group translations", $delete);		
+		
+		
 	}
 	
 
