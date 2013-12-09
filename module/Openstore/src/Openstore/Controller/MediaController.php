@@ -140,6 +140,7 @@ class MediaController extends AbstractActionController
 	
 	protected function getAcceptedResolutions() {
 		$accepted =  array(
+			'30x30',		// for typeahead
 			'40x40',		// for emdmusic.com typeahed (mini)
 			'65x90',		// for old emdmusic.com website 'small pictures' and browse
 			'170x200',		// for openstore browse

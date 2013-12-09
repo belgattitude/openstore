@@ -37,7 +37,7 @@ class ProductModel implements InputFilterAwareInterface
 	protected $inputFilter;
 
     /**
-     * @ORM\OneToMany(targetEntity="ProductGroupTranslation", mappedBy="group_id")
+     * @ORM\OneToMany(targetEntity="ProductModelTranslation", mappedBy="model_id")
      **/
     private $translations;	
 	

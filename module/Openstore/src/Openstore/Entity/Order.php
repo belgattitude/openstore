@@ -14,19 +14,16 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="product_model_translation",
+ *   name="order",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *     @ORM\UniqueConstraint(name="unique_translation_idx",columns={"model_id", "lang"})
  *   }, 
  *   indexes={
- *     @ORM\Index(name="title_idx", columns={"title"}),
- *     @ORM\Index(name="description_idx", columns={"description"}),
  *   },
- *   options={"comment" = "Product model translation table"}
+ *   options={"comment" = "Order table"}
  * )
  */
-class ProductModelTranslation implements InputFilterAwareInterface
+class Order implements InputFilterAwareInterface
 {
 	
 	/**
@@ -34,44 +31,75 @@ class ProductModelTranslation implements InputFilterAwareInterface
 	 */
 	protected $inputFilter;
 
+	
 	/**
 	 * @ORM\Id
-	 * @ORM\Column(name="id", type="bigint", nullable=false, options={"unsigned"=true, "comment" = "Primary key"})
+	 * @ORM\Column(name="order_id", type="bigint", nullable=false, options={"unsigned"=true})
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
-	private $id;
+	private $order_id;
+
+	/**
+	 * @ORM\Column(type="string", length=60, nullable=true, options={"comment" = "Reference"})
+	 */
+	private $reference;
+	
+	
+    /**
+     * @ORM\ManyToOne(targetEntity="OrderType", inversedBy="orders")
+     * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", onDelete="CASCADE")
+     */
+    private $type_id;	
+
+    /**
+     * @ORM\ManyToOne(targetEntity="OrderStatus", inversedBy="orders")
+     * @ORM\JoinColumn(name="status_id", referencedColumnName="status_id", onDelete="CASCADE")
+     */
+    private $status_id;	
+	
+	
+	/**
+	 * 
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="orders", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="user_id", nullable=true)
+	 */
+	private $user_id;
 
 	/**
 	 * 
-     * @ORM\ManyToOne(targetEntity="ProductModel", inversedBy="translations", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="model_id", referencedColumnName="model_id", onDelete="CASCADE", nullable=false)
+     * @ORM\ManyToOne(targetEntity="Customer", inversedBy="orders", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="customer_id", referencedColumnName="customer_id", nullable=true)
 	 */
-	private $model_id;
+	private $customer_id;	
+
+	/**
+	 * 
+     * @ORM\ManyToOne(targetEntity="Pricelist", inversedBy="orders", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="pricelist_id", referencedColumnName="pricelist_id", nullable=true)
+	 */
+	private $pricelist_id;		
+
+	/**
+	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Customer reference"})
+	 */
+	private $customer_reference;
+
+	/**
+	 * @ORM\Column(type="string", length=255, nullable=false, options={"comment" = "Customer comment"})
+	 */
+	private $customer_comment;	
+
+
+	/**
+	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Order/Quote document date"})
+	 */
+	private $document_date;	
 	
 	
 	/**
-     * @ORM\ManyToOne(targetEntity="Language", inversedBy="product_translations", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="lang", referencedColumnName="lang", onDelete="RESTRICT", nullable=false)
+	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "When in quote, make an expiry date"})
 	 */
-	private $lang;
-	
-
-	/**
-	 * @Gedmo\Slug(fields={"title"})
-	 * @ORM\Column(length=64, nullable=true, options={"comment" = "Unique slug for this record"})
-	 */
-	private $slug;
-
-	/**
-	 * @ORM\Column(type="string", length=80, nullable=true)
-	 */
-	private $title;
-
-	/**
-	 * @ORM\Column(type="string", length=15000, nullable=true)
-	 */
-	private $description;
-
+	private $expires_at;	
 	
 	/**
 	 * @Gedmo\Timestampable(on="create")
@@ -84,6 +112,11 @@ class ProductModelTranslation implements InputFilterAwareInterface
 	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record last update timestamp"})
 	 */
 	private $updated_at;
+	
+	/**
+	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record deletion date"})
+	 */
+	private $deleted_at;
 
 	/**
 	 * @Gedmo\Blameable(on="create")
@@ -107,110 +140,6 @@ class ProductModelTranslation implements InputFilterAwareInterface
 	 */
 	protected $legacy_synchro_at;
 
-	
-	
-	public function __construct()
-	{
-	}
-
-	/**
-	 * 
-	 * @param integer $id
-	 */
-	public function setId($id)
-	{
-		$this->id = $id;
-		return $this;
-	}	
-	
-	/**
-	 * 
-	 * @return integer
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-
-
-	/**
-	 * @param string $slug
-	 */
-	public function setSlug($slug)
-	{
-		$this->slug = $slug;
-		return $this;
-	}
-
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getSlug()
-	{
-		return $this->slug;
-	}
-
-	/**
-	 * 
-	 * @param string $title
-	 */
-	public function setTitle($title)
-	{
-		$this->title = $title;
-		return $this;
-	}
-
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getTitle()
-	{
-		return $this->title;
-	}
-
-	/**
-	 * 
-	 * @param string $description
-	 */
-	public function setDescription($description)
-	{
-		$this->description = $description;
-		return $this;
-	}
-
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getDescription()
-	{
-		return $this->description;
-	}
-
-	
-
-	
-	
-	/**
-	 * 
-	 * @param integer $lang_id
-	 */
-	public function setLangId($lang_id)
-	{
-		$this->lang_id = $lang_id;
-		return $this;
-	}	
-	
-	/**
-	 * 
-	 * @return integer
-	 */
-	public function getLangId()
-	{
-		return $this->lang_id;
-	}
 	
 	
 
@@ -251,6 +180,26 @@ class ProductModelTranslation implements InputFilterAwareInterface
 		$this->updated_at = $updated_at;
 		return $this;
 	}
+	
+	/**
+	 * 
+	 * @return string
+	 */
+	public function getDeletedAt()
+	{
+		return $this->deleted_at;
+	}
+
+	/**
+	 * 
+	 * @param string $updated_at
+	 */
+	public function setDeletedAt($deleted_at)
+	{
+		$this->deleted_at = $deleted_at;
+		return $this;
+	}
+	
 
 	/**
 	 * Return creator username

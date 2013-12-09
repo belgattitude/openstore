@@ -39,7 +39,79 @@ class LoadUserData implements FixtureInterface
         
 		$this->importProductUnit($manager);
 		
+		
+		$this->importOrderInfos($manager);
+		
     }
+	
+	function importOrderInfos($manager) {
+		
+		// step 1 adding order statuses
+		$statuses = array(
+			100 => array('reference' => 'CREATED', 'title' => 'Initial status / order created'),
+			200 => array('reference' => 'CONFIRMED', 'title' => 'Confirmed order'),
+			400 => array('reference' => 'IMPORTED', 'title' => 'Imported in legacy system'),
+			500 => array('reference' => 'WAITING_APPROVAL', 'title' => 'Waiting approval'),
+			600 => array('reference' => 'APPROVED', 'title' => 'Approved'),
+			1000 => array('reference' => 'FULLY_DELIVERED', 'title' => 'Fully delivered'),
+			2000 => array('reference' => 'FULLY_INVOICED', 'title' => 'Fully invoiced'),
+			5000 => array('reference' => 'COMPLETE', 'title' => 'Complete'),
+			9000 => array('reference' => 'CANCELLED', 'title' => 'Cancelled'),
+		);
+
+		foreach($statuses as $id => $infos) {
+			$container = new Entity\OrderStatus();
+			$container->setReference($infos['reference']);
+			$container->setTitle($infos['title']);
+			$manager->persist($container);
+		}
+		$metadata = $manager->getClassMetaData(get_class($container));
+		$metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
+		$manager->flush();
+		
+		
+		// step 2 adding line statuses
+		$line_statuses = array(
+			100 => array('reference' => 'CREATED', 'title' => 'CREATED'),
+			120 => array('reference' => 'PICKED', 'title' => 'Picked, ready for delivery'),
+			200 => array('reference' => 'DELIVERED', 'title' => 'Delivered'),
+			300 => array('reference' => 'INVOICED', 'title' => 'Invoiced'),
+			900 => array('reference' => 'Cancelled', 'title' => 'Cancelled')
+		);		
+		
+		foreach($line_statuses as $id => $infos) {
+			$container = new Entity\OrderLineStatus();
+			$container->setReference($infos['reference']);
+			$container->setTitle($infos['title']);
+			$manager->persist($container);
+		}
+		$metadata = $manager->getClassMetaData(get_class($container));
+		$metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
+		$manager->flush();
+		
+		
+		
+		// step 3 adding order types
+		$types = array(
+			1000 => array('reference' => 'QUOTE', 'title' => 'Quote'),
+			2000 => array('reference' => 'REGULAR', 'title' => 'Regular order'),
+			5000 => array('reference' => 'WEB', 'title' => 'Web order'),
+			9000 => array('reference' => 'SHOPCART', 'title' => 'Shopcart in progress'),
+			20000 => array('reference' => 'DEPOSIT', 'title' => 'Deposit')
+		);
+		
+		foreach($types as $id => $infos) {
+			$container = new Entity\OrderType();
+			$container->setReference($infos['reference']);
+			$container->setTitle($infos['title']);
+			$manager->persist($container);
+		}
+		$metadata = $manager->getClassMetaData(get_class($container));
+		$metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
+		$manager->flush();
+		
+		
+	}
 	
 	
 	function importMediaContainers(ObjectManager $manager) {

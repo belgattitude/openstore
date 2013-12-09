@@ -14,19 +14,18 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="product_model_translation",
+ *   name="order_type_translation",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *     @ORM\UniqueConstraint(name="unique_translation_idx",columns={"model_id", "lang"})
+ *     @ORM\UniqueConstraint(name="unique_translation_idx",columns={"type_id", "lang"})
  *   }, 
  *   indexes={
- *     @ORM\Index(name="title_idx", columns={"title"}),
- *     @ORM\Index(name="description_idx", columns={"description"}),
+ *     @ORM\Index(name="title_idx", columns={"title"})
  *   },
- *   options={"comment" = "Product model translation table"}
+ *   options={"comment" = "Order type translation table"}
  * )
  */
-class ProductModelTranslation implements InputFilterAwareInterface
+class OrderTypeTranslation implements InputFilterAwareInterface
 {
 	
 	/**
@@ -43,10 +42,10 @@ class ProductModelTranslation implements InputFilterAwareInterface
 
 	/**
 	 * 
-     * @ORM\ManyToOne(targetEntity="ProductModel", inversedBy="translations", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="model_id", referencedColumnName="model_id", onDelete="CASCADE", nullable=false)
+     * @ORM\ManyToOne(targetEntity="OrderType", inversedBy="translations", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", onDelete="CASCADE", nullable=false)
 	 */
-	private $model_id;
+	private $type_id;
 	
 	
 	/**
@@ -57,20 +56,10 @@ class ProductModelTranslation implements InputFilterAwareInterface
 	
 
 	/**
-	 * @Gedmo\Slug(fields={"title"})
-	 * @ORM\Column(length=64, nullable=true, options={"comment" = "Unique slug for this record"})
-	 */
-	private $slug;
-
-	/**
 	 * @ORM\Column(type="string", length=80, nullable=true)
 	 */
 	private $title;
 
-	/**
-	 * @ORM\Column(type="string", length=15000, nullable=true)
-	 */
-	private $description;
 
 	
 	/**
@@ -168,25 +157,6 @@ class ProductModelTranslation implements InputFilterAwareInterface
 	public function getTitle()
 	{
 		return $this->title;
-	}
-
-	/**
-	 * 
-	 * @param string $description
-	 */
-	public function setDescription($description)
-	{
-		$this->description = $description;
-		return $this;
-	}
-
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getDescription()
-	{
-		return $this->description;
 	}
 
 	

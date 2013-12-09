@@ -60,6 +60,7 @@ class SearchController extends AbstractActionController
 									'category_title'	=> new Expression('COALESCE(pc18.title, pc.title)'),
 									'title'				=> new Expression('COALESCE(p18.title, p.title)'),
 									'invoice_title'		=> new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
+									'picture_media_id'	=> new Expression('pm.media_id'),
 								)						
 							)
 							->addFilter($searchParams->getFilter());

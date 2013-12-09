@@ -249,19 +249,15 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 							<div>
 								<div style="float: right">								
 									<span class="label label-info price"><?= $this->currencyFormat($product->price, "EUR", "fr_FR") . ' / ' . $product->unit_reference ?></span>
-								</div>					
-								<div class="input-group input-group" style="width: 120px; ">
-									<input type="text" class="form-control" placeholder="Qty">
-									<span class="input-group-addon">
-										<button class=" btn btn-warning btn-xs" style="margin: 0">
-											<span class="glyphicon glyphicon-shopping-cart"></span> 
-											<?= $this->translate('Add') ?>
-										</button>
-									</span>
-								</div>								
-								<!--
-																<a class="btn addto" href="#" rel="2">Add to <span class="glyphicon glyphicon-shopping-cart"></span></a> 
-								-->								
+								</div>	
+								
+								<div id="test" class="input-group shopcart_add_group">
+								  <input type="text" class="form-control" placeholder="Qty" style="width: 120px">
+								  <span class="input-group-btn">
+									<button disabled="disabled" class="btn btn-warning" type="button"><span class="glyphicon glyphicon-shopping-cart"></span> Add</button>
+								  </span>
+								</div>
+								
 							</div>
 						</div>
 					</div>
@@ -286,9 +282,25 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 
 
 </div>
+<script type="text/javascript">
+
+$(document).ready(function() {
+        $(".shopcart_add_group input[type='text']").bind('change', function(event) {
+            console.log('event', event.currentTarget);
+			//var id = $("button").closest("div").attr("id");
+			var group = $(this).closest("div");
+			var button = group.find("button");
+			console.log('button', button);
+			button.prop('disabled', false);
+			
+    });
+});	
+	
+</script>	
 <?php
 $escaper = new Zend\Escaper\Escaper('utf-8');
-$image_baseurl = "http://akilia2.emdmusic.com/medias/products/dynamic/";
+$image_baseurl = $this->basePath() . '/media/picture/';
+
 ?>
 <script type="text/javascript">
 					$('#product_search').typeahead([
@@ -345,7 +357,13 @@ $this->url('store/search', array(
 							template: [
 								'<div>',
 								'<div style=";">',
-								'<img src="<?= $image_baseurl ?>{{product_id}}-30x30_85.jpg" />',
+								'{{#picture_media_id}}',
+								'<img src="<?= $image_baseurl ?>{{picture_media_id}}_30x30-85.jpg" width="30" />',
+								'{{/picture_media_id}}',
+								'{{^picture_media_id}}',
+								'<img src="https://www.google.be/images/srpr/logo11w.png" width="30" />',
+								'{{/picture_media_id}}',
+								'<div>{{title}}</div>',
 								'<div style="float: right; style="width: 40px; height: 40px; overflow: hidden; border: 1px solid #E6E6E6; margin-right: 5px;>',
 								'{{reference}}',
 								'</div>',

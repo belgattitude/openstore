@@ -14,19 +14,15 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="product_model_translation",
+ *   name="order_line_status",
  *   uniqueConstraints={
+ *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *     @ORM\UniqueConstraint(name="unique_translation_idx",columns={"model_id", "lang"})
  *   }, 
- *   indexes={
- *     @ORM\Index(name="title_idx", columns={"title"}),
- *     @ORM\Index(name="description_idx", columns={"description"}),
- *   },
- *   options={"comment" = "Product model translation table"}
+ *   options={"comment" = "Order line status table"}
  * )
  */
-class ProductModelTranslation implements InputFilterAwareInterface
+class OrderLineStatus implements InputFilterAwareInterface
 {
 	
 	/**
@@ -34,44 +30,38 @@ class ProductModelTranslation implements InputFilterAwareInterface
 	 */
 	protected $inputFilter;
 
+    /**
+     * @ORM\OneToMany(targetEntity="OrderStatusTranslation", mappedBy="status_id")
+     **/
+    private $translations;	
+	
+	
 	/**
 	 * @ORM\Id
-	 * @ORM\Column(name="id", type="bigint", nullable=false, options={"unsigned"=true, "comment" = "Primary key"})
+	 * @ORM\Column(name="status_id", type="integer", nullable=false, options={"unsigned"=true})
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
-	private $id;
-
-	/**
-	 * 
-     * @ORM\ManyToOne(targetEntity="ProductModel", inversedBy="translations", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="model_id", referencedColumnName="model_id", onDelete="CASCADE", nullable=false)
-	 */
-	private $model_id;
-	
-	
-	/**
-     * @ORM\ManyToOne(targetEntity="Language", inversedBy="product_translations", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="lang", referencedColumnName="lang", onDelete="RESTRICT", nullable=false)
-	 */
-	private $lang;
+	private $status_id;
 	
 
 	/**
-	 * @Gedmo\Slug(fields={"title"})
-	 * @ORM\Column(length=64, nullable=true, options={"comment" = "Unique slug for this record"})
+	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
 	 */
-	private $slug;
+	private $reference;
+
 
 	/**
 	 * @ORM\Column(type="string", length=80, nullable=true)
 	 */
 	private $title;
 
-	/**
-	 * @ORM\Column(type="string", length=15000, nullable=true)
-	 */
-	private $description;
 
+	
+	/**
+	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the model is active in public website"})
+	 */
+	private $flag_active;
+	
 	
 	/**
 	 * @Gedmo\Timestampable(on="create")
@@ -111,44 +101,35 @@ class ProductModelTranslation implements InputFilterAwareInterface
 	
 	public function __construct()
 	{
-	}
-
-	/**
-	 * 
-	 * @param integer $id
-	 */
-	public function setId($id)
-	{
-		$this->id = $id;
-		return $this;
-	}	
-	
-	/**
-	 * 
-	 * @return integer
-	 */
-	public function getId()
-	{
-		return $this->id;
+		
+		 $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+		 
+		 /**
+		  * Default value for flag_active
+		  */
+		 $this->flag_active = true; 
+		 
+		 
 	}
 
 
 	/**
-	 * @param string $slug
+	 * Set reference
+	 * @param string $reference
 	 */
-	public function setSlug($slug)
+	public function setReference($reference)
 	{
-		$this->slug = $slug;
+		$this->reference = $reference;
 		return $this;
 	}
 
 	/**
-	 * 
+	 * Return reference 
 	 * @return string
 	 */
-	public function getSlug()
+	public function getReference()
 	{
-		return $this->slug;
+		return $this->reference;
 	}
 
 	/**
@@ -172,44 +153,21 @@ class ProductModelTranslation implements InputFilterAwareInterface
 
 	/**
 	 * 
-	 * @param string $description
+	 * @return boolean
 	 */
-	public function setDescription($description)
+	public function getFlagActive()
 	{
-		$this->description = $description;
-		return $this;
-	}
-
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getDescription()
-	{
-		return $this->description;
+		return (boolean) $this->flag_active;
 	}
 
 	
-
-	
-	
 	/**
 	 * 
-	 * @param integer $lang_id
 	 */
-	public function setLangId($lang_id)
+	public function setFlagActive($flag_active)
 	{
-		$this->lang_id = $lang_id;
+		$this->flag_active = $flag_active;
 		return $this;
-	}	
-	
-	/**
-	 * 
-	 * @return integer
-	 */
-	public function getLangId()
-	{
-		return $this->lang_id;
 	}
 	
 	

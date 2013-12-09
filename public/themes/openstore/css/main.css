@@ -1,15 +1,3 @@
-				.repo-language {
-					float: right;
-					font-style: italic;
-				}
-
-				.repo-name {
-					font-weight: bold;
-				}
-
-				.repo-description {
-					font-size: 14px;
-				}
 
 
 /* Move down content because we have a fixed navbar that is 50px tall */
@@ -312,8 +300,10 @@ footer {
     -moz-background-clip: padding;
     background-clip: padding-box;
 	
-	
+	/* To enable scrollbars */
+	height: 500px;
 	overflow-y: auto;	
+	
 	
 }
 

@@ -9,15 +9,29 @@ class ProductCatalogService extends AbstractService {
 	
 	
 	
+	protected function checkListParams($params) {
+		$required_params = array(
+			'pricelist', 
+			'language');
+		foreach ($required_params as $param) {
+			if (!array_key_exists($param, $params)) {
+				throw new \Exception("Missing required '$param' parameter");
+			}
+			if (trim($params[$param]) == '') {
+				throw new \Exception("Parameter '$param' is empty");
+			}
+		}
+	}
+	
 	/**
 	 * @param array $params [brands,pricelists] 
 	 * @return \Soluble\FlexStore\FlexStore
 	 */
 	function getList(array $params=array()) {
-		
+		$this->checkListParams($params);
 		$select = new Select();
-		$lang = 'fr';
-		$pricelist_reference = 'BE';
+		$lang = $params['language'];
+		$pricelist_reference = $params['pricelist'];
 		
 		$select->from(array('p' => 'product'), array())
 				->join(array('p18' => 'product_translation'),
@@ -150,18 +164,6 @@ class ProductCatalogService extends AbstractService {
 		$select->where('ppl.flag_active = 1');
 
 		
-		if (array_key_exists('type', $params)) {
-			$select->where(array('pmt.reference' => $params['type']));
-		}
-
-
-		if (array_key_exists('types', $params)) {
-			$select->where->in('pmt.reference', explode(',', $params['types']));
-		}
-		
-		if (array_key_exists('pricelists', $params)) {
-			$select->where->in('pl.reference', explode(',', $params['pricelists']));
-		}
 
 		if (array_key_exists('brands', $params)) {
 			$select->where->in('pb.reference', explode(',', $params['brands']));
