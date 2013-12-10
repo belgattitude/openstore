@@ -76,7 +76,7 @@ class ShopcartController extends AbstractActionController
 		$order_line = $table->insert('order_line', array(
 				'product_id' =>  $product_id,
 				'quantity'	 => $quantity,
-				'discount_1' => $discount_1,
+				//'discount_1' => $discount_1,
 				'order_id'	 => $order['order_id']
 			
 		));

@@ -61,13 +61,13 @@ class OrderLine implements InputFilterAwareInterface
 	/**
 	 * 
      * @ORM\ManyToOne(targetEntity="Product", inversedBy="orders", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="product_id", referencedColumnName="product_id", nullable=true)
+     * @ORM\JoinColumn(name="product_id", referencedColumnName="product_id", nullable=false)
 	 */
 	private $product_id;
 
 
 	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Ordered quantity"})
+	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Ordered quantity"})
 	 */
 	private $quantity;
 
