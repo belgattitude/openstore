@@ -44,10 +44,12 @@ class ShopcartController extends AbstractActionController
 			$order = $table->find('order', $order_id);
 		}
 		
-		$type_id = 1;
+		$shopcart_order_type = $table->findOneBy('order_type', array('reference' => 'SHOPCART'));
+		
+		$type_id = $shopcart_order_type['type_id'];
 		$customer_id = 3521;
 		$pricelist_id = 1;
-		$status_id = 
+		
 		
 		$default_status = $table->findOneBy('order_status', array('flag_default' => 1));
 		$status_id = $default_status['status_id'];
@@ -61,6 +63,7 @@ class ShopcartController extends AbstractActionController
 					'pricelist_id' => $pricelist_id,
 					'created_at' => date('Y-m-d H:i:s'),
 					'updated_at' => date('Y-m-d H:i:s'),
+					'status_id'  => $status_id,
 					'type_id'	 => $type_id
 				));
 			} catch(NormalistException\ExceptionInterface $e) {
@@ -68,8 +71,23 @@ class ShopcartController extends AbstractActionController
 			} 
 		}
 		
+		// Adding product into shopcart
+		
+		$order_line = $table->insert('order_line', array(
+				'product_id' =>  $product_id,
+				'quantity'	 => $quantity,
+				'discount_1' => $discount_1,
+				'order_id'	 => $order['order_id']
+			
+		));
+		
 		// chec
-	
+		echo '<pre>';
+		echo '<h1>Order</h1>';
+		var_dump($order->toArray());
+		echo '<h1>Order Line </h1>';
+		var_dump($order_line->toArray());
+		die('successfully created');
 		
 	}
 }
