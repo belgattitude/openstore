@@ -188,8 +188,10 @@ return array(
 				  ), */
 				),
 			),
+			
+			
 			'shopcart' => array(
-				'type' => 'Literal',
+				'type' => 'Zend\Mvc\Router\Http\Literal',
 				'options' => array(
 					'route' => '/shopcart',
 					'defaults' => array(
@@ -203,12 +205,14 @@ return array(
 					'default' => array(
 						'type' => 'Segment',
 						'options' => array(
-							'route' => '/[:controller[/:action]]',
+							'route' => '/[:action]',
+							//'route' => '/[:controller[/:action]]',
 							'constraints' => array(
-								'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+								//'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
 								'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
 							),
 							'defaults' => array(
+								//'controller' => 'Openstore\Controller\Shopcart',
 							),
 						),
 					),

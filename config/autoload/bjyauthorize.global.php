@@ -137,6 +137,13 @@ return array(
 				array('route' => 'store/search', 'roles' => array('customer', 'admin')),
 				array('route' => 'store/product', 'roles' => array('customer', 'admin')),
 				
+				// Shopcart routes
+				array('route' => 'shopcart', 'roles' => array('customer', 'admin')),
+				//array('route' => 'shopcart/add_product', 'roles' => array('customer', 'admin')),
+				array('route' => 'shopcart/default', 'roles' => array('customer', 'admin')),
+				//array('route' => 'shopcart/addProduct', 'roles' => array('customer', 'admin')),
+				
+				
 				// Special route
 				array('route' => 'media', 'roles' => array('guest')),
 				array('route' => 'media/picture', 'roles' => array('guest')),

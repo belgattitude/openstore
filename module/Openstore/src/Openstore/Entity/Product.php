@@ -23,6 +23,7 @@ use Zend\InputFilter\InputFilterInterface;
  *   indexes={
  *     @ORM\Index(name="title_idx", columns={"title"}),
  *     @ORM\Index(name="reference_idx", columns={"reference"}),
+ *     @ORM\Index(name="display_reference_idx", columns={"display_reference"}),
  *     @ORM\Index(name="description_idx", columns={"description"}),
  *     @ORM\Index(name="characteristic_idx", columns={"characteristic"}),
  *     @ORM\Index(name="keywords_idx", columns={"keywords"}),
@@ -53,10 +54,15 @@ class Product implements InputFilterAwareInterface
 	private $product_id;
 
 	/**
-	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
+	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Unique reference"})
 	 */
 	private $reference;
+
 	
+	/**
+	 * @ORM\Column(type="string", length=60, nullable=true, options={"comment" = "Displayable reference, common for search and display"})
+	 */
+	private $display_reference;	
 	
     /**
      * @ORM\ManyToOne(targetEntity="Product", inversedBy="children")

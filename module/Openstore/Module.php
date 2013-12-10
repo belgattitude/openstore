@@ -293,7 +293,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 			'Zend\Loader\StandardAutoloader' => array(
 				'namespaces' => array(
 					__NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-					'MMan' => __DIR__ . '/src/MMan'
+					'MMan' => __DIR__ . '/src/MMan',
+					'Soluble' => '/web/www/solublecomponents/src/Soluble'
 					
 				),
 			),

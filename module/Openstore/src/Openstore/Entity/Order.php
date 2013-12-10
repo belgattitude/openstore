@@ -47,13 +47,13 @@ class Order implements InputFilterAwareInterface
 	
     /**
      * @ORM\ManyToOne(targetEntity="OrderType", inversedBy="orders")
-     * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", nullable=false, onDelete="CASCADE")
      */
     private $type_id;	
 
     /**
      * @ORM\ManyToOne(targetEntity="OrderStatus", inversedBy="orders")
-     * @ORM\JoinColumn(name="status_id", referencedColumnName="status_id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="status_id", referencedColumnName="status_id", nullable=false, onDelete="CASCADE")
      */
     private $status_id;	
 	
@@ -68,14 +68,14 @@ class Order implements InputFilterAwareInterface
 	/**
 	 * 
      * @ORM\ManyToOne(targetEntity="Customer", inversedBy="orders", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="customer_id", referencedColumnName="customer_id", nullable=true)
+     * @ORM\JoinColumn(name="customer_id", referencedColumnName="customer_id", nullable=false)
 	 */
 	private $customer_id;	
 
 	/**
 	 * 
      * @ORM\ManyToOne(targetEntity="Pricelist", inversedBy="orders", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="pricelist_id", referencedColumnName="pricelist_id", nullable=true)
+     * @ORM\JoinColumn(name="pricelist_id", referencedColumnName="pricelist_id", nullable=false)
 	 */
 	private $pricelist_id;		
 
