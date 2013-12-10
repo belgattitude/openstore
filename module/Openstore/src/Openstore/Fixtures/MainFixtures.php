@@ -62,6 +62,8 @@ class LoadUserData implements FixtureInterface
 		foreach($statuses as $id => $infos) {
 			$orderstatus = new Entity\OrderStatus();
 			$orderstatus->setStatusId($id);
+			$orderstatus->setFlagDefault($infos['flag_default']);
+			$orderstatus->setFlagReadOnly($infos['flag_readonly']);
 			$orderstatus->setReference($infos['reference']);
 			$orderstatus->setTitle($infos['title']);
 			$manager->persist($container);
@@ -76,13 +78,16 @@ class LoadUserData implements FixtureInterface
 			100 => array('reference' => 'CREATED', 'title' => 'Created', 'flag_default' => true, 'flag_readonly' => false),
 			120 => array('reference' => 'PICKED', 'title' => 'Picked, ready for delivery', 'flag_default' => null, 'flag_readonly' => false),
 			200 => array('reference' => 'DELIVERED', 'title' => 'Delivered', 'flag_default' => null, 'flag_readonly' => true),
-			300 => array('reference' => 'INVOICED', 'title' => 'Invoiced', 'flag_default' => null, 'flag_readonly' => false),
-			900 => array('reference' => 'Cancelled', 'title' => 'Cancelled', 'flag_default' => null, 'flag_readonly' => false)
+			300 => array('reference' => 'INVOICED', 'title' => 'Invoiced', 'flag_default' => null, 'flag_readonly' => true),
+			900 => array('reference' => 'Cancelled', 'title' => 'Cancelled', 'flag_default' => null, 'flag_readonly' => true)
 		);		
 		
 		foreach($line_statuses as $id => $infos) {
 			$orderline = new Entity\OrderLineStatus();
 			$orderline->setStatusId($id);
+			$orderstatus->setFlagDefault($infos['flag_default']);
+			$orderstatus->setFlagReadOnly($infos['flag_readonly']);
+			
 			$orderline->setReference($infos['reference']);
 			$orderline->setTitle($infos['title']);
 			$manager->persist($orderline);
