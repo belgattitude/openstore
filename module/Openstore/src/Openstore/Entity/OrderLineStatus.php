@@ -18,6 +18,7 @@ use Zend\InputFilter\InputFilterInterface;
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
+ *     @ORM\UniqueConstraint(name="unique_flag_default_idx",columns={"flag_default"}),
  *   }, 
  *   options={"comment" = "Order line status table"}
  * )
@@ -56,6 +57,14 @@ class OrderLineStatus implements InputFilterAwareInterface
 	private $title;
 
 
+	/**
+	 * @ORM\Column(type="boolean", nullable=true, options={"default"=null, "comment"="Is the default state"})
+	 */
+	private $flag_default;
+	/**
+	 * @ORM\Column(type="boolean", nullable=false, options={"default"=0, "comment"="Is readonly"})
+	 */
+	private $flag_readonly;	
 	
 	/**
 	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the model is active in public website"})
@@ -112,6 +121,25 @@ class OrderLineStatus implements InputFilterAwareInterface
 		 
 	}
 
+	
+	/**
+	 * 
+	 * @param integer $id
+	 */
+	public function setStatusId($status_id)
+	{
+		$this->status_id = $status_id;
+		return $this;
+	}	
+	
+	/**
+	 * 
+	 * @return integer
+	 */
+	public function getStatusId()
+	{
+		return $this->status_id;
+	}	
 
 	/**
 	 * Set reference
@@ -169,8 +197,44 @@ class OrderLineStatus implements InputFilterAwareInterface
 		$this->flag_active = $flag_active;
 		return $this;
 	}
+
+	/**
+	 * 
+	 * @return boolean
+	 */
+	public function getFlagReadOnly()
+	{
+		return (boolean) $this->flag_readonly;
+	}
+
 	
+	/**
+	 * 
+	 */
+	public function setFlagReadOnly($flag_readonly)
+	{
+		$this->flag_readonly = $flag_readonly;
+		return $this;
+	}	
 	
+	/**
+	 * 
+	 * @return boolean
+	 */
+	public function getFlagDefault()
+	{
+		return (boolean) $this->flag_default;
+	}
+
+	
+	/**
+	 * 
+	 */
+	public function setFlagDefault($flag_default)
+	{
+		$this->flag_default = $flag_default;
+		return $this;
+	}	
 
 	/**
 	 * 
@@ -200,6 +264,8 @@ class OrderLineStatus implements InputFilterAwareInterface
 		return $this->updated_at;
 	}
 
+	
+	
 	/**
 	 * 
 	 * @param string $updated_at

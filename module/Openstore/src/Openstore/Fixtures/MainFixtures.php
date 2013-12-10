@@ -48,44 +48,46 @@ class LoadUserData implements FixtureInterface
 		
 		// step 1 adding order statuses
 		$statuses = array(
-			100 => array('reference' => 'CREATED', 'title' => 'Initial status / order created'),
-			200 => array('reference' => 'CONFIRMED', 'title' => 'Confirmed order'),
-			400 => array('reference' => 'IMPORTED', 'title' => 'Imported in legacy system'),
-			500 => array('reference' => 'WAITING_APPROVAL', 'title' => 'Waiting approval'),
-			600 => array('reference' => 'APPROVED', 'title' => 'Approved'),
-			1000 => array('reference' => 'FULLY_DELIVERED', 'title' => 'Fully delivered'),
-			2000 => array('reference' => 'FULLY_INVOICED', 'title' => 'Fully invoiced'),
-			5000 => array('reference' => 'COMPLETE', 'title' => 'Complete'),
-			9000 => array('reference' => 'CANCELLED', 'title' => 'Cancelled'),
+			100 => array('reference' => 'CREATED', 'title' => 'Initial status / order created', 'flag_default' => true, 'flag_readonly' => false),
+			200 => array('reference' => 'CONFIRMED', 'title' => 'Confirmed order', 'flag_default' => null, 'flag_readonly' => false),
+			400 => array('reference' => 'IMPORTED', 'title' => 'Imported in legacy system', 'flag_default' => null, 'flag_readonly' => false),
+			500 => array('reference' => 'WAITING_APPROVAL', 'title' => 'Waiting approval', 'flag_default' => null, 'flag_readonly' => false),
+			600 => array('reference' => 'APPROVED', 'title' => 'Approved', 'flag_default' => null, 'flag_readonly' => false),
+			1000 => array('reference' => 'FULLY_DELIVERED', 'title' => 'Fully delivered', 'flag_default' => null, 'flag_readonly' => true),
+			2000 => array('reference' => 'FULLY_INVOICED', 'title' => 'Fully invoiced', 'flag_default' => null, 'flag_readonly' => true),
+			5000 => array('reference' => 'COMPLETE', 'title' => 'Complete', 'flag_default' => null, 'flag_readonly' => true),
+			9000 => array('reference' => 'CANCELLED', 'title' => 'Cancelled', 'flag_default' => null, 'flag_readonly' => true),
 		);
 
 		foreach($statuses as $id => $infos) {
-			$container = new Entity\OrderStatus();
-			$container->setReference($infos['reference']);
-			$container->setTitle($infos['title']);
+			$orderstatus = new Entity\OrderStatus();
+			$orderstatus->setStatusId($id);
+			$orderstatus->setReference($infos['reference']);
+			$orderstatus->setTitle($infos['title']);
 			$manager->persist($container);
 		}
-		$metadata = $manager->getClassMetaData(get_class($container));
+		$metadata = $manager->getClassMetaData(get_class($orderstatus));
 		$metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
 		$manager->flush();
 		
 		
 		// step 2 adding line statuses
 		$line_statuses = array(
-			100 => array('reference' => 'CREATED', 'title' => 'CREATED'),
-			120 => array('reference' => 'PICKED', 'title' => 'Picked, ready for delivery'),
-			200 => array('reference' => 'DELIVERED', 'title' => 'Delivered'),
-			300 => array('reference' => 'INVOICED', 'title' => 'Invoiced'),
-			900 => array('reference' => 'Cancelled', 'title' => 'Cancelled')
+			100 => array('reference' => 'CREATED', 'title' => 'Created', 'flag_default' => true, 'flag_readonly' => false),
+			120 => array('reference' => 'PICKED', 'title' => 'Picked, ready for delivery', 'flag_default' => null, 'flag_readonly' => false),
+			200 => array('reference' => 'DELIVERED', 'title' => 'Delivered', 'flag_default' => null, 'flag_readonly' => true),
+			300 => array('reference' => 'INVOICED', 'title' => 'Invoiced', 'flag_default' => null, 'flag_readonly' => false),
+			900 => array('reference' => 'Cancelled', 'title' => 'Cancelled', 'flag_default' => null, 'flag_readonly' => false)
 		);		
 		
 		foreach($line_statuses as $id => $infos) {
-			$container = new Entity\OrderLineStatus();
-			$container->setReference($infos['reference']);
-			$container->setTitle($infos['title']);
-			$manager->persist($container);
+			$orderline = new Entity\OrderLineStatus();
+			$orderline->setStatusId($id);
+			$orderline->setReference($infos['reference']);
+			$orderline->setTitle($infos['title']);
+			$manager->persist($orderline);
 		}
-		$metadata = $manager->getClassMetaData(get_class($container));
+		$metadata = $manager->getClassMetaData(get_class($orderline));
 		$metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
 		$manager->flush();
 		
@@ -101,12 +103,13 @@ class LoadUserData implements FixtureInterface
 		);
 		
 		foreach($types as $id => $infos) {
-			$container = new Entity\OrderType();
-			$container->setReference($infos['reference']);
-			$container->setTitle($infos['title']);
+			$ordertype = new Entity\OrderType();
+			$ordertype->setTypeId($id);
+			$ordertype->setReference($infos['reference']);
+			$ordertype->setTitle($infos['title']);
 			$manager->persist($container);
 		}
-		$metadata = $manager->getClassMetaData(get_class($container));
+		$metadata = $manager->getClassMetaData(get_class($ordertype));
 		$metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
 		$manager->flush();
 		

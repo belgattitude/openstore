@@ -38,10 +38,21 @@ class ShopcartController extends AbstractActionController
 		
 		$table = new SyntheticTable($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
 		
+		// Step 1. Try to get the order.
 		$order = false;
 		if ($order_id != '') {
 			$order = $table->find('order', $order_id);
 		}
+		
+		$type_id = 1;
+		$customer_id = 3521;
+		$pricelist_id = 1;
+		$status_id = 
+		
+		$default_status = $table->findOneBy('order_status', array('flag_default' => 1));
+		$status_id = $default_status['status_id'];
+		$default_line_status = $table->findOneBy('order_line_status', array('flag_default' => 1));
+		$line_status_id = $default_line_status['status_id'];
 		
 		if (!$order) {
 			try {
@@ -50,16 +61,14 @@ class ShopcartController extends AbstractActionController
 					'pricelist_id' => $pricelist_id,
 					'created_at' => date('Y-m-d H:i:s'),
 					'updated_at' => date('Y-m-d H:i:s'),
-					'type_id'	 => null
+					'type_id'	 => $type_id
 				));
 			} catch(NormalistException\ExceptionInterface $e) {
-				die('cool');
-			} catch (\Exception $e) {
-				die('rrr');
-			}
-
-			die('test');
+				throw $e;
+			} 
 		}
+		
+		// chec
 	
 		
 	}
