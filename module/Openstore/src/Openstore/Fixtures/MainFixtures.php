@@ -66,7 +66,7 @@ class LoadUserData implements FixtureInterface
 			$orderstatus->setFlagReadOnly($infos['flag_readonly']);
 			$orderstatus->setReference($infos['reference']);
 			$orderstatus->setTitle($infos['title']);
-			$manager->persist($container);
+			$manager->persist($orderstatus);
 		}
 		$metadata = $manager->getClassMetaData(get_class($orderstatus));
 		$metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
@@ -85,9 +85,8 @@ class LoadUserData implements FixtureInterface
 		foreach($line_statuses as $id => $infos) {
 			$orderline = new Entity\OrderLineStatus();
 			$orderline->setStatusId($id);
-			$orderstatus->setFlagDefault($infos['flag_default']);
-			$orderstatus->setFlagReadOnly($infos['flag_readonly']);
-			
+			$orderline->setFlagDefault($infos['flag_default']);
+			$orderline->setFlagReadOnly($infos['flag_readonly']);
 			$orderline->setReference($infos['reference']);
 			$orderline->setTitle($infos['title']);
 			$manager->persist($orderline);
