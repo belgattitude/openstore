@@ -111,6 +111,27 @@ class OrderType implements InputFilterAwareInterface
 		 
 		 
 	}
+	
+	/**
+	 * 
+	 * @param integer $type_id
+	 */
+	public function setTypeId($type_id)
+	{
+		$this->type_id = $type_id;
+		return $this;
+	}	
+	
+	/**
+	 * 
+	 * @return integer
+	 */
+	public function getTypeId()
+	{
+		return $this->type_id;
+	}	
+
+	
 
 
 	/**

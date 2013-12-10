@@ -111,7 +111,7 @@ class LoadUserData implements FixtureInterface
 			$ordertype->setTypeId($id);
 			$ordertype->setReference($infos['reference']);
 			$ordertype->setTitle($infos['title']);
-			$manager->persist($container);
+			$manager->persist($ordertype);
 		}
 		$metadata = $manager->getClassMetaData(get_class($ordertype));
 		$metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
