@@ -91,6 +91,7 @@ class ProductBrowser extends AbstractBrowser {
 			$select->columns(array(
 				'product_id'		=> new Expression('p.product_id'),
 				'reference'			=> new Expression('p.reference'),
+				'display_reference'	=> new Expression('COALESCE(p.display_reference, p.reference)'),
 				'brand_id'			=> new Expression('p.brand_id'),
 				'brand_reference'	=> new Expression('pb.reference'),
 				'brand_title'		=> new Expression('pb.title'),
@@ -164,7 +165,14 @@ class ProductBrowser extends AbstractBrowser {
 			$query = str_replace(' ', '%', trim($query));				
 			$qRef = $platform->quoteValue($query . '%');
 			$qTitle = $platform->quoteValue('%' . $query . '%');
-			$select->where("(p.reference like $qRef or p.title like $qTitle or p18.title like $qTitle)");
+			
+			$qclauses = array(
+				"p.reference like $qRef",
+				"p.title like $qTitle",
+				"p.18.title like $qTitle",
+				"p.display_reference like $qRef"
+			);
+			$select->where("(" . join(' or ', $qclauses) .")");
 		}
 		
 		return $select;

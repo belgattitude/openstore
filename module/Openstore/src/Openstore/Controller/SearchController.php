@@ -55,6 +55,7 @@ class SearchController extends AbstractActionController
 								array(
 									'product_id'		=> new Expression('p.product_id'),
 									'reference'			=> new Expression('p.reference'),
+									'display_reference' => new Expression('COALESCE(p.display_reference, p.reference)'),
 									'brand_title'		=> new Expression('pb.title'),
 									'category_reference'=> new Expression('pc.reference'),
 									'category_title'	=> new Expression('COALESCE(pc18.title, pc.title)'),

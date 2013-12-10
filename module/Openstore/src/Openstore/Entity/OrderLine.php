@@ -79,22 +79,22 @@ class OrderLine implements InputFilterAwareInterface
 	
 	
 	/**
-	 * @ORM\Column(type="decimal", precision=8, scale=6, nullable=false, options={"default"=0, "comment"="Regular discount 1"})
+	 * @ORM\Column(type="decimal", precision=9, scale=6, nullable=false, options={"default"=0, "comment"="Regular discount 1"})
 	 */
 	private $discount_1;
 	
 	/**
-	 * @ORM\Column(type="decimal", precision=8, scale=6, nullable=false, options={"default"=0, "comment"="Regular discount 2"})
+	 * @ORM\Column(type="decimal", precision=9, scale=6, nullable=false, options={"default"=0, "comment"="Regular discount 2"})
 	 */
 	private $discount_2;
 	
 	/**
-	 * @ORM\Column(type="decimal", precision=8, scale=6, nullable=false, options={"default"=0, "comment"="Regular discount 3"})
+	 * @ORM\Column(type="decimal", precision=9, scale=6, nullable=false, options={"default"=0, "comment"="Regular discount 3"})
 	 */
 	private $discount_3;
 	
 	/**
-	 * @ORM\Column(type="decimal", precision=8, scale=6, nullable=false, options={"default"=0, "comment"="Regular discount 4"})
+	 * @ORM\Column(type="decimal", precision=9, scale=6, nullable=false, options={"default"=0, "comment"="Regular discount 4"})
 	 */
 	private $discount_4;
 	
