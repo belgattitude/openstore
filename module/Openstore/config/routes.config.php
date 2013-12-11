@@ -13,7 +13,12 @@ namespace Openstore;
 $supported_languages = array('en', 'nl', 'fr', 'zh', 'de', 'es', 'it');
 $default_language = 'en';
 $default_pricelist = 'FR';
-$browser_language = \Locale::getPrimaryLanguage(\Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']));
+
+if (array_key_exists('HTTP_ACCEPT_LANGUAGE', $_SERVER)) {
+	$browser_language = \Locale::getPrimaryLanguage(\Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']));
+} else {
+	$browser_language = $default_language;
+}
 
 return array(
 	'console' => array(

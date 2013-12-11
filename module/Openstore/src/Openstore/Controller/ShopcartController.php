@@ -27,6 +27,8 @@ class ShopcartController extends AbstractActionController
 	
 	public function addProductAction() 
 	{
+		$orderModel = $this->getServiceLocator()->get('Model\Order');
+		die('cool');
 		
 		$product_id		= $this->params()->fromPost('product_id');
 		$quantity		= $this->params()->fromPost('quantity');

@@ -2,6 +2,7 @@
 
 use Zend\Console\Console;
 
+
 $config = array(
 	// This should be an array of module namespaces used in the application.
 	'modules' => array(
@@ -21,7 +22,7 @@ $config = array(
 		'ZfcUser',
 		'ZfcUserDoctrineORM',
 		// just to be able to remove it when using console
-		'BjyAuthorize' => "BjyAuthorize"
+		"BjyAuthorize"
 	),
 	// These are various options for the listeners attached to the ModuleManager
 	'module_listener_options' => array(
@@ -73,7 +74,12 @@ $config = array(
 );
 
 if (Console::isConsole()) {
-	unset($config['modules']['BjyAuthorize']);
+	$key = array_search('Zf2Whoops', $config['modules']);
+	if ($key !== false) unset($config['modules'][$key]);
+	
+	$key = array_search('BjyAuthorize', $config['modules']);
+	if ($key !== false) unset($config['modules'][$key]);
+	
 }
 
 return $config;

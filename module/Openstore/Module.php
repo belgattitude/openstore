@@ -17,6 +17,9 @@ use Zend\Session\Config\StandardConfig;
 use Zend\Session\Container;
 use HTMLPurifier;
 
+//use Zend\Console\Console;
+
+
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface, ConsoleUsageProviderInterface
 {
 
@@ -108,17 +111,28 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 		);					
 	}
 	
-	protected function bootstrapSession(MvcEvent $e) {
-		$session = $e->getApplication()
-				->getServiceManager()
-				->get('Zend\Session\SessionManager');
-		$session->start();
+	protected function bootstrapSession(MvcEvent $e) 
+	{
+		// Hack for unit testing, will have to find a better solution
+		//if (!Console::isConsole()) {
+			
+			$session = $e->getApplication()
+					->getServiceManager()
+					->get('Zend\Session\SessionManager');
+			
+			
+			$session->start();
 
-		$container = new Container('initialized');
-		if (!isset($container->init)) {
-			$session->regenerateId(true);
-			$container->init = 1;
-		}
+			$container = new Container('initialized');
+			
+			if (!isset($container->init)) {
+				// Hack for PHPUNIT testing
+				if (!headers_sent()) {
+					$session->regenerateId(true);
+					$container->init = 1;
+				}
+			} 
+		//}
 	}
 
 
@@ -148,6 +162,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 			//'ZendDeveloperTools\ReportInterface' => 'ZendDeveloperTools\Report',
 			),
 			'invokables' => array(
+				'Model\Order' => 'Openstore\Model\Order',
 				'Model\Product' => 'Openstore\Model\Product',
 				'Model\Category' => 'Openstore\Model\Category',
 				'Model\Brand' => 'Openstore\Model\Brand',
@@ -183,25 +198,20 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 						if (isset($session['config'])) {
 							$class = isset($session['config']['class']) ? $session['config']['class'] : 'Zend\Session\Config\SessionConfig';
 							$options = isset($session['config']['options']) ? $session['config']['options'] : array();
- 
 							$sessionConfig = new $class();
 							$sessionConfig->setOptions($options);
-							
 						}
 
 						$sessionStorage = null;
 						if (isset($session['storage'])) {
 							$class = $session['storage'];
 							$sessionStorage = new $class();
-							
 						}
 
 						$sessionSaveHandler = null;
 						if (isset($session['save_handler'])) {
-							
 							// class should be fetched from service manager since it will require constructor arguments
 							$sessionSaveHandler = $sm->get($session['save_handler']);
-							
 						}
 
 						$sessionManager = new SessionManager($sessionConfig, $sessionStorage, $sessionSaveHandler);
