@@ -148,8 +148,13 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 					'type' => $eventParams['error'],
 				)
 			);
+			
+			
+			
 			if (isset($eventParams['exception'])) {
-
+				
+				$reason_phrase = "Error: " . $eventParams['exception']->getMessage();
+				
 				/** @var \Exception $exception */
 				$exception = $eventParams['exception'];
 				if ($configuration['errors']['show_exceptions']['message']) {
@@ -158,6 +163,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 				if ($configuration['errors']['show_exceptions']['trace']) {
 					$body['error']['exception_trace'] = $exception->getTrace();
 				}
+			} else {
+				$reason_phrase = "Error, something went wrong.";
 			}
 
 
@@ -196,6 +203,10 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 				$e->getResponse()->setStatusCode(\Zend\Http\PhpEnvironment\Response::STATUS_CODE_501);
 			} else {
 				$e->getResponse()->setStatusCode(\Zend\Http\PhpEnvironment\Response::STATUS_CODE_500);
+				if ($reason_phrase != '') {
+					$e->getResponse()->setReasonPhrase($reason_phrase);						
+				}
+					
 			}
 
 			$e->stopPropagation();
