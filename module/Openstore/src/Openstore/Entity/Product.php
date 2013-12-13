@@ -193,9 +193,15 @@ class Product implements InputFilterAwareInterface
 	
 	
 	/**
-	 * @ORM\Column(type="string", length=13, nullable=true, options={"comment"="EAN 13 barcode"})
+	 * @ORM\Column(type="string", length=13, nullable=true, options={"comment"="EAN13 barcode"})
 	 */
 	private $barcode_ean13;	
+	
+	/**
+	 * @ORM\Column(type="string", length=12, nullable=true, options={"comment"="UPCA barcode"})
+	 */
+	private $barcode_upca;	
+	
 	
 	/**
 	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the product is active in public website"})
