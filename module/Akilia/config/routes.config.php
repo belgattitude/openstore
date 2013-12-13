@@ -39,6 +39,16 @@ return array(
 						)
 					)
 				),
+				'syncapi' => array(
+					'options' => array(
+						'route' => 'akilia syncapi',
+						'defaults' => array(
+							//'__NAMESPACE__' => 'Openstore\Controller',
+							'controller' => 'Akilia\Controller\Console',
+							'action' => 'syncapi'
+						)
+					)
+				),				
 				
 				'syncmedia' => array(
 					'options' => array(

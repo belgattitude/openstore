@@ -47,9 +47,9 @@ class ApiService implements InputFilterAwareInterface
 
 
 	/**
-	 * @ORM\Column(type="string", length=80, nullable=true)
+	 * @ORM\Column(type="string", length=255, nullable=true)
 	 */
-	private $title;
+	private $description;
 
 
 	
@@ -148,11 +148,11 @@ class ApiService implements InputFilterAwareInterface
 
 	/**
 	 * 
-	 * @param string $title
+	 * @param string $description
 	 */
-	public function setTitle($title)
+	public function setDescription($description)
 	{
-		$this->title = $title;
+		$this->description = $description;
 		return $this;
 	}
 
@@ -160,9 +160,9 @@ class ApiService implements InputFilterAwareInterface
 	 * 
 	 * @return string
 	 */
-	public function getTitle()
+	public function getDescription()
 	{
-		return $this->title;
+		return $this->description;
 	}
 
 	/**

@@ -155,7 +155,6 @@ class ApiKeyCustomer implements InputFilterAwareInterface
 	}
 	
 	
-	
 	/**
 	 * 
 	 * @return string
