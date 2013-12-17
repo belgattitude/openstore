@@ -142,7 +142,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 	
 	function synchronizeProductMedia()
 	{
-		ini_set('memory_limit', "2G");
+		ini_set('memory_limit', "1G");
 		
 		$sl = $this->getServiceLocator();
 		$configuration = $sl->get('Configuration');

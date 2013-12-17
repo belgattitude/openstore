@@ -60,9 +60,6 @@ class Akilia1Products implements ServiceLocatorAwareInterface, AdapterAwareInter
 		return $data;		
 	}
 	
-	function getImportedMedias() {
-		
-	}
 	
 	function getProductPictures() {
 		
