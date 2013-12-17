@@ -39,6 +39,7 @@ class ProductMediaService extends AbstractService {
 			'product_id'			=> new Expression('p.product_id'),
 			'product_reference'		=> new Expression('p.reference'),
 			'product_barcode_ean13'	=> new Expression('p.barcode_ean13'),
+			'product_barcode_upca'	=> new Expression('p.barcode_upca'),
 			'brand_reference'		=> new Expression('pb.reference'),
 			'group_reference'		=> new Expression('pg.reference'),
 			'media_type'		=> new Expression('pmt.reference'),
