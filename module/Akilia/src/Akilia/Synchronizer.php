@@ -15,8 +15,8 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Db\Adapter\AdapterAwareInterface;
 use Gaufrette\Exception as GException;
 
-
-function convert($size)
+//ini_set('memory_limit', "1G");
+function convertMemorySize($size)
  {
     $unit=array('b','kb','mb','gb','tb','pb');
     return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
@@ -174,7 +174,8 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		
 		$limit_to_import = 25000;
 		$count = count($list);
-		$product_ids = array_column($table->all('product', array('product_id'))->toArray(), 'product_id', 'product_id');
+		$product_ids = new \ArrayObject(array_column($table->all('product', array('product_id'))->toArray(), 'product_id', 'product_id'));
+		//$product_ids = new \ArrayObject($table->all('product', array('product_id'))->toArray());
 		for ($i = 0; ($i < $limit_to_import && $i < $count); $i++) {
 			$infos = $list[$i];
 			//var_dump($infos);
@@ -185,7 +186,8 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 
 			$media_id = $mediaManager->import($importElement, $container['container_id']);
 
-			if (array_key_exists($infos['product_id'], $product_ids)) {
+			if ($product_ids->offsetExists($infos['product_id'])) {
+			//if (array_key_exists($infos['product_id'], $product_ids)) {
 				/*
 				$product_id = $infos['product_id'];
 				echo "- " . count($product_ids) . "\n";
@@ -207,18 +209,6 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				try {	
 					echo "[+] Importing product " . $infos['product_id'] . " as media_id $media_id [" . ($i+1) . "/$count]\n";
 					$productMedia = $table->insertOnDuplicateKey('product_media', $data, $duplicate_exclude=array());
-
-					if (($i % 100) == 0 && $i > 50 ) {
-						
-						gc_collect_cycles();
-					}
-					
-					if ($i > 1000) {
-						var_dump(count($list));
-						echo "\n" . convert(memory_get_usage(true)) . "\n";
-						die();
-					}
-					echo "\n";
 					
 				} catch(\Exception $e) {
 					echo "[Error] Cannot insert : \n";
@@ -232,7 +222,17 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				echo "[+] Warning product '" . $infos['product_id'] . "' does not exists in database\n";
 			}
 			
+			if (($i % 500) == 0) {
+				echo "-----------------------------------------------------------\n";
+				echo "Memory: " . convertMemorySize(memory_get_usage($real_usage=true)) . "\n";
+				echo "-----------------------------------------------------------\n";
+			}
+			
 		}
+
+		echo "-----------------------------------------------------------\n";
+		echo "Memory: " . convertMemorySize(memory_get_usage($real_usage=true)) . "\n";
+		echo "-----------------------------------------------------------\n";
 		
 	}
 
