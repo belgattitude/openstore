@@ -1,26 +1,15 @@
 <?php
-
-namespace OpenstoreApi\Api;
+namespace OpenstoreApi\Authorize;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
-abstract class AbstractService implements AdapterAwareInterface, 
-										ServiceLocatorAwareInterface
-{
 
-	/**
-	 * @var ServiceLocatorInterface 
-	 */
-	protected $serviceLocator;
-	/**
-	 *
-	 * @var \Zend\Db\Adapter\Adapter
-	 */
-	protected $adapter;
-	
+class ApiKeyAccess implements AdapterAwareInterface, 
+								ServiceLocatorAwareInterface
+{
 	
 	/**
 	 * 
@@ -35,7 +24,7 @@ abstract class AbstractService implements AdapterAwareInterface,
 			$this->setDbAdapter($adapter);
 		}
 	}
-	
+
 	
 	
 	
@@ -83,7 +72,4 @@ abstract class AbstractService implements AdapterAwareInterface,
 		return $this->serviceLocator;
 	}	
 	
-	
 }
-		
-

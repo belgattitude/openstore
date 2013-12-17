@@ -3,7 +3,7 @@
 namespace OpenstoreApi\Controller;
 
 use OpenstoreApi\Mvc\Controller\AbstractRestfulController;
-
+use OpenstoreApi\Authorize\ApiKeyAccess;
 
 class ProductCatalogController extends AbstractRestfulController
 {
@@ -15,13 +15,20 @@ class ProductCatalogController extends AbstractRestfulController
 	
 	/**
 	 *
-	 * @var \Openstore\Api\Api\ProductCatalogService
+	 * @var \OpenstoreApi\Api\ProductCatalogService
 	 */
 	protected $catalogService;
+	
+	/**
+	 *
+	 * @var ApiKeyAccess
+	 */
+	protected $apiKeyAccess;
 	
 	
 	public function onDispatch(\Zend\Mvc\MvcEvent $e) {
 		$this->catalogService = $this->getServiceLocator()->get('Api\ProductCatalogService');
+		$this->apiKeyAccess   = $this->getServiceLocator()->get('Authorize\ApiKeyAccess');
 		parent::onDispatch($e);
 	}	
 	
@@ -31,13 +38,13 @@ class ProductCatalogController extends AbstractRestfulController
 		return $response;
 	}
 
-	public function getList() {
-		
+	public function getList() 
+	{
+		//var_dump(get_class($this->apiKeyAccess));
+		//die();
 		$params = $this->params()->fromQuery();
 		$store = $this->catalogService->getList($params);
 		return $store;
-
-		//return new JsonModel($data);
 	}
 
 

@@ -114,6 +114,7 @@ class ProductCatalogService extends AbstractService {
 			'stock_updated_at'		=> new Expression('ps.updated_at'),
 			
 			'product_barcode_ean13'	=> new Expression('p.barcode_ean13'),
+			'product_barcode_upca'	=> new Expression('p.barcode_upca'),
 			'brand_id'				=> new Expression('pb.brand_id'),
 			'brand_reference'		=> new Expression('pb.reference'),
 			'brand_title'			=> new Expression('pb.title'),
