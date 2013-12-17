@@ -241,6 +241,9 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 			'aliases' => array(
 			),
 			'invokables' => array(
+				
+				'Authorize\ApiKeyAccess' => 'OpenstoreApi\Authorize\ApiKeyAccess',
+				
 				'Api\ProductMediaService' => 'OpenstoreApi\Api\ProductMediaService',
 				'Api\ProductCatalogService' => 'OpenstoreApi\Api\ProductCatalogService',
 				'Api\ProductBrandService' => 'OpenstoreApi\Api\ProductBrandService',

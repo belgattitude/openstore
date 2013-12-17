@@ -90,6 +90,28 @@ class ConsoleController extends AbstractActionController
 		$commands = array(
 			"$php $vendor_dir/bin/doctrine-module orm:schema:drop --force",
 			"$php $vendor_dir/bin/doctrine-module orm:schema:create",
+		);
+		
+		foreach($commands as $command) {
+			echo "Executing $command\n";
+			passthru($command);
+		}
+	}
+
+	
+	/**
+	 * recreate db and load data fixtures
+	 * 
+	 */
+	public function buildallreloadAction()
+	{
+		$dir = realpath(__DIR__ . '/../../../../../');
+		$vendor_dir = $dir . '/vendor';
+		$php = "/usr/local/bin/php";
+		
+		$commands = array(
+			"$php $vendor_dir/bin/doctrine-module orm:schema:drop --force",
+			"$php $vendor_dir/bin/doctrine-module orm:schema:create",
 			"$php $vendor_dir/bin/doctrine-module data-fixture:import",
 		);
 		
@@ -97,8 +119,8 @@ class ConsoleController extends AbstractActionController
 			echo "Executing $command\n";
 			passthru($command);
 		}
-		
 	}
+	
 	
     public function akiliasyncdbAction()
 	{

@@ -335,7 +335,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 	public function getConsoleUsage(AdapterInterface $console) {
 
 		return array(
-			'openstore recreatedb' => 'Recreate database schema and load initial fixtures.',
+			'openstore recreatedb' => 'Recreate database schema.',
+			'openstore build-all-reload' => 'Recreate database schema and load initial fixtures.',			
 			'openstore updatedb' => 'Update database schema and reload initial fixtures.',
 			'openstore clearcache' => 'Clear all system caches.',
 			'openstore clearmediacache' => 'Clear media cache.',

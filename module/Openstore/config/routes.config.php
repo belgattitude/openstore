@@ -44,6 +44,17 @@ return array(
 						)
 					)
 				),
+				'openstore-build-all-reload' => array(
+					'options' => array(
+						'route' => 'openstore build-all-reload',
+						'defaults' => array(
+							//'__NAMESPACE__' => 'Openstore\Controller',
+							'controller' => 'Openstore\Controller\Console',
+							'action' => 'buildallreload'
+						)
+					)
+				),
+				
 				'openstore-clearcache' => array(
 					'options' => array(
 						'route' => 'openstore clearcache',
