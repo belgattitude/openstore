@@ -16,6 +16,12 @@ use Zend\Db\Adapter\AdapterAwareInterface;
 use Gaufrette\Exception as GException;
 
 
+function convert($size)
+ {
+    $unit=array('b','kb','mb','gb','tb','pb');
+    return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
+ };
+
 class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterface 
 {
 	
@@ -136,6 +142,8 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 	
 	function synchronizeProductMedia()
 	{
+		
+		
 		$sl = $this->getServiceLocator();
 		$configuration = $sl->get('Configuration');
 		if (!is_array($configuration['akilia'])) {
@@ -145,6 +153,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		$products = new Akilia1Products($configuration);
 		$products->setServiceLocator($this->getServiceLocator());
 		$products->setDbAdapter($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
+		
 		$list = $products->getProductPictures();
 		
 		$mediaManager = $this->getServiceLocator()->get('MMan/MediaManager');
@@ -161,11 +170,11 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		if ($media_type_id == '') {
 			throw new \Exception("Cannot find PICTURE product media type in your database");
 		}
+
 		
-		$limit_to_import = 20000;
+		$limit_to_import = 25000;
 		$count = count($list);
 		$product_ids = array_column($table->all('product', array('product_id'))->toArray(), 'product_id', 'product_id');
-		
 		for ($i = 0; ($i < $limit_to_import && $i < $count); $i++) {
 			$infos = $list[$i];
 			//var_dump($infos);
@@ -177,7 +186,16 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 			$media_id = $mediaManager->import($importElement, $container['container_id']);
 
 			if (array_key_exists($infos['product_id'], $product_ids)) {
-				
+				/*
+				$product_id = $infos['product_id'];
+				echo "- " . count($product_ids) . "\n";
+				echo "- product_id:" . $product_ids[$product_id] . "\n";
+				unset($product_ids[$product_id]);
+				echo "- " . count($product_ids) . "\n";
+				echo "- product_id:" . $product_ids[$product_id] . "\n";
+				die();
+				*/
+				//unset($product_ids[$infos['product_id']]);
 				$data = array(
 					'media_id'		=> $media_id,
 					'product_id'	=> $infos['product_id'],
@@ -189,6 +207,18 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				try {	
 					echo "[+] Importing product " . $infos['product_id'] . " as media_id $media_id [" . ($i+1) . "/$count]\n";
 					$productMedia = $table->insertOnDuplicateKey('product_media', $data, $duplicate_exclude=array());
+
+					if (($i % 100) == 0 && $i > 50 ) {
+						
+						gc_collect_cycles();
+					}
+					
+					if ($i > 1000) {
+						var_dump(count($list));
+						echo "\n" . convert(memory_get_usage(true)) . "\n";
+						die();
+					}
+					echo "\n";
 					
 				} catch(\Exception $e) {
 					echo "[Error] Cannot insert : \n";
@@ -198,6 +228,8 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				}
 				
 				
+			} else {
+				echo "[+] Warning product '" . $infos['product_id'] . "' does not exists in database\n";
 			}
 			
 		}

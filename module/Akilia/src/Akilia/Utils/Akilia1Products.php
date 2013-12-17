@@ -97,6 +97,8 @@ class Akilia1Products implements ServiceLocatorAwareInterface, AdapterAwareInter
 					'md5' => md5($filename) 
 				);
 		}
+		
+		unset($pcache);
 		return $images;
 	}
 	

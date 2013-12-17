@@ -118,7 +118,7 @@ class MediaManager
 			
 			// Step 2 : Adding into filesystem
 			try {
-				//echo 'Writing file';
+				echo 'Writing file';
 				$fs->write($mediaLocation['filename'], file_get_contents($filename), $overwrite);
 				
 			} catch (\Exception $e) {
