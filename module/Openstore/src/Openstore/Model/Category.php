@@ -62,7 +62,8 @@ class Category extends AbstractModel implements BrowsableInterface {
 		//echo '<pre>';
 		//var_dump($sql_string);die();
 		
-		$results = $adapter->query($sql_string, $adapter::QUERY_MODE_EXECUTE);			
+		$results = $adapter->query($sql_string, $adapter::QUERY_MODE_EXECUTE);
+		
 		//var_dump($results->toArray());
 		//die();
 		return $results;

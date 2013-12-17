@@ -15,7 +15,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Db\Adapter\AdapterAwareInterface;
 use Gaufrette\Exception as GException;
 
-//ini_set('memory_limit', "1G");
+
 function convertMemorySize($size)
  {
     $unit=array('b','kb','mb','gb','tb','pb');
@@ -142,7 +142,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 	
 	function synchronizeProductMedia()
 	{
-		
+		ini_set('memory_limit', "2G");
 		
 		$sl = $this->getServiceLocator();
 		$configuration = $sl->get('Configuration');
