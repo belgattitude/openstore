@@ -110,7 +110,7 @@ class ProductCatalogService extends AbstractService {
 			'on_stock'				=> new Expression('if (ps.available_stock > 0, 1, 0)'),
 			'available_stock'		=> new Expression("LEAST(ps.available_stock, $max_stock)"),
 			'next_available_stock_at' => new Expression('ps.next_available_stock_at'),
-			'next_available_stock'  => new Expression('ps.next_available_stock'),
+			'next_available_stock'  => new Expression("LEAST(ps.next_available_stock, $max_stock)"),
 			'stock_updated_at'		=> new Expression('ps.updated_at'),
 			
 			'product_barcode_ean13'	=> new Expression('p.barcode_ean13'),
@@ -169,6 +169,10 @@ class ProductCatalogService extends AbstractService {
 		if (array_key_exists('brands', $params)) {
 			$select->where->in('pb.reference', explode(',', $params['brands']));
 		}		
+		
+		if (array_key_exists('groups', $params)) {
+			$select->where->in('pg.reference', explode(',', $params['groups']));
+		}				
 		//$select->limit(1000);
 		/*
 		$select->where("pl.reference = 'BE'");
@@ -176,11 +180,18 @@ class ProductCatalogService extends AbstractService {
 		
 		$select->order(array('p.product_id' => $select::ORDER_ASCENDING));		
 		
+		/**
+		 * 
+		 */
+		
 		$parameters = array(
 			'adapter' => $this->adapter,
 			'select' => $select
 		);
 		$store = new FlexStore('zend\select', $parameters);
+		$store->getSource()->getData();
+		echo $store->getSource()->getQueryString();
+		die();
 		//var_dump($store->getSource()->getData()->toArray());
 		//die();
 		return $store;

@@ -14,6 +14,8 @@ use Soluble\FlexStore\Writer\Zend\Json as JsonWriter;
 use Soluble\FlexStore\Writer\CSV as CSVWriter;
 use Soluble\FlexStore\Writer\SimpleXmlWriter;
 
+use OpenstoreApi\Authorize\Exception\AuthorizationException;
+
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 {
 
@@ -79,6 +81,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 				case 'json' :
 					if ($vars instanceof FlexStoreInterface) {
 						$jsonWriter = new JsonWriter($vars->getSource());
+						$jsonWriter->setDebug($debug = true);
 						$jsonWriter->send();
 						die();
 					} else {
@@ -141,14 +144,16 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 			/** @var array $configuration */
 			$configuration = $e->getApplication()->getConfig();
 			$error_message = "Something went wrong";
+			
+			$error_type = $eventParams['error'];
+
 			$body = array(
 				'message'	=> $error_message,
 				'success'	=> 0,
 				'error' => array(
-					'type' => $eventParams['error'],
+					'type' => $error_type,
 				)
 			);
-			
 			
 			
 			if (isset($eventParams['exception'])) {
@@ -157,6 +162,13 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 				
 				/** @var \Exception $exception */
 				$exception = $eventParams['exception'];
+				
+				if ($exception instanceof AuthorizationException) {
+					$error_type = "authorization-exception";
+					$body['error']['type'] = $error_type;
+					$body['message'] = "Authorization error, " . $exception->getMessage();
+				}
+				
 				if ($configuration['errors']['show_exceptions']['message']) {
 					$body['error']['exception_message'] = $exception->getMessage();
 				}
@@ -167,6 +179,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 				$reason_phrase = "Error, something went wrong.";
 			}
 
+			
 
 			switch ($format) {
 				case 'json' :
@@ -183,7 +196,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 					$exception_message = $body['error']['exception_message'];
 					$error_type = $body['error']['type'];
 					$message = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-					$message .= "<response>\n\t<success>0</success>\n\t<message>$error_message</message>";
+					$message .= "<response>\n\t<success>0</success>\n\t<message>$reason_phrase</message>";
 					$message .=	"<error>\n\t<type>$error_type</type>";
 					$message .= "\t<exception_message>$exception_message</exception_message></error>\n</response>";
 					$e->getResponse()->setContent($message);

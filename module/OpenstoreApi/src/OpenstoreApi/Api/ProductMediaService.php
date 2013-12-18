@@ -48,7 +48,6 @@ class ProductMediaService extends AbstractService {
 			'sort_index'		=> new Expression('pm.sort_index'),
 			'original_filename' => new Expression('m.filename'),
 			'filemtime'			=> new Expression('m.filemtime'),
-			
 		);
 		
 				

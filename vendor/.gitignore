@@ -22,4 +22,6 @@ phpseclib
 knplabs
 soluble
 soluble/solublecomponents
+soluble/solublecomponents/*
+soluble/solublecomponents/src
 autoload.php

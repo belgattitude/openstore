@@ -28,7 +28,9 @@ class ProductCatalogController extends AbstractRestfulController
 	
 	public function onDispatch(\Zend\Mvc\MvcEvent $e) {
 		$this->catalogService = $this->getServiceLocator()->get('Api\ProductCatalogService');
-		$this->apiKeyAccess   = $this->getServiceLocator()->get('Authorize\ApiKeyAccess');
+		
+		$api_key = $this->params()->fromQuery('api_key');
+		$this->apiKeyAccess = new ApiKeyAccess($api_key, $this->getServiceLocator());
 		parent::onDispatch($e);
 	}	
 	
@@ -40,8 +42,12 @@ class ProductCatalogController extends AbstractRestfulController
 
 	public function getList() 
 	{
-		//var_dump(get_class($this->apiKeyAccess));
-		//die();
+
+		$this->apiKeyAccess->checkServiceAccess("2000-ProductCatalog");
+		
+//var_dump($this->getEvent()->getApplication()); die();		
+		
+		//$this->apiKeyAccess->c
 		$params = $this->params()->fromQuery();
 		$store = $this->catalogService->getList($params);
 		return $store;
