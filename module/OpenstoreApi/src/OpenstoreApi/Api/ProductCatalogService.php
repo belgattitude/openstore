@@ -190,8 +190,7 @@ class ProductCatalogService extends AbstractService {
 		);
 		$store = new FlexStore('zend\select', $parameters);
 		$store->getSource()->getData();
-		echo $store->getSource()->getQueryString();
-		die();
+
 		//var_dump($store->getSource()->getData()->toArray());
 		//die();
 		return $store;
