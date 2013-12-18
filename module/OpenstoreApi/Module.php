@@ -186,8 +186,6 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 
 					$e->getResponse()->getHeaders()->addHeaderLine('Content-Type', 'application/json', true);
 					$e->getResponse()->setContent(json_encode($body));
-					
-
 					break;
 
 				case 'xml' :
@@ -200,11 +198,14 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 					$message .=	"<error>\n\t<type>$error_type</type>";
 					$message .= "\t<exception_message>$exception_message</exception_message></error>\n</response>";
 					$e->getResponse()->setContent($message);
-					
-
 					break;
 
 				default:
+
+					$e->getResponse()->getHeaders()->addHeaderLine('Content-Type', 'text/html', true);
+					$content = $reason_phrase;
+					$e->getResponse()->setContent($content);
+					break;
 
 
 			}
