@@ -89,6 +89,7 @@ class ConsoleController extends AbstractActionController
 				foreach($result as $row) {
 					echo "\t" . join("\t", $row) . "\n";
 				}
+				echo " Check with query : " . preg_replace("/(\n)(\t)/", ' ', $query) . "\n";
 			} else {
 				echo " -> Success !!!\n";
 			}

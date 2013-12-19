@@ -119,6 +119,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 		$this->synchronizeProduct();
 		$this->synchronizeProductTranslation();
 		$this->synchronizeProductPricelist();
+		
 		$this->synchronizeProductStock();
 		
 		
@@ -647,6 +648,8 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 
 		foreach($elements as $key => $element) {
 			$akilia1Db = $element['akilia1db'];
+			var_dump($element);
+			die();
 			if ($element['pricelist'] != '') {
 				$pricelist_clause = "and t.id_pays = '" . $element['pricelist'] . "'";
 			} else {
