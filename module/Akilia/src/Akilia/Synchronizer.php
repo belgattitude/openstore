@@ -685,8 +685,9 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 
 					from $akilia2db.base_pricelist as bp
 					on duplicate key update
-							stock_id = $stock_id,
-							currency_id = {$this->default_currency_id},
+							stock_id = if(pricelist.stock_id is null, $stock_id, pricelist.stock_id),
+							currency_id = if(pricelist.currency_id is null, {$this->default_currency_id}, pricelist.currency_id),
+
 							legacy_synchro_at = '{$this->legacy_synchro_at}'
 						 ";
 
@@ -718,8 +719,9 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 
 					from $akilia1db.art_tarif as at
 					on duplicate key update
-							stock_id = $stock_id,
-							currency_id = {$this->default_currency_id},
+							stock_id = if(bp.stock_id is null, $stock_id, bp.stock_id),					
+							stock_id = if(pricelist.stock_id is null, $stock_id, pricelist.stock_id),
+							currency_id = if(pricelist.currency_id is null, {$this->default_currency_id}, pricelist.currency_id),
 							legacy_synchro_at = '{$this->legacy_synchro_at}'
 						 ";
 

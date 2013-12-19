@@ -29,7 +29,16 @@ return array(
 				'de' => '_4'
 			),	
 			'product_picture_path' => '',
-			'archive_product_picture_path' => ''
+			'archive_product_picture_path' => '',
+			
+			'options' => array(
+				/*
+				'categories' => array(
+					'table' => 'categories',
+					
+				)
+			    */
+			)
 		)
 	),
 );
