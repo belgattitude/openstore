@@ -26,6 +26,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 {
 	
 	/**
+	 *
+	 * @var array
+	 */
+	protected $configuration;
+	
+	/**
 	 * @var Doctrine\Orm\EntityManager
 	 */
 	protected $em;
@@ -84,16 +90,23 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 		
 	}
 	
+	/**
+	 * 
+	 * @param array $config
+	 * @return \Akilia\Synchronizer
+	 */
 	function setConfiguration(array $config) {
 		$this->akilia2Db	= $config['db_akilia2'];
 		$this->akilia1Db	= $config['db_akilia1'];
 		$this->akilia1lang	= $config['akilia1_language_map'];
+		$this->configuration = $config;
+		return $this;
 	}
 	
 	
 	function synchronizeAll()
 	{
-		
+		/*
 		$this->synchronizeCountry();
 		$this->synchronizeCustomer();
 		$this->synchronizeApi();
@@ -106,9 +119,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 		$this->synchronizeProduct();
 		$this->synchronizeProductTranslation();
 		$this->synchronizeProductPricelist();
+		 * 
+		 */
 		$this->synchronizeProductStock();
 		
-		//$this->synchronizeProductMedia();
 		
 /**
 		 
@@ -615,37 +629,63 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 	
 	function synchronizeProductStock()
 	{
-		$akilia1db = $this->akilia1Db;
+		if (array_key_exists('options', $this->configuration) && 
+				is_array($this->configuration['options']['product_stock']) && 
+				is_array($this->configuration['options']['product_stock']['stocks'])) {
+			
+			$elements = $this->configuration['options']['product_stock']['stocks'];
+		} else {
+			$elements = array(
+				'DEFAULT' => array(
+								'akilia1db' => $this->akilia1Db, 
+								'pricelist' => null
+					)
+			);
+		}
+		
+		
+		
 		$db = $this->openstoreDb;
 
-		$stock_id = $this->default_stock_id;
-		
-		$replace = " insert
-		             into $db.product_stock
-					(
-					product_id,
-					stock_id,
-					available_stock,
-					theoretical_stock,
-					legacy_synchro_at
-				)
+		foreach($elements as $key => $element) {
+			$akilia1Db = $element['akilia1db'];
+			if ($element['pricelist'] != '') {
+				$pricelist_clause = "and t.id_pays = '" . $element['pricelist'] . "'";
+			} else {
+				$pricelist_clause = '';
+			}
+			
+			$replace = " insert
+						 into $db.product_stock
+						(
+						product_id,
+						stock_id,
+						available_stock,
+						theoretical_stock,
+						legacy_synchro_at
+					)
 
-				select at.id_article,
-				       1 as stock_id,
-					   at.stock,
-					   at.stock_theorique,
-					'{$this->legacy_synchro_at}' as legacy_synchro_at
-					
-				from $akilia1db.art_tarif as at
-				inner join $akilia1db.article a on at.id_article = a.id_article
-				inner join $db.pricelist pl on at.id_pays = pl.legacy_mapping	
-				on duplicate key update
-						available_stock = at.stock,
-						theoretical_stock = at.stock_theorique,
-						legacy_synchro_at = '{$this->legacy_synchro_at}'
-					 ";
+					select t.id_article,
+						   pl.stock_id as stock_id,
+						   t.stock,
+						   t.stock_theorique,
+						'{$this->legacy_synchro_at}' as legacy_synchro_at
+
+					from $akilia1Db.art_tarif as t
+					inner join $akilia1Db.article a on t.id_article = a.id_article
+					inner join $db.pricelist pl on t.id_pays = pl.legacy_mapping
+						$pricelist_clause
+					on duplicate key update
+							available_stock = t.stock,
+							theoretical_stock = t.stock_theorique,
+							legacy_synchro_at = '{$this->legacy_synchro_at}'
+						 ";
+
+			$this->executeSQL("Replace product stock [$key] ", $replace);
+			
+			
+		}
 		
-		$this->executeSQL("Replace product stock", $replace);
 
 		// 2. Deleting - old links in case it changes
 		$delete = "

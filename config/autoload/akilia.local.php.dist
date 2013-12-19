@@ -32,7 +32,27 @@ return array(
 				'nl' => '_2',
 				'de' => '_4',
 				'en' => '_3',
-			)				
+			),
+			'options' => array(
+					/*
+					'product_stock' =>
+				
+						array('stocks' =>
+								array(
+									'BELGIUM' => array('akilia1db' => 'emd00', 'pricelist' => 'BE'),
+									//'USA'	  => array('akilia1db' => 'emd01', 'pricelist' => 'US'),
+									//'FOSHAN'  => array('akilia1db' => 'emd04', 'pricelist' => '1F'),
+								)
+							),
+					'product_price' => array(
+
+					)
+					 
+					 */
+
+			),
+			
+			
 		),
 		'product_picture_path' => '/tmp/product/picture/directory',
 		'archive_product_picture_path' => '/rmp/product/picture/archive'
