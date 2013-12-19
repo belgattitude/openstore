@@ -55,7 +55,14 @@ return array(
 			
 		),
 		'product_picture_path' => '/tmp/product/picture/directory',
-		'archive_product_picture_path' => '/rmp/product/picture/archive'
+		'archive_product_picture_path' => '/rmp/product/picture/archive',
+		'checker' => array(
+			'pricelists' => array(
+				'BE' => array('database' => 'emd00'), 
+				//'GB' => array('database' => 'emd02'),
+			)	
+		)		
+		
 		
 	),
 );
