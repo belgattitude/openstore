@@ -59,6 +59,48 @@ class ConsoleController extends AbstractActionController
 		$synchronizer->synchronizeProductMedia();	
     }
 
+	public function checkSynchroAction() 
+	{
+		
+		$configuration = $this->getAkiliaConfiguration();
+		if (!is_array($configuration['synchronizer'])) {
+			throw new \Exception("Cannot find akilia synchronizer configuration, please see you global config files");
+		}
+		
+		if (!is_array($configuration['checker'])) {
+			throw new \Exception("Cannot find akilia checker configuration, please see you global config files");
+		}
+		
+		$pricelists = $configuration['checker']['pricelists'];
+		
+		$db = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager')->getConnection()->getDatabase();
+		$adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+		
+		
+		foreach ($pricelists as $pricelist => $options) {
+			echo "[+] Checking pricelist '$pricelist'\n";
+			
+			$query = $this->getSQLPricelistChecker($pricelist, $db, $options['database']);
+			$result = $adapter->query($query, Adapter::QUERY_MODE_EXECUTE)->toArray();
+			$nb_errors = count($result);
+			if ($nb_errors > 0) {
+				echo " -> [Error] $nb_errors returned :\n";
+				echo "\t" . join("\t", array_keys($result[0])) . "\n";
+				foreach($result as $row) {
+					echo "\t" . join("\t", $row) . "\n";
+				}
+			} else {
+				echo " -> Success !!!\n";
+			}
+			
+			
+		}
+		
+		
+		
+		
+		
+	}
 	
 	public function listproductpicturesAction() {
 		$sl = $this->getServiceLocator();
@@ -77,6 +119,7 @@ class ConsoleController extends AbstractActionController
 				$infos['filename'] . "\n"; 
 		}
 	}
+	
 	
 	public function archiveproductpicturesAction() {
 		
@@ -157,5 +200,76 @@ class ConsoleController extends AbstractActionController
 		}
 		return $configuration['akilia'];
 		
+	}
+	
+	
+	/**
+	 * 
+	 * @param string $pricelist
+	 * @param string $db openstore db name
+	 * @param string $akilia1_db
+	 * @return string
+	 */
+	protected function getSQLPricelistChecker($pricelist, $db, $akilia1_db, $limit=10)
+	{
+		
+		$sql = "select 
+			a.id_article,
+			a.reference,
+			m.id_marque, pb.reference as brand_ref,
+			c.id_categorie, pc.reference as categ_ref,
+			f.id_famille, pg.reference as group_ref,
+			t.prix_unit_ht, ppl.list_price,
+			(t.prix_unit_ht * (1-(t.remise1/100)) * (1-(t.remise2/100)) * (1-(t.remise3/100)) * (1-(t.remise4/100))) as discounted_price, 
+			ppl.price,
+			t.prix_unit_public, ppl.public_price,
+			t.stock, ps.available_stock,
+			t.flag_availability, ppl.flag_active
+
+		from
+			$akilia1_db.article a
+				inner join
+			$akilia1_db.art_tarif t ON t.id_pays = '$pricelist' and a.id_article = t.id_article
+				left outer join 
+			$akilia1_db.famille f on f.id_famille = a.id_famille
+				left outer join 
+			$akilia1_db.categories c on c.id_categorie = a.id_categorie
+				left outer join 
+			$akilia1_db.marque m on m.id_marque = a.id_marque
+				left outer join
+			$db.product p ON p.legacy_mapping = a.id_article
+				left outer join
+			$db.product_group pg on pg.legacy_mapping = f.id_famille
+				left outer join
+			$db.product_category pc on pc.legacy_mapping = c.id_categorie
+				left outer join
+			$db.product_brand pb on pb.legacy_mapping = m.id_marque
+				left outer join 
+			$db.pricelist pl on pl.legacy_mapping = '$pricelist'
+				left outer join
+			$db.product_pricelist ppl on ppl.pricelist_id = pl.pricelist_id and p.product_id = ppl.product_id
+				left outer join
+			$db.stock s on s.stock_id = pl.stock_id
+				left outer join
+			$db.product_stock ps on ps.stock_id = s.stock_id and p.product_id = ps.product_id 
+		where 1 = 1
+		and ( m.id_marque <> pb.reference
+		or a.reference <> p.reference
+		or c.id_categorie <> pc.reference
+		or f.id_famille <> pg.reference
+		or t.prix_unit_ht <> ppl.list_price 
+		or (t.prix_unit_ht * (1-(t.remise1/100)) * (1-(t.remise2/100)) * (1-(t.remise3/100)) * (1-(t.remise4/100))) <> ppl.price
+		or t.remise1 <> ppl.discount_1
+		or t.remise2 <> ppl.discount_2
+		or t.remise3 <> ppl.discount_3
+		or t.remise4 <> ppl.discount_4
+		or t.stock <> ps.available_stock
+		or t.flag_availability <> ppl.flag_active
+		or t.flag_new <> ppl.is_new
+		or t.flag_liquidation <> ppl.is_liquidation
+		or t.flag_promo <> ppl.is_promotional
+		)
+		LIMIT $limit";
+		return $sql;
 	}
 }

@@ -126,6 +126,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 			'akilia syncapi' => 'Synchronize API tokens with akilia.',
 			'akilia listproductpictures' => 'List all product pictures',
 			'akilia archiveproductpictures' => 'Move archived product pictures (prompt)',
+			'akilia checksynchro' => 'Check synchronization for errors',
         );
     }
 			

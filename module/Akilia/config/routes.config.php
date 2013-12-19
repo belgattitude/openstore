@@ -60,6 +60,16 @@ return array(
 						)
 					)
 				),				
+				'checksynchro' => array(
+					'options' => array(
+						'route' => 'akilia checksynchro',
+						'defaults' => array(
+							//'__NAMESPACE__' => 'Openstore\Controller',
+							'controller' => 'Akilia\Controller\Console',
+							'action' => 'checksynchro'
+						)
+					)
+				),					
 			)
 		)
 	),

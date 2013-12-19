@@ -38,6 +38,9 @@ return array(
 					
 				)
 			    */
+			),
+			'checker' => array(
+				
 			)
 		)
 	),
