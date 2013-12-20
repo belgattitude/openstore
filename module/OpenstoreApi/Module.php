@@ -106,6 +106,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 							'charset' => 'ISO-8859-1',
 							'field_separator' => CSVWriter::SEPARATOR_TAB,
 							'line_separator' => CSVWriter::SEPARATOR_NEWLINE_UNIX,
+							'enclosure' => '"',
+							'escape' => '"'
 							
 						);
 						$csvWriter = new CSVWriter($vars->getSource());
