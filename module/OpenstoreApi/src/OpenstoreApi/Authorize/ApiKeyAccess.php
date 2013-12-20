@@ -12,6 +12,7 @@ use Zend\Db\Sql\Expression;
 
 
 use Soluble\Normalist\SyntheticTable;
+use Soluble\Normalist\SyntheticRecord;
 use Soluble\Normalist\Exception as NormalistException;
 
 
@@ -81,6 +82,32 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface
 		$this->api_id = $record->api_id;
 	}
 	
+
+	/**
+	 * 
+	 * @param string $service_reference
+	 * @return SyntheticRecord
+	 * @throws Exception\ServiceUnavailableException
+	 */
+	public function addLog($service_reference)
+	{
+		
+		$service = $this->table->findOneBy('api_service', array('reference' => $service_reference));
+		if (!$service) {
+			throw new Exception\ServiceUnavailableException("Service '$service_reference' unavailable or not exists");
+		}
+		
+		$data = array(
+					'api_id' => $this->api_id,
+					'service_id' => $service->service_id,
+					'remote_ip' => $_SERVER['REMOTE_ADDR'],
+					'message' => $_SERVER['REQUEST_URI'],
+					'created_at' => date('Y-m-d H:i:s'),
+				);
+		$api_key_log = $this->table->insert('api_key_log', $data);
+		
+		return $api_key_log;
+	}
 	
 	
 	

@@ -81,7 +81,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 				case 'json' :
 					if ($vars instanceof FlexStoreInterface) {
 						$jsonWriter = new JsonWriter($vars->getSource());
-						$jsonWriter->setDebug($debug = true);
+						$jsonWriter->setDebug($debug = false);
 						$jsonWriter->send();
 						die();
 					} else {

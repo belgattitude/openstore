@@ -43,17 +43,14 @@ class ProductCatalogController extends AbstractRestfulController
 	public function getList() 
 	{
 
-		$this->apiKeyAccess->checkServiceAccess("2000-ProductCatalog");
-
 		$params = $this->params()->fromQuery();
-		
-		$pricelist = $params['pricelist'];
-		if (!$this->apiKeyAccess->checkPricelistAccess($pricelist)) {
-			throw new \Exception('cool');
-		}
+		$this->apiKeyAccess->checkServiceAccess("2000-ProductCatalog");
+		$this->apiKeyAccess->checkPricelistAccess($params['pricelist']);
 		
 		
+		$api_key_log = $this->apiKeyAccess->addLog("2000-ProductCatalog");		
 		$store = $this->catalogService->getList($params);
+		
 		return $store;
 	}
 

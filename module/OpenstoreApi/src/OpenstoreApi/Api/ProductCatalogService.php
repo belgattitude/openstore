@@ -6,10 +6,13 @@ use Zend\Db\Sql\Expression;
 use Soluble\FlexStore\FlexStore;
 
 class ProductCatalogService extends AbstractService {
-	
-	
-	
-	protected function checkListParams($params) {
+
+	/**
+	 * 
+	 * @param array $params
+	 * @throws \Exception
+	 */
+	protected function checkListParams(array $params) {
 		$required_params = array(
 			'pricelist', 
 			'language');
@@ -108,9 +111,9 @@ class ProductCatalogService extends AbstractService {
 			'sale_minimum_qty'		=> new Expression('ppl.sale_minimum_qty'),
 			
 			'on_stock'				=> new Expression('if (ps.available_stock > 0, 1, 0)'),
-			'available_stock'		=> new Expression("LEAST(ps.available_stock, $max_stock)"),
+			'available_stock'		=> new Expression("LEAST(GREATEST(ps.available_stock, 0), $max_stock)"),
 			'next_available_stock_at' => new Expression('ps.next_available_stock_at'),
-			'next_available_stock'  => new Expression("LEAST(ps.next_available_stock, $max_stock)"),
+			'next_available_stock'  => new Expression("LEAST(GREATEST(ps.next_available_stock, 0), $max_stock)"),
 			'stock_updated_at'		=> new Expression('ps.updated_at'),
 			
 			'product_barcode_ean13'	=> new Expression('p.barcode_ean13'),
