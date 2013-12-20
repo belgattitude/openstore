@@ -6,6 +6,11 @@ use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
+use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Expression;
+
+
 use Soluble\Normalist\SyntheticTable;
 use Soluble\Normalist\Exception as NormalistException;
 
@@ -79,10 +84,12 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface
 	
 	
 	
-	
 	/**
 	 * 
 	 * @param string $service_reference
+	 * @return \OpenstoreApi\Authorize\ApiKeyAccess
+	 * @throws Exception\ServiceUnavailableException
+	 * @throws Exception\ForbiddenServiceException
 	 */
 	public function checkServiceAccess($service_reference) 
 	{
@@ -117,9 +124,25 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface
 		$api_id = $this->api_id;
 		$api_key = $this->api_key;
 		$customers = $this->table->select('api_key_customer')->where(array('api_id' => $api_id))->execute();
-		
 		$customers = array_column($customers->toArray(), 'customer_id');
-		return $cutomers;
+		return $customers;
+	}
+	
+	
+	/**
+	 * 
+	 * @param string $pricelist
+	 * @return \OpenstoreApi\Authorize\ApiKeyAccess
+	 * @throws Exception\ForbiddenServiceException
+	 */
+	public function checkPricelistAccess($pricelist) 
+	{
+		$pricelists = $this->getPricelists();
+		if (!in_array($pricelist, $pricelists)) {
+			$api_key = $this->api_key;
+			throw new Exception\ForbiddenServiceException("Not allowed, api key '$api_key' does not provide access to pricelist '$pricelist'.");			
+		}
+		return $this;
 	}
 	
 	/**
@@ -128,9 +151,22 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface
 	public function getPricelists() 
 	{
 		$customers = $this->getCustomers();
-		$sql = new Sql($this->adapter);
-		//$select = $sql->
-		//return $pricelists;
+		$pricelists = array();
+		foreach ($customers as $customer_id) {
+			$sql = new Sql($this->adapter);
+			$select = $sql->select();
+			$select->from(array('cp' => 'customer_pricelist'), array())
+					->join(array('pl' => 'pricelist'), new Expression('cp.pricelist_id = pl.pricelist_id'), array())
+					->where(array('customer_id' => $customer_id))
+					->quantifier('DISTINCT')
+					->columns(array(
+						'pricelist' => new Expression('pl.reference')
+					), false);
+			$sql_string = $sql->getSqlStringForSqlObject($select); 
+			$result = array_column($this->adapter->query($sql_string, Adapter::QUERY_MODE_EXECUTE)->toArray(), 'pricelist');
+			$pricelists = array_merge($pricelists, $result);
+		}
+		return array_unique($pricelists);
 	}
 	
 	
