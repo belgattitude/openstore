@@ -566,6 +566,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 							activated_at = p.created_at,
 							legacy_synchro_at = '{$this->legacy_synchro_at}'
 						 ";
+							
 			$this->executeSQL("Replace product pricelist", $replace);
 			
 			
