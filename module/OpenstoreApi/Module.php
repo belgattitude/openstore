@@ -65,7 +65,6 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 		$routeMatch = $e->getRouteMatch();
 		if ($routeMatch) {
 			$format = $routeMatch->getParam('format', false);
-
 			if ($e->getResult() instanceof \Zend\View\Model\ViewModel) {
 				if (is_array($e->getResult()->getVariables())) {
 					$vars = $e->getResult()->getVariables();
@@ -102,14 +101,20 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 					break;
 				case 'csv' :
 					if ($vars instanceof FlexStoreInterface) {
+						
 						$options = array(
-							'charset' => 'ISO-8859-1',
 							'field_separator' => CSVWriter::SEPARATOR_TAB,
 							'line_separator' => CSVWriter::SEPARATOR_NEWLINE_UNIX,
 							'enclosure' => '"',
 							'escape' => '"'
 							
 						);
+
+						$charset = trim($_GET['charset']);
+						if ($charset != '') {
+							$options['charset'] = $charset;
+						}
+						
 						$csvWriter = new CSVWriter($vars->getSource());
 						$csvWriter->setOptions($options);
 						$csvWriter->send();
