@@ -121,14 +121,66 @@ class ConsoleController extends AbstractActionController
 		}
 	}
 	
-	
-    public function akiliasyncdbAction()
+	public function relocategroupcategAction()
 	{
-		$em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-		$zendDb      = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-		$synchronizer = new Akilia\Synchronizer($em, $zendDb);
-		$synchronizer->synchronizeAll();	
+		$em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');		
+		
+		// Step 1: Adding categories
+		
+		$root_reference = 'ROOT';
 
-    }
+		// If group categ does not exists
+		$rootCategory = $em->getRepository('Openstore\Entity\ProductCategory')->findOneBy(array('reference' => $root_reference));
+		if ($rootCategory === null) {
+			$rootCategory = new \Openstore\Entity\ProductCategory();
+			$rootCategory->setReference($root_reference);
+			$rootCategory->setTitle('ROOT');
+			$em->persist($rootCategory);
+			$em->flush();
+		}
+		
+		// Select all product groups
+		$select = "
+			select 
+				pg.group_id,
+				pg.reference,
+				pg.title,
+				pg.legacy_mapping,
+				pc.category_id
+			from product_group pg
+			left outer join product_category pc on pc.legacy_mapping = pg.legacy_mapping			
+		";
+		
+		$rows = $em->getConnection()->query($select)->fetchAll();
+		
+		foreach($rows as $row) {
+			if ($row['category_id'] === null) {
+				$pc = new \Openstore\Entity\ProductCategory;
+			} else {
+				$pc = $em->find('Openstore\Entity\ProductCategory', $row['category_id']);
+			}
+			$pc->setParent($rootCategory);
+			$pc->setTitle($row['title']);
+			$pc->setReference($row['reference']);
+			$pc->setLegacyMapping($row['legacy_mapping']);			
+			$em->persist($pc);
+		}
+		$em->flush();	
+		
+		// Step 2, putting products in group
+		
+		$update = "
+			update product p
+			inner join product_group pg on pg.group_id = p.group_id
+			inner join product_category pc on pc.legacy_mapping = pg.legacy_mapping
+			set p.category_id = kjpc.category_id
+		";
+		
+		
+		$result = $em->getConnection()->query($update);
+		
+	}	
+
+	
 	
 }

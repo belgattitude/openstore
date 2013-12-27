@@ -54,6 +54,16 @@ return array(
 						)
 					)
 				),
+				'openstore-relocategroupcateg' => array(
+					'options' => array(
+						'route' => 'openstore relocategroupcateg',
+						'defaults' => array(
+							//'__NAMESPACE__' => 'Openstore\Controller',
+							'controller' => 'Openstore\Controller\Console',
+							'action' => 'relocategroupcateg'
+						)
+					)
+				),
 				
 				'openstore-clearcache' => array(
 					'options' => array(

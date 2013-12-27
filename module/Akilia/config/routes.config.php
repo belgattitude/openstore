@@ -28,7 +28,6 @@ return array(
 						)
 					)
 				),
-
 				'syncdb' => array(
 					'options' => array(
 						'route' => 'akilia syncdb',

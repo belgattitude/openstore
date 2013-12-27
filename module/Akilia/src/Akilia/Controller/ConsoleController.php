@@ -28,6 +28,8 @@ class ConsoleController extends AbstractActionController
 		$synchronizer->setConfiguration($configuration['synchronizer']);
 		$synchronizer->synchronizeAll();	
     }
+	
+
 
     public function syncapiAction()
 	{
