@@ -173,7 +173,7 @@ class ConsoleController extends AbstractActionController
 			update product p
 			inner join product_group pg on pg.group_id = p.group_id
 			inner join product_category pc on pc.legacy_mapping = pg.legacy_mapping
-			set p.category_id = kjpc.category_id
+			set p.category_id = pc.category_id
 		";
 		
 		
