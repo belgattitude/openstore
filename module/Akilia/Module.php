@@ -123,6 +123,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 			'akilia setup' => 'Dummy setup action.',
             'akilia syncdb' => 'Synchronize with akilia database.',
 			'akilia syncmedia' => 'Synchronize product pictures with akilia.',
+			'akilia syncstock' => 'Synchronize product stocks with akilia.',
 			'akilia syncapi' => 'Synchronize API tokens with akilia.',
 			'akilia listproductpictures' => 'List all product pictures',
 			'akilia archiveproductpictures' => 'Move archived product pictures (prompt)',

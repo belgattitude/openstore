@@ -663,25 +663,27 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 						available_stock,
 						theoretical_stock,
 						legacy_synchro_at,
-						stock_updated_at
+						updated_at
 					)
 
-					select t.id_article,
+					select distinct t.id_article,
 						   pl.stock_id as stock_id,
 						   t.stock,
 						   t.stock_theorique,
-						'{$this->legacy_synchro_at}' as legacy_synchro_at,
-							t.date_synchro
+						   '{$this->legacy_synchro_at}' as legacy_synchro_at,
+						   t.date_synchro
 
 					from $akilia1Db.art_tarif as t
 					inner join $akilia1Db.article a on t.id_article = a.id_article
 					inner join $db.pricelist pl on t.id_pays = pl.legacy_mapping
 						$pricelist_clause
+					
 					on duplicate key update
-							available_stock = t.stock,
-							theoretical_stock = t.stock_theorique,
+							available_stock = if(product_stock.updated_at > t.date_synchro, product_stock.available_stock, t.stock),
+							theoretical_stock = if(product_stock.updated_at > t.date_synchro, product_stock.theoretical_stock, t.stock_theorique),
 							legacy_synchro_at = '{$this->legacy_synchro_at}',
-							stock_updated_at = t.date_synchro	
+							updated_at = if(product_stock.updated_at > t.date_synchro, product_stock.updated_at, t.date_synchro)						
+
 						 ";
 
 			$this->executeSQL("Replace product stock [$key] ", $replace);

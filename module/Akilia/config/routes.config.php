@@ -49,6 +49,18 @@ return array(
 					)
 				),				
 				
+				'syncstock' => array(
+					'options' => array(
+						'route' => 'akilia syncstock',
+						'defaults' => array(
+							//'__NAMESPACE__' => 'Openstore\Controller',
+							'controller' => 'Akilia\Controller\Console',
+							'action' => 'syncstock'
+						)
+					)
+				),				
+				
+				
 				'syncmedia' => array(
 					'options' => array(
 						'route' => 'akilia syncmedia',
