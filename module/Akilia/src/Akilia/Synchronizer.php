@@ -662,14 +662,16 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 						stock_id,
 						available_stock,
 						theoretical_stock,
-						legacy_synchro_at
+						legacy_synchro_at,
+						stock_updated_at
 					)
 
 					select t.id_article,
 						   pl.stock_id as stock_id,
 						   t.stock,
 						   t.stock_theorique,
-						'{$this->legacy_synchro_at}' as legacy_synchro_at
+						'{$this->legacy_synchro_at}' as legacy_synchro_at,
+							t.date_synchro
 
 					from $akilia1Db.art_tarif as t
 					inner join $akilia1Db.article a on t.id_article = a.id_article
@@ -678,7 +680,8 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 					on duplicate key update
 							available_stock = t.stock,
 							theoretical_stock = t.stock_theorique,
-							legacy_synchro_at = '{$this->legacy_synchro_at}'
+							legacy_synchro_at = '{$this->legacy_synchro_at}',
+							stock_updated_at = t.date_synchro	
 						 ";
 
 			$this->executeSQL("Replace product stock [$key] ", $replace);
@@ -690,7 +693,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		// 2. Deleting - old links in case it changes
 		$delete = "
 		    delete from $db.product_stock
-			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+			where legacy_synchro_at < '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
 		$this->executeSQL("Delete eventual removed product_stock", $delete);		
 		
