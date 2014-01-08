@@ -77,7 +77,7 @@ class ProductCatalogService extends AbstractService {
 						new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), 
 						array(), $select::JOIN_LEFT);
 				
-		$max_stock = 20;		
+		$max_stock = 30;		
 				
 		/*
 		    Liquidation
