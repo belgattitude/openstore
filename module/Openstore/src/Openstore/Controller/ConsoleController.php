@@ -176,7 +176,6 @@ class ConsoleController extends AbstractActionController
 			set p.category_id = pc.category_id
 		";
 		
-		
 		$result = $em->getConnection()->query($update);
 		
 	}	
