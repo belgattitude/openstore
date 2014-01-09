@@ -50,6 +50,7 @@ class ProductUnit implements InputFilterAwareInterface
 	 */
 	private $reference;
 
+	
 
 	/**
 	 * @ORM\Column(type="string", length=80, nullable=true)

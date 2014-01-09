@@ -23,13 +23,24 @@ class Order extends AbstractModel  {
 	 * @param array $data
 	 * @return SyntheticRecord
 	 */
-	function create($data)
+	function create(array $data)
 	{
 		$table = new SyntheticTable($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
 		
-		$customer_id  = $data['customer_id'];
-		$pricelist_id = $data['pricelist_id'];
-		$type_id	  = $data['type_id'];
+		
+		$customer_id		= $data['customer_id'];
+		$pricelist_id		= $data['pricelist_id'];
+		$type_id			= $data['type_id'];
+		$user_id			= $data['user_id'];
+		$reference			= $data['reference'];
+		$customer_reference	= $data['customer_reference'];
+		$customer_comment	= $data['customer_comment'];
+		$document_date		= $data['document_date'];
+		$expires_at			= $data['expires_at'];
+		$created_at			= $data['created_at'];
+		$updated_at			= $data['updated_at'];
+		$created_by			= $data['created_by'];
+		$updated_by			= $data['updated_by'];
 
 		if (!array_key_exists('status_id', $data)) {
 			$default_status = $table->findOneBy('order_status', array('flag_default' => 1));
@@ -46,7 +57,8 @@ class Order extends AbstractModel  {
 				'created_at' => date('Y-m-d H:i:s'),
 				'updated_at' => date('Y-m-d H:i:s'),
 				'status_id'  => $status_id,
-				'type_id'	 => $type_id
+				'type_id'	 => $type_id,
+				'cool'		=> 'test',
 			));
 		} catch(NormalistException\ExceptionInterface $e) {
 			throw $e;
@@ -56,7 +68,7 @@ class Order extends AbstractModel  {
 	}
 
 	
-	function addOrderLine($data)
+	function addOrderLine($order_id, $data)
 	{
 		
 		$product_id		= $this->params()->fromPost('product_id');
