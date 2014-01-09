@@ -16,6 +16,7 @@ use Zend\Session\Config\SessionConfig;
 use Zend\Session\Config\StandardConfig;
 use Zend\Session\Container;
 use HTMLPurifier;
+use Openstore\View\Helper;
 
 //use Zend\Console\Console;
 
@@ -152,7 +153,22 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 			$serviceManager->get('translator')->setLocale($supported_langs[$language]);
 		}
 	}
-
+	/*
+	public function getViewHelperConfig()
+    {
+        return array(
+            'factories' => array(
+				
+                'Params' => function(ServiceLocatorInterface $helpers)
+                {
+                    $services = $helpers->getServiceLocator();
+                    $app = $services->get('Application');
+                    return new Helper\Params($app->getRequest(), $app->getMvcEvent());
+                }
+            ),
+        );
+    }	
+*/
 	/**
 	 * @inheritdoc
 	 */

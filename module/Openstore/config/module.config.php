@@ -38,6 +38,17 @@ return array(
 			'Openstore\Controller\Media'	=> 'Openstore\Controller\MediaController',
 		),
 	),
+	
+	'view_helpers' => array(
+		'factories' => array(
+			'routeparams' => function (\Zend\ServiceManager\AbstractPluginManager $pm) {
+                 $application = $pm->getServiceLocator()->get('Application');
+
+                 return new View\Helper\RouteParams($application->getMvcEvent());
+            },
+			
+		)
+	),
 	'view_manager' => array(
 		'display_not_found_reason' => true,
 		'display_exceptions' => true,

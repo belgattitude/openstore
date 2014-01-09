@@ -364,6 +364,7 @@ $this->url('store/search', array(
 								'<img src="https://www.google.be/images/srpr/logo11w.png" width="30" />',
 								'{{/picture_media_id}}',
 								'<div>{{title}}</div>',
+								
 								'<div style="float: right; style="width: 40px; height: 40px; overflow: hidden; border: 1px solid #E6E6E6; margin-right: 5px;>',
 								'{{reference}}',
 								'</div>',
@@ -377,10 +378,10 @@ $this->url('store/search', array(
 						var new_location = '';
 						if (data_set == 'dataset_brand_globalsearch') {
 							var brand_reference = data.reference;
-							new_location = '<?= $this->url('store/browse', array(), array(), false); ?>' + '/brands/' + brand_reference;
+							new_location = '<?= $this->url('store/browse', array('pricelist' => $this->routeparams('pricelist'), 'language' => $this->routeParams('language')), array(), false); ?>' + '/brands/' + brand_reference;
 						} else if (data_set == 'dataset_product_globalsearch') {
 							var product_id = data.product_id;
-							new_location = '<?= $this->url('store/product', array('product_id' => ''), array(), false); ?>' + product_id;
+							new_location = '<?= $this->url('store/product', array('pricelist' => $this->routeparams('pricelist'), 'language' => $this->routeParams('language'), 'product_id' => ''), false); ?>' + product_id;
 						}
 						if (new_location != '') {
 							document.location.href = new_location;
