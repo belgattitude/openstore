@@ -8,6 +8,8 @@ use Soluble\Normalist\SyntheticTable;
 use Soluble\Normalist\Exception as NormalistException;
 use Soluble\Normalist\SyntheticRecord;
 
+use ArrayObject;
+
 class Order extends AbstractModel  {
 
 	
@@ -20,46 +22,26 @@ class Order extends AbstractModel  {
 	
 	/**
 	 * 
-	 * @param array $data
+	 * @param ArrayObject $data
 	 * @return SyntheticRecord
 	 */
-	function create(array $data)
+	function create(ArrayObject $data)
 	{
 		$table = new SyntheticTable($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
-		
-		
-		$customer_id		= $data['customer_id'];
-		$pricelist_id		= $data['pricelist_id'];
-		$type_id			= $data['type_id'];
-		$user_id			= $data['user_id'];
-		$reference			= $data['reference'];
-		$customer_reference	= $data['customer_reference'];
-		$customer_comment	= $data['customer_comment'];
-		$document_date		= $data['document_date'];
-		$expires_at			= $data['expires_at'];
-		$created_at			= $data['created_at'];
-		$updated_at			= $data['updated_at'];
-		$created_by			= $data['created_by'];
-		$updated_by			= $data['updated_by'];
+		$d = $table->getRecordCleanedData('order', $data);
 
-		if (!array_key_exists('status_id', $data)) {
+		if (!$d->offsetExists('status_id')) {
 			$default_status = $table->findOneBy('order_status', array('flag_default' => 1));
-			$status_id = $default_status['status_id'];
-		} else {
-			$status_id = $data['status_id'];
-		}
+			$d['status_id'] = $default_status['status_id'];
+		} 
 		
+		$now = date('Y-m-d H:i:s');
+		if (!$d->offsetExists('created_at')) $d['created_at'] = $now;
+		if (!$d->offsetExists('updated_at')) $d['updated_at'] = $now;
+		if (!$d->offsetExists('document_date')) $d['document_date'] = $now;
 		
 		try {
-			$order = $table->insert('order', array(
-				'customer_id' => $customer_id,
-				'pricelist_id' => $pricelist_id,
-				'created_at' => date('Y-m-d H:i:s'),
-				'updated_at' => date('Y-m-d H:i:s'),
-				'status_id'  => $status_id,
-				'type_id'	 => $type_id,
-				'cool'		=> 'test',
-			));
+			$order = $table->insert('order', $d);
 		} catch(NormalistException\ExceptionInterface $e) {
 			throw $e;
 		} 
@@ -68,7 +50,7 @@ class Order extends AbstractModel  {
 	}
 
 	
-	function addOrderLine($order_id, $data)
+	function addOrderLine($order_id, ArrayObject $data)
 	{
 		
 		$product_id		= $this->params()->fromPost('product_id');

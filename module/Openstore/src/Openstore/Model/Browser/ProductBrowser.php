@@ -169,7 +169,7 @@ class ProductBrowser extends AbstractBrowser {
 			$qclauses = array(
 				"p.reference like $qRef",
 				"p.title like $qTitle",
-				"p.18.title like $qTitle",
+				"p18.title like $qTitle",
 				"p.display_reference like $qRef"
 			);
 			$select->where("(" . join(' or ', $qclauses) .")");
