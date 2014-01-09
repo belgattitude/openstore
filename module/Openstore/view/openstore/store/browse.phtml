@@ -21,7 +21,7 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 				<?php $browse_filter = $this->searchParams->getFilter()->getName() ?>
 				<ul class="nav nav-tabs pull-right">
 					<li <?= ($browse_filter == '' || $browse_filter == 'all') ? 'class="active"' : '' ?>>
-						<a href="<?= $this->url('store/browse', array('page' => 1, 'filter' => null)); ?>">All products</a>
+						<a href="<?= $this->url('store/browse', array('pricelist' => $this->routeparams('pricelist'), 'language' => $this->routeParams('language'), 'page' => 1, 'filter' => null)); ?>">All products</a>
 					</li>
 					<li <?= ($browse_filter == 'promos') ? 'class="active"' : '' ?>>
 						<a href="<?= $this->url('store/browse', array('page' => 1, 'filter' => 'promos'), array(), $reuseMatchedParams = true); ?>">Promos</a>	
