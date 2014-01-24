@@ -1,15 +1,15 @@
 <?php
-namespace Openstore;
+namespace Openstore\Catalog;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Db\Adapter\AdapterAwareInterface;
-use Openstore\ConfigurationAwareInterface;
-use Openstore\Catalog\ProductFilters;
 
 
-class PriceManager implements ServiceLocatorAwareInterface, AdapterAwareInterface, ConfigurationAwareInterface
+
+
+class PriceManager implements ServiceLocatorAwareInterface, AdapterAwareInterface
 {
 	/**
 	 * @var ServiceLocatorInterface

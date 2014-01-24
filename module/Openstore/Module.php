@@ -178,7 +178,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 			//'ZendDeveloperTools\ReportInterface' => 'ZendDeveloperTools\Report',
 			),
 			'invokables' => array(
-				'Model\Order' => 'Openstore\Model\Order',
+				'Model\Order' => 'Openstore\Order\Model\Order',
 				'Model\Product' => 'Openstore\Model\Product',
 				'Model\Category' => 'Openstore\Model\Category',
 				'Model\Brand' => 'Openstore\Model\Brand',

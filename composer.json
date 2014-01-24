@@ -34,6 +34,9 @@
 		"knplabs/gaufrette": "0.1.x",
 		"imagine/Imagine" : "dev-master"
 		 
+	},
+	"require-dev": {
+		"phpunit/phpunit": "~3.7"
 	}
 }
 
