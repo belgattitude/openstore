@@ -126,7 +126,6 @@ class OrderTest extends AbstractConsoleControllerTestCase
 
 			// Test cascade relationship
 			$this->assertFalse($st->exists('order_line', $line_id));
-		
 		}
 		
 	}

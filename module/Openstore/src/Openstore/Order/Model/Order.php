@@ -80,7 +80,6 @@ class Order extends AbstractModel  {
 	 */
 	function addOrderLine($order_id, ArrayObject $data)
 	{
-		
 		$st = new SyntheticTable($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
 		
 		$d = $st->getRecordCleanedData('order_line', $data);		
@@ -116,18 +115,9 @@ class Order extends AbstractModel  {
 			// Use the priceManager
 			$service	  = $this->serviceLocator->get('Openstore\Service');
 			$productModel = $service->getModel('Model\Product');			
-			
-			$pricelist_reference = $order->getParent('pricelist')->reference;
-			$product = $productModel->getBrowser()->setSearchParams(
-								[
-									'id'		 => $d['product_id'],
-									'language'	 => '',
-									'pricelist'  => $pricelist_reference,
-								])
-								->getStore()->getData()->current();
-			
+			$product = $productModel->getInfo($d['product_id'], $order->getParent('pricelist')->pricelist_id);
 			if (!$product) {
-				throw new Exception\InvalidProductException("Product '" . $d['product_id'] . "' is not active in pricelist '$pricelist_reference'");
+				throw new Exception\InvalidProductException("Product '" . $d['product_id'] . "' is not active in pricelist '{$order->getParent('pricelist')->pricelist_id}'");
 			}
 			
 			$d['price'] = $product['price'] * $d['quantity'];
@@ -135,9 +125,7 @@ class Order extends AbstractModel  {
 			$d['discount_2'] = $product['discount_2'];
 			$d['discount_3'] = $product['discount_3'];
 			$d['discount_4'] = $product['discount_4'];
-			
 		}
-		
 		
 		try {
 			$line = $st->insert('order_line', $d);
