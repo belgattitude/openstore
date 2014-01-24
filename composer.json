@@ -31,7 +31,7 @@
 		"ezyang/htmlpurifier": ">=4.5.0",
 		"neilime/zf2-twb-bundle": "dev-master",
 		"ghislainf/zf2-whoops": "dev-master",
-		"knplabs/gaufrette": "0.1.x",
+		"knplabs/gaufrette": "0.1.*",
 		"imagine/Imagine" : "dev-master"
 		 
 	},
