@@ -104,7 +104,7 @@ class SHopcartControllerControllerTest extends AbstractHttpControllerTestCase
 		
 		$this->assertFalse($decoded['success']);
 		
-		var_dump($decoded);die();
+		
 
 	}	
 	
