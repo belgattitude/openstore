@@ -2,6 +2,6 @@
 
 namespace Openstore\Order\Model\Exception;
 
-class InvalidOrderException extends \InvalidArgumentException {
+class InvalidOrderException extends \InvalidArgumentException implements ExceptionInterface {
 	
 };

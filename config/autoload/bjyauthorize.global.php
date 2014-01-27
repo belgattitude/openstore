@@ -140,7 +140,7 @@ return array(
 				// Shopcart routes
 				array('route' => 'shopcart', 'roles' => array('customer', 'admin')),
 				//array('route' => 'shopcart/add_product', 'roles' => array('customer', 'admin')),
-				array('route' => 'shopcart/default', 'roles' => array('customer', 'admin')),
+				array('route' => 'shopcart/actions', 'roles' => array('customer', 'admin')),
 				//array('route' => 'shopcart/addProduct', 'roles' => array('customer', 'admin')),
 				
 				

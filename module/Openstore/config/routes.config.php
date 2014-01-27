@@ -217,7 +217,7 @@ return array(
 			
 			
 			'shopcart' => array(
-				'type' => 'Zend\Mvc\Router\Http\Literal',
+				'type' => 'Segment',
 				'options' => array(
 					'route' => '/shopcart',
 					'defaults' => array(
@@ -228,21 +228,20 @@ return array(
 				),
 				'may_terminate' => true,
 				'child_routes' => array(
-					'default' => array(
+					'actions' => array(
 						'type' => 'Segment',
 						'options' => array(
 							'route' => '/[:action]',
-							//'route' => '/[:controller[/:action]]',
 							'constraints' => array(
-								//'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-								'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-							),
-							'defaults' => array(
-								//'controller' => 'Openstore\Controller\Shopcart',
-							),
-						),
+								'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
+							)
+						)
+						
 					),
-				),
+					
+					
+				)
+				
 			),
 			/**
 			 * BJYAuthorize

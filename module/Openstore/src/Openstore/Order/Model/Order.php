@@ -49,11 +49,11 @@ class Order extends AbstractModel  {
 		if (!$d->offsetExists('document_date')) $d['document_date'] = $now;
 
 		// Validation
-		if (!$st->exists('customer', $d['customer_id'])) {
+		if (!$d->offsetExists('customer_id') || !$st->exists('customer', $d['customer_id'])) {
 			throw new Exception\InvalidCustomerException("Customer '" . $d['customer_id'] . "' does not exists.");
 		} 
 		
-		if (!$st->exists('pricelist', $d['pricelist_id'])) {
+		if (!$d->offsetExists('pricelist_id') || !$st->exists('pricelist', $d['pricelist_id'])) {
 			throw new Exception\InvalidPricelistException("Pricelist '" . $d['pricelist_id'] . "' does not exists.");
 		} 
 		
@@ -90,7 +90,7 @@ class Order extends AbstractModel  {
 			throw new Exception\InvalidOrderException("Order '$order_id' does not exists.");
 		}
 		
-		if (!$st->find('product', $d['product_id'])) {
+		if ($d['product_id'] == '' || !$st->find('product', $d['product_id'])) {
 			throw new Exception\InvalidProductException("Product '" . $d['product_id'] . " does not exists.");
 		}
 		
