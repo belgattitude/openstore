@@ -82,7 +82,7 @@ class Pricelist implements InputFilterAwareInterface
 	/**
 	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the pricelist is public"})
 	 */
-	private $is_public;	
+	private $flag_public;	
 	
 	
 	/**
