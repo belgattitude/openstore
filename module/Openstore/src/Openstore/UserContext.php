@@ -33,15 +33,8 @@ class UserContext implements ServiceLocatorAwareInterface
 	
 	public function initialize()
 	{
-		$st = $this->serviceLocator->get('Soluble\Normalist\SyntheticTable');
-		//$st = new SyntheticTable();
-		$rows = $st->all('pricelist', array('pricelist_id', 'reference'));
-		var_dump($rows->toArray());
-		die();
 
 		if (!$this->container['is_initialized']) {
-
-			
 			
 			$user_id = $this->container['user_id'];
 			if ($user_id !== null) {
@@ -56,18 +49,20 @@ class UserContext implements ServiceLocatorAwareInterface
 				
 			} else {
 				
+				$st = $this->serviceLocator->get('Soluble\Normalist\SyntheticTable');
+		
+				$all_pricelists = $st->getArrayColumn('pricelist', 'reference', 'pricelist_id');
+				
+				
 				// PUBLIC capabilitities
 				// TODO get pricelist from table
 				$this->container['caps'] = array();
 				$this->container['caps']['roles']	   = array('guest');
-				$this->container['caps']['pricelists'] = $userCap->getPricelists();
-				$this->container['caps']['customers']  = $userCap->getCustomers();	
+				$this->container['caps']['pricelists'] = $all_pricelists;
+				$this->container['caps']['customers']  = array();	
 				
-				$this->container['roles'] = array('guest');
-				$this->container['pricelists'] = array('FR');
-				$this->container['customers'] = array();
 			}
-			$this->container['is_initalized'] = true;
+			$this->container['is_initialized'] = true;
 		}
 	}
 	

@@ -85,6 +85,7 @@ class UserCapabilities implements ServiceLocatorAwareInterface
 	
 	/**
 	 * Return pricelists the user can have
+	 * @return array associative array with pricelist_id as key and pricelist reference as value
 	 */
 	function getPricelists() {
 		
@@ -93,6 +94,7 @@ class UserCapabilities implements ServiceLocatorAwareInterface
 		$user_id = $this->getUserId();
 		
 		if ($this->hasRole('admin')) {
+			
 			$plModel = $this->getService()->getModel('Model\Pricelist');
 			$pricelists = array_column($plModel->getPricelists(), 'reference', 'pricelist_id');	
 		} elseif ($this->hasRole('customer')) {
@@ -105,14 +107,16 @@ class UserCapabilities implements ServiceLocatorAwareInterface
 			$userModel = $this->getService()->getModel('Model\User');
 			$pricelists = array_column($userModel->getUserPricelists($user_id), 'reference', 'pricelist_id');	
 		} 
+		
+		return $pricelists;
 	}
 	
 	/**
 	 * 
-	 * @param string $pricelist
+	 * @param string $pricelist Pricelist reference
 	 * @return boolean
 	 */
-	function hasPricelist($pricelist) {
+	function hasAccessToPricelist($pricelist) {
 		return in_array($pricelist, $this->getPricelists());
 	}
 	
@@ -123,13 +127,15 @@ class UserCapabilities implements ServiceLocatorAwareInterface
 
 		$customers = array();
 		if ($this->hasRole('admin')) {
-			
+			$customers = array();
 		} elseif ($this->hasRole('customer')) {
-			
+			$customerModel = $this->getService()->getModel('Model\Customer');
+			$userModel = $this->getService()->getModel('Model\User');
+			return array($userModel->getCustomerId());
 		} elseif ($this->hasRole('user')) {
-			
+			$customers = array(); // TODO FIX IT
 		} elseif ($this->hasRole('guest')) {
-			
+			$customers = array();
 		}
 		return $customers;
 		
@@ -145,9 +151,13 @@ class UserCapabilities implements ServiceLocatorAwareInterface
 	 * @param int $user_id
 	 * @return boolean 
 	 */
-	static function hasAccessToCustomer($customer_id, $user_id=null)
+	function hasAccessToCustomer($customer_id)
 	{
-		return self::getUserPermission($user_id)->getUserScope()->hasAccessToCustomer($customer_id);
+		if ($this->hasRole('admin')) {
+			return true;
+		}
+		
+		return in_array($customer_id, $this->getCustomers());
 	}
 
 	/**
