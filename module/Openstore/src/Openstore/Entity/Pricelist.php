@@ -18,6 +18,7 @@ use Zend\InputFilter\InputFilterInterface;
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
+ *     @ORM\UniqueConstraint(name="unique_flag_default_idx",columns={"flag_default"})
  *   }, 
  *   options={"comment" = "Pricelist table"}
  * )
@@ -72,6 +73,16 @@ class Pricelist implements InputFilterAwareInterface
 	 */
 	private $description;
 
+
+	/**
+	 * @ORM\Column(type="boolean", nullable=true, options={"default"=null, "comment"="Whether this pricelist is default"})
+	 */
+	private $flag_default;	
+	
+	/**
+	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the pricelist is public"})
+	 */
+	private $is_public;	
 	
 	
 	/**
