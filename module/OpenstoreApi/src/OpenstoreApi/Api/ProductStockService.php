@@ -15,7 +15,7 @@ class ProductStockService extends AbstractService {
 	protected function checkListParams(array $params) {
 		$required_params = array(
 			'pricelist', 
-			'language');
+			);
 		foreach ($required_params as $param) {
 			if (!array_key_exists($param, $params)) {
 				throw new \Exception("Missing required '$param' parameter");
@@ -33,7 +33,7 @@ class ProductStockService extends AbstractService {
 	function getList(array $params=array()) {
 		$this->checkListParams($params);
 		$select = new Select();
-		$lang = $params['language'];
+		$lang = 'en';
 		$pricelist_reference = $params['pricelist'];
 		
 		$select->from(array('p' => 'product'), array())
