@@ -7,13 +7,12 @@ use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 use Zend\Stdlib\Parameters;
 use Zend\Json\Json;
 		
-class SHopcartControllerControllerTest extends AbstractHttpControllerTestCase
+class ShopcartControllerControllerTest extends AbstractHttpControllerTestCase
 {
     public function setUp()
     {
 		
         $this->setApplicationConfig(
-            //include '/var/www/zf2-tutorial/config/application.config.php'
 			include dirname(__FILE__) . '/../../../../../config/application.config.php'	
         );
 		

@@ -9,6 +9,8 @@ use Zend\Session\Container;
 
 use Openstore\Permission\UserCapabilities;
 
+use Soluble\Normalist\SyntheticTable;
+
 class UserContext implements ServiceLocatorAwareInterface
 {
 	/**
@@ -27,22 +29,40 @@ class UserContext implements ServiceLocatorAwareInterface
 	{
 		$this->container = $container;
 	}
+
 	
 	public function initialize()
 	{
+		$st = $this->serviceLocator->get('Soluble\Normalist\SyntheticTable');
+		//$st = new SyntheticTable();
+		$rows = $st->all('pricelist', array('pricelist_id', 'reference'));
+		var_dump($rows->toArray());
+		die();
+
 		if (!$this->container['is_initialized']) {
+
+			
+			
 			$user_id = $this->container['user_id'];
 			if ($user_id !== null) {
 				$userCap = new UserCapabilities($user_id);
 				$userCap->setServiceLocator($this->getServiceLocator());
-						
-				$this->container['roles']	   = $userCap->getRoles();
-				$this->container['pricelists'] = $userCap->getPricelists();
-				//$this->container['customers']  =	
+				
+				$this->container['caps'] = array();
+				$this->container['user_id'] = $user_id;
+				$this->container['caps']['roles']	   = $userCap->getRoles();
+				$this->container['caps']['pricelists'] = $userCap->getPricelists();
+				$this->container['caps']['customers']  = $userCap->getCustomers();	
 				
 			} else {
+				
 				// PUBLIC capabilitities
 				// TODO get pricelist from table
+				$this->container['caps'] = array();
+				$this->container['caps']['roles']	   = array('guest');
+				$this->container['caps']['pricelists'] = $userCap->getPricelists();
+				$this->container['caps']['customers']  = $userCap->getCustomers();	
+				
 				$this->container['roles'] = array('guest');
 				$this->container['pricelists'] = array('FR');
 				$this->container['customers'] = array();

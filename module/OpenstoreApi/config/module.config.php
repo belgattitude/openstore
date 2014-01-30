@@ -34,6 +34,7 @@ return array(
 		'invokables' => array(
 			'OpenstoreApi\Controller\ProductMedia' => 'OpenstoreApi\Controller\ProductMediaController',
 			'OpenstoreApi\Controller\ProductCatalog' => 'OpenstoreApi\Controller\ProductCatalogController',
+			'OpenstoreApi\Controller\ProductStock' => 'OpenstoreApi\Controller\ProductStockController',
 			'OpenstoreApi\Controller\ProductBrand' => 'OpenstoreApi\Controller\ProductBrandController',
 		),
 	),

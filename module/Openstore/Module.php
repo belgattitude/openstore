@@ -133,6 +133,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 					$container->init = 1;
 				}
 			} 
+			
+			
 		//}
 	}
 
