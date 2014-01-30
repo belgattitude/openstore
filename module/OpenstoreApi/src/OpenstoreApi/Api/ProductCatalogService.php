@@ -70,7 +70,7 @@ class ProductCatalogService extends AbstractService {
 						array(), $select::JOIN_LEFT)
 				->join(array('ps' => 'product_stock'),
 						new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'), 
-						array(), $select::JOIN_LEFT)
+						array(), $select::JOIN_INNER)
 				->join(array('pmed' => 'product_media'),
 						new Expression("pmed.product_id = p.product_id and pmed.flag_primary=1"), 
 						array(), $select::JOIN_LEFT)
