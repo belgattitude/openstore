@@ -46,6 +46,10 @@ class UserContext implements ServiceLocatorAwareInterface
 				$this->container['caps']['roles']	   = $userCap->getRoles();
 				$this->container['caps']['pricelists'] = $userCap->getPricelists();
 				$this->container['caps']['customers']  = $userCap->getCustomers();	
+				$this->container['testobject'] = new \Openstore\TestObject();
+				
+				//var_dump($this->container['testobject']->getCustomers());
+				//die();
 				
 			} else {
 				
