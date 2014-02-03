@@ -18,6 +18,8 @@ use Zend\Session\Container;
 use HTMLPurifier;
 use Openstore\View\Helper;
 
+use BjyAuthorize\View\RedirectionStrategy;
+
 //use Zend\Console\Console;
 
 
@@ -61,6 +63,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 		 */
 	}
 
+ 
+	
 	public function onBootstrap(MvcEvent $e) {
 
         $eventManager        = $e->getApplication()->getEventManager();
@@ -69,6 +73,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 
         $this->bootstrapSession($e);
 		$this->configureZfcUser($e);
+		$this->configureUnauthorizedStrategy($e);
 		
 		$eventManager->attach(MvcEvent::EVENT_DISPATCH, array($this, 'onPreDispatch'), 100);
 		$eventManager->attach(MvcEvent::EVENT_FINISH, array($this, 'onFinish'), 100);
@@ -76,6 +81,20 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 		//$translator = $e->getApplication()->getServiceManager()->get('translator');
 		//$translator->setLocale('en_US');
 		//$translator->setFallbackLocale('fr_FR');    		
+	}
+	
+	protected function configureUnauthorizedStrategy(MvcEvent $e) {
+		$eventManager        = $e->getApplication()->getEventManager();
+        $strategy = new RedirectionStrategy();
+
+        // eventually set the route name (default is ZfcUser's login route)
+        //$strategy->setRedirectRoute('zfcuser/login');
+
+        // eventually set the URI to be used for redirects
+        //$strategy->setRedirectUri('http://example.org/login');
+		$strategy->setRedirectUri('/login');
+
+        $eventManager->attach($strategy);		
 	}
 
 	protected function configureZfcUser(MvcEvent $e) {

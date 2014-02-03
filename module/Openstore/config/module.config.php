@@ -6,7 +6,8 @@ return array(
 	'service_manager' => array(
         'factories' => array(
             'Openstore\Authorize\Provider\Identity\OpenstoreDb'
-                => 'Openstore\Authorize\Service\OpenstoreDbIdentityProviderServiceFactory',            
+                => 'Openstore\Authorize\Service\OpenstoreDbIdentityProviderServiceFactory',  
+	
 		),
 		'abstract_factories' => array(
 			'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
@@ -142,7 +143,7 @@ return array(
     'bjyauthorize' => array(
         // Using the authentication identity provider, which basically reads the roles from the auth service's identity
         'identity_provider' => 'BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider',
-
+		'unauthorized_strategy' => 'Openstore\Authorize\View\UnauthorizedStrategy',
         'role_providers'        => array(
             // using an object repository (entity repository) to load all roles into our ACL
             'BjyAuthorize\Provider\Role\ObjectRepositoryProvider' => array(

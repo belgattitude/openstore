@@ -6,6 +6,8 @@ return array(
         // set the 'guest' role as default (must be defined in a role provider)
         'default_role' => 'guest',
 
+		'unauthorized_strategy' => 'BjyAuthorize\View\RedirectionStrategy',
+		
         /* this module uses a meta-role that inherits from any roles that should
          * be applied to the active user. the identity provider tells us which
          * roles the "identity role" should inherit from.

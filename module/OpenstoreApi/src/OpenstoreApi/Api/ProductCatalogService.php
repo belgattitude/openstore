@@ -93,7 +93,7 @@ class ProductCatalogService extends AbstractService {
 			'product_description'	=> new Expression('COALESCE(p18.description, p.description)'),
 			'product_characteristic'=> new Expression('COALESCE(p18.characteristic, p.characteristic)'),
 			
-			'price'					=> new Expression('ppl.price'),
+			'price'					=> new Expression('ROUND(ppl.price, 2)'),
 			'list_price'			=> new Expression('ppl.list_price'),
 			'public_price'			=> new Expression('ppl.public_price'),
 
