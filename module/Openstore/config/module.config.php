@@ -152,6 +152,7 @@ return array(
              ),
         ),
     ),
+					
 	
 	'caches' => array(
         'Cache\SolubleDbMetadata' => array(

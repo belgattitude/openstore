@@ -9,7 +9,7 @@ use Zend\Session\Container;
 
 use Openstore\Permission\UserCapabilities;
 
-use Soluble\Normalist\SyntheticTable;
+
 
 class UserSession implements ServiceLocatorAwareInterface
 {

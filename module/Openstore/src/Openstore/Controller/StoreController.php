@@ -105,8 +105,20 @@ class StoreController extends AbstractActionController
 		return $view;
 	}
 
-	public function browseAction() {
-
+	/**
+	 * @return \Soluble\Normalist\Synthetic\TableManager
+	 */
+	protected function getTableManager()
+    {
+		return $this->getServiceLocator()->get('SolubleNormalist\TableManager');
+	}
+	
+	public function browseAction() 
+	{
+		$tm = $this->getTableManager();
+		$tm->table('product');
+		$tm = $this->getTableManager();
+		
 
 		$view = new ViewModel();
 		$searchParams = SearchParams::createFromRequest($this->params(), $this->getServiceLocator());

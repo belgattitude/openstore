@@ -10,7 +10,7 @@ class IndexController extends AbstractActionController
 {
 	/**
 	 *
-	 * @var \Openstore\Service
+	 * @var Openstore\Service
 	 */
 	protected $service;
 	
@@ -26,6 +26,7 @@ class IndexController extends AbstractActionController
 		
 		$userContext = $this->getServiceLocator()->get('Openstore\UserContext');
 		
+
 		/*
 		$capabilities = $this->getServiceLocator()->get('Openstore\UserCapabilities');
 //		echo '<pre>';

@@ -210,6 +210,9 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 			),
 			'factories' => array(
 				'Soluble\Normalist\SyntheticTable' => 'Soluble\Normalist\Service\SyntheticTableFactory',
+				
+				'SolubleNormalist\TableManager' => 'SolubleNormalist\Service\TableManagerFactory',
+				
 				'Soluble\Media\Converter' => 'Soluble\Media\Converter\Service\MediaConverterFactory',
 				'MMan\Storage' => 'MMan\Service\StorageFactory',
 				'MMan\MediaManager' => 'MMan\Service\MediaManagerFactory',
@@ -330,7 +333,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 		$config = array_merge(
 				include __DIR__ . '/config/module.config.php', 
 				include __DIR__ . '/config/routes.config.php', 
-				include __DIR__ . '/config/openstore.config.php'
+				include __DIR__ . '/config/openstore.config.php',
+				include __DIR__ . '/config/assetic.config.php'
 		);
 		return $config;
 	}

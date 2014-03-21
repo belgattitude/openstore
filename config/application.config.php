@@ -8,7 +8,8 @@ $config = array(
 	'modules' => array(
 		//'Application',
 		//'Zf2Whoops',
-		
+		'AsseticBundle',
+		'SolubleNormalist',
 		'Openstore',
 		'OpenstoreApi',
 		'Akilia',
@@ -17,12 +18,13 @@ $config = array(
 		'ZendDeveloperTools',
 		'BjyProfiler',
 		'DoctrineDataFixtureModule',
-		//'AsseticBundle',
+		
 		'ZfcBase',
 		'ZfcUser',
 		'ZfcUserDoctrineORM',
 		// just to be able to remove it when using console
-		"BjyAuthorize"
+		"BjyAuthorize",
+		
 	),
 	// These are various options for the listeners attached to the ModuleManager
 	'module_listener_options' => array(

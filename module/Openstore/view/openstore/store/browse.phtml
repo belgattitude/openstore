@@ -303,6 +303,33 @@ $image_baseurl = $this->basePath() . '/media/picture/';
 
 ?>
 <script type="text/javascript">
+	/*
+var brandStore = new Bloodhound({
+	datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+	queryTokenizer: Bloodhound.tokenizers.whitespace,
+	remote: '<?= $this->url('store/search', array(
+								'action' => 'brand'
+					 		 //'categories' => $category['reference'],
+							 //'page' => 1
+						    ), 
+			                array(), 
+						    $reuseMatchedParams = true)
+			?>?query=%QUERY'
+
+
+});
+ 
+brandStore.initialize();*/
+/* 
+$('#product_search').typeahead(null, {
+name: 'best-pictures',
+displayKey: 'value',
+source: bestPictures.ttAdapter()
+});*/	
+	
+</script>	
+
+<script type="text/javascript">
 					$('#product_search').typeahead([
 						{
 							name: 'dataset_brand_globalsearch',
