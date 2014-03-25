@@ -6,6 +6,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Soluble\Media\BoxDimension;
 use Soluble\Media\Converter\ImageConverter;
+use Soluble\Normalist\Synthetic\TableManager;
 
 class MediaController extends AbstractActionController
 {
@@ -17,27 +18,32 @@ class MediaController extends AbstractActionController
 
 
 	/**
-	 * @return \Soluble\Normalist\SyntheticTable
+	 * @return TableManager
 	 */
-	function getSyntheticTable() {
-		return $syntheticTable = $this->getServiceLocator()->get('Soluble\Normalist\SyntheticTable');
+	function getTableManager() {
+		return $syntheticTable = $this->getServiceLocator()->get('SolubleNormalist\TableManager');
 	}
 
 	function pictureAction() 
 	{
-		$table = $this->getSyntheticTable();
+		$tm = $this->getTableManager();
 		$type = $this->params()->fromRoute('type');
 		$id   = $this->params()->fromRoute('id');
 		switch ($type) {
 			case 'product' :
-				$product_medias = $table->select('product_media')
-								->join(array('pmt' => 'product_media_type'), 'pmt.type_id = product_media.type_id')
-								->where(array(
-									'product_id' => $id,
-									'flag_primary' => 1,
+				$pmTable = $tm->table('product_media');
+				$search = $pmTable->search('pm')
+						->join(array('pmt' => 'product_media_type'), 'pmt.type_id = pm.type_id')
+						->where(array(
+									'pm.product_id' => $id,
+									'pm.flag_primary' => 1,
 									'pmt.reference' => 'PICTURE'
-								))->execute()->toArray();
-				$media_id = $product_medias[0]['media_id'];
+								))
+						->execute();
+				if ($search->count() > 0) {
+					$media_id = $search->current()->media_id;
+				}
+				
 				break;
 
 			case '' :

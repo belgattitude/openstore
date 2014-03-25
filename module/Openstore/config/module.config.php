@@ -76,6 +76,20 @@ return array(
 			'ViewJsonStrategy',
 		)
 	),
+	// For SolubleNormalist
+	'normalist' => array(
+		'default' => array(
+			'adapter' => array(
+				'adapterLocator' => 'Zend\Db\Adapter\Adapter'
+			),
+			'driver' => array(
+				'driverClass' => 'Soluble\Normalist\Driver\ZeroConfDriver',
+				'params' => array(
+					'path'		=> __DIR__ . '/../src/' . __NAMESPACE__ . '/Normalist',
+				)
+			)
+		)
+	),
 	'doctrine' => array(
 		'driver' => array(
 			__NAMESPACE__ . '_driver' => array(

@@ -13,16 +13,16 @@ class MediaManagerFactory implements FactoryInterface
 {
 	/**
 	 * 
-	 * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
-	 * @return \MMan\MediaManager
+	 * @param ServiceLocatorInterface $serviceLocator
+	 * @return MediaManager
 	 */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
 		$storage = $serviceLocator->get('MMan\Storage');
 		$mediaManager = new MediaManager();
 		$mediaManager->setStorage($storage);
-		$mediaManager->setDbAdapter($serviceLocator->get('Zend\Db\Adapter\Adapter'));
-		$mediaManager->setSyntheticTable($serviceLocator->get('Soluble\Normalist\SyntheticTable'));
+		$tm = $serviceLocator->get('SolubleNormalist\TableManager');
+		$mediaManager->setTableManager($tm);
 		
 		return $mediaManager;
     }

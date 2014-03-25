@@ -146,10 +146,10 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 	}
 	
 	/**
-	 * @return \Soluble\Normalist\SyntheticTable
+	 * @return \Soluble\Normalist\Synthetic\TableManager
 	 */
-	function getSyntheticTable() {
-		return $syntheticTable = $this->getServiceLocator()->get('Soluble\Normalist\SyntheticTable');
+	function getTableManager() {
+		return $this->getServiceLocator()->get('SolubleNormalist\TableManager');
 	}	
 	
 	
@@ -171,14 +171,15 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		
 		$mediaManager = $this->getServiceLocator()->get('MMan/MediaManager');
 		
-		
-		$table = $this->getSyntheticTable();
-		$container = $table->findOneBy('media_container', array('reference' => 'PRODUCT_MEDIAS'));
+		$tm = $this->getTableManager();
+		$mcTable = $tm->table('media_container');
+		$container = $mcTable->findOneBy(array('reference' => 'PRODUCT_MEDIAS'));
 		if (!$container) {
 			throw new \Exception("Cannot find media container 'PRODUCT_MEDIAS'");
 		}
 		
-		$media_type_id = $table->findOneBy('product_media_type', array('reference' => 'PICTURE'))->offsetGet('type_id');
+		$pmtTable = $tm->table('product_media_type');
+		$media_type_id = $pmtTable->findOneBy(array('reference' => 'PICTURE'))->type_id;
 		
 		if ($media_type_id == '') {
 			throw new \Exception("Cannot find PICTURE product media type in your database");
@@ -187,8 +188,9 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		
 		$limit_to_import = 25000;
 		$count = count($list);
-		$product_ids = new \ArrayObject(array_column($table->all('product', array('product_id'))->toArray(), 'product_id', 'product_id'));
-		//$product_ids = new \ArrayObject($table->all('product', array('product_id'))->toArray());
+		$productTable = $tm->table('product');
+		$mediaTable = $tm->table('product_media');
+		$product_ids = $productTable->search()->columns(array('product_id'))->toArrayColumn('product_id', 'product_id');
 		for ($i = 0; ($i < $limit_to_import && $i < $count); $i++) {
 			$infos = $list[$i];
 			//var_dump($infos);
@@ -199,8 +201,8 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 
 			$media_id = $mediaManager->import($importElement, $container['container_id']);
 
-			if ($product_ids->offsetExists($infos['product_id'])) {
-			//if (array_key_exists($infos['product_id'], $product_ids)) {
+			
+			if (array_key_exists($infos['product_id'], $product_ids)) {
 				/*
 				$product_id = $infos['product_id'];
 				echo "- " . count($product_ids) . "\n";
@@ -221,7 +223,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				);
 				try {	
 					echo "[+] Importing product " . $infos['product_id'] . " as media_id $media_id [" . ($i+1) . "/$count]\n";
-					$productMedia = $table->insertOnDuplicateKey('product_media', $data, $duplicate_exclude=array());
+					$productMedia = $mediaTable->insertOnDuplicateKey($data, $duplicate_exclude=array());
 					
 				} catch(\Exception $e) {
 					echo "[Error] Cannot insert : \n";

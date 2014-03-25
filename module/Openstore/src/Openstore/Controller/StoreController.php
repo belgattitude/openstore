@@ -118,6 +118,9 @@ class StoreController extends AbstractActionController
 		$tm = $this->getTableManager();
 		$tm->table('product');
 		$tm = $this->getTableManager();
+		//$rec = $tm->table('product')->findOrFail(1);
+		//var_dump($rec->toArray());
+		//die();
 		
 
 		$view = new ViewModel();

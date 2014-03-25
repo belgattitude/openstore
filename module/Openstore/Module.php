@@ -209,9 +209,6 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 				'Model\Customer' => 'Openstore\Model\Customer',
 			),
 			'factories' => array(
-				'Soluble\Normalist\SyntheticTable' => 'Soluble\Normalist\Service\SyntheticTableFactory',
-				
-				'SolubleNormalist\TableManager' => 'SolubleNormalist\Service\TableManagerFactory',
 				
 				'Soluble\Media\Converter' => 'Soluble\Media\Converter\Service\MediaConverterFactory',
 				'MMan\Storage' => 'MMan\Service\StorageFactory',

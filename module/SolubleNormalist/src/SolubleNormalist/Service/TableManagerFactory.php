@@ -3,10 +3,9 @@
 namespace SolubleNormalist\Service;
 
 use Soluble\Normalist\Synthetic\TableManager;
-use Soluble\Normalist\Driver;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-
+use SolubleNormalist\Service\Exception;
 
 class TableManagerFactory implements FactoryInterface
 {
@@ -17,16 +16,10 @@ class TableManagerFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-
-        $config = $serviceLocator->get('Config');
-		var_dump($config['normalist']);
-		$adapter = $serviceLocator->get('Zend\Db\Adapter\Adapter');
-		$options = array(
-			'alias'		=> 'openstore',
-			'path'		=> null,
-			'version'	=> '1.0.0'
-		);
-        $driver = new Driver\ZeroConfDriver($adapter, $options);
+		$default_connection = 'default';
+		
+        $driver = $serviceLocator->get('SolubleNormalist\Driver');
+		
         $tm = new TableManager($driver);
         return $tm;
 		
