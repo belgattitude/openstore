@@ -7,6 +7,8 @@ return array(
         'factories' => array(
             'Openstore\Authorize\Provider\Identity\OpenstoreDb'
                 => 'Openstore\Authorize\Service\OpenstoreDbIdentityProviderServiceFactory',  
+			'AdapterResourceFactory' 
+				=> 'Openstore\Db\Service\AdapterResourceFactory'
 	
 		),
 		'abstract_factories' => array(

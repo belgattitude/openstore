@@ -1,12 +1,14 @@
 <?php
+
 $dbParams = array(
     //'database'  => 'akilia2_emd',
-	'database'  => 'nuvolia',
-    'username'  => 'root',
-    'password'  => 'lemmings',
-    'hostname'  => 'localhost',
+	//'database'  => 'nuvolia',
+    //'username'  => 'root',
+    //'password'  => 'lemmings',
+    //'hostname'  => 'localhost',
     // buffer_results - only for mysqli buffered queries, skip for others
-    'options' => array('buffer_results' => true)
+    'options' => array('buffer_results' => true	),
+	'charset' => 'UTF8'
 );
 
 
@@ -14,15 +16,24 @@ return array(
     'service_manager' => array(
         'factories' => array(
             'Zend\Db\Adapter\Adapter' => function ($sm) use ($dbParams) {
+				// Takes the driver right from the doctrine connection
+				$dbal = $sm->get('doctrine.connection.orm_default');
+				$mysqli = $dbal->getWrappedConnection()->getWrappedResourceHandle();
+				$driver = new \Zend\Db\Adapter\Driver\Mysqli\Mysqli($mysqli);
+				$adapter = new BjyProfiler\Db\Adapter\ProfilingAdapter($driver);
+				/*
                 $adapter = new BjyProfiler\Db\Adapter\ProfilingAdapter(array(
-                    'driver'    => 'pdo',
-                    'dsn'       => 'mysql:dbname='.$dbParams['database'].';host='.$dbParams['hostname'] . '',
+                    'driver'    => 'mysqli',
+                    //'dsn'       => 'mysql:dbname='.$dbParams['database'].';host='.$dbParams['hostname'] . '',
                     'database'  => $dbParams['database'],
                     'username'  => $dbParams['username'],
                     'password'  => $dbParams['password'],
                     'hostname'  => $dbParams['hostname'],
-					'driver_options' => array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"),
-                ));
+					'options'   => $dbParams['options'],
+					'charset'	=> $dbParams['charset']
+					//'driver_options' => array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"),
+					// For mysqli - 'charset' => 'UTF8'
+                ));*/
 
                if (php_sapi_name() == 'cli') {
                     $logger = new Zend\Log\Logger();
