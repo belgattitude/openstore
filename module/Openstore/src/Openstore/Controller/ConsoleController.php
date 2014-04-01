@@ -1,11 +1,4 @@
 <?php
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
 
 namespace Openstore\Controller;
 
@@ -61,12 +54,12 @@ class ConsoleController extends AbstractActionController
 	{
 		
 		$dir = realpath(__DIR__ . '/../../../../../');
-		$vendor_dir = $dir . '/vendor';
 		$php = "/usr/local/bin/php";
+
 		
 		$commands = array(
-			"$php $vendor_dir/bin/doctrine-module orm:schema:update --force",
-			"$php $vendor_dir/bin/doctrine-module data-fixture:import",
+			"$php $dir/public/index.php orm:schema-tool:update --force",
+			"$php $dir/public/index.php data-fixture:import",
 		);
 		
 		foreach($commands as $command) {
@@ -83,13 +76,13 @@ class ConsoleController extends AbstractActionController
 	 */
 	public function recreatedbAction()
 	{
+		
 		$dir = realpath(__DIR__ . '/../../../../../');
-		$vendor_dir = $dir . '/vendor';
 		$php = "/usr/local/bin/php";
 		
 		$commands = array(
-			"$php $vendor_dir/bin/doctrine-module orm:schema:drop --force",
-			"$php $vendor_dir/bin/doctrine-module orm:schema:create",
+			"$php $dir/public/index.php orm:schema-tool:drop --force",
+			"$php $dir/public/index.php orm:schema-tool:create",
 		);
 		
 		foreach($commands as $command) {
@@ -106,13 +99,14 @@ class ConsoleController extends AbstractActionController
 	public function buildallreloadAction()
 	{
 		$dir = realpath(__DIR__ . '/../../../../../');
-		$vendor_dir = $dir . '/vendor';
+		
 		$php = "/usr/local/bin/php";
 		
+
 		$commands = array(
-			"$php $vendor_dir/bin/doctrine-module orm:schema:drop --force",
-			"$php $vendor_dir/bin/doctrine-module orm:schema:create",
-			"$php $vendor_dir/bin/doctrine-module data-fixture:import",
+			"$php $dir/public/index.php orm:schema-tool:drop --force",
+			"$php $dir/public/index.php orm:schema-tool:create",
+			"$php $dir/public/index.php data-fixture:import",
 		);
 		
 		foreach($commands as $command) {

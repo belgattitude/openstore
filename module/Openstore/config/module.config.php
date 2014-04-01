@@ -132,11 +132,19 @@ return array(
 					'Gedmo\Tree\TreeListener',
 				),
 			),
-		)
+		),
+		'fixture' => array(
+			'Openstore_fixture' => __DIR__ . '/../src/Openstore/Fixtures',
+		),
+		
+		
 	),
+					/*
 	'data-fixture' => array(
 		'location' => __DIR__ . '/../src/Openstore/Fixtures',
 	),
+					 * 
+					 */
 	/*
 	  'di' => array(
 	  'Openstore\Catalog\Browser\BrowserAbstract' => array(

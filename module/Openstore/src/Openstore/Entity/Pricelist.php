@@ -296,7 +296,7 @@ class Pricelist implements InputFilterAwareInterface
 
 	
 	/**
-	 * 
+	 * @return Pricelist
 	 */
 	public function setFlagActive($flag_active)
 	{
@@ -304,6 +304,25 @@ class Pricelist implements InputFilterAwareInterface
 		return $this;
 	}
 	
+
+	/**
+	 * 
+	 * @return boolean
+	 */
+	public function getFlagPublic()
+	{
+		return (boolean) $this->flag_public;
+	}
+
+	
+	/**
+	 * @return Pricelist
+	 */
+	public function setFlagPublic($flag_public)
+	{
+		$this->flag_public = $flag_public;
+		return $this;
+	}
 	
 
 	/**
@@ -318,6 +337,7 @@ class Pricelist implements InputFilterAwareInterface
 	/**
 	 * 
 	 * @param string $created_at
+	 * @return Pricelist
 	 */
 	public function setCreatedAt($created_at)
 	{
@@ -337,6 +357,7 @@ class Pricelist implements InputFilterAwareInterface
 	/**
 	 * 
 	 * @param string $updated_at
+	 * @return Pricelist
 	 */
 	public function setUpdatedAt($updated_at)
 	{
@@ -356,6 +377,7 @@ class Pricelist implements InputFilterAwareInterface
 	/**
 	 * Set creator username
 	 * @param string $created_by
+	 * @return Pricelist
 	 */
 	public function setCreatedBy($created_by)
 	{
@@ -375,6 +397,7 @@ class Pricelist implements InputFilterAwareInterface
 	/**
 	 * Set the last updater username
 	 * @param string $updated_by
+	 * @return Pricelist
 	 */
 	public function setUpdatedBy($updated_by)
 	{

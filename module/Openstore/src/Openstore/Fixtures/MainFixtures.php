@@ -243,6 +243,7 @@ class LoadUserData implements FixtureInterface
 			$pricelist->setReference($infos['reference']);
 			$pricelist->setLegacyMapping($infos['reference']);
 			$pricelist->setTitle($infos['title']);
+			$pricelist->setFlagPublic(true);
 			$manager->persist($pricelist);
 		}
 
