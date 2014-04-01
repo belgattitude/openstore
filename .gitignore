@@ -9,4 +9,5 @@ nbproject
 composer.lock
 composer.phar
 vendor/bin
+public/assets/vendor
 

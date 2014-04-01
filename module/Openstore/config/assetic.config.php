@@ -6,12 +6,12 @@ return array(
 					
    'assetic_configuration' => array(
         'debug' => true,
-        'buildOnRequest' => true,
+        'buildOnRequest' => false,
 
         'default' => array(
             'assets' => array(
-                '@base_css',
-				'@base_js',
+                '@bootstrap_base_css',
+				'@bootstrap_base_js',
             ),
             'options' => array(
                 'mixin' => true
@@ -26,17 +26,18 @@ return array(
         ),
 	   
 
-        'webPath' => realpath('public/assets'),
+        'webPath' => realpath('public/assets/builds'),
         'basePath' => 'assets',	   
 	   
         'modules' => array(
             'openstore' => array(
-                'root_path' => __DIR__ . '/../assets',
+                //'root_path' => __DIR__ . '/../assets',
+				'root_path' => realpath('public/assets'),
                 'collections' => array(
-                    'base_css' => array(
+                    'bootstrap_base_js' => array(
                         'assets' => array(
-                            'resources/bootstrap/dist/css/bootstrap.min.css',
-							'css/base_style.css',
+                            'vendor/bootstrap/dist/css/bootstrap.min.css',
+							//'css/base_style.css',
                         ),
                         'filters' => array(
                             'CssRewriteFilter' => array(
@@ -45,10 +46,10 @@ return array(
                         ),
                     ),
 
-                    'base_js' => array(
+                    'bootstrap_base_css' => array(
                         'assets' => array(
-							'resources/jquery/jquery.min.js',
-                            'resources/bootstrap/dist/js/bootstrap.min.js',
+							'vendor/jquery/dist/jquery.min.js',
+                            'vendor/bootstrap/dist/js/bootstrap.min.js',
                         )
                     ),
 

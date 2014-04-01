@@ -10,7 +10,7 @@ return array(
         // 'buildOnRequest'     => false,
 
         // Use on development environment
-        'debug' => true,
+        'debug' => false,
         'buildOnRequest' => true,
 
         // This is optional flag, by default set to `true`.
