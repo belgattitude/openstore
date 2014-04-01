@@ -8,7 +8,7 @@ $config = array(
 	'modules' => array(
 		//'Application',
 		//'Zf2Whoops',
-		'AsseticBundle',
+		//'AsseticBundle',
 		'SolubleNormalist',
 		'Openstore',
 		'OpenstoreApi',

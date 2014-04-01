@@ -8,17 +8,18 @@ module.exports = function(grunt) {
 			// 2. Configuration for concatinating files goes here.
 			dist: {
 				src: [
-					'vendor/jquery/dist/jquery.js', // All JS in the libs folder
-					'vendor/bootstrap/dist/js/bootstrap.js', // All JS in the libs folder
+					'vendor/jquery/dist/jquery.js', 
+					'vendor/bootstrap/dist/js/bootstrap.js', 
+					'vendor/select2/select2.js', // All JS in the libs folder
 					//'js/global.js'  // This specific file
 				],
-				dest: 'build/js/production.js',
+				dest: 'dist/js/production.js',
 			}
 		},
 		uglify: {
 			build: {
-				src: 'build/js/production.js',
-				dest: 'build/js/production.min.js'
+				src: 'dist/js/production.js',
+				dest: 'dist/js/production.min.js'
 			}
 		},
 		sass: {
@@ -27,33 +28,43 @@ module.exports = function(grunt) {
 					//style: 'compressed'
 				},
 				files: {
-					'build/css/global.css': 'css/global.scss'
+					'dist/css/global.css': 'css/global.scss'
 				}
 			} 
 		},
         autoprefixer: {
             dist: {
                 files: {
-                    'build/css/global.prefixed.css': 'build/css/global.css'
+                    'dist/css/global.prefixed.css': 'dist/css/global.css'
                 }
             }
         },
-		/*
+		
+		cssrb: {
+		  main: {
+			src: 'vendor/select2/select2.css',
+			dest: 'dist/css/select2.css',
+			options: {
+			  old_base: 'vendor/select2/',
+			  new_base: 'dist/css',
+			  //patterns:  {'^/images': ''},
+			  copy: true
+			},
+		  },
+		},
 		cssmin: {
 		  add_banner: {
 			options: {
-			  banner: 'blah'
+			  banner: '/* openstore theme */'
 			},
 			files: {
-			  'build/css/global.min.css': ['build/css/global.prefixed.css']
+			  'dist/css/global.min.css': [
+						'vendor/select2/select2.css',
+						'vendor/select2/select2-bootstrap.css',
+						'dist/css/global.prefixed.css'
+				]
 			}
 		  }
-		},*/
-		cssmin: {
-			dist: {
-				'src': ['build/css/global.prefixed.css'],
-				'dest': 'build/css/global.min.css'
-			}
 		},
 		watch: {
 			options: {
@@ -61,7 +72,7 @@ module.exports = function(grunt) {
 			},			
 			scripts: {
 				files: ['js/*.js'],
-				tasks: ['concat', 'uglify', 'sass', 'autoprefixer', 'cssmin'],
+				tasks: ['concat', 'uglify', 'sass', 'autoprefixer', 'cssrb', 'cssmin'],
 				options: {
 					spawn: false,
 				},
@@ -83,10 +94,11 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-sass');
 	grunt.loadNpmTasks('grunt-autoprefixer');
-	//grunt.loadNpmTasks('grunt-contrib-cssmin');
-	grunt.loadNpmTasks('grunt-yui-compressor');
+	grunt.loadNpmTasks('grunt-contrib-cssmin');
+	grunt.loadNpmTasks('grunt-cssrb');
+	//grunt.loadNpmTasks('grunt-yui-compressor');
 
     // 4. Where we tell Grunt what to do when we type "grunt" into the terminal.
-    grunt.registerTask('default', ['concat', 'uglify', 'sass', 'autoprefixer', 'cssmin']);
+    grunt.registerTask('default', ['concat', 'uglify', 'sass', 'autoprefixer', 'cssrb', 'cssmin']);
 
 };

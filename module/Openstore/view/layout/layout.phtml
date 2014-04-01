@@ -22,7 +22,7 @@
 		//$bootstrap_theme = 'spacelab';
 		//$bootstrap_theme = "";
 		echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
-				->prependStylesheet($theme_path . '/css/main.css')
+				->prependStylesheet($theme_path . '/dist/css/global.min.css')
 				
 				->prependStylesheet($theme_path . '/assets/bootstrap-themes/' . $bootstrap_theme . '/bootstrap.min.css')
 				//->prependStylesheet('//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css')
@@ -31,20 +31,22 @@
 				//->prependStylesheet($theme_path . '/resources/bootstrap-glyphicons/css/bootstrap-glyphicons.css')
 				->appendStylesheet($theme_path . '/assets/bootstrap/css/bootstrap.min.css')
 				//->prependStylesheet($theme_path . '/resources/twitter-typeahead/css/typeahead.js-bootstrap.css')
-				->prependStylesheet($theme_path . '/assets/jquery-select2/select2.css')
-				->prependStylesheet($theme_path . '/assets/jquery-select2-bootstrap/select2-bootstrap.css')
+				//->prependStylesheet($theme_path . '/assets/jquery-select2/select2.css')
+				//->prependStylesheet($theme_path . '/assets/jquery-select2-bootstrap/select2-bootstrap.css')
 		?>
 
 		<?php
 		echo $this->headScript()
+				
 				->prependFile($theme_path . '/js/main.js')
-				->prependFile($theme_path . '/assets/jquery-select2/select2.js')
+				//->prependFile($theme_path . '/assets/jquery-select2/select2.js')
 				->prependFile($theme_path . '/assets/twitter-typeahead/js/typeahead.js')
-				->prependFile($theme_path . '/assets/twitter-hogan/hogan-2.0.0.js')
-				->prependFile($theme_path . '/assets/bootstrap/js/bootstrap.min.js')
+				//->prependFile($theme_path . '/assets/twitter-hogan/hogan-2.0.0.js')
+				//->prependFile($theme_path . '/assets/bootstrap/js/bootstrap.min.js')
 				->prependFile($theme_path . '/assets/jquery-colorbox/jquery.colorbox-min.js')
 				->prependFile($theme_path . '/assets/jquery-color/jquery.color.js')
-				->prependFile($theme_path . '/assets/jquery/jquery.min.js')
+				//->prependFile($theme_path . '/assets/jquery/jquery.min.js')
+				->prependFile($theme_path . '/dist/js/production.js')
 				->prependFile($theme_path . '/assets/modernizer/modernizr-2.6.2-respond-1.1.0.min.js');
 		?>
 
