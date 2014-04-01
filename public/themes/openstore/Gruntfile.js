@@ -53,7 +53,7 @@ module.exports = function(grunt) {
 		  },
 		},
 		cssmin: {
-			main: {
+			"main": {
 			  options: {
 				banner: '/* openstore theme */'
 			  },
@@ -65,22 +65,22 @@ module.exports = function(grunt) {
 				  ]
 			  }
 			},
-			'bootstrap-default': {
+			"bootstrap-default": {
 			  files: {
 				 'dist/css/bootstrap-default.min.css': [ 'vendor/bootstrap/dist/css/bootstrap.min.css' ]
 			  }
 			},
-			'bootstrap-united': {
+			"bootstrap-united": {
 			  files: {
 				 'dist/css/bootstrap-united.min.css': [ 'vendor/bootswatch/united/bootstrap.min.css' ]
 			  }
 			},
-			'bootstrap-cerulean': {
+			"bootstrap-cerulean": {
 			  files: {
 				 'dist/css/bootstrap-cerulean.min.css': [ 'vendor/bootswatch/cerulean/bootstrap.min.css' ]
 			  }
 			},
-			'bootstrap-slate': {
+			"bootstrap-slate": {
 			  files: {
 				 'dist/css/bootstrap-slate.min.css': [ 'vendor/bootswatch/slate/bootstrap.min.css' ]
 			  }
@@ -92,9 +92,9 @@ module.exports = function(grunt) {
 			  }
 			},
 			
-			'bootstrap-slate': {
+			'bootstrap-yeti': {
 			  files: {
-				 'dist/css/bootstrap-slate.min.css': [ 'vendor/bootswatch/slate/bootstrap.min.css' ]
+				 'dist/css/bootstrap-yeti.min.css': [ 'vendor/bootswatch/yeti/bootstrap.min.css' ]
 			  }
 			},
 			'bootstrap-cyborg': {
