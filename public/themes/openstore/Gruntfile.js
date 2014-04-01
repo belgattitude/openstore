@@ -53,18 +53,57 @@ module.exports = function(grunt) {
 		  },
 		},
 		cssmin: {
-		  add_banner: {
-			options: {
-			  banner: '/* openstore theme */'
+			main: {
+			  options: {
+				banner: '/* openstore theme */'
+			  },
+			  files: {
+				'dist/css/global.min.css': [
+						  'vendor/select2/select2.css',
+						  'vendor/select2/select2-bootstrap.css',
+						  'dist/css/global.prefixed.css'
+				  ]
+			  }
 			},
-			files: {
-			  'dist/css/global.min.css': [
-						'vendor/select2/select2.css',
-						'vendor/select2/select2-bootstrap.css',
-						'dist/css/global.prefixed.css'
-				]
+			'bootstrap-default': {
+			  files: {
+				 'dist/css/bootstrap-default.min.css': [ 'vendor/bootstrap/dist/css/bootstrap.min.css' ]
+			  }
+			},
+			'bootstrap-united': {
+			  files: {
+				 'dist/css/bootstrap-united.min.css': [ 'vendor/bootswatch/united/bootstrap.min.css' ]
+			  }
+			},
+			'bootstrap-cerulean': {
+			  files: {
+				 'dist/css/bootstrap-cerulean.min.css': [ 'vendor/bootswatch/cerulean/bootstrap.min.css' ]
+			  }
+			},
+			'bootstrap-slate': {
+			  files: {
+				 'dist/css/bootstrap-slate.min.css': [ 'vendor/bootswatch/slate/bootstrap.min.css' ]
+			  }
+			},
+			
+			'bootstrap-flatly': {
+			  files: {
+				 'dist/css/bootstrap-flatly.min.css': [ 'vendor/bootswatch/flatly/bootstrap.min.css' ]
+			  }
+			},
+			
+			'bootstrap-slate': {
+			  files: {
+				 'dist/css/bootstrap-slate.min.css': [ 'vendor/bootswatch/slate/bootstrap.min.css' ]
+			  }
+			},
+			'bootstrap-cyborg': {
+			  files: {
+				 'dist/css/bootstrap-cyborg.min.css': [ 'vendor/bootswatch/cyborg/bootstrap.min.css' ]
+			  }
 			}
-		  }
+			
+			
 		},
 		watch: {
 			options: {

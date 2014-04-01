@@ -15,6 +15,7 @@
 		<link rel="shortcut icon" href="<?= $theme_path . "/icon/favicon.ico" ?>" />
 		<?php
 		$bootstrap_theme = 'united';
+		$bootstrap_theme = 'default';
 		//$bootstrap_theme = 'flatly';
 		//$bootstrap_theme = 'cyborg';
 		//$bootstrap_theme = 'slate';
@@ -24,12 +25,12 @@
 		echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
 				->prependStylesheet($theme_path . '/dist/css/global.min.css')
 				
-				->prependStylesheet($theme_path . '/assets/bootstrap-themes/' . $bootstrap_theme . '/bootstrap.min.css')
+				->prependStylesheet($theme_path . '/dist/css/bootstrap-' . $bootstrap_theme . '.min.css')
 				//->prependStylesheet('//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css')
 				->prependStylesheet($theme_path . '/assets/jquery-colorbox/example3/colorbox.css')
 				//->prependStylesheet('//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css')
 				//->prependStylesheet($theme_path . '/resources/bootstrap-glyphicons/css/bootstrap-glyphicons.css')
-				->appendStylesheet($theme_path . '/assets/bootstrap/css/bootstrap.min.css')
+				//->appendStylesheet($theme_path . '/assets/bootstrap/css/bootstrap.min.css')
 				//->prependStylesheet($theme_path . '/resources/twitter-typeahead/css/typeahead.js-bootstrap.css')
 				//->prependStylesheet($theme_path . '/assets/jquery-select2/select2.css')
 				//->prependStylesheet($theme_path . '/assets/jquery-select2-bootstrap/select2-bootstrap.css')
