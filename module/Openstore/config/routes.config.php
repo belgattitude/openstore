@@ -1,13 +1,5 @@
 <?php
 
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
-
 namespace Openstore;
 
 $supported_languages = array('en', 'nl', 'fr', 'zh', 'de', 'es', 'it');
@@ -113,6 +105,21 @@ return array(
 				),
 				'may_terminate' => true,
 				'child_routes' => array(
+					'dynamic' => array(
+						'type' => 'regex',
+						'options' => array(
+							// i.e: /public/media/dynamic/product/170x200/12722.jpg
+							'regex' => '/dynamic/((?<type>(product|brand|serie))/)?((?<resolution>([0-9]+x[0-9]+))/)?(?<id>[0-9]+)(\.(?<format>(jpg|png)))?',
+							'spec' => '/dynamic/%type%/%resolution%/%id%.%format%',
+							'defaults' => array(
+								'action'	=> 'picture',
+								'resolution'=> '1024x768',
+								'quality'	=> '90',
+								'format'	=> 'jpg'
+							)
+						)
+					),
+					
 					'picture' => array(
 						'type' => 'regex',
 						'options' => array(

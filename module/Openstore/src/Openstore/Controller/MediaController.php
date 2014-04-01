@@ -26,7 +26,9 @@ class MediaController extends AbstractActionController
 
 	function pictureAction() 
 	{
+		
 		$tm = $this->getTableManager();
+		
 		$type = $this->params()->fromRoute('type');
 		$id   = $this->params()->fromRoute('id');
 		switch ($type) {
@@ -87,6 +89,7 @@ class MediaController extends AbstractActionController
 				$valid = join(',', $this->getAcceptedFormats());
 				throw new \Exception("Requested format '$quality' is forbidden, supported: '$valid'.");
 			}
+			
 		} catch (\Exception $e) {
 			$this->getResponse()->setStatusCode(403);
 			$this->getResponse()->setContent($e->getMessage());
@@ -102,7 +105,6 @@ class MediaController extends AbstractActionController
 			$this->getResponse()->setStatusCode(500);
 			$this->getResponse()->setContent($e->getMessage());
 			return $this->getResponse();
-			
 		}
 	}
 

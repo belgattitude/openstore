@@ -1,9 +1,6 @@
 {
   "name": "Openstore",
-  "version": "0.0.0",
-  "homepage": "",
-  "authors": [],
-  "license": "MIT",
+  "version": "0.0.1",
   "ignore": [
     "**/.*",
     "node_modules",
