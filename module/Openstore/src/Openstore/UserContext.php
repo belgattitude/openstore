@@ -58,7 +58,6 @@ class UserContext implements ServiceLocatorAwareInterface
 		
 				$all_pricelists = $tm->table('pricelist')->search()->toArrayColumn('reference', 'pricelist_id');
 				
-				
 				// PUBLIC capabilitities
 				// TODO get pricelist from table
 				$this->container['caps'] = array();

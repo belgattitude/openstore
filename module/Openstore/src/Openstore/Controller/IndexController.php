@@ -25,7 +25,6 @@ class IndexController extends AbstractActionController
 		$view = new ViewModel();
 		
 		$userContext = $this->getServiceLocator()->get('Openstore\UserContext');
-		
 
 		/*
 		$capabilities = $this->getServiceLocator()->get('Openstore\UserCapabilities');
