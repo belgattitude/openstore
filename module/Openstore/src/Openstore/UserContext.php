@@ -9,7 +9,7 @@ use Zend\Session\Container;
 
 use Openstore\Permission\UserCapabilities;
 
-use Soluble\Normalist\SyntheticTable;
+use Soluble\Normalist\Synthetic\TableManager;
 
 class UserContext implements ServiceLocatorAwareInterface
 {
@@ -52,10 +52,11 @@ class UserContext implements ServiceLocatorAwareInterface
 				//die();
 				
 			} else {
+
+				$tm = $this->getTableManager();
 				
-				$st = $this->serviceLocator->get('Soluble\Normalist\SyntheticTable');
 		
-				$all_pricelists = $st->getArrayColumn('pricelist', 'reference', 'pricelist_id');
+				$all_pricelists = $tm->table('pricelist')->search()->toArrayColumn('reference', 'pricelist_id');
 				
 				
 				// PUBLIC capabilitities
@@ -96,5 +97,14 @@ class UserContext implements ServiceLocatorAwareInterface
     {
         return $this->serviceLocator;
     }
+	
+	/**
+	 * @return TableManager
+	 */
+	protected function getTableManager()
+    {
+		return $this->getServiceLocator()->get('SolubleNormalist\TableManager');
+	}
+	
 	
 }
