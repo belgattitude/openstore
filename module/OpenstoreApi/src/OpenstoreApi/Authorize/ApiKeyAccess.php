@@ -2,17 +2,17 @@
 namespace OpenstoreApi\Authorize;
 
 use Zend\Db\Adapter\Adapter;
-use Zend\Db\Adapter\AdapterAwareInterface;
+
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
 
 
-use Soluble\Normalist\SyntheticTable;
-use Soluble\Normalist\SyntheticRecord;
+use Soluble\Normalist\Synthetic\TableManager;
+use Soluble\Normalist\Synthetic\Record;
+
 use Soluble\Normalist\Exception as NormalistException;
 
 
@@ -49,28 +49,30 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface
 	
 	/**
 	 *
-	 * @var SyntheticTable
+	 * @var TableManager
 	 */
-	protected $table;
+	protected $tm;
 	
 	/**
 	 * @param string $pai_key 
 	 * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
 	 
 	 */
-	function __construct($api_key, ServiceLocatorInterface $serviceLocator=null) 
+	function __construct($api_key, ServiceLocatorInterface $serviceLocator) 
 	{
 		$this->api_key = trim($api_key);
 		$this->setServiceLocator($serviceLocator);
 		$this->setDbAdapter($serviceLocator->get("Zend\Db\Adapter\Adapter"));
 		
-		$this->table = new SyntheticTable($this->adapter);
+		
 		
 		if ($this->api_key == '') {
 			throw new Exception\AuthorizationException("Missing required api_key");
 		}
 		
-		$record = $this->table->findOneBy('api_key', array('api_key' => $this->api_key));
+		$tm = $this->getTableManager();
+		$apiTable = $tm->table('api_key');
+		$record = $apiTable->findOneBy(array('api_key' => $this->api_key));
 		if ($record === false) {
 			throw new Exception\AuthorizationException("Api key '{$this->api_key}' does not exists.");
 		}
@@ -86,13 +88,15 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface
 	/**
 	 * 
 	 * @param string $service_reference
-	 * @return SyntheticRecord
+	 * @return Record
 	 * @throws Exception\ServiceUnavailableException
 	 */
 	public function addLog($service_reference)
 	{
+
+		$tm = $this->getTableManager();
 		
-		$service = $this->table->findOneBy('api_service', array('reference' => $service_reference));
+		$service = $tm->table('api_service')->findOneBy(array('reference' => $service_reference));
 		if (!$service) {
 			throw new Exception\ServiceUnavailableException("Service '$service_reference' unavailable or not exists");
 		}
@@ -104,7 +108,9 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface
 					'message' => $_SERVER['REQUEST_URI'],
 					'created_at' => date('Y-m-d H:i:s'),
 				);
-		$api_key_log = $this->table->insert('api_key_log', $data);
+		
+		$api_key_log = $tm->table('api_key_log')->insert($data);
+		
 		
 		return $api_key_log;
 	}
@@ -122,7 +128,9 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface
 	{
 		$api_id = $this->api_id;
 		$api_key = $this->api_key;
-		$service = $this->table->findOneBy('api_service', array('reference' => $service_reference));
+		$tm = $this->getTableManager();
+		$serviceTable = $tm->table('api_service');
+		$service = $serviceTable->findOneBy(array('reference' => $service_reference));
 		if (!$service) {
 			throw new Exception\ServiceUnavailableException("Service '$service_reference' unavailable or not exists");
 		}
@@ -130,7 +138,8 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface
 		$service_id = $service->service_id;
 		
 		
-		$access = $this->table->findOneBy('api_key_service', array('service_id' => $service_id, 'api_id' => $api_id));
+		$apiServiceTable = $tm->table('api_key_service');
+		$access = $apiServiceTable->findOneBy(array('service_id' => $service_id, 'api_id' => $api_id));
 		if (!$access) {
 			throw new Exception\ForbiddenServiceException("Not allowed, api key '$api_key' does not provide access to service '$service_reference'.");
 		}
@@ -150,8 +159,11 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface
 	{
 		$api_id = $this->api_id;
 		$api_key = $this->api_key;
-		$customers = $this->table->select('api_key_customer')->where(array('api_id' => $api_id))->execute();
+		$tm = $this->getTableManager();
+		$acTable = $tm->table('api_key_customer');
+		$customers = $acTable->select('api_key_customer')->where(array('api_id' => $api_id))->execute();
 		$customers = array_column($customers->toArray(), 'customer_id');
+		
 		return $customers;
 	}
 	
@@ -271,5 +283,25 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface
     public function getServiceLocator() {
 		return $this->serviceLocator;
 	}	
+	
+	/**
+	 * @param TableManager $tm
+	 * @return ApiKeyAccess
+	 */
+	function setTableManager(TableManager $tm) {
+		$this->tm = $tm;
+		return $this;
+	}
+	
+	/**
+	 * @return TableManager
+	 */
+	function getTableManager() {
+		if ($this->tm === null) {
+			$this->tm = $this->getServiceLocator()->get('SolubleNormalist\TableManager');
+		}
+		return $this->tm;
+	}
+
 	
 }

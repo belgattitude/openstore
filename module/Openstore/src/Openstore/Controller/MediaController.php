@@ -21,7 +21,7 @@ class MediaController extends AbstractActionController
 	 * @return TableManager
 	 */
 	function getTableManager() {
-		return $syntheticTable = $this->getServiceLocator()->get('SolubleNormalist\TableManager');
+		return $this->getServiceLocator()->get('SolubleNormalist\TableManager');
 	}
 
 	function pictureAction() 
