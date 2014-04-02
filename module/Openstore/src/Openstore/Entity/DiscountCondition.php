@@ -14,57 +14,117 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="country",
+ *   name="discount_condition",
  *   uniqueConstraints={
- *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *   }, 
- *   options={"comment" = "Country table"}
+ *     @ORM\UniqueConstraint(name="unique_condition",columns={"pricelist_id", "customer_id", "brand_id", "group_id", "category_id", "product_id", "valid_from", "valid_till"}),
+ *   },
+ *   indexes={
+ *     @ORM\Index(name="valid_from_idx", columns={"valid_from"}),
+ *     @ORM\Index(name="valid_till_idx", columns={"valid_till"}),
+ *   },  
+ *   options={"comment" = "Discount conditions table"}
  * )
  */
-class Country implements InputFilterAwareInterface
+class DiscountCondition implements InputFilterAwareInterface
 {
 	
 	/**
-	 * @var InputFilterInterface $inputFilter
+	 * @var \Zend\InputFilter\InputFilterInterface $inputFilter
 	 */
 	protected $inputFilter;
 
-    /**
-     * @ORM\OneToMany(targetEntity="ProductBrandTranslation", mappedBy="brand_id")
-     **/
-    private $translations;	
 	
 	/**
 	 * @ORM\Id
-	 * @ORM\Column(name="country_id", type="integer", nullable=false, options={"unsigned"=true})
+	 * @ORM\Column(name="id", type="bigint", nullable=false, options={"unsigned"=true})
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
-	private $country_id;
+	private $id;
 	
-	
-	/**
-	 * @ORM\Column(type="string", length=2, nullable=false, options={"comment" = "ISO country code"})
-	 */
-	private $reference;
 
 
 	/**
-	 * @ORM\Column(type="string", length=40, nullable=false)
+	 * 
+     * @ORM\ManyToOne(targetEntity="Pricelist", inversedBy="discounts", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="pricelist_id", referencedColumnName="pricelist_id", onDelete="CASCADE", nullable=true)
 	 */
-	private $name;
+	private $pricelist_id;	
+	
+	/**
+	 * 
+     * @ORM\ManyToOne(targetEntity="Customer", inversedBy="discounts", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="customer_id", referencedColumnName="customer_id", onDelete="CASCADE", nullable=true)
+	 */
+	private $customer_id;
+
+
+	/**
+	 * 
+     * @ORM\ManyToOne(targetEntity="ProductBrand", inversedBy="discounts", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="brand_id", referencedColumnName="brand_id", onDelete="CASCADE", nullable=true)
+	 */
+	private $brand_id;
+	
+
+	/**
+	 * 
+     * @ORM\ManyToOne(targetEntity="ProductGroup", inversedBy="discounts", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="group_id", referencedColumnName="group_id", onDelete="CASCADE", nullable=true)
+	 */
+	private $group_id;
+
+	/**
+	 * 
+     * @ORM\ManyToOne(targetEntity="ProductCategory", inversedBy="discounts", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="category_id", referencedColumnName="category_id", onDelete="CASCADE", nullable=true)
+	 */
+	private $category_id;	
+	
+	/**
+	 * 
+     * @ORM\ManyToOne(targetEntity="Product", inversedBy="discounts", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="product_id", referencedColumnName="product_id", onDelete="CASCADE", nullable=true)
+	 */
+	private $product_id;	
 
 	
 	/**
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the brand is country in public website"})
+	 * @ORM\Column(type="decimal", precision=9, scale=6, nullable=false, options={"default"=0, "comment"="Regular discount 1"})
 	 */
-	private $flag_active;
+	private $discount_1;
+	
+	/**
+	 * @ORM\Column(type="decimal", precision=9, scale=6, nullable=false, options={"default"=0, "comment"="Regular discount 2"})
+	 */
+	private $discount_2;
+	
+	/**
+	 * @ORM\Column(type="decimal", precision=9, scale=6, nullable=false, options={"default"=0, "comment"="Regular discount 3"})
+	 */
+	private $discount_3;
+	
+	/**
+	 * @ORM\Column(type="decimal", precision=9, scale=6, nullable=false, options={"default"=0, "comment"="Regular discount 4"})
+	 */
+	private $discount_4;
 	
 	
 	/**
-	 * @ORM\Column(type="string", length=40, nullable=true)
+	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Fixed price, only for products"})
 	 */
-	private $icon_class;
+	private $fixed_price;
+
+	
+	/**
+	 * @ORM\Column(type="date", nullable=true, options={"comment" = "Discount valid from"})
+	 */
+	private $valid_from;
+
+	/**
+	 * @ORM\Column(type="date", nullable=true, options={"comment" = "Discount valid till"})
+	 */
+	private $valid_till;
 	
 	
 	/**
@@ -78,6 +138,7 @@ class Country implements InputFilterAwareInterface
 	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record last update timestamp"})
 	 */
 	private $updated_at;
+	
 
 	/**
 	 * @Gedmo\Blameable(on="create")
@@ -105,20 +166,18 @@ class Country implements InputFilterAwareInterface
 	
 	public function __construct()
 	{
-		 $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
-		 /**
-		  * Default value for flag_active
-		  */
-		 $this->flag_active = true; 
+		 
+		 
+		 
 	}
 
 	/**
 	 * 
-	 * @param integer $country_id
+	 * @param integer $id
 	 */
-	public function setCountryId($country_id)
+	public function setId($id)
 	{
-		$this->country_id = $country_id;
+		$this->id = $id;
 		return $this;
 	}	
 	
@@ -126,93 +185,151 @@ class Country implements InputFilterAwareInterface
 	 * 
 	 * @return integer
 	 */
-	public function getCountryId()
+	public function getId()
 	{
-		return $this->country_id;
+		return $this->id;
 	}
-
+	
 	/**
-	 * Set reference
-	 * @param string $reference
+	 * 
+	 * @param integer $pricelist_id
 	 */
-	public function setReference($reference)
+	public function setPricelistId($pricelist_id)
 	{
-		$this->reference = $reference;
+		$this->pricelist_id = $pricelist_id;
 		return $this;
-	}
-
-	/**
-	 * Return reference 
-	 * @return string
-	 */
-	public function getReference()
-	{
-		return $this->reference;
-	}
-
-
+	}	
+	
 	/**
 	 * 
-	 * @param string $name
+	 * @return integer
 	 */
-	public function setName($name)
+	public function getPricelistId()
 	{
-		$this->name = $name;
+		return $this->pricelist_id;
+	}
+	
+	/**
+	 * 
+	 * @param integer $customer_id
+	 */
+	public function setCustomerId($customer_id)
+	{
+		$this->customer_id = $customer_id;
 		return $this;
-	}
-
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getName()
-	{
-		return $this->name;
-	}
-
+	}	
 	
-
 	/**
 	 * 
-	 * @return string
+	 * @return integer
 	 */
-	public function setIconClass($icon_class)
+	public function getCustomerId()
 	{
-		$this->icon_class = $icon_class;
+		return $this->customer_id;
+	}
+	
+	
+	/**
+	 * 
+	 * @param integer $brand_id
+	 */
+	public function setBrandId($brand_id)
+	{
+		$this->brand_id = $brand_id;
 		return $this;
-	}
-	
-	
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getIconClass()
-	{
-		return $this->icon_class;
-	}
+	}	
 	
 	/**
 	 * 
-	 * @return boolean
+	 * @return integer
 	 */
-	public function getFlagActive()
+	public function getBrandId()
 	{
-		return (boolean) $this->flag_active;
+		return $this->brand_id;
 	}
 
-	
 	/**
 	 * 
+	 * @param integer $category_id
 	 */
-	public function setFlagActive($flag_active)
+	public function setCategoryId($category_id)
 	{
-		$this->flag_active = $flag_active;
+		$this->category_id = $category_id;
 		return $this;
+	}	
+	
+	/**
+	 * 
+	 * @return integer
+	 */
+	public function getCategoryId()
+	{
+		return $this->category_id;
+	}
+	
+
+	/**
+	 * 
+	 * @param integer $group_id
+	 */
+	public function setGroupId($group_id)
+	{
+		$this->group_id = $group_id;
+		return $this;
+	}	
+	
+	/**
+	 * 
+	 * @return integer
+	 */
+	public function getGroupId()
+	{
+		return $this->group_id;
+	}
+	
+
+	/**
+	 * 
+	 * @param integer $product_id
+	 */
+	public function setProductId($product_id)
+	{
+		$this->product_id = $product_id;
+		return $this;
+	}	
+	
+	/**
+	 * 
+	 * @return integer
+	 */
+	public function getProductId()
+	{
+		return $this->product_id;
 	}
 	
 	
+	/**
+	 * 
+	 * @return date
+	 */
+	public function getActivatedAt()
+	{
+		return $this->activated_at;
+	}
 
+	
+	/**
+	 * @param string $activated_at date in Y-m-d H:i:s format
+	 */
+	public function setActivatedAt($activated_at)
+	{
+		$this->activated_at = $activated_at;
+		return $this;
+	}	
+	
+	
+	
+	
 	/**
 	 * 
 	 * @return string
@@ -241,6 +358,8 @@ class Country implements InputFilterAwareInterface
 		return $this->updated_at;
 	}
 
+	
+	
 	/**
 	 * 
 	 * @param string $updated_at
@@ -250,6 +369,26 @@ class Country implements InputFilterAwareInterface
 		$this->updated_at = $updated_at;
 		return $this;
 	}
+	
+	/**
+	 * 
+	 * @return string
+	 */
+	public function getDeletedAt()
+	{
+		return $this->deleted_at;
+	}
+
+	/**
+	 * 
+	 * @param string $updated_at
+	 */
+	public function setDeletedAt($deleted_at)
+	{
+		$this->deleted_at = $deleted_at;
+		return $this;
+	}
+	
 
 	/**
 	 * Return creator username
@@ -343,7 +482,7 @@ class Country implements InputFilterAwareInterface
 	 */
 	public function __toString()
 	{
-		return $this->getTitle();
+		return $this->getPrice();
 	}
 
 	
@@ -411,3 +550,4 @@ class Country implements InputFilterAwareInterface
 	}
 	
 }
+
