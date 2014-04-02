@@ -33,7 +33,8 @@
 		"widmogrod/zf2-assetic-module": "1.*",
 		"ghislainf/zf2-whoops": "dev-master",
 		"knplabs/gaufrette": "0.1.*",
-		"imagine/imagine" : "0.5.*"
+		"imagine/imagine" : "0.5.*",
+		"willdurand/geocoder": "@stable"
 		 
 	},
 	"require-dev": {

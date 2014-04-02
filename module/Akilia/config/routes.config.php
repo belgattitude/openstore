@@ -38,6 +38,17 @@ return array(
 						)
 					)
 				),
+				'geocodecustomers' => array(
+					'options' => array(
+						'route' => 'akilia geocodecustomers',
+						'defaults' => array(
+							//'__NAMESPACE__' => 'Openstore\Controller',
+							'controller' => 'Akilia\Controller\Console',
+							'action' => 'geocodecustomers'
+						)
+					)
+					
+				),
 				'syncapi' => array(
 					'options' => array(
 						'route' => 'akilia syncapi',

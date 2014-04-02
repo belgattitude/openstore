@@ -7,8 +7,10 @@ use Zend\Console\Request as ConsoleRequest;
 use Zend\Console\Console;
 use Zend\Console\ColorInterface;
 use Zend\Db\Adapter\Adapter;
+use Zend\Db\Sql\Sql;
 
 use Akilia\Utils\Akilia1Products;
+use Akilia\Utils\Akilia2Customers;
 use Akilia;
 
 class ConsoleController extends AbstractActionController
@@ -110,14 +112,122 @@ class ConsoleController extends AbstractActionController
 			} else {
 				echo " -> Success !!!\n";
 			}
-			
-			
 		}
+	}
+	
+	public function geocodecustomersAction() 
+	{
+		$configuration = $this->getAkiliaConfiguration();
+
+		$ak2Customers = new Akilia2Customers($configuration);
+		$ak2Customers->setServiceLocator($this->getServiceLocator());
+		$adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+		$ak2Customers->setDbAdapter($adapter);
+		
+		$geo = $ak2Customers->getCustomerGeo($days_threshold=300, $turnover_min=1000, $min_accuracy=6, $limit=0);
 		
 		
+		$geocoder = new \Geocoder\Geocoder();
+		$geoadapter  = new \Geocoder\HttpAdapter\CurlHttpAdapter();
+		$chain    = new \Geocoder\Provider\ChainProvider(array(
+			new \Geocoder\Provider\GoogleMapsProvider($geoadapter, 'fr_FR', 'Belgium', true),
+			new \Geocoder\Provider\FreeGeoIpProvider($geoadapter),
+			new \Geocoder\Provider\HostIpProvider($geoadapter),
+			
+		));
+		$geocoder->registerProvider($chain);
+		$total_geocoded = 0;
+		foreach($geo as $r) {
+			$city = preg_replace('[0-9]', '', $r['city']);
+			$city = str_replace('CEDEX', '', $city);
+			$city = str_replace('"', ' ', $city);
+			$city = str_replace('(', ' ', $city);
+			$city = str_replace(')', ' ', $city);
+			$street = $r['street'];
+			$street = str_replace('STR.', "", $street);
+			$street = str_replace('"', " ", $street);
+			$street = str_replace('(', " ", $street);
+			$street = str_replace(')', " ", $street);
+			$street = str_replace('STRASSE', 'Straße', $street);
+			$address = $street .  ", " . $r['zipcode'] . " " . $city . ", " . $r['state'] . ', ' . $r['country'];
+			$address = str_replace(", ,", ",", $address);		
+ 			/**
+			 Accuracy codes
+			 * 0 Unknown location.
+			 * 1 Country level accuracy.
+			 * 2 Region (state, province, prefecture, etc.) level accuracy.
+             * 3 Sub-region (county, municipality, etc.) level accuracy.
+			 * 4 Town (city, village) level accuracy.
+             * 5 Post code (zip code) level accuracy.
+             * 6 Street level accuracy.
+			 * 7 Intersection level accuracy.
+			 * 8 Address level accuracy.
+			 * 9 Premise (building name, property name, shopping center, etc.) level accuracy.  
+			 */
+			
+			try {
+				
+				$geocode = $geocoder->geocode($address);
+				$latitude = $geocode->getLatitude();
+				$longitude = $geocode->getLongitude();
+				$country   = $geocode->getCountry();
+				$city	   = $geocode->getCity();
+				$zipcode   = $geocode->getZipcode();
+				$street_number = $geocode->getStreetNumber();
+				$street_name   = $geocode->getStreetName();
+				if ($street_number != '') {
+					$accuracy = 8;
+				} elseif ($street_name != '') {
+					$accuracy = 6;
+				} elseif ($zipcode != '') {
+					$accuracy = 5;
+					
+				} elseif ($city != '') {
+					$accuracy = 4;
+				} else {
+					$accuracy = 1;
+				}
+				echo "[Success] Geocoded: " . $address . "\n";
+				$adrs = "$street_number, $street_name, $zipcode $city, $country";
+				echo "      [$accuracy] $adrs\n";
+				
+				if ($r['accuracy'] <= $accuracy) {
+					$total_geocoded++;
+					// update in database
+					$sql = new Sql($adapter);
+					$akilia2db  = $configuration['synchronizer']['db_akilia2'];
 		
-		
-		
+					$bcg = new \Zend\Db\Sql\TableIdentifier('base_customer_geo', $akilia2db);
+					
+					$insert = $sql->insert($bcg);
+					$now = date('Y-m-d H:i:s');
+					$newData = array(
+						'customer_id'=> $r['customer_id'],
+						'longitude'=> $longitude,
+						'latitude'=> $latitude,
+						'accuracy'=> $accuracy,
+						'address'=> $adrs,
+						'geocoded_at' => $now,
+						'created_at' => $now,
+						'updated_at' => $now,
+					);
+					$insert->values($newData);
+					$selectString = $sql->getSqlStringForSqlObject($insert);
+					$selectString = str_replace('INSERT INTO', 'REPLACE INTO', $selectString);
+					
+					$results = $adapter->query($selectString, Adapter::QUERY_MODE_EXECUTE);					
+					
+				}
+				
+				
+			} catch (\Exception $e) {
+				echo "[Error] Cannot find: " . $address . "\n";
+			}
+		}
+		echo "#####################################################\n";
+		echo "Total tested address: " . count($geo) . "\n";
+		echo "Geocoded: " . $total_geocoded . "\n";
+		echo "#####################################################\n";
 	}
 	
 	public function listproductpicturesAction() {

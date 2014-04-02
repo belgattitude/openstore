@@ -1,5 +1,4 @@
 <?php
-
 namespace Openstore\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
