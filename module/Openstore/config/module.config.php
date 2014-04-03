@@ -1,5 +1,4 @@
 <?php
-
 namespace Openstore;
 
 return array(
@@ -42,16 +41,6 @@ return array(
 		),
 	),
 	
-	'view_helpers' => array(
-		'factories' => array(
-			'routeparams' => function (\Zend\ServiceManager\AbstractPluginManager $pm) {
-                 $application = $pm->getServiceLocator()->get('Application');
-
-                 return new View\Helper\RouteParams($application->getMvcEvent());
-            },
-			
-		)
-	),
 	'view_manager' => array(
 		'display_not_found_reason' => true,
 		'display_exceptions' => true,
@@ -78,6 +67,15 @@ return array(
 			'ViewJsonStrategy',
 		)
 	),
+	
+	'view_helpers' => array(
+		'factories' => array(
+			'routeparams' => 'Openstore\View\Helper\Service\RouteParamsFactory'
+			
+		)
+	),
+	
+	
 	// For SolubleNormalist
 	'normalist' => array(
 		'default' => array(
@@ -96,12 +94,13 @@ return array(
 		'driver' => array(
 			__NAMESPACE__ . '_driver' => array(
 				'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
-				'cache' => 'array',
+				//'cache' => 'array',
 				'paths' => array(__DIR__ . '/../src/' . __NAMESPACE__ . '/Entity')
 			),
 // overriding zfc-user-doctrine-orm's config
             'zfcuser_entity' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+				//'cache' => 'array',
                 'paths' => array(__DIR__ . '/../src/' . __NAMESPACE__ . '/Entity')
             ),
 			
@@ -115,6 +114,10 @@ return array(
 			  ),
 			 */
 			'orm_default' => array(
+				//'metadata_cache'    => 'my_memcache',
+				//'query_cache'       => 'my_memcache',
+				//'result_cache'      => 'my_memcache',
+				//'hydration_cache'   => 'my_memcache',				
 				'drivers' => array(
 					__NAMESPACE__ . '\Entity' => __NAMESPACE__ . '_driver',
 				//'Gedmo\Translatable\Entity' => 'translatable_metadata_driver',

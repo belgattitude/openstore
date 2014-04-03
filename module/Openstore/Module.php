@@ -76,7 +76,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 		$this->configureUnauthorizedStrategy($e);
 		
 		$eventManager->attach(MvcEvent::EVENT_DISPATCH, array($this, 'onPreDispatch'), 100);
-		$eventManager->attach(MvcEvent::EVENT_FINISH, array($this, 'onFinish'), 100);
+		//$eventManager->attach(MvcEvent::EVENT_FINISH, array($this, 'onFinish'), 100);
 		
 		//$translator = $e->getApplication()->getServiceManager()->get('translator');
 		//$translator->setLocale('en_US');
@@ -174,22 +174,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 			$serviceManager->get('translator')->setLocale($supported_langs[$language]);
 		}
 	}
-	/*
-	public function getViewHelperConfig()
-    {
-        return array(
-            'factories' => array(
-				
-                'Params' => function(ServiceLocatorInterface $helpers)
-                {
-                    $services = $helpers->getServiceLocator();
-                    $app = $services->get('Application');
-                    return new Helper\Params($app->getRequest(), $app->getMvcEvent());
-                }
-            ),
-        );
-    }	
-*/
+	
 	/**
 	 * @inheritdoc
 	 */
@@ -282,7 +267,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 
 
 		$purify_method = 'htmlpurifier';
-		//$purify_method = 'domdocument';
+		$purify_method = 'domdocument';
 		$purify_method = '';
 		switch ($purify_method) {
 			case 'htmlpurifier' :
@@ -324,7 +309,10 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 		}
 	}
 	
-
+	/**
+	 * 
+	 * @return array
+	 */
 	public function getConfig() {
 
 		$config = array_merge(
@@ -336,8 +324,16 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 		return $config;
 	}
 
+	/**
+	 * 
+	 * @return array
+	 */
 	public function getAutoloaderConfig() {
 		return array(
+			
+            'Zend\Loader\ClassMapAutoloader' => array(
+                __DIR__ . '/autoload_classmap.php',
+            ),
 			'Zend\Loader\StandardAutoloader' => array(
 				'namespaces' => array(
 					__NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
@@ -348,6 +344,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 			),
 		);
 	}
+	
+
 
 	/**
 	 * Returns an array or a string containing usage information for this module's Console commands.

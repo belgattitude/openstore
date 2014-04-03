@@ -14,6 +14,7 @@ class AdapterResourceFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $services)
     {
 		
+		
         $dbAdapter = $services->get('Zend\Db\Adapter\Adapter');
 
         $resource = $dbAdapter->getDriver()->getConnection()->getResource();
