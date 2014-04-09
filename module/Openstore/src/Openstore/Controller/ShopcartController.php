@@ -8,7 +8,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
 
-use Soluble\Normalist\SyntheticTable;
+
 
 use Openstore\Order\Model\Exception as OrderException;
 
@@ -51,11 +51,24 @@ class ShopcartController extends AbstractActionController
 		
 	}
 	
+	/**
+	 * 
+	 * @return \Doctrine\ORM\EntityManager
+	 */
+	protected function getEntityManager()
+	{
+		return $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+	}
+	
 	public function addProductAction() {
 		
 		// Get shopcart type
-		$st = new SyntheticTable($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
-		$shopcart_order_type = $st->findOneBy('order_type', array('reference' => 'SHOPCART'));
+		//$st = new SyntheticTable($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
+		$em = $this->getEntityManager();
+		$orderType = $em->getRepository('Openstore\Entity\OrderType');
+		$shopcartType = $orderType->findOneBy(array('reference' => 'SHOPCART'));
+		
+		//$shopcart_order_type = $st->findOneBy('order_type', array('reference' => 'SHOPCART'));
 		
 		$product_id = $this->params()->fromPost('product_id');
 		$order_id   = $this->params()->fromPost('order_id');
@@ -63,7 +76,7 @@ class ShopcartController extends AbstractActionController
 			$data = new \ArrayObject(array(
 				'pricelist_id' => 1,
 				'customer_id' => 3521,
-				'type_id' => $shopcart_order_type['type_id']
+				'type_id' => $shopcartType->type_id
 			));
 			$order = $this->shopcart->create($data);
 			$order_id = $order['order_id'];		

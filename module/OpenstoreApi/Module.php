@@ -75,7 +75,6 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 				$vars = $e->getResult();
 			}
 
-
 			switch($format) {
 				case 'json' :
 					if ($vars instanceof FlexStoreInterface) {
@@ -101,11 +100,26 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 					break;
 				case 'csv' :
 					if ($vars instanceof FlexStoreInterface) {
+
+						if (array_key_exists('csv-enclosure', $_GET)) {
+							switch($_GET['csv-enclosure']) {
+								case 'false' :
+								case '':
+									$enclosure = '';
+									break;
+								default:
+									$enclosure = $_GET['csv-enclosure'];
+							}
+							
+						} else {
+							$enclosure = '"';
+						}
+						
 						
 						$options = array(
 							'field_separator' => CSVWriter::SEPARATOR_TAB,
 							'line_separator' => CSVWriter::SEPARATOR_NEWLINE_UNIX,
-							'enclosure' => '"',
+							'enclosure' => $enclosure,
 							'escape' => '"'
 							
 						);

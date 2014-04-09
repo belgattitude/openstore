@@ -82,9 +82,9 @@ class ProductBrowser extends AbstractBrowser {
 
 		$this->assignFilters($select);
 		
-		/* 
-		$flag_new_min_date = ProductFilter::getParam('flag_new_minimum_date');
-		*/		
+		 
+		//$flag_new_min_date = ProductFilter::getParam('flag_new_minimum_date');
+				
 		if ($this->columns !== null && is_array($this->columns)) {
 			$select->columns($this->columns);
 		} else {

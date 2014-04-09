@@ -23,6 +23,15 @@ class Order extends AbstractModel  {
 		
 	}
 	
+	/**
+	 * 
+	 * @return \Doctrine\ORM\EntityManager
+	 */
+	protected function getEntityManager()
+	{
+		return $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+	}
+		
 	
 	/**
 	 * 
@@ -35,6 +44,11 @@ class Order extends AbstractModel  {
 	 */
 	function create(ArrayObject $data)
 	{
+		
+		$em = $this->getEntityManager();
+		
+		
+		die('cool');
 		$st = new SyntheticTable($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
 		$d = $st->getRecordCleanedData('order', $data);
 

@@ -17,15 +17,15 @@ abstract class AbstractModel implements AdapterAwareInterface,
 	protected $serviceLocator;
 	/**
 	 *
-	 * @var \Zend\Db\Adapter\Adapter
+	 * @var Adapter
 	 */
 	protected $adapter;
 	
 	
 	/**
 	 * 
-	 * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
-	 * @param \Zend\Db\Adapter\Adapter $adapter
+	 * @param ServiceLocatorInterface $serviceLocator
+	 * @param Adapter $adapter
 	 */
 	function __construct(ServiceLocatorInterface $serviceLocator=null, Adapter $adapter=null) {
 		if ($serviceLocator !== null) $this->setServiceLocator($serviceLocator);
@@ -39,7 +39,7 @@ abstract class AbstractModel implements AdapterAwareInterface,
      * Set db adapter
      *
      * @param Adapter $adapter
-     * @return \Openstore\Core\Model\AbstractModel
+     * @return AbstractModel
      */
     public function setDbAdapter(Adapter $adapter) {
 		$this->adapter = $adapter;
@@ -49,7 +49,7 @@ abstract class AbstractModel implements AdapterAwareInterface,
 	
 	/**
 	 * 
-	 * @return \Zend\Db\Adapter\Adapter
+	 * @return Adapter
 	 */
 	public function getDbAdapter() 
 	{

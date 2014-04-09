@@ -34,7 +34,7 @@ abstract class AbstractBrowser implements SearchableInterface,
 	protected $serviceLocator;
 	/**
 	 *
-	 * @var \Zend\Db\Adapter\Adapter
+	 * @var Adapter
 	 */
 	protected $adapter;
 	
@@ -56,9 +56,15 @@ abstract class AbstractBrowser implements SearchableInterface,
 	 */
 	protected $columns;
 	
+	
+	/**
+	 *
+	 * @var array
+	 */
+	protected $filters;
 
 	/**
-	 * @param \Openstore\Core\Model\AbstractModel $model
+	 * @param AbstractModel $model
 	 */
 	function __construct(AbstractModel $model) {
 		$this->model = $model;
@@ -145,8 +151,8 @@ abstract class AbstractBrowser implements SearchableInterface,
 	
 	/**
 	 * 
-	 * @param \Openstore\Core\Model\Browser\Filter\FilterInterface $filter
-	 * @return \Openstore\Core\Model\Browser\AbstractBrowser
+	 * @param FilterInterface $filter
+	 * @return AbstractBrowser
 	 */
 	function addFilter(FilterInterface $filter) {
 		if ($this->filters === null) $this->filters = array();
@@ -256,4 +262,3 @@ abstract class AbstractBrowser implements SearchableInterface,
 	
 }
 		
-

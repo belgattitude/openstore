@@ -3,6 +3,9 @@ namespace Openstore\Db\Adapter;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Log\Logger;
+use Zend\Log\Writer;
+use BjyProfiler\Db\Profiler;
 
 class AdapterServiceFactory implements FactoryInterface
 {
@@ -39,13 +42,13 @@ class AdapterServiceFactory implements FactoryInterface
 		));*/
 
 	   if (php_sapi_name() == 'cli') {
-			$logger = new Zend\Log\Logger();
+			$logger = new Logger();
 			// write queries profiling info to stdout in CLI mode
-			$writer = new Zend\Log\Writer\Stream('php://output');
-			$logger->addWriter($writer, Zend\Log\Logger::DEBUG);
-			$adapter->setProfiler(new \BjyProfiler\Db\Profiler\LoggingProfiler($logger));
+			$writer = new Writer\Stream('php://output');
+			$logger->addWriter($writer, Logger::DEBUG);
+			$adapter->setProfiler(new Profiler\LoggingProfiler($logger));
 		} else {
-			$adapter->setProfiler(new \BjyProfiler\Db\Profiler\Profiler());
+			$adapter->setProfiler(new Profiler\Profiler());
 		}
 		if (isset($dbParams['options']) && is_array($dbParams['options'])) {
 			$options = $dbParams['options'];

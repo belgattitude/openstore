@@ -5,8 +5,8 @@ namespace OpenstoreTest\Order\Model;
 use Openstore\Order\Model;
 //use PHPUnit_Framework_TestCase;
 
-use Soluble\Normalist\SyntheticTable;
-use Soluble\Normalist\Exception as NormalistException;
+//use Soluble\Normalist\SyntheticTable;
+//use Soluble\Normalist\Exception as NormalistException;
 
 
 //use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
@@ -52,7 +52,7 @@ class OrderTest extends AbstractConsoleControllerTestCase
 	public function testCreateOrder()
 	{
 		$sm = $this->getApplication()->getServiceManager();
-		$st = new SyntheticTable($sm->get('Zend\Db\Adapter\Adapter'));
+		
 		$orderModel = $sm->get('Model\Order');
 		
 		// create a standard web order

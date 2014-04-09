@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenstoreTest\Controller;
+namespace OpenstoreApiTest\Controller;
 
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
