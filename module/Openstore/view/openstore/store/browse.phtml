@@ -16,7 +16,7 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 
 	<div class="col-md-9">
 
-		<div class="row"">
+		<div class="row">
 			<div class="col-md-12">
 				<?php $browse_filter = $this->searchParams->getFilter()->getName() ?>
 				<ul class="nav nav-tabs pull-right">
@@ -40,7 +40,7 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 		</div>		
 
 
-		<div class="row"">
+		<div class="row">
 			<div class="col-md-12">
 
 
@@ -75,9 +75,6 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 
 			</div>
 		</div>				
-
-		
-		
 		
 		<?php
 		echo $this->partial('snippets/breadcrumb_control', array(
@@ -87,85 +84,22 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 		))
 		?>
 		
-<!--		
-<div class="panel panel-primary">
-  <div class="panel-body" style="padding: 1px ">
-		<div class="btn-group btn-group-sm">
-		  <button type="button" class="btn btn-default dropdown-toggle  btn-navbar" data-toggle="dropdown">
-			Action <span class="caret"></span>
-		  </button>
-		  <ul class="dropdown-menu" role="menu">
-			<li><a href="#">Action</a></li>
-			<li><a href="#">Another action</a></li>
-			<li><a href="#">Something else here</a></li>
-			<li class="divider"></li>
-			<li><a href="#">Separated link</a></li>
-		  </ul>
-		</div>	  
-		<div class="pull-right">
-				<form role="search" class="navbar-form">
-					<div class="input-group input-group-sm">
-						<input type="text" class="form-control" placeholder="Filter" name="filter">
-						<div class="input-group-btn">
-							<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
-						</div>
-					</div>
-				</form>
-		</div>
-	  
-		<div class="pull-right">
-				<form role="search"  class="navbar-form">
-					<div class="input-group input-group-sm">
-						<input type="text" class="form-control" placeholder="Filter" name="filter">
-						<div class="input-group-btn">
-							<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
-						</div>
-					</div>
-				</form>
-		</div>
-
-  </div>
-  
-</div>
-		
-<div class="row"">
-	<div class="col-md-12">
-
-		<div class="navbar navbar-inverse" role="navigation">
-
-
-			<div class="collapse navbar-collapse navbar-ex1-collapse">
-							<div class="col-sm-4 col-md-4 pull-right">
-								<form class="navbar-form" role="search">
-									<div class="input-group input-group-sm">
-										<input type="text" class="form-control" placeholder="Filter" name="filter">
-										<div class="input-group-btn">
-											<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
-										</div>
-									</div>
-								</form>
-							</div>
-
-			</div>
-		</div>		
-	</div>
-</div>
--->
-		<!--<div class="row">	-->
+		<?php
+			$columns = 3;
+		?>
 		<?php foreach ($this->products as $idx => $product) : ?>
 			<?php
-			//echo "<h3>" . $idx % 3 . "</h3>";
-			$columns = 3;
+			//var_dump($this->products); die();
+			//echo "<h3>$idx - " . $idx % 3 . "</h3>";
 			$break = ($idx % $columns) == 0;
 			$last_idx = count($this->products);
 			?>
 			<?php if ($break) : ?>
-				<div class="row" > <!-- start row <?php echo "idx" . $idx . " --- ($idx % 3)" ?> -->	
-				<?php endif; ?>	
+			<div class="row" > <!-- start row <?php echo "idx" . $idx . " --- ($idx % 3)" ?> -->	
+			<?php endif; ?>	
 				<div class="col-md-4" style="margin-bottom: 5px">
 					<!-- <div class="thumbnail wrapper"> -->
 					<div class="thumbnail wrapper" style="background-color: white">
-
 						<div class="ribbon-wrapper-green">
 							<div class="ribbon-green"><?= $product->brand_title ?></div>
 						</div>
@@ -175,7 +109,6 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 									<strong>-<?= number_format($product->promo_discount) ?>%</strong><br />
 								</div>
 							<?php endif; ?>	
-
 							<div style="padding: 2px 2px;  background: rgba(54, 25, 25, .5); color: white; position: absolute">
 								<span><?= $product->reference ?></span>
 							</div>	 
@@ -204,7 +137,7 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 													'id' => $product->product_id,
 													'resolution' => '1024x768',
 													'quality' => 90), array(), $reuseMatchedParams = false);
-;
+
 								$onclick .= "javascript: $.colorbox({maxWidth: '90%', maxHeight: '90%', title: '" . 
 											 $escaper->escapeJs((string) $product->brand_title) . ' &raquo; ' . 
 											 $escaper->escapeJs((string) $product->reference) . ' &raquo; ' . 
@@ -262,9 +195,9 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 						</div>
 					</div>
 				</div>
-				<?php if (((($idx + 1) % $columns) == 0) || $idx + 1 == $last_idx) : ?>				
-				</div> <!-- end row -->	
-
+			<?php if (((($idx + 1) % $columns) == 0) || $idx + 1 == $last_idx) : ?>	
+				<hr><hr><hr>
+			</div> <!-- end row -->	
 			<?php endif; ?>
 		<?php endforeach; ?>
 

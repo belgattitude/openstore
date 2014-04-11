@@ -1,5 +1,4 @@
 <!-- start sidebar -->
-
 <div  id="affix_sidebar">
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -10,47 +9,17 @@
     <div id="collapseOne" class="panel-collapse collapse in">
 		<div class="panel-body">
 			<select multiple="multiple" id="os_brand_selector" style="width: 90%">
-
-				<?php foreach ($this->brands as $brand) : ?>				
-					<option value="<?= $brand['reference'] ?>"
-					<?php
-					if (in_array($brand['reference'], (array) $this->searchParams->getBrands())) {
-						echo ' selected="selected" ';
-					}
-					?>
-							><?= $brand['title'] ?></option>
-						<?php endforeach; ?>			
-
-			</select>				
-			<!--
-			<select id="os_brand_selector" style="width: 90%">
-				
-				<option value="<?=
-			$this->url('store/browse', array('brands' => null,
-				'page' => 1), array(), $reuseMatchedParams = true)
-			?>">All brands</option>
-				<optgroup label="Brands">
-				
-			<?php foreach ($this->brands as $brand) : ?>				
-							<option value="<?=
-				$this->url('store/browse', array(
-					'brands' => $brand['reference'],
-					'categories' => null,
-					'page' => 1
-						), array(), $reuseMatchedParams = true)
-				?>"
 				<?php
-				if ($brand['reference'] == $this->searchParams->getFirstBrand()) {
-					echo ' selected="selected" ';
-				}
-				?>
-									><?= $brand['title'] ?></option>
-			<?php endforeach; ?>			
-				
-				</optgroup>
-				
-			</select>
-			-->
+					foreach($this->brands as $brand) {
+						$option = '<option value="' . $brand['reference'] . '"';
+						if (in_array($brand['reference'], (array) $this->searchParams->getBrands())) {
+							$option .= ' selected="selected"';
+						}
+						$option .= '>' . $brand['title'] . '</option>';
+						echo $option . "\n";
+					}
+				?>		
+			</select>				
 		</div>
     </div>
     <div class="panel-heading">
@@ -67,24 +36,29 @@
     <div id="collapsible_categories" class="panel-collapse collapse in os_sidebar" >
 		<nav>
 		<div class="panel-body box_content" >
-	
-				<ul> 
-					<?php foreach ($this->categories as $categ) : ?>
-						<?php if ($categ['lvl'] > 0) : ?>
-							<li class="menu_item level<?= $categ['lvl'] ?> <?php if ($categ['is_expanded']) : ?>active<?php endif; ?>">
-								<a href="<?=
-								$this->url('store/browse', array(
-									'categories' => $categ['reference'],
-									'page' => 1
-										), array(), $reuseMatchedParams = true)
-								?>">
-									<?= $categ['title'] ?>
-									<span class="badge pull-right"><?= $categ['count_product'] ?></span>
-								</a>
-							</li>
-						<?php endif; ?>
-					<?php endforeach; ?>
-				</ul>
+			<ul> 
+				<?php 
+					foreach ($this->categories as $categ) {
+						if ($categ['lvl'] > 0) {
+							$li = '<li class="menu_item level' . $categ['lvl'];
+							if ($categ['is_expanded']) {
+								$li .= " active";
+							}
+							$li .= '">';
+								$li .= '<a href="';
+								$li .= $this->url('store/browse', array(
+											'categories' => $categ['reference'],
+											'page' => 1
+									), array(), $reuseMatchedParams = true) . '">';
+								$li .= $categ['title'];
+								$li .= '<span class="badge pull-right">' . $categ['count_product'] . '</span>';
+								$li .= '</a>';
+							$li .= "</li>";
+							echo $li . "\n";
+						}
+					}
+				?>
+			</ul>
 		</div>
 		</nav>
 	</div>
