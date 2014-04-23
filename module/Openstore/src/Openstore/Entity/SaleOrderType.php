@@ -29,7 +29,7 @@ class SaleOrderType implements InputFilterAwareInterface
 	 * @var \Zend\InputFilter\InputFilterInterface $inputFilter
 	 */
 	protected $inputFilter;
-
+	
     /**
      * @ORM\OneToMany(targetEntity="SaleOrderTypeTranslation", mappedBy="type_id")
      **/
@@ -110,6 +110,17 @@ class SaleOrderType implements InputFilterAwareInterface
 		 $this->flag_active = true; 
 		 
 		 
+	}
+	
+	
+	public function getId()
+	{
+		return $this->type_id;
+	}
+	
+	public function getTranslations()
+	{
+		return $this->translations;
 	}
 	
 	/**

@@ -6,7 +6,8 @@ use Openstore\Order\Model;
 use Openstore\Entity;
 use Doctrine\ORM\EntityManager;
 
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
+//use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
+use Openstore\Stdlib\Hydrator\DoctrineEntity;
 
 
 //use PHPUnit_Framework_TestCase;
@@ -43,20 +44,71 @@ class OrderTest extends AbstractConsoleControllerTestCase
 	}
 	public function testDoctrine()
 	{
-		
 		$em = $this->getEntityManager();
+		$hydrator = new DoctrineEntity($em);
 		
-		$hydrator = new DoctrineHydrator($em, null, false);
 		$order = new Entity\SaleOrder();
+		
+		$types		= $em->getRepository('Openstore\Entity\SaleOrderType');
+		$statuses	= $em->getRepository('Openstore\Entity\SaleOrderStatus');
+		$pricelists = $em->getRepository('Openstore\Entity\Pricelist');
+		
 		$data = array(
-			'customer_id' => 3521,
-			'pricelist_id' => 1,
-			'customer_reference' => 'PHPUNIT-' . date('Y-m-d H:i:s'),
-			'customer_comment' => 'Comment PHPUNIT-' . date('Y-m-d H:i:s'),
+			'customer_id'		=> 3521,
+			'pricelist_id'		=> 1,
+			'customer_reference'=> 'PHPUNIT-' . date('Y-m-d H:i:s'),
+			'customer_comment'	=> 'Comment PHPUNIT-' . date('Y-m-d H:i:s'),
+			'type_id'			=> $types->findOneBy(array('reference' => 'SHOPCART')),
+			'status_id'			=> $statuses->findOneBy(array('flag_default' => 1)),
+			'pricelist_id'		=> $pricelists->findOneBy(array('reference' => 'FR')),
+			'user_id'			=> null,
 		);
 
-		$o = $hydrator->hydrate($data, $order);
-		var_dump($o->getCustomerId()->getName());
+		
+		$order = $hydrator->hydrate($data, $order);
+		var_dump($order->getCustomerId()->getName());
+		$em->persist($order);
+		
+		$order_id = $order->getOrderId();
+		
+		$line_status	= $em->getRepository('Openstore\Entity\SaleOrderLineStatus');
+		
+		$line = array(
+			'order_id' => $order,
+			'product_id' => 1,
+			'status_id' => $line_status->findOneBy(array('flag_default' => 1)),
+			'quantity' => 2,
+			'price' => 10,
+			'discount_1' => 0,
+			'discount_2' => 0,
+			'discount_3' => 0,
+			'discount_4' => 0,
+			'customer_reference'=> 'PHPUNIT-' . date('Y-m-d H:i:s'),
+			'customer_comment'	=> 'Comment PHPUNIT-' . date('Y-m-d H:i:s'),
+		);
+		
+		$orderline = new Entity\SaleOrderLine();
+		$orderline = $hydrator->hydrate($line, $orderline);
+		$em->persist($orderline);
+		$em->flush();
+		
+		$hydrator->addStrategy('type_id', new \Openstore\Stdlib\Hydrator\Strategy\NestedExtractor());
+		$a = $hydrator->extract($order);
+		
+		var_dump($a);
+		die();
+		$type = $a['type_id'];
+		var_dump($type->getTitle());
+		var_dump($type->getTypeId());
+		foreach($type->getTranslations() as $tr) {
+			var_dump($tr->getTitle());
+		};
+		die();
+		
+		var_dump($a['type_id']->getTitle());
+		var_dump($a['type_id']->getTranslations()->toArray());
+		//var_dump($a['type_id']->);
+		
 		die();
 		
 		

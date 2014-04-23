@@ -40,6 +40,8 @@ class SaleOrderTypeTranslation implements InputFilterAwareInterface
 	 */
 	private $id;
 
+	
+	
 	/**
 	 * 
      * @ORM\ManyToOne(targetEntity="SaleOrderType", inversedBy="translations", cascade={"persist", "remove"})

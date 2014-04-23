@@ -19,6 +19,7 @@
 		"doctrine/doctrine-module": "0.8.*",
 		"doctrine/doctrine-orm-module": "0.8.*",
 		"gedmo/doctrine-extensions": "2.3.*",
+		
 		"doctrine/data-fixtures": "dev-master",
 		"hounddog/doctrine-data-fixture-module": "dev-master",
 		"zf-commons/zfc-user": "0.1.*",

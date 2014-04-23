@@ -51,6 +51,11 @@ class ShopcartController extends AbstractActionController
 		
 	}
 	
+	public function newAction()
+	{
+		
+	}
+	
 	/**
 	 * 
 	 * @return \Doctrine\ORM\EntityManager

@@ -47,6 +47,13 @@ class IndexController extends AbstractActionController
 		*/
         return $view;
     }
+	
+	
+	public function createAction() 
+	{
+		die('cool');
+	}
+
 
 	
 		

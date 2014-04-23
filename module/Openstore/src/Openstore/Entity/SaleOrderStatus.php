@@ -123,6 +123,11 @@ class SaleOrderStatus implements InputFilterAwareInterface
 		 
 		 
 	}
+	
+	public function getId()
+	{
+		return $this->type_id;
+	}	
 
 	/**
 	 * 

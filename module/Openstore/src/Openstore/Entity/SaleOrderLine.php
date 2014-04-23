@@ -53,7 +53,7 @@ class SaleOrderLine implements InputFilterAwareInterface
 
     /**
      * @ORM\ManyToOne(targetEntity="SaleOrderLineStatus", inversedBy="lines")
-     * @ORM\JoinColumn(name="status_id", referencedColumnName="status_id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="status_id", nullable=false, referencedColumnName="status_id", onDelete="CASCADE")
      */
     private $status_id;	
 	
@@ -101,12 +101,12 @@ class SaleOrderLine implements InputFilterAwareInterface
 	
 
 	/**
-	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Customer reference"})
+	 * @ORM\Column(type="string", length=60, nullable=true, options={"comment" = "Customer reference"})
 	 */
 	private $customer_reference;
 
 	/**
-	 * @ORM\Column(type="string", length=255, nullable=false, options={"comment" = "Customer comment"})
+	 * @ORM\Column(type="string", length=255, nullable=true, options={"comment" = "Customer comment"})
 	 */
 	private $customer_comment;	
 
@@ -158,8 +158,118 @@ class SaleOrderLine implements InputFilterAwareInterface
 	protected $legacy_synchro_at;
 
 	
-	
+	public function getLineId() {
+		return $this->line_id;
+	}
 
+	public function getReference() {
+		return $this->reference;
+	}
+
+	public function getOrderId() {
+		return $this->order_id;
+	}
+
+	public function getStatusId() {
+		return $this->status_id;
+	}
+
+	public function getProductId() {
+		return $this->product_id;
+	}
+
+	public function getQuantity() {
+		return $this->quantity;
+	}
+
+	public function getPrice() {
+		return $this->price;
+	}
+
+	public function getDiscount1() {
+		return $this->discount_1;
+	}
+
+	public function getDiscount2() {
+		return $this->discount_2;
+	}
+
+	public function getDiscount3() {
+		return $this->discount_3;
+	}
+
+	public function getDiscount4() {
+		return $this->discount_4;
+	}
+
+	public function getCustomerReference() {
+		return $this->customer_reference;
+	}
+
+	public function getCustomerComment() {
+		return $this->customer_comment;
+	}
+
+	public function getExpiresAt() {
+		return $this->expires_at;
+	}
+
+
+	public function setReference($reference) {
+		$this->reference = $reference;
+	}
+
+	public function setOrderId($order_id) {
+		$this->order_id = $order_id;
+	}
+
+	public function setStatusId($status_id) {
+		$this->status_id = $status_id;
+	}
+
+	public function setProductId($product_id) {
+		$this->product_id = $product_id;
+	}
+
+	public function setQuantity($quantity) {
+		$this->quantity = $quantity;
+	}
+
+	public function setPrice($price) {
+		$this->price = $price;
+	}
+
+	public function setDiscount1($discount_1) {
+		$this->discount_1 = $discount_1;
+	}
+
+	public function setDiscount2($discount_2) {
+		$this->discount_2 = $discount_2;
+	}
+
+	public function setDiscount3($discount_3) {
+		$this->discount_3 = $discount_3;
+	}
+
+	public function setDiscount4($discount_4) {
+		$this->discount_4 = $discount_4;
+	}
+
+	public function setCustomerReference($customer_reference) {
+		$this->customer_reference = $customer_reference;
+	}
+
+	public function setCustomerComment($customer_comment) {
+		$this->customer_comment = $customer_comment;
+	}
+
+	public function setExpiresAt($expires_at) {
+		$this->expires_at = $expires_at;
+	}
+
+
+
+	
 	/**
 	 * 
 	 * @return string

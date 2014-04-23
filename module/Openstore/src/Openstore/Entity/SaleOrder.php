@@ -79,6 +79,7 @@ class SaleOrder implements InputFilterAwareInterface
 	 */
 	private $pricelist_id;		
 
+	
 	/**
 	 * @ORM\Column(type="string", length=60, nullable=true, options={"comment" = "Customer reference"})
 	 */
@@ -162,24 +163,6 @@ class SaleOrder implements InputFilterAwareInterface
 		return $this;
 	}
 
-	/**
-	 * 
-	 * @return Customer
-	 */
-	public function getCustomer()
-	{
-		return $this->customer_id;
-	}
-
-	/**
-	 * 
-	 * @param Customer $customer
-	 */
-	public function setCustomer(Customer $customer)
-	{
-		$this->customer_id = $customer;
-		return $this;
-	}	
 
 
 	/**
@@ -190,6 +173,77 @@ class SaleOrder implements InputFilterAwareInterface
 		$this->customer_reference = $customer_reference;
 	}	
 	
+	public function getOrderId() {
+		return $this->order_id;
+	}
+
+	public function getReference() {
+		return $this->reference;
+	}
+
+	public function getTypeId() {
+		return $this->type_id;
+	}
+
+	public function getStatusId() {
+		return $this->status_id;
+	}
+
+	public function getUser_id() {
+		return $this->user_id;
+	}
+
+
+	public function getPricelistId() {
+		return $this->pricelist_id;
+	}
+
+
+
+	public function getDocumentDate() {
+		return $this->document_date;
+	}
+
+	public function getExpiresAt() {
+		return $this->expires_at;
+	}
+
+	public function setOrderId($order_id) {
+		$this->order_id = $order_id;
+	}
+
+	public function setReference($reference) {
+		$this->reference = $reference;
+	}
+
+	public function setTypeId($type_id) {
+		$this->type_id = $type_id;
+	}
+
+	public function setStatusId($status_id) {
+		$this->status_id = $status_id;
+	}
+
+	public function setUserId($user_id) {
+		$this->user_id = $user_id;
+	}
+
+
+	public function setPricelistId($pricelist_id) {
+		$this->pricelist_id = $pricelist_id;
+	}
+
+	public function setDocumentDate($document_date) {
+		$this->document_date = $document_date;
+	}
+
+	public function setExpiresAt($expires_at) {
+		$this->expires_at = $expires_at;
+	}
+
+
+
+		
 	/**
 	 * @return string
 	 */
@@ -198,6 +252,23 @@ class SaleOrder implements InputFilterAwareInterface
 		return $this->customer_reference;
 	}
 
+	/**
+	 * @param string $customer_comment
+	 */
+	public function setCustomerComment($customer_comment)
+	{
+		$this->customer_comment = $customer_comment;
+	}	
+	
+	/**
+	 * @return string
+	 */
+	public function getCustomerComment()
+	{
+		return $this->customer_comment;
+	}
+	
+	
 	/**
 	 * 
 	 * @return string
