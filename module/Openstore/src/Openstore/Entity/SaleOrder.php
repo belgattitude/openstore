@@ -14,16 +14,16 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="order_line",
+ *   name="sale_order",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
  *   }, 
  *   indexes={
  *   },
- *   options={"comment" = "Order line table"}
+ *   options={"comment" = "Order table"}
  * )
  */
-class OrderLine implements InputFilterAwareInterface
+class SaleOrder implements InputFilterAwareInterface
 {
 	
 	/**
@@ -34,10 +34,10 @@ class OrderLine implements InputFilterAwareInterface
 	
 	/**
 	 * @ORM\Id
-	 * @ORM\Column(name="line_id", type="bigint", nullable=false, options={"unsigned"=true})
+	 * @ORM\Column(name="order_id", type="bigint", nullable=false, options={"unsigned"=true})
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
-	private $line_id;
+	private $order_id;
 
 	/**
 	 * @ORM\Column(type="string", length=60, nullable=true, options={"comment" = "Reference"})
@@ -46,71 +46,54 @@ class OrderLine implements InputFilterAwareInterface
 	
 	
     /**
-     * @ORM\ManyToOne(targetEntity="Order", inversedBy="lines")
-     * @ORM\JoinColumn(name="order_id", referencedColumnName="order_id", onDelete="CASCADE")
+     * @ORM\ManyToOne(targetEntity="SaleOrderType", inversedBy="orders")
+     * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", nullable=false, onDelete="CASCADE")
      */
-    private $order_id;	
+    private $type_id;	
 
     /**
-     * @ORM\ManyToOne(targetEntity="OrderLineStatus", inversedBy="lines")
-     * @ORM\JoinColumn(name="status_id", referencedColumnName="status_id", onDelete="CASCADE")
+     * @ORM\ManyToOne(targetEntity="SaleOrderStatus", inversedBy="orders")
+     * @ORM\JoinColumn(name="status_id", referencedColumnName="status_id", nullable=false, onDelete="CASCADE")
      */
     private $status_id;	
 	
 	
 	/**
 	 * 
-     * @ORM\ManyToOne(targetEntity="Product", inversedBy="orders", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="product_id", referencedColumnName="product_id", nullable=false)
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="orders", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="user_id", nullable=true)
 	 */
-	private $product_id;
-
-
-	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Ordered quantity"})
-	 */
-	private $quantity;
-
+	private $user_id;
 
 	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Total price of line"})
+	 * 
+     * @ORM\ManyToOne(targetEntity="Customer", inversedBy="orders", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="customer_id", referencedColumnName="customer_id", nullable=false)
 	 */
-	private $price;	
-	
-	
-	/**
-	 * @ORM\Column(type="decimal", precision=9, scale=6, nullable=false, options={"default"=0, "comment"="Regular discount 1"})
-	 */
-	private $discount_1;
-	
-	/**
-	 * @ORM\Column(type="decimal", precision=9, scale=6, nullable=false, options={"default"=0, "comment"="Regular discount 2"})
-	 */
-	private $discount_2;
-	
-	/**
-	 * @ORM\Column(type="decimal", precision=9, scale=6, nullable=false, options={"default"=0, "comment"="Regular discount 3"})
-	 */
-	private $discount_3;
-	
-	/**
-	 * @ORM\Column(type="decimal", precision=9, scale=6, nullable=false, options={"default"=0, "comment"="Regular discount 4"})
-	 */
-	private $discount_4;
-	
-	
+	private $customer_id;	
 
 	/**
-	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Customer reference"})
+	 * 
+     * @ORM\ManyToOne(targetEntity="Pricelist", inversedBy="orders", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="pricelist_id", referencedColumnName="pricelist_id", nullable=false)
+	 */
+	private $pricelist_id;		
+
+	/**
+	 * @ORM\Column(type="string", length=60, nullable=true, options={"comment" = "Customer reference"})
 	 */
 	private $customer_reference;
 
 	/**
-	 * @ORM\Column(type="string", length=255, nullable=false, options={"comment" = "Customer comment"})
+	 * @ORM\Column(type="string", length=255, nullable=true, options={"comment" = "Customer comment"})
 	 */
 	private $customer_comment;	
 
 
+	/**
+	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Order/Quote document date"})
+	 */
+	private $document_date;	
 	
 	
 	/**
@@ -158,7 +141,62 @@ class OrderLine implements InputFilterAwareInterface
 	protected $legacy_synchro_at;
 
 	
+
+	/**
+	 * 
+	 * @return string
+	 */
+	public function getCustomerId()
+	{
+		return $this->customer_id;
+	}
+
+	/**
+	 * 
+	 * @param string $customer_id
+	 */
+	public function setCustomerId($customer_id)
+	{
+		//$customer = ->getRepository('Openstore\Entity\Customer')->find($customer_id);
+		$this->customer_id = $customer_id;
+		return $this;
+	}
+
+	/**
+	 * 
+	 * @return Customer
+	 */
+	public function getCustomer()
+	{
+		return $this->customer_id;
+	}
+
+	/**
+	 * 
+	 * @param Customer $customer
+	 */
+	public function setCustomer(Customer $customer)
+	{
+		$this->customer_id = $customer;
+		return $this;
+	}	
+
+
+	/**
+	 * @param string $customer_reference
+	 */
+	public function setCustomerReference($customer_reference)
+	{
+		$this->customer_reference = $customer_reference;
+	}	
 	
+	/**
+	 * @return string
+	 */
+	public function getCustomerReference()
+	{
+		return $this->customer_reference;
+	}
 
 	/**
 	 * 

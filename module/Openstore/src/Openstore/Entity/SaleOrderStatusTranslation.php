@@ -14,7 +14,7 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="order_line_status_translation",
+ *   name="sale_order_status_translation",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
  *     @ORM\UniqueConstraint(name="unique_translation_idx",columns={"status_id", "lang"})
@@ -22,10 +22,10 @@ use Zend\InputFilter\InputFilterInterface;
  *   indexes={
  *     @ORM\Index(name="title_idx", columns={"title"})
  *   },
- *   options={"comment" = "Order line status translation table"}
+ *   options={"comment" = "Order type translation table"}
  * )
  */
-class OrderLineStatusTranslation implements InputFilterAwareInterface
+class SaleOrderStatusTranslation implements InputFilterAwareInterface
 {
 	
 	/**
@@ -42,7 +42,7 @@ class OrderLineStatusTranslation implements InputFilterAwareInterface
 
 	/**
 	 * 
-     * @ORM\ManyToOne(targetEntity="OrderLineStatus", inversedBy="translations", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="SaleOrderStatus", inversedBy="translations", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="status_id", referencedColumnName="status_id", onDelete="CASCADE", nullable=false)
 	 */
 	private $status_id;

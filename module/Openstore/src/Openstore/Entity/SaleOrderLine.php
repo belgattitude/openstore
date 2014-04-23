@@ -14,16 +14,16 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="order_status",
+ *   name="sale_order_line",
  *   uniqueConstraints={
- *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *     @ORM\UniqueConstraint(name="unique_flag_default_idx",columns={"flag_default"}),
  *   }, 
- *   options={"comment" = "Order status table"}
+ *   indexes={
+ *   },
+ *   options={"comment" = "Order line table"}
  * )
  */
-class OrderStatus implements InputFilterAwareInterface
+class SaleOrderLine implements InputFilterAwareInterface
 {
 	
 	/**
@@ -31,49 +31,92 @@ class OrderStatus implements InputFilterAwareInterface
 	 */
 	protected $inputFilter;
 
-    /**
-     * @ORM\OneToMany(targetEntity="OrderStatusTranslation", mappedBy="status_id")
-     **/
-    private $translations;	
-	
 	
 	/**
 	 * @ORM\Id
-	 * @ORM\Column(name="status_id", type="integer", nullable=false, options={"unsigned"=true})
+	 * @ORM\Column(name="line_id", type="bigint", nullable=false, options={"unsigned"=true})
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
-	private $status_id;
-	
+	private $line_id;
 
 	/**
-	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
+	 * @ORM\Column(type="string", length=60, nullable=true, options={"comment" = "Reference"})
 	 */
 	private $reference;
-
-
-	/**
-	 * @ORM\Column(type="string", length=80, nullable=true)
-	 */
-	private $title;
-
 	
-	/**
-	 * @ORM\Column(type="boolean", nullable=true, options={"default"=null, "comment"="Is the default state"})
-	 */
-	private $flag_default;
+	
+    /**
+     * @ORM\ManyToOne(targetEntity="SaleOrder", inversedBy="lines")
+     * @ORM\JoinColumn(name="order_id", referencedColumnName="order_id", onDelete="CASCADE")
+     */
+    private $order_id;	
 
-
-	/**
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=0, "comment"="Is readonly"})
-	 */
-	private $flag_readonly;
+    /**
+     * @ORM\ManyToOne(targetEntity="SaleOrderLineStatus", inversedBy="lines")
+     * @ORM\JoinColumn(name="status_id", referencedColumnName="status_id", onDelete="CASCADE")
+     */
+    private $status_id;	
 	
 	
 	/**
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the model is active in public website"})
+	 * 
+     * @ORM\ManyToOne(targetEntity="Product", inversedBy="orders", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="product_id", referencedColumnName="product_id", nullable=false)
 	 */
-	private $flag_active;
+	private $product_id;
+
+
+	/**
+	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Ordered quantity"})
+	 */
+	private $quantity;
+
+
+	/**
+	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Total price of line"})
+	 */
+	private $price;	
 	
+	
+	/**
+	 * @ORM\Column(type="decimal", precision=9, scale=6, nullable=false, options={"default"=0, "comment"="Regular discount 1"})
+	 */
+	private $discount_1;
+	
+	/**
+	 * @ORM\Column(type="decimal", precision=9, scale=6, nullable=false, options={"default"=0, "comment"="Regular discount 2"})
+	 */
+	private $discount_2;
+	
+	/**
+	 * @ORM\Column(type="decimal", precision=9, scale=6, nullable=false, options={"default"=0, "comment"="Regular discount 3"})
+	 */
+	private $discount_3;
+	
+	/**
+	 * @ORM\Column(type="decimal", precision=9, scale=6, nullable=false, options={"default"=0, "comment"="Regular discount 4"})
+	 */
+	private $discount_4;
+	
+	
+
+	/**
+	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Customer reference"})
+	 */
+	private $customer_reference;
+
+	/**
+	 * @ORM\Column(type="string", length=255, nullable=false, options={"comment" = "Customer comment"})
+	 */
+	private $customer_comment;	
+
+
+	
+	
+	/**
+	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "When in quote, make an expiry date"})
+	 */
+	private $expires_at;	
 	
 	/**
 	 * @Gedmo\Timestampable(on="create")
@@ -86,6 +129,11 @@ class OrderStatus implements InputFilterAwareInterface
 	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record last update timestamp"})
 	 */
 	private $updated_at;
+	
+	/**
+	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record deletion date"})
+	 */
+	private $deleted_at;
 
 	/**
 	 * @Gedmo\Blameable(on="create")
@@ -109,135 +157,6 @@ class OrderStatus implements InputFilterAwareInterface
 	 */
 	protected $legacy_synchro_at;
 
-	
-	
-	public function __construct()
-	{
-		
-		 $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
-		 
-		 /**
-		  * Default value for flag_active
-		  */
-		 $this->flag_active = true; 
-		 
-		 
-	}
-
-	/**
-	 * 
-	 * @param integer $id
-	 */
-	public function setStatusId($status_id)
-	{
-		$this->status_id = $status_id;
-		return $this;
-	}	
-	
-	/**
-	 * 
-	 * @return integer
-	 */
-	public function getStatusId()
-	{
-		return $this->status_id;
-	}	
-
-
-	/**
-	 * Set reference
-	 * @param string $reference
-	 */
-	public function setReference($reference)
-	{
-		$this->reference = $reference;
-		return $this;
-	}
-
-	/**
-	 * Return reference 
-	 * @return string
-	 */
-	public function getReference()
-	{
-		return $this->reference;
-	}
-
-	/**
-	 * 
-	 * @param string $title
-	 */
-	public function setTitle($title)
-	{
-		$this->title = $title;
-		return $this;
-	}
-
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getTitle()
-	{
-		return $this->title;
-	}
-
-	/**
-	 * 
-	 * @return boolean
-	 */
-	public function getFlagActive()
-	{
-		return (boolean) $this->flag_active;
-	}
-
-	
-	/**
-	 * 
-	 */
-	public function setFlagActive($flag_active)
-	{
-		$this->flag_active = $flag_active;
-		return $this;
-	}
-	
-	/**
-	 * 
-	 * @return boolean
-	 */
-	public function getFlagReadOnly()
-	{
-		return (boolean) $this->flag_readonly;
-	}
-
-	
-	/**
-	 * 
-	 */
-	public function setFlagReadOnly($flag_readonly)
-	{
-		$this->flag_readonly = $flag_readonly;
-		return $this;
-	}	
-	
-	/**
-	 * 
-	 * @return boolean
-	 */
-	public function getFlagDefault()
-	{
-		return (boolean) $this->flag_default;
-	}
-
-	
-	/**
-	 * 
-	 */
-	public function setFlagDefault($flag_default)
-	{
-		$this->flag_default = $flag_default;
-		return $this;
-	}	
 	
 	
 
@@ -278,6 +197,26 @@ class OrderStatus implements InputFilterAwareInterface
 		$this->updated_at = $updated_at;
 		return $this;
 	}
+	
+	/**
+	 * 
+	 * @return string
+	 */
+	public function getDeletedAt()
+	{
+		return $this->deleted_at;
+	}
+
+	/**
+	 * 
+	 * @param string $updated_at
+	 */
+	public function setDeletedAt($deleted_at)
+	{
+		$this->deleted_at = $deleted_at;
+		return $this;
+	}
+	
 
 	/**
 	 * Return creator username

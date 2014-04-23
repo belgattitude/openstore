@@ -60,7 +60,7 @@ class LoadUserData implements FixtureInterface
 		);
 
 		foreach($statuses as $id => $infos) {
-			$orderstatus = new Entity\OrderStatus();
+			$orderstatus = new Entity\SaleOrderStatus();
 			$orderstatus->setStatusId($id);
 			$orderstatus->setFlagDefault($infos['flag_default']);
 			$orderstatus->setFlagReadOnly($infos['flag_readonly']);
@@ -83,7 +83,7 @@ class LoadUserData implements FixtureInterface
 		);		
 		
 		foreach($line_statuses as $id => $infos) {
-			$orderline = new Entity\OrderLineStatus();
+			$orderline = new Entity\SaleOrderLineStatus();
 			$orderline->setStatusId($id);
 			$orderline->setFlagDefault($infos['flag_default']);
 			$orderline->setFlagReadOnly($infos['flag_readonly']);
@@ -107,7 +107,7 @@ class LoadUserData implements FixtureInterface
 		);
 		
 		foreach($types as $id => $infos) {
-			$ordertype = new Entity\OrderType();
+			$ordertype = new Entity\SaleOrderType();
 			$ordertype->setTypeId($id);
 			$ordertype->setReference($infos['reference']);
 			$ordertype->setTitle($infos['title']);

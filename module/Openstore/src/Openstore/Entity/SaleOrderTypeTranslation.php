@@ -14,16 +14,18 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="order_line_status",
+ *   name="sale_order_type_translation",
  *   uniqueConstraints={
- *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *     @ORM\UniqueConstraint(name="unique_flag_default_idx",columns={"flag_default"}),
+ *     @ORM\UniqueConstraint(name="unique_translation_idx",columns={"type_id", "lang"})
  *   }, 
- *   options={"comment" = "Order line status table"}
+ *   indexes={
+ *     @ORM\Index(name="title_idx", columns={"title"})
+ *   },
+ *   options={"comment" = "Order type translation table"}
  * )
  */
-class OrderLineStatus implements InputFilterAwareInterface
+class SaleOrderTypeTranslation implements InputFilterAwareInterface
 {
 	
 	/**
@@ -31,25 +33,27 @@ class OrderLineStatus implements InputFilterAwareInterface
 	 */
 	protected $inputFilter;
 
-    /**
-     * @ORM\OneToMany(targetEntity="OrderStatusTranslation", mappedBy="status_id")
-     **/
-    private $translations;	
-	
-	
 	/**
 	 * @ORM\Id
-	 * @ORM\Column(name="status_id", type="integer", nullable=false, options={"unsigned"=true})
+	 * @ORM\Column(name="id", type="bigint", nullable=false, options={"unsigned"=true, "comment" = "Primary key"})
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
-	private $status_id;
-	
+	private $id;
 
 	/**
-	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
+	 * 
+     * @ORM\ManyToOne(targetEntity="SaleOrderType", inversedBy="translations", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", onDelete="CASCADE", nullable=false)
 	 */
-	private $reference;
-
+	private $type_id;
+	
+	
+	/**
+     * @ORM\ManyToOne(targetEntity="Language", inversedBy="product_translations", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="lang", referencedColumnName="lang", onDelete="RESTRICT", nullable=false)
+	 */
+	private $lang;
+	
 
 	/**
 	 * @ORM\Column(type="string", length=80, nullable=true)
@@ -57,20 +61,6 @@ class OrderLineStatus implements InputFilterAwareInterface
 	private $title;
 
 
-	/**
-	 * @ORM\Column(type="boolean", nullable=true, options={"default"=null, "comment"="Is the default state"})
-	 */
-	private $flag_default;
-	/**
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=0, "comment"="Is readonly"})
-	 */
-	private $flag_readonly;	
-	
-	/**
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the model is active in public website"})
-	 */
-	private $flag_active;
-	
 	
 	/**
 	 * @Gedmo\Timestampable(on="create")
@@ -110,25 +100,15 @@ class OrderLineStatus implements InputFilterAwareInterface
 	
 	public function __construct()
 	{
-		
-		 $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
-		 
-		 /**
-		  * Default value for flag_active
-		  */
-		 $this->flag_active = true; 
-		 
-		 
 	}
 
-	
 	/**
 	 * 
 	 * @param integer $id
 	 */
-	public function setStatusId($status_id)
+	public function setId($id)
 	{
-		$this->status_id = $status_id;
+		$this->id = $id;
 		return $this;
 	}	
 	
@@ -136,28 +116,28 @@ class OrderLineStatus implements InputFilterAwareInterface
 	 * 
 	 * @return integer
 	 */
-	public function getStatusId()
+	public function getId()
 	{
-		return $this->status_id;
-	}	
+		return $this->id;
+	}
+
 
 	/**
-	 * Set reference
-	 * @param string $reference
+	 * @param string $slug
 	 */
-	public function setReference($reference)
+	public function setSlug($slug)
 	{
-		$this->reference = $reference;
+		$this->slug = $slug;
 		return $this;
 	}
 
 	/**
-	 * Return reference 
+	 * 
 	 * @return string
 	 */
-	public function getReference()
+	public function getSlug()
 	{
-		return $this->reference;
+		return $this->slug;
 	}
 
 	/**
@@ -179,62 +159,30 @@ class OrderLineStatus implements InputFilterAwareInterface
 		return $this->title;
 	}
 
-	/**
-	 * 
-	 * @return boolean
-	 */
-	public function getFlagActive()
-	{
-		return (boolean) $this->flag_active;
-	}
+	
 
+	
 	
 	/**
 	 * 
+	 * @param integer $lang_id
 	 */
-	public function setFlagActive($flag_active)
+	public function setLangId($lang_id)
 	{
-		$this->flag_active = $flag_active;
-		return $this;
-	}
-
-	/**
-	 * 
-	 * @return boolean
-	 */
-	public function getFlagReadOnly()
-	{
-		return (boolean) $this->flag_readonly;
-	}
-
-	
-	/**
-	 * 
-	 */
-	public function setFlagReadOnly($flag_readonly)
-	{
-		$this->flag_readonly = $flag_readonly;
+		$this->lang_id = $lang_id;
 		return $this;
 	}	
 	
 	/**
 	 * 
-	 * @return boolean
+	 * @return integer
 	 */
-	public function getFlagDefault()
+	public function getLangId()
 	{
-		return (boolean) $this->flag_default;
+		return $this->lang_id;
 	}
-
 	
-	/**
-	 * 
-	 */
-	public function setFlagDefault($flag_default)
-	{
-		$this->flag_default = $flag_default;
-		return $this;
-	}	
+	
 
 	/**
 	 * 
@@ -264,8 +212,6 @@ class OrderLineStatus implements InputFilterAwareInterface
 		return $this->updated_at;
 	}
 
-	
-	
 	/**
 	 * 
 	 * @param string $updated_at

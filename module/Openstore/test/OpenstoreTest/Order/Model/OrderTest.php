@@ -3,6 +3,12 @@
 namespace OpenstoreTest\Order\Model;
 
 use Openstore\Order\Model;
+use Openstore\Entity;
+use Doctrine\ORM\EntityManager;
+
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
+
+
 //use PHPUnit_Framework_TestCase;
 
 //use Soluble\Normalist\SyntheticTable;
@@ -26,10 +32,63 @@ class OrderTest extends AbstractConsoleControllerTestCase
         parent::setUp();
     }
 	
-
+	
 	/**
-	 * @covers Openstore\Order\Model\Order::create
-	 */	
+	 * @return EntityManager
+	 */
+	protected function getEntityManager()
+	{
+		
+		return $this->getApplication()->getServiceManager()->get('Doctrine\ORM\EntityManager');		
+	}
+	public function testDoctrine()
+	{
+		
+		$em = $this->getEntityManager();
+		
+		$hydrator = new DoctrineHydrator($em, null, false);
+		$order = new Entity\SaleOrder();
+		$data = array(
+			'customer_id' => 3521,
+			'pricelist_id' => 1,
+			'customer_reference' => 'PHPUNIT-' . date('Y-m-d H:i:s'),
+			'customer_comment' => 'Comment PHPUNIT-' . date('Y-m-d H:i:s'),
+		);
+
+		$o = $hydrator->hydrate($data, $order);
+		var_dump($o->getCustomerId()->getName());
+		die();
+		
+		
+		
+		$hydrator = new DoctrineObject(
+			$em,
+			'Openstore\Entity\SaleOrder'
+		);
+		
+		$data = (array) $this->getOrderData();
+
+		$order = $hydrator->hydrate($data, $order);		
+		var_dump($order);
+		die();
+		
+		$em->persist($order);
+		$em->flush();
+		$order->flush();
+		
+		die('cool');
+		$customer = $em->getRepository('Openstore\Entity\Customer')->find($customer_id);
+		$order->setCustomer($customer);
+		
+		$em->persist($order);
+		$em->flush();
+//		var_dump($order->getArrayCopy());
+		var_dump($order);
+		die('hello');
+		//$sm = $this->getApplication()->getServiceManager();
+		//$sm->
+	}
+/*
 	public function testCreateOrderThrowsInvalidCustomerException()
 	{
 		$this->setExpectedException('Openstore\Order\Model\Exception\InvalidCustomerException');
@@ -46,9 +105,6 @@ class OrderTest extends AbstractConsoleControllerTestCase
 	}
 	
 	
-	/**
-	 * @covers Openstore\Model\order::create
-	 */	
 	public function testCreateOrder()
 	{
 		$sm = $this->getApplication()->getServiceManager();
@@ -76,9 +132,6 @@ class OrderTest extends AbstractConsoleControllerTestCase
 		$this->assertEquals($return, true);
 	}
 	
-	/**
-	 * @covers Openstore\Model\order::create
-	 */
 	public function testAddOrderLine() 
 	{
 		$sm = $this->getApplication()->getServiceManager();
@@ -129,22 +182,22 @@ class OrderTest extends AbstractConsoleControllerTestCase
 		}
 		
 	}
-	
+*/	
 	/**
 	 * 
-	 * @return \ArrayObject
+	 * @return \ArrayObjectdie('cool');
 	 */
 	protected function getOrderData() {
 		$sm = $this->getApplication()->getServiceManager();
-		$st = new SyntheticTable($sm->get('Zend\Db\Adapter\Adapter'));
-		$shopcart_order_type = $st->findOneBy('order_type', array('reference' => 'SHOPCART'));
+		//$st = new SyntheticTable($sm->get('Zend\Db\Adapter\Adapter'));
+		//$shopcart_order_type = $st->findOneBy('order_type', array('reference' => 'SHOPCART'));
 		
 		$data = new \ArrayObject(array(
 			'customer_id' => 3521,
 			'pricelist_id' => 1,
 			'customer_reference' => 'PHPUNIT-' . date('Y-m-d H:i:s'),
 			'customer_comment' => 'Comment PHPUNIT-' . date('Y-m-d H:i:s'),
-			'type_id' =>  $shopcart_order_type['type_id']
+			//'type_id' =>  $shopcart_order_type['type_id']
 		));
 		return $data;
 	}

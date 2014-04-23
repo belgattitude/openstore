@@ -14,16 +14,18 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="order",
+ *   name="sale_order_line_status_translation",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
+ *     @ORM\UniqueConstraint(name="unique_translation_idx",columns={"status_id", "lang"})
  *   }, 
  *   indexes={
+ *     @ORM\Index(name="title_idx", columns={"title"})
  *   },
- *   options={"comment" = "Order table"}
+ *   options={"comment" = "Order line status translation table"}
  * )
  */
-class Order implements InputFilterAwareInterface
+class SaleOrderLineStatusTranslation implements InputFilterAwareInterface
 {
 	
 	/**
@@ -31,75 +33,34 @@ class Order implements InputFilterAwareInterface
 	 */
 	protected $inputFilter;
 
-	
 	/**
 	 * @ORM\Id
-	 * @ORM\Column(name="order_id", type="bigint", nullable=false, options={"unsigned"=true})
+	 * @ORM\Column(name="id", type="bigint", nullable=false, options={"unsigned"=true, "comment" = "Primary key"})
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
-	private $order_id;
-
-	/**
-	 * @ORM\Column(type="string", length=60, nullable=true, options={"comment" = "Reference"})
-	 */
-	private $reference;
-	
-	
-    /**
-     * @ORM\ManyToOne(targetEntity="OrderType", inversedBy="orders")
-     * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", nullable=false, onDelete="CASCADE")
-     */
-    private $type_id;	
-
-    /**
-     * @ORM\ManyToOne(targetEntity="OrderStatus", inversedBy="orders")
-     * @ORM\JoinColumn(name="status_id", referencedColumnName="status_id", nullable=false, onDelete="CASCADE")
-     */
-    private $status_id;	
-	
-	
-	/**
-	 * 
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="orders", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="user_id", nullable=true)
-	 */
-	private $user_id;
+	private $id;
 
 	/**
 	 * 
-     * @ORM\ManyToOne(targetEntity="Customer", inversedBy="orders", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="customer_id", referencedColumnName="customer_id", nullable=false)
+     * @ORM\ManyToOne(targetEntity="SaleOrderLineStatus", inversedBy="translations", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="status_id", referencedColumnName="status_id", onDelete="CASCADE", nullable=false)
 	 */
-	private $customer_id;	
-
-	/**
-	 * 
-     * @ORM\ManyToOne(targetEntity="Pricelist", inversedBy="orders", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="pricelist_id", referencedColumnName="pricelist_id", nullable=false)
-	 */
-	private $pricelist_id;		
-
-	/**
-	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Customer reference"})
-	 */
-	private $customer_reference;
-
-	/**
-	 * @ORM\Column(type="string", length=255, nullable=false, options={"comment" = "Customer comment"})
-	 */
-	private $customer_comment;	
-
-
-	/**
-	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Order/Quote document date"})
-	 */
-	private $document_date;	
+	private $status_id;
 	
 	
 	/**
-	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "When in quote, make an expiry date"})
+     * @ORM\ManyToOne(targetEntity="Language", inversedBy="product_translations", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="lang", referencedColumnName="lang", onDelete="RESTRICT", nullable=false)
 	 */
-	private $expires_at;	
+	private $lang;
+	
+
+	/**
+	 * @ORM\Column(type="string", length=80, nullable=true)
+	 */
+	private $title;
+
+
 	
 	/**
 	 * @Gedmo\Timestampable(on="create")
@@ -112,11 +73,6 @@ class Order implements InputFilterAwareInterface
 	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record last update timestamp"})
 	 */
 	private $updated_at;
-	
-	/**
-	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record deletion date"})
-	 */
-	private $deleted_at;
 
 	/**
 	 * @Gedmo\Blameable(on="create")
@@ -140,6 +96,91 @@ class Order implements InputFilterAwareInterface
 	 */
 	protected $legacy_synchro_at;
 
+	
+	
+	public function __construct()
+	{
+	}
+
+	/**
+	 * 
+	 * @param integer $id
+	 */
+	public function setId($id)
+	{
+		$this->id = $id;
+		return $this;
+	}	
+	
+	/**
+	 * 
+	 * @return integer
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+
+
+	/**
+	 * @param string $slug
+	 */
+	public function setSlug($slug)
+	{
+		$this->slug = $slug;
+		return $this;
+	}
+
+	/**
+	 * 
+	 * @return string
+	 */
+	public function getSlug()
+	{
+		return $this->slug;
+	}
+
+	/**
+	 * 
+	 * @param string $title
+	 */
+	public function setTitle($title)
+	{
+		$this->title = $title;
+		return $this;
+	}
+
+	/**
+	 * 
+	 * @return string
+	 */
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	
+
+	
+	
+	/**
+	 * 
+	 * @param integer $lang_id
+	 */
+	public function setLangId($lang_id)
+	{
+		$this->lang_id = $lang_id;
+		return $this;
+	}	
+	
+	/**
+	 * 
+	 * @return integer
+	 */
+	public function getLangId()
+	{
+		return $this->lang_id;
+	}
 	
 	
 
@@ -180,26 +221,6 @@ class Order implements InputFilterAwareInterface
 		$this->updated_at = $updated_at;
 		return $this;
 	}
-	
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getDeletedAt()
-	{
-		return $this->deleted_at;
-	}
-
-	/**
-	 * 
-	 * @param string $updated_at
-	 */
-	public function setDeletedAt($deleted_at)
-	{
-		$this->deleted_at = $deleted_at;
-		return $this;
-	}
-	
 
 	/**
 	 * Return creator username

@@ -14,18 +14,15 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="order_status_translation",
+ *   name="sale_order_type",
  *   uniqueConstraints={
+ *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *     @ORM\UniqueConstraint(name="unique_translation_idx",columns={"status_id", "lang"})
  *   }, 
- *   indexes={
- *     @ORM\Index(name="title_idx", columns={"title"})
- *   },
- *   options={"comment" = "Order type translation table"}
+ *   options={"comment" = "Order type table"}
  * )
  */
-class OrderStatusTranslation implements InputFilterAwareInterface
+class SaleOrderType implements InputFilterAwareInterface
 {
 	
 	/**
@@ -33,27 +30,25 @@ class OrderStatusTranslation implements InputFilterAwareInterface
 	 */
 	protected $inputFilter;
 
+    /**
+     * @ORM\OneToMany(targetEntity="SaleOrderTypeTranslation", mappedBy="type_id")
+     **/
+    private $translations;	
+	
+	
 	/**
 	 * @ORM\Id
-	 * @ORM\Column(name="id", type="bigint", nullable=false, options={"unsigned"=true, "comment" = "Primary key"})
+	 * @ORM\Column(name="type_id", type="integer", nullable=false, options={"unsigned"=true})
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
-	private $id;
+	private $type_id;
+	
 
 	/**
-	 * 
-     * @ORM\ManyToOne(targetEntity="OrderStatus", inversedBy="translations", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="status_id", referencedColumnName="status_id", onDelete="CASCADE", nullable=false)
+	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
 	 */
-	private $status_id;
-	
-	
-	/**
-     * @ORM\ManyToOne(targetEntity="Language", inversedBy="product_translations", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="lang", referencedColumnName="lang", onDelete="RESTRICT", nullable=false)
-	 */
-	private $lang;
-	
+	private $reference;
+
 
 	/**
 	 * @ORM\Column(type="string", length=80, nullable=true)
@@ -61,6 +56,12 @@ class OrderStatusTranslation implements InputFilterAwareInterface
 	private $title;
 
 
+	
+	/**
+	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the model is active in public website"})
+	 */
+	private $flag_active;
+	
 	
 	/**
 	 * @Gedmo\Timestampable(on="create")
@@ -100,15 +101,24 @@ class OrderStatusTranslation implements InputFilterAwareInterface
 	
 	public function __construct()
 	{
+		
+		 $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
+		 
+		 /**
+		  * Default value for flag_active
+		  */
+		 $this->flag_active = true; 
+		 
+		 
 	}
-
+	
 	/**
 	 * 
-	 * @param integer $id
+	 * @param integer $type_id
 	 */
-	public function setId($id)
+	public function setTypeId($type_id)
 	{
-		$this->id = $id;
+		$this->type_id = $type_id;
 		return $this;
 	}	
 	
@@ -116,28 +126,31 @@ class OrderStatusTranslation implements InputFilterAwareInterface
 	 * 
 	 * @return integer
 	 */
-	public function getId()
+	public function getTypeId()
 	{
-		return $this->id;
-	}
+		return $this->type_id;
+	}	
+
+	
 
 
 	/**
-	 * @param string $slug
+	 * Set reference
+	 * @param string $reference
 	 */
-	public function setSlug($slug)
+	public function setReference($reference)
 	{
-		$this->slug = $slug;
+		$this->reference = $reference;
 		return $this;
 	}
 
 	/**
-	 * 
+	 * Return reference 
 	 * @return string
 	 */
-	public function getSlug()
+	public function getReference()
 	{
-		return $this->slug;
+		return $this->reference;
 	}
 
 	/**
@@ -159,27 +172,23 @@ class OrderStatusTranslation implements InputFilterAwareInterface
 		return $this->title;
 	}
 
-	
+	/**
+	 * 
+	 * @return boolean
+	 */
+	public function getFlagActive()
+	{
+		return (boolean) $this->flag_active;
+	}
 
 	
-	
 	/**
 	 * 
-	 * @param integer $lang_id
 	 */
-	public function setLangId($lang_id)
+	public function setFlagActive($flag_active)
 	{
-		$this->lang_id = $lang_id;
+		$this->flag_active = $flag_active;
 		return $this;
-	}	
-	
-	/**
-	 * 
-	 * @return integer
-	 */
-	public function getLangId()
-	{
-		return $this->lang_id;
 	}
 	
 	

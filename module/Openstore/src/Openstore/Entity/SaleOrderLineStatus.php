@@ -14,15 +14,16 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="order_type",
+ *   name="sale_order_line_status",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
+ *     @ORM\UniqueConstraint(name="unique_flag_default_idx",columns={"flag_default"}),
  *   }, 
- *   options={"comment" = "Order type table"}
+ *   options={"comment" = "Order line status table"}
  * )
  */
-class OrderType implements InputFilterAwareInterface
+class SaleOrderLineStatus implements InputFilterAwareInterface
 {
 	
 	/**
@@ -31,17 +32,17 @@ class OrderType implements InputFilterAwareInterface
 	protected $inputFilter;
 
     /**
-     * @ORM\OneToMany(targetEntity="OrderTypeTranslation", mappedBy="type_id")
+     * @ORM\OneToMany(targetEntity="SaleOrderStatusTranslation", mappedBy="status_id")
      **/
     private $translations;	
 	
 	
 	/**
 	 * @ORM\Id
-	 * @ORM\Column(name="type_id", type="integer", nullable=false, options={"unsigned"=true})
+	 * @ORM\Column(name="status_id", type="integer", nullable=false, options={"unsigned"=true})
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
-	private $type_id;
+	private $status_id;
 	
 
 	/**
@@ -56,6 +57,14 @@ class OrderType implements InputFilterAwareInterface
 	private $title;
 
 
+	/**
+	 * @ORM\Column(type="boolean", nullable=true, options={"default"=null, "comment"="Is the default state"})
+	 */
+	private $flag_default;
+	/**
+	 * @ORM\Column(type="boolean", nullable=false, options={"default"=0, "comment"="Is readonly"})
+	 */
+	private $flag_readonly;	
 	
 	/**
 	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the model is active in public website"})
@@ -111,14 +120,15 @@ class OrderType implements InputFilterAwareInterface
 		 
 		 
 	}
+
 	
 	/**
 	 * 
-	 * @param integer $type_id
+	 * @param integer $id
 	 */
-	public function setTypeId($type_id)
+	public function setStatusId($status_id)
 	{
-		$this->type_id = $type_id;
+		$this->status_id = $status_id;
 		return $this;
 	}	
 	
@@ -126,13 +136,10 @@ class OrderType implements InputFilterAwareInterface
 	 * 
 	 * @return integer
 	 */
-	public function getTypeId()
+	public function getStatusId()
 	{
-		return $this->type_id;
+		return $this->status_id;
 	}	
-
-	
-
 
 	/**
 	 * Set reference
@@ -190,8 +197,44 @@ class OrderType implements InputFilterAwareInterface
 		$this->flag_active = $flag_active;
 		return $this;
 	}
+
+	/**
+	 * 
+	 * @return boolean
+	 */
+	public function getFlagReadOnly()
+	{
+		return (boolean) $this->flag_readonly;
+	}
+
 	
+	/**
+	 * 
+	 */
+	public function setFlagReadOnly($flag_readonly)
+	{
+		$this->flag_readonly = $flag_readonly;
+		return $this;
+	}	
 	
+	/**
+	 * 
+	 * @return boolean
+	 */
+	public function getFlagDefault()
+	{
+		return (boolean) $this->flag_default;
+	}
+
+	
+	/**
+	 * 
+	 */
+	public function setFlagDefault($flag_default)
+	{
+		$this->flag_default = $flag_default;
+		return $this;
+	}	
 
 	/**
 	 * 
@@ -221,6 +264,8 @@ class OrderType implements InputFilterAwareInterface
 		return $this->updated_at;
 	}
 
+	
+	
 	/**
 	 * 
 	 * @param string $updated_at

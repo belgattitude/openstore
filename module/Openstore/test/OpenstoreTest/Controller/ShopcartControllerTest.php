@@ -38,7 +38,7 @@ class ShopcartControllerControllerTest extends AbstractHttpControllerTestCase
         $this->getApplicationServiceLocator()->setAllowOverride(true);
         $this->getApplicationServiceLocator()->setService('Zend\Authentication\AuthenticationService', $authService);
     }*/	
-	
+	/*
 	public function testAddProductActionWithSuccess()
 	{
 		$product_id = '11303';
@@ -106,5 +106,5 @@ class ShopcartControllerControllerTest extends AbstractHttpControllerTestCase
 		
 
 	}	
-	
+	*/
 }

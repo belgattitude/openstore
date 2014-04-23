@@ -48,7 +48,7 @@ class Order extends AbstractModel  {
 		$em = $this->getEntityManager();
 		
 		
-		die('cool');
+		
 		$st = new SyntheticTable($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
 		$d = $st->getRecordCleanedData('order', $data);
 
