@@ -1,6 +1,7 @@
 Requirements:
 
 ruby and sass
+ sudo apt-get install ruby
  sudo gem install sass
 
 
@@ -18,4 +19,6 @@ sudo npm install -g grunt-cli
 npm install grunt-contrib-concat --save-dev
 create Grunfile.js
 npm install grunt-contrib-uglify --save-dev
+
+npm update
 

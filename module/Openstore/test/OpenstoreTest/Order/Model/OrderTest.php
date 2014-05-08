@@ -49,6 +49,10 @@ class OrderTest extends AbstractConsoleControllerTestCase
 		
 		$order = new Entity\SaleOrder();
 		
+		$a = $em->getRepository('Openstore\Entity\SaleOrder')->getInputFilter();
+		var_dump($a);
+		die();
+		
 		$types		= $em->getRepository('Openstore\Entity\SaleOrderType');
 		$statuses	= $em->getRepository('Openstore\Entity\SaleOrderStatus');
 		$pricelists = $em->getRepository('Openstore\Entity\Pricelist');

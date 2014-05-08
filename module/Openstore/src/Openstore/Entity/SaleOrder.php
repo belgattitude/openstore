@@ -6,13 +6,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\Factory as InputFactory;
-use Zend\InputFilter\InputFilterAwareInterface;
-use Zend\InputFilter\InputFilterInterface;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Openstore\Entity\Repository\SaleOrderRepository")
  * @ORM\Table(
  *   name="sale_order",
  *   uniqueConstraints={
@@ -20,17 +16,12 @@ use Zend\InputFilter\InputFilterInterface;
  *   }, 
  *   indexes={
  *   },
- *   options={"comment" = "Order table"}
+ *   options={"comment" = "Sales order table"}
  * )
  */
-class SaleOrder implements InputFilterAwareInterface
+class SaleOrder 
 {
 	
-	/**
-	 * @var \Zend\InputFilter\InputFilterInterface $inputFilter
-	 */
-	protected $inputFilter;
-
 	
 	/**
 	 * @ORM\Id
@@ -443,47 +434,5 @@ class SaleOrder implements InputFilterAwareInterface
 		$this->$property = $value;
 	}	
 	
-	/**
-	 * 
-	 * @param \Zend\InputFilter\InputFilterInterface $inputFilter
-	 */
-	public function setInputFilter(InputFilterInterface $inputFilter) {
-		$this->inputFiler = $inputFilter;
-		return $this;
-	}
-
-	/**
-	 * 
-	 * @return \Zend\InputFilter\InputFilterInterface $inputFilter
-	 */
-	public function getInputFilter() {
-		if (!$this->inputFilter) {
-			$inputFilter = new InputFilter();
-			$factory = new InputFactory();
-
-			$inputFilter->add($factory->createInput(array(
-						'name' => 'reference',
-						'required' => true,
-						'filters' => array(
-							array('name' => 'StripTags'),
-							array('name' => 'StringTrim'),
-						),
-						'validators' => array(
-							array(
-								'name' => 'StringLength',
-								'options' => array(
-									'encoding' => 'UTF-8',
-									'min' => 1,
-									'max' => 60,
-								),
-							),
-						),
-					)));
-
-			$this->inputFilter = $inputFilter;
-		}
-
-		return $this->inputFilter;
-	}
 	
 }
