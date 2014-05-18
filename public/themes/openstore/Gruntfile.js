@@ -135,6 +135,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-autoprefixer');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-cssrb');
+	grunt.loadNpmTasks('grunt-check-modules');
 	//grunt.loadNpmTasks('grunt-yui-compressor');
 
     // 4. Where we tell Grunt what to do when we type "grunt" into the terminal.

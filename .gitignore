@@ -8,6 +8,8 @@ nbproject
 .settings
 composer.lock
 composer.phar
+vendor
 vendor/bin
 public/assets/vendor
 
+/config/development.config.php

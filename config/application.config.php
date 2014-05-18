@@ -8,6 +8,23 @@ $config = array(
 	'modules' => array(
 		//'Application',
 		'Zf2Whoops',
+		
+		// Apigility
+        'ZF\Apigility',
+        'ZF\Apigility\Provider',
+        'AssetManager',
+        'ZF\ApiProblem',
+        'ZF\MvcAuth',
+        'ZF\OAuth2',
+        'ZF\Hal',
+        'ZF\ContentNegotiation',
+        'ZF\ContentValidation',
+        'ZF\Rest',
+        'ZF\Rpc',
+        'ZF\Versioning',
+        'ZF\DevelopmentMode',		
+		
+		
 		//'AsseticBundle',
 		'SolubleNormalist',
 		'Openstore',
@@ -23,7 +40,7 @@ $config = array(
 		'ZfcUser',
 		'ZfcUserDoctrineORM',
 		// just to be able to remove it when using console
-		"BjyAuthorize",
+		//"BjyAuthorize",
 		
 	),
 	// These are various options for the listeners attached to the ModuleManager
