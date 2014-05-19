@@ -40,7 +40,7 @@ $config = array(
 		'ZfcUser',
 		'ZfcUserDoctrineORM',
 		// just to be able to remove it when using console
-		//"BjyAuthorize",
+		"BjyAuthorize",
 		
 	),
 	// These are various options for the listeners attached to the ModuleManager
