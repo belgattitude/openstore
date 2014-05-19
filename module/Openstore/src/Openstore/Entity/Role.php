@@ -1,42 +1,107 @@
 <?php
-
 namespace Openstore\Entity;
 
-use BjyAuthorize\Acl\HierarchicalRoleInterface;
+
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Rbac\Role\HierarchicalRoleInterface;
+use ZfcRbac\Permission\PermissionInterface;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- *
  * @ORM\Entity
- * @ORM\Table(name="role")
- *
+ * @Gedmo\Tree(type="nested") 
+ * @ORM\Table(
+ *   name="role",
+ *   uniqueConstraints={
+ *     @ORM\UniqueConstraint(name="unique_name_idx",columns={"name"}),
+ *   }, 
+ *   indexes={
+ *     @ORM\Index(name="lft_idx", columns={"lft"}),
+ *     @ORM\Index(name="rgt_idx", columns={"rgt"}),
+ *   },
+ *   options={"comment" = "Hierarchical roles"}
+ * )
+ * 
  */
 class Role implements HierarchicalRoleInterface
 {
     /**
-     * @var int
+     * @var int|null
+     *
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="role_id", type="integer", nullable=false, options={"unsigned"=true})	 	 	 
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $role_id;
 
     /**
-     * @var string
-     * @ORM\Column(type="string", length=80, unique=true, nullable=true)
+     * @var string|null
+     *
+     * @ORM\Column(type="string", length=48)
      */
-    protected $reference;
+    protected $name;
+
+	
+    /**
+     * @Gedmo\TreeLeft
+     * @ORM\Column(type="integer", options={"unsigned"=true})
+     */
+    private $lft;
 
     /**
-     * @var Role
-     * @ORM\ManyToOne(targetEntity="Openstore\Entity\Role")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="role_id", onDelete="CASCADE", nullable=true)	 
-     
+     * @Gedmo\TreeRight
+     * @ORM\Column(type="integer", options={"unsigned"=true})
      */
-    protected $parent_id;
+    private $rgt;
 
     /**
-     * Get the id.
+     * @Gedmo\TreeParent
+     * @ORM\ManyToOne(targetEntity="Role", inversedBy="children")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="role_id", onDelete="CASCADE")
+     */
+    private $parent;
+
+    /**
+     * @Gedmo\TreeRoot
+     * @ORM\Column(type="bigint", nullable=true, options={"unsigned"=true})
+     */
+    private $root;
+
+    /**
+     * @Gedmo\TreeLevel
+     * @ORM\Column(name="lvl", type="integer",  options={"unsigned"=true})
+     */
+    private $level;
+
+	
+    /**
+     * @ORM\OneToMany(targetEntity="Role", mappedBy="parent")
+     */
+    private $children;	
+
+    /**
+     * @var PermissionInterface[]|\Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Permission", indexBy="name", fetch="EAGER")
+     * @ORM\JoinTable(name="role_permission",
+     *      joinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="role_id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="permission_id", referencedColumnName="permission_id")}
+     *      )
+     */
+    protected $permissions;
+
+    /**
+     * Init the Doctrine collection
+     */
+    public function __construct()
+    {
+        $this->children    = new ArrayCollection();
+        $this->permissions = new ArrayCollection();
+    }
+
+    /**
+     * Get the role identifier
      *
      * @return int
      */
@@ -46,84 +111,122 @@ class Role implements HierarchicalRoleInterface
     }
 
     /**
-     * Set the id.
+     * Get the role identifier
      *
-     * @param int $id
-     *
-     * @return void
-     */
-    public function setId($id)
-    {
-        $this->role_id = (int) $id;
-    }
-
-    /**
-     * Get the reference name.
-	 * 
-	 * WARNING
-     * FOR BjyAuthorize\Provider\Role\ObjectRepositoryProvider
-	 * LINE 50 !!!
-	 * 
      * @return int
      */
     public function getRoleId()
     {
-        return $this->reference;
+        return $this->role_id;
+    }	
+	
+    /**
+     * Set the role name
+     *
+     * @param  string $name
+     * @return void
+     */
+    public function setName($name)
+    {
+        $this->name = (string) $name;
     }
 
     /**
-     * Set the id.
-     *
-     * @param int $id
-     *
-     * @return void
-     */
-    public function setRoleId($reference)
-    {
-        $this->reference = $reference;
-    }
-	
-	
-    /**
+     * Get the role name
      *
      * @return string
      */
-    public function getReference()
+    public function getName()
     {
-        return $this->reference;
+        return $this->name;
     }
 
     /**
-     * Set the role id.
-     *
-     * @param string $roleId
-     *
-     * @return void
+     * {@inheritDoc}
      */
-    public function setReference($reference)
+	/*
+    public function addChild(HierarchicalRoleInterface $child)
     {
-        $this->reference = (string) $reference;
+        $this->children[] = $child;
+    }*/
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addPermission($permission)
+    {
+        if (is_string($permission)) {
+            $permission = new Permission($permission);
+        }
+
+        $this->permissions[(string) $permission] = $permission;
     }
 
     /**
-     * Get the parent role
-     *
-     * @return Role
+     * {@inheritDoc}
      */
+    public function hasPermission($permission)
+    {
+        // This can be a performance problem if your role has a lot of permissions. Please refer
+        // to the cookbook to an elegant way to solve this issue
+
+        return isset($this->permissions[(string) $permission]);
+    }
+	
+	
+
+	public function setParent($parent)
+    {
+        $this->parent = $parent;
+    }
+
     public function getParent()
     {
-        return $this->parent_id;
+        return $this->parent;
+    }
+
+    public function getRoot()
+    {
+        return $this->root;
+    }
+
+    public function getLevel()
+    {
+        return $this->level;
+    }
+
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    public function getLeft()
+    {
+    	return $this->lft;
+    }
+
+	public function getRight()
+    {
+        return $this->rgt;
     }
 
     /**
-     * Set the parent role.
-     *
-     * @param Role $role
-     *
-     * @return void
+     * {@inheritDoc}
      */
-    public function setParent(Role $parent)
+	/*
+    public function getChildren()
     {
-        $this->parent_id = $parent;
+        return $this->children;
     }
+	*/
+
+    /**
+     * {@inheritDoc}
+     */
+	
+    public function hasChildren()
+    {
+        return !$this->children->isEmpty();
+    }
+	
 }

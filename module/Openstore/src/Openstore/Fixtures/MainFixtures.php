@@ -259,22 +259,30 @@ class LoadUserData implements FixtureInterface
 	{
 		$roles = array(
 			'guest' => array('parent_id' => null),
-			'user' => array('parent_id' => 'guest'),
-			'customer' => array('parent_id' => 'user'),
-			'moderator' => array('parent_id' => 'user'),
-			'admin' => array('parent_id' => 'moderator')
+			'member' => array('parent_id' => null),
+			'customer' => array('parent_id' => 'member'),
+			'moderator' => array('parent_id' => 'member'),
+			'sales_affiliate' => array('parent_id' => 'member'),
+			'sales_rep' => array('parent_id' => 'member'),
+			'sales_manager' => array('parent_id' => 'sales_rep'),
+			'content_editor' => array('parent_id' => 'member'),
+			'content_admin' => array('parent_id' => 'content_editor'),
+			'product_editor' => array('parent_id' => 'member'),
+			'product_manager' => array('parent_id' => 'member'),
+			'admin' => array('parent_id' => 'member')
 		);
-		foreach($roles as $reference => $infos) {
+		foreach($roles as $name => $infos) {
 			$role = new Entity\Role();
-			$role->setReference($reference);
+			$role->setName($name);
 			
 			if ($infos['parent_id'] !== null) {
 				$role->setParent($roles[$infos['parent_id']]['roleobject']);
 			}
 			$manager->persist($role);
-			$roles[$reference]['roleobject'] = $role;
+			$roles[$name]['roleobject'] = $role;
 		}
 		$manager->flush();
+		
 	}
 	
 	
@@ -314,8 +322,8 @@ class LoadUserData implements FixtureInterface
 			$pricelists = $infos['pricelists'];
 			
 			if (count($roles) > 0) {
-				foreach($roles as $role_ref) {
-					$role = $manager->getRepository('Openstore\Entity\Role')->findOneBy(array('reference' => $role_ref));
+				foreach($roles as $role_name) {
+					$role = $manager->getRepository('Openstore\Entity\Role')->findOneBy(array('name' => $role_name));
 					if ($role) {
 						$user->addRole($role);
 					}

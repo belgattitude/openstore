@@ -2,22 +2,31 @@
  
 namespace Openstore\Entity;
 
-use BjyAuthorize\Provider\Role\ProviderInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use ZfcUser\Entity\UserInterface;
+use ZfcRbac\Identity\IdentityInterface;
+use Rbac\Role\RoleInterface;
 
 /**
  *
  * @ORM\Entity
  * @ORM\Table(name="user")
+ * @ORM\Table(
+ *   name="user",
+ *   uniqueConstraints={
+ *     @ORM\UniqueConstraint(name="unique_username_idx",columns={"username"}),
+ *     @ORM\UniqueConstraint(name="unique_email_idx",columns={"email"}), 
+ *   },
+ *   options={"comment" = "User table"}
+ * )
  */
-class User implements UserInterface, ProviderInterface
+class User implements UserInterface, IdentityInterface
 {
     /**
      * @var int
      * @ORM\Id
-     * @ORM\Column(type="integer", nullable=false)
+	 * @ORM\Column(name="user_id", type="integer", nullable=false, options={"unsigned"=true})	 
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $user_id;
@@ -48,18 +57,16 @@ class User implements UserInterface, ProviderInterface
 	
 	
 	/**
-	 *
-	 * @var type 
+     * @ORM\ManyToOne(targetEntity="Language", inversedBy="user_default_language")
+     * @ORM\JoinColumn(name="lang", referencedColumnName="lang", onDelete="SET NULL", nullable=true)
 	 */
-	protected $lang;
+	private $lang;
 
-    /**
-     * @var int
-     */
-    protected $state;
+
 
     /**
      * @var \Doctrine\Common\Collections\Collection
+	 * 
      * @ORM\ManyToMany(targetEntity="Openstore\Entity\Role")
      * @ORM\JoinTable(name="user_role",
      *		joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="user_id")},
@@ -67,7 +74,6 @@ class User implements UserInterface, ProviderInterface
      * )
      */
     protected $roles;
-	
 	
 
     /** 
@@ -84,8 +90,6 @@ class User implements UserInterface, ProviderInterface
     {
         $this->roles = new ArrayCollection();
 		$this->pricelists = new ArrayCollection();
-		
-		
     }
 
 	public function getId()
@@ -231,27 +235,33 @@ class User implements UserInterface, ProviderInterface
     }
 
     /**
-     * Get role.
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public function getRoles()
     {
-        return $this->roles->getValues();
+        return $this->roles->toArray();
     }
 
     /**
-     * Add a role to the user.
-     *
-     * @param Role $role
-     *
-     * @return void
+     * Set the list of roles
+     * @param Collection $roles
      */
-    public function addRole(Role $role)
+    public function setRoles(Collection $roles)
+    {
+        $this->roles->clear();
+        foreach ($roles as $role) {
+            $this->roles[] = $role;
+        }
+    }
+
+    /**
+     * Add one role to roles list
+     * @param \Rbac\Role\RoleInterface $role
+     */
+    public function addRole(RoleInterface $role)
     {
         $this->roles[] = $role;
-    }
-	
+    }	
 	
 	
 	/**

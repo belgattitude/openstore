@@ -1,4 +1,4 @@
-<h1>Sign In</h1>
+<h1>qsdqsdkjlSign In</h1>
 
 <?php
 $form = $this->loginForm;
@@ -6,6 +6,7 @@ $form->prepare();
 $form->setAttribute('action', $this->url('zfcuser/login'));
 $form->setAttribute('method', 'post');
 ?>
+
 
 <form role="form" action="<?= $form->getAttribute('action') ?>" method="<?= $form->getAttribute('method') ?>">
   <div class="form-group">
@@ -26,6 +27,7 @@ $form->setAttribute('method', 'post');
   </div>
   <button type="submit" class="btn btn-default"><?= $this->translate('Sign in') ?></button>
 </form>
+<?php echo $this->formElementErrors($form->get('identity')) ?>
 
 <?php if ($this->enableRegistration) : ?>
 Not registered? <a href="<?php echo $this->url('zfcuser/register') . ($this->redirect ? '?redirect='.$this->redirect : '') ?>">Sign up!</a>

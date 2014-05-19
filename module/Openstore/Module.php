@@ -11,6 +11,7 @@ use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\Console\Adapter\AdapterInterface;
+use Zend\Console\Console;
 use Zend\Session\SessionManager;
 use Zend\Session\Config\SessionConfig;
 use Zend\Session\Config\StandardConfig;
@@ -18,7 +19,7 @@ use Zend\Session\Container;
 use HTMLPurifier;
 use Openstore\View\Helper;
 
-use BjyAuthorize\View\RedirectionStrategy;
+
 
 //use Zend\Console\Console;
 
@@ -71,10 +72,12 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
 
-        $this->bootstrapSession($e);
-		$this->configureZfcUser($e);
-		$this->configureUnauthorizedStrategy($e);
-		
+
+		if (!Console::isConsole()) {		
+			$this->bootstrapSession($e);
+			$this->configureZfcUser($e);
+			$this->configureUnauthorizedStrategy($e);
+		}
 		$eventManager->attach(MvcEvent::EVENT_DISPATCH, array($this, 'onPreDispatch'), 100);
 		//$eventManager->attach(MvcEvent::EVENT_FINISH, array($this, 'onFinish'), 100);
 		
@@ -84,17 +87,17 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 	}
 	
 	protected function configureUnauthorizedStrategy(MvcEvent $e) {
-		$eventManager        = $e->getApplication()->getEventManager();
-        $strategy = new RedirectionStrategy();
-
-        // eventually set the route name (default is ZfcUser's login route)
-        //$strategy->setRedirectRoute('zfcuser/login');
-
-        // eventually set the URI to be used for redirects
-        //$strategy->setRedirectUri('http://example.org/login');
-		$strategy->setRedirectUri('/login');
-
-        $eventManager->attach($strategy);		
+		
+		
+		$t = $e->getTarget();
+		$t->getEventManager()->attach(
+			$t->getServiceManager()->get('ZfcRbac\View\Strategy\RedirectStrategy')
+		);
+		/*
+		$em = $e->getApplication()->getEventManager(); 
+		$em->attach(
+			$em->getServiceManager()->get('ZfcRbac\View\Strategy\RedirectStrategy')
+		);*/
 	}
 
 	protected function configureZfcUser(MvcEvent $e) {

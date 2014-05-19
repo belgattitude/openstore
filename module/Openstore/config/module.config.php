@@ -16,6 +16,7 @@ return array(
 		),
 		'aliases' => array(
 			'translator' => 'MvcTranslator',
+            'Zend\Authentication\AuthenticationService' => 'zfcuser_auth_service'			
 		),
 		
 	),
@@ -211,5 +212,11 @@ return array(
 			)							
         ),
 		
-    ),	
+    ),
+	
+	'assetic_configuration' => [
+        'acceptableErrors' => [
+            \ZfcRbac\Guard\GuardInterface::GUARD_UNAUTHORIZED
+        ]
+    ]	
 );

@@ -8,6 +8,9 @@ $config = array(
 	'modules' => array(
 		//'Application',
 		'Zf2Whoops',
+		'ZfcBase',
+		'ZfcUser',
+		'ZfcRbac',
 		
 		// Apigility
         'ZF\Apigility',
@@ -36,13 +39,11 @@ $config = array(
 		'BjyProfiler',
 		'DoctrineDataFixtureModule',
 		
-		'ZfcBase',
-		'ZfcUser',
-		'ZfcUserDoctrineORM',
-		// just to be able to remove it when using console
-		"BjyAuthorize",
+		
 		
 	),
+
+	
 	// These are various options for the listeners attached to the ModuleManager
 	'module_listener_options' => array(
 		// This should be an array of paths in which modules reside.
@@ -95,9 +96,12 @@ $config = array(
 if (Console::isConsole()) {
 	$key = array_search('Zf2Whoops', $config['modules']);
 	if ($key !== false) unset($config['modules'][$key]);
-	
-	$key = array_search('BjyAuthorize', $config['modules']);
+
+	$key = array_search('ZfcRbac', $config['modules']);
 	if ($key !== false) unset($config['modules'][$key]);
+	
+	
+	
 	
 }
 
