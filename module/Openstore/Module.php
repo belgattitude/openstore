@@ -198,6 +198,16 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 			),
 			'factories' => array(
 				
+				//'MyCustomAuthenticationIdentityProvider' => 'Openstore\Authentication\Factory\ZfcRbacAuthenticationIdentityFactory',				
+				'MyCustomAuthenticationIdentityProvider' => function($sm) { 
+			
+					$authenticationService = $sm->get('Zend\Authentication\AuthenticationService');
+					$em = $sm->get('Doctrine\ORM\EntityManager');
+
+					return new \Openstore\Authentication\Identity\ZfcRbacAuthenticationIdentityProvider($authenticationService, $em);						
+							
+				},				
+				
 				'Soluble\Media\Converter' => 'Soluble\Media\Converter\Service\MediaConverterFactory',
 				'MMan\Storage' => 'MMan\Service\StorageFactory',
 				'MMan\MediaManager' => 'MMan\Service\MediaManagerFactory',

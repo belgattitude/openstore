@@ -9,8 +9,7 @@ use ZfcRbac\Identity\IdentityInterface;
 use Rbac\Role\RoleInterface;
 
 /**
- *
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Openstore\Entity\Repository\UserRepository")
  * @ORM\Table(name="user")
  * @ORM\Table(
  *   name="user",
@@ -65,10 +64,12 @@ class User implements UserInterface, IdentityInterface
 
 
     /**
+	 * Bidirectional - Many users have many roles (OWNING SIDE)
+	 * 
      * @var \Doctrine\Common\Collections\Collection
 	 * 
-     * @ORM\ManyToMany(targetEntity="Openstore\Entity\Role")
-     * @ORM\JoinTable(name="user_role",
+     * @ORM\ManyToMany(targetEntity="Openstore\Entity\Role", inversedBy="users")
+     * @ORM\JoinTable(name="user_role", 
      *		joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="user_id")},
      *		inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="role_id")}
      * )
@@ -78,7 +79,7 @@ class User implements UserInterface, IdentityInterface
 
     /** 
 	 * @var \Doctrine\Common\Collections\Collection
-	 * @ORM\OneToMany(targetEntity="Openstore\Entity\UserPricelist", mappedBy="user_id") 
+	 * @ORM\OneToMany(targetEntity="UserPricelist", mappedBy="user_id") 
 	 */
     protected $pricelists;	
 
@@ -235,7 +236,7 @@ class User implements UserInterface, IdentityInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @return <array>Role
      */
     public function getRoles()
     {
@@ -272,6 +273,7 @@ class User implements UserInterface, IdentityInterface
 	{
 		return $this->pricelists;
 	}
+	
 	
 	
 	

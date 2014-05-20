@@ -18,14 +18,29 @@ class IndexController extends AbstractActionController
 		parent::onDispatch($e);
 	}
 	
+	/**
+	 * 
+	 * @return \Doctrine\ORM\EntityManager
+	 */
+	protected function getEntityManager()
+	{
+		return $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+	}
+	
     public function indexAction()
     {
-		
+		/*
+		$em = $this->getEntityManager();
+		$user = $em->find('Openstore\Entity\User', 1);
+		var_dump(get_class($user));
+		var_dump($user->getEmail());
+		var_dump(gettype($user->getRoles()));
+		var_dump($user->getRoles()[0]->getName());
+		die('cool');
 		$service = $this->getServiceLocator()->get('Openstore\Service');
-		$view = new ViewModel();
 		
 		$userContext = $this->getServiceLocator()->get('Openstore\UserContext');
-
+*/
 		/*
 		$capabilities = $this->getServiceLocator()->get('Openstore\UserCapabilities');
 //		echo '<pre>';
@@ -38,6 +53,8 @@ class IndexController extends AbstractActionController
 		var_dump($_SESSION);
 		die();
 		*/
+		$view = new ViewModel();
+		
 		$view->test		= 'hello';
 		
 		/*

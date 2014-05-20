@@ -16,7 +16,7 @@ return array(
 		),
 		'aliases' => array(
 			'translator' => 'MvcTranslator',
-            'Zend\Authentication\AuthenticationService' => 'zfcuser_auth_service'			
+           // 'Zend\Authentication\AuthenticationService' => 'zfcuser_auth_service'			
 		),
 		
 	),
@@ -142,6 +142,21 @@ return array(
 		'fixture' => array(
 			'Openstore_fixture' => __DIR__ . '/../src/Openstore/Fixtures',
 		),
+		/*
+		'authentication' => array(
+            'orm_default' => array(
+                //should be the key you use to get doctrine's entity manager out of zf2's service locator
+                'objectManager' => 'Doctrine\ORM\EntityManager',
+                //fully qualified name of your user class
+                'identityClass' => 'Openstore\Entity\User',
+                //the identity property of your class
+                'identityProperty' => 'email',
+                //the password property of your class
+                'credentialProperty' => 'password',
+                //a callable function to hash the password with
+                'credentialCallable' => 'Openstore\Entity\User::hashPassword'
+            ),
+        ),*/		
 		
 		
 	),
@@ -167,7 +182,7 @@ return array(
         'enable_default_entities' => false,
 	   
     ),
-
+/*
     'bjyauthorize' => array(
         // Using the authentication identity provider, which basically reads the roles from the auth service's identity
         'identity_provider' => 'BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider',
@@ -180,7 +195,7 @@ return array(
              ),
         ),
     ),
-					
+*/					
 	
 	'caches' => array(
         'Cache\SolubleDbMetadata' => array(

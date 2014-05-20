@@ -28,9 +28,15 @@ return [
          * Please note that when an identity is found, it MUST implements the ZfcRbac\Identity\IdentityProviderInterface
          * interface, otherwise it will throw an exception.
          */
-        'identity_provider' => 'ZfcRbac\Identity\AuthenticationIdentityProvider',
-		//'identity_provider' => 'Openstore\Authorize\Provider\Identity\OpenstoreDb',
-
+        //'identity_provider' => 'ZfcRbac\Identity\AuthenticationIdentityProvider',
+		'identity_provider' => 'MyCustomAuthenticationIdentityProvider',
+		/*
+		'identity_provider' => function($a) { 
+	
+			var_dump(get_class($a));
+			die();
+		
+		},*/
         /**
          * Set the guest role
          *
@@ -57,16 +63,19 @@ return [
 				'zfcuser/login' => ['guest'],
 				'zfcuser/logout' => ['member'],
 				'zfcuser/register' => ['guest'],
-				'home' => ['guest', 'member'],
+				//'home' => ['guest', 'member'],
+				'home' => ['*'],
 				'store*' => ['customer', 'admin'],
+				
 				//store/browse, store/search, store/product
 				'shopcart*' => ['customer', 'admin'],
-				'media*' => ['guest', 'member'],
+				'media*' => ['*'],
 				// console
-				'openstore-recreatedb' => ['guest'],
-				'openstore-updatedb' => ['guest'],
+				'openstore-recreatedb' => ['*'],
+				'openstore-updatedb' => ['*'],
 				'doctrine_orm_module_yuml' => ['member'],
 				'api/restful' => ['guest'],
+				'zf-apigility*' => ['*'],
             ]
 			
 			
@@ -112,6 +121,8 @@ return [
             ]
         ],*/
 		
+
+		
 		'role_provider' => [
             'ZfcRbac\Role\ObjectRepositoryRoleProvider' => [
                 'object_manager'     => 'doctrine.entitymanager.orm_default',
@@ -120,7 +131,6 @@ return [
             ]
         ],		
         
-
         /**
          * Configure the unauthorized strategy. It is used to render a template whenever a user is unauthorized
          */
@@ -149,8 +159,8 @@ return [
             /**
              * Set the route to redirect when user is disconnected (of course, it must exist!)
              */
-            //'redirect_to_route_disconnected' => 'zfcuser/login',
-			'redirect_to_route_disconnected' => 'home',
+            'redirect_to_route_disconnected' => 'zfcuser/login',
+			//'redirect_to_route_disconnected' => 'home',
 
             /**
              * If a user is unauthorized and redirected to another route (login, for instance), should we

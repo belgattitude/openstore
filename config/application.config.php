@@ -4,12 +4,21 @@ use Zend\Console\Console;
 
 
 $config = array(
+	
+    'service_manager' => [
+        'aliases' => [
+            'Zend\Authentication\AuthenticationService' => 'zfcuser_auth_service'
+        ]
+    ],
+	
+	
 	// This should be an array of module namespaces used in the application.
 	'modules' => array(
 		//'Application',
 		'Zf2Whoops',
 		'ZfcBase',
 		'ZfcUser',
+		
 		'ZfcRbac',
 		
 		// Apigility

@@ -9,7 +9,7 @@ use ZfcRbac\Permission\PermissionInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Openstore\Entity\Repository\RoleRepository")
  * @Gedmo\Tree(type="nested") 
  * @ORM\Table(
  *   name="role",
@@ -20,7 +20,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *     @ORM\Index(name="lft_idx", columns={"lft"}),
  *     @ORM\Index(name="rgt_idx", columns={"rgt"}),
  *   },
- *   options={"comment" = "Hierarchical roles"}
+ *   options={"comment" = "Access roles"}
  * )
  * 
  */
@@ -91,6 +91,15 @@ class Role implements HierarchicalRoleInterface
      */
     protected $permissions;
 
+     
+     /**
+      * @ORM\ManyToMany(targetEntity="Openstore\Entity\User", mappedBy="roles")
+      */
+    private $users;
+	
+	
+ 	
+	
     /**
      * Init the Doctrine collection
      */
@@ -98,6 +107,7 @@ class Role implements HierarchicalRoleInterface
     {
         $this->children    = new ArrayCollection();
         $this->permissions = new ArrayCollection();
+		$this->users       = new ArrayCollection();        
     }
 
     /**
@@ -144,11 +154,11 @@ class Role implements HierarchicalRoleInterface
     /**
      * {@inheritDoc}
      */
-	/*
+	
     public function addChild(HierarchicalRoleInterface $child)
     {
         $this->children[] = $child;
-    }*/
+    }
 
     /**
      * {@inheritDoc}
@@ -228,5 +238,15 @@ class Role implements HierarchicalRoleInterface
     {
         return !$this->children->isEmpty();
     }
+	
+    /**
+     * Get users
+     *
+     * @return User
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }	
 	
 }
