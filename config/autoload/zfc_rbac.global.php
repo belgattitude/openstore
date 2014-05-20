@@ -61,7 +61,7 @@ return [
                 'admin*' => ['admin'],
 				'zfcuser' => ['guest'],
 				'zfcuser/login' => ['guest'],
-				'zfcuser/logout' => ['member'],
+				'zfcuser/logout' => ['*'],
 				'zfcuser/register' => ['guest'],
 				//'home' => ['guest', 'member'],
 				'home' => ['*'],
