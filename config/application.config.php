@@ -15,7 +15,7 @@ $config = array(
 	// This should be an array of module namespaces used in the application.
 	'modules' => array(
 		//'Application',
-		'Zf2Whoops',
+		
 		'ZfcBase',
 		'ZfcUser',
 		
@@ -44,7 +44,6 @@ $config = array(
 		'Akilia',
 		'DoctrineModule',
 		'DoctrineORMModule',
-		'ZendDeveloperTools',
 		'BjyProfiler',
 		'DoctrineDataFixtureModule',
 		
