@@ -5,10 +5,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\Factory as InputFactory;
-use Zend\InputFilter\InputFilterAwareInterface;
-use Zend\InputFilter\InputFilterInterface;
 
 /**
  * @ORM\Entity
@@ -16,7 +12,7 @@ use Zend\InputFilter\InputFilterInterface;
  *   name="discount_condition",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *     @ORM\UniqueConstraint(name="unique_condition",columns={"pricelist_id", "customer_id", "brand_id", "group_id", "category_id", "product_id", "valid_from", "valid_till"}),
+ *     @ORM\UniqueConstraint(name="unique_condition",columns={"pricelist_id", "customer_group_id", "customer_id", "brand_id", "product_group_id", "model_id", "category_id", "product_id", "valid_from", "valid_till"}),
  *   },
  *   indexes={
  *     @ORM\Index(name="valid_from_idx", columns={"valid_from"}),
@@ -25,13 +21,9 @@ use Zend\InputFilter\InputFilterInterface;
  *   options={"comment" = "Discount conditions table"}
  * )
  */
-class DiscountCondition implements InputFilterAwareInterface
+class DiscountCondition
 {
 	
-	/**
-	 * @var \Zend\InputFilter\InputFilterInterface $inputFilter
-	 */
-	protected $inputFilter;
 
 	
 	/**
@@ -49,6 +41,14 @@ class DiscountCondition implements InputFilterAwareInterface
      * @ORM\JoinColumn(name="pricelist_id", referencedColumnName="pricelist_id", onDelete="CASCADE", nullable=true)
 	 */
 	private $pricelist_id;	
+
+	/**
+	 * 
+     * @ORM\ManyToOne(targetEntity="CustomerGroup", inversedBy="discounts", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="customer_group_id", referencedColumnName="group_id", onDelete="CASCADE", nullable=true)
+	 */
+	private $customer_group_id;
+	
 	
 	/**
 	 * 
@@ -69,9 +69,18 @@ class DiscountCondition implements InputFilterAwareInterface
 	/**
 	 * 
      * @ORM\ManyToOne(targetEntity="ProductGroup", inversedBy="discounts", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="group_id", referencedColumnName="group_id", onDelete="CASCADE", nullable=true)
+     * @ORM\JoinColumn(name="product_group_id", referencedColumnName="group_id", onDelete="CASCADE", nullable=true)
 	 */
-	private $group_id;
+	private $product_group_id;
+	
+	
+	/**
+	 * 
+     * @ORM\ManyToOne(targetEntity="ProductModel", inversedBy="discounts", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="model_id", referencedColumnName="model_id", onDelete="CASCADE", nullable=true)
+	 */
+	private $model_id;
+	
 
 	/**
 	 * 
@@ -249,6 +258,26 @@ class DiscountCondition implements InputFilterAwareInterface
 
 	/**
 	 * 
+	 * @param integer $model_id
+	 */
+	public function setModelId($model_id)
+	{
+		$this->model_id = $model_id;
+		return $this;
+	}	
+	
+	/**
+	 * 
+	 * @return integer
+	 */
+	public function getModelId()
+	{
+		return $this->model_id;
+	}
+	
+	
+	/**
+	 * 
 	 * @param integer $category_id
 	 */
 	public function setCategoryId($category_id)
@@ -269,11 +298,11 @@ class DiscountCondition implements InputFilterAwareInterface
 
 	/**
 	 * 
-	 * @param integer $group_id
+	 * @param integer $product_group_id
 	 */
-	public function setGroupId($group_id)
+	public function setProductGroupId($product_group_id)
 	{
-		$this->group_id = $group_id;
+		$this->product_group_id = $product_group_id;
 		return $this;
 	}	
 	
@@ -281,9 +310,9 @@ class DiscountCondition implements InputFilterAwareInterface
 	 * 
 	 * @return integer
 	 */
-	public function getGroupId()
+	public function getProductGroupId()
 	{
-		return $this->group_id;
+		return $this->product_group_id;
 	}
 	
 
@@ -505,48 +534,6 @@ class DiscountCondition implements InputFilterAwareInterface
 		$this->$property = $value;
 	}	
 	
-	/**
-	 * 
-	 * @param \Zend\InputFilter\InputFilterInterface $inputFilter
-	 */
-	public function setInputFilter(InputFilterInterface $inputFilter) {
-		$this->inputFiler = $inputFilter;
-		return $this;
-	}
-
-	/**
-	 * 
-	 * @return \Zend\InputFilter\InputFilterInterface $inputFilter
-	 */
-	public function getInputFilter() {
-		if (!$this->inputFilter) {
-			$inputFilter = new InputFilter();
-			$factory = new InputFactory();
-
-			$inputFilter->add($factory->createInput(array(
-						'name' => 'reference',
-						'required' => true,
-						'filters' => array(
-							array('name' => 'StripTags'),
-							array('name' => 'StringTrim'),
-						),
-						'validators' => array(
-							array(
-								'name' => 'StringLength',
-								'options' => array(
-									'encoding' => 'UTF-8',
-									'min' => 1,
-									'max' => 60,
-								),
-							),
-						),
-					)));
-
-			$this->inputFilter = $inputFilter;
-		}
-
-		return $this->inputFilter;
-	}
 	
 }
 

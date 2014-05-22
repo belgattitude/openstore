@@ -74,7 +74,7 @@ return [
 				'openstore-recreatedb' => ['*'],
 				'openstore-updatedb' => ['*'],
 				'doctrine_orm_module_yuml' => ['member'],
-				'api/restful' => ['guest'],
+				'api*' => ['*'],
 				'zf-apigility*' => ['*'],
             ]
 			

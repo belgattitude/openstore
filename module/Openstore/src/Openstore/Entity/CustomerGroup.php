@@ -14,135 +14,55 @@ use Zend\InputFilter\InputFilterInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="customer",
+ *   name="customer_group",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
  *   }, 
- *   options={"comment" = "Customer table"}
+ *   indexes={
+ *     @ORM\Index(name="title_idx", columns={"title"}),
+ *     @ORM\Index(name="description_idx", columns={"description"}),
+ *   },
+ *   options={"comment" = "Customer group table"}
  * )
  */
-class Customer implements InputFilterAwareInterface
+class CustomerGroup 
 {
 	
-	/**
-	 * @var \Zend\InputFilter\InputFilterInterface $inputFilter
-	 */
-	protected $inputFilter;
-
 	
 	/**
 	 * @ORM\Id
-	 * @ORM\Column(name="customer_id", type="integer", nullable=false, options={"unsigned"=true})
+	 * @ORM\Column(name="group_id", type="integer", nullable=false, options={"unsigned"=true})
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
-	private $customer_id;
-	
+	private $group_id;
 
 	/**
 	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
 	 */
 	private $reference;
-	
-	/**
-	 * 
-     * @ORM\ManyToOne(targetEntity="CustomerGroup", inversedBy="customers", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="group_id", referencedColumnName="group_id", onDelete="CASCADE", nullable=true)
-	 */
-	private $group_id;
-	
 
 	/**
-	 * @ORM\Column(type="string", length=80, nullable=false)
+	 * @ORM\Column(type="string", length=80, nullable=true)
 	 */
-	private $name;
+	private $title;
 
+	/**
+	 * @ORM\Column(type="string", length=15000, nullable=true)
+	 */
+	private $description;
+
+	
+	/**
+	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the group is active in public website"})
+	 */
+	private $flag_active;
+	
+	
 	/**
 	 * @ORM\Column(type="string", length=40, nullable=true)
 	 */
-	private $first_name;
-	
-	/**
-	 * @ORM\Column(type="string", length=80, nullable=true)
-	 */
-	private $street;
-	
-	/**
-	 * @ORM\Column(type="string", length=80, nullable=true)
-	 */
-	private $street_2;
-	
-	/**
-	 * @ORM\Column(type="string", length=10, nullable=true)
-	 */
-	private $street_number;
-	
-	/**
-	 * @ORM\Column(type="string", length=10, nullable=true)
-	 */
-	private $po_box;
-	
-	/**
-	 * @ORM\Column(type="string", length=20, nullable=true)
-	 */
-	private $zipcode;
-
-	/**
-	 * @ORM\Column(type="string", length=60, nullable=true)
-	 */
-	private $city;	
-	
-	/**
-	 * 
-     * @ORM\ManyToOne(targetEntity="Country", inversedBy="customers", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="country_id", referencedColumnName="country_id", nullable=true)
-	 */
-	private $country_id;
-	/**
-	 * @ORM\Column(type="string", length=20, nullable=true)
-	 */
-	private $phone;
-	
-	/**
-	 * @ORM\Column(type="string", length=20, nullable=true)
-	 */
-	private $phone_2;
-	
-	/**
-	 * @ORM\Column(type="string", length=20, nullable=true)
-	 */
-	private $mobile;
-	
-	/**
-	 * @ORM\Column(type="string", length=20, nullable=true)
-	 */
-	private $mobile_2;
-	
-	/**
-	 * @ORM\Column(type="string", length=20, nullable=true)
-	 */
-	private $fax;
-	
-	/**
-	 * @ORM\Column(type="string", length=20, nullable=true)
-	 */
-	private $fax_2;
-	
-	/**
-	 * @ORM\Column(type="string", length=50, nullable=true)
-	 */
-	private $email;
-	
-	/**
-	 * @ORM\Column(type="string", length=50, nullable=true)
-	 */
-	private $email_2;
-	
-	
-	/**
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the customer is active in public website"})
-	 */
-	private $flag_active;
+	private $icon_class;
 	
 	
 	/**
@@ -187,15 +107,16 @@ class Customer implements InputFilterAwareInterface
 		  * Default value for flag_active
 		  */
 		 $this->flag_active = true; 
+		 
 	}
 
 	/**
 	 * 
-	 * @param integer $customer_id
+	 * @param integer $id
 	 */
-	public function setId($customer_id)
+	public function setId($id)
 	{
-		$this->customer_id = $customer_id;
+		$this->id = $id;
 		return $this;
 	}	
 	
@@ -203,9 +124,9 @@ class Customer implements InputFilterAwareInterface
 	 * 
 	 * @return integer
 	 */
-	public function getCustomerId()
+	public function getId()
 	{
-		return $this->customer_id;
+		return $this->id;
 	}
 
 	/**
@@ -232,9 +153,9 @@ class Customer implements InputFilterAwareInterface
 	 * 
 	 * @param string $title
 	 */
-	public function setName($name)
+	public function setTitle($title)
 	{
-		$this->name = $name;
+		$this->title = $title;
 		return $this;
 	}
 
@@ -242,19 +163,18 @@ class Customer implements InputFilterAwareInterface
 	 * 
 	 * @return string
 	 */
-	public function getName()
+	public function getTitle()
 	{
-		return $this->name;
+		return $this->title;
 	}
 
-	
 	/**
 	 * 
-	 * @param string $first_name
+	 * @param string $description
 	 */
-	public function setFirstName($first_name)
+	public function setDescription($description)
 	{
-		$this->first_name = $first_name;
+		$this->description = $description;
 		return $this;
 	}
 
@@ -262,11 +182,30 @@ class Customer implements InputFilterAwareInterface
 	 * 
 	 * @return string
 	 */
-	public function getFirstName()
+	public function getDescription()
 	{
-		return $this->first_name;
+		return $this->description;
+	}
+
+	/**
+	 * 
+	 * @return string
+	 */
+	public function setIconClass($icon_class)
+	{
+		$this->icon_class = $icon_class;
+		return $this;
 	}
 	
+	
+	/**
+	 * 
+	 * @return string
+	 */
+	public function getIconClass()
+	{
+		return $this->icon_class;
+	}
 	
 	/**
 	 * 
@@ -403,15 +342,6 @@ class Customer implements InputFilterAwareInterface
 		return $this->legacy_synchro_at;
 	}
 
-	/**
-	 * Convert the object to an array.
-	 *
-	 * @return array
-	 */
-	public function getArrayCopy()
-	{
-		return get_object_vars($this);
-	}
 
 	/**
 	 * 
@@ -419,71 +349,8 @@ class Customer implements InputFilterAwareInterface
 	 */
 	public function __toString()
 	{
-		return $this->getName();
+		return $this->getTitle();
 	}
 
-	
-	/**
-	 * Magic getter to expose protected properties.
-	 *
-	 * @param string $property
-	 * @return mixed
-	 */
-	public function __get($property) {
-		return $this->$property;
-	}
-
-	/**
-	 * Magic setter to save protected properties.
-	 *
-	 * @param string $property
-	 * @param mixed $value
-	 */
-	public function __set($property, $value) {
-		$this->$property = $value;
-	}	
-	
-	/**
-	 * 
-	 * @param \Zend\InputFilter\InputFilterInterface $inputFilter
-	 */
-	public function setInputFilter(InputFilterInterface $inputFilter) {
-		$this->inputFiler = $inputFilter;
-		return $this;
-	}
-
-	/**
-	 * 
-	 * @return \Zend\InputFilter\InputFilterInterface $inputFilter
-	 */
-	public function getInputFilter() {
-		if (!$this->inputFilter) {
-			$inputFilter = new InputFilter();
-			$factory = new InputFactory();
-
-			$inputFilter->add($factory->createInput(array(
-						'name' => 'reference',
-						'required' => true,
-						'filters' => array(
-							array('name' => 'StripTags'),
-							array('name' => 'StringTrim'),
-						),
-						'validators' => array(
-							array(
-								'name' => 'StringLength',
-								'options' => array(
-									'encoding' => 'UTF-8',
-									'min' => 1,
-									'max' => 60,
-								),
-							),
-						),
-					)));
-
-			$this->inputFilter = $inputFilter;
-		}
-
-		return $this->inputFilter;
-	}
 	
 }
