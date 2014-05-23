@@ -1,0 +1,239 @@
+-- for products
+replace into prestashop.ps_product
+(
+	id_product, 
+	id_supplier, 
+	id_manufacturer,
+	id_category_default, 
+	id_shop_default,
+	id_tax_rules_group, 
+	on_sale, 
+	online_only, 
+	ean13, 
+	upc, 
+	ecotax,
+	quantity, 
+	minimal_quantity, 
+	price, 
+    wholesale_price, 
+	unity, 
+	unit_price_ratio,
+	additional_shipping_cost,
+    reference,
+	supplier_reference,
+	location,
+	width, 
+	height, 
+	depth, 
+	weight,
+	out_of_stock, 
+	quantity_discount, 
+	customizable,
+	uploadable_files, 
+	text_fields, 
+	active, 
+	redirect_type,
+	id_product_redirected, 
+	available_for_order,
+	available_date, 
+	`condition`, 
+	show_price,
+	indexed, 
+	visibility, 
+	cache_is_pack,
+	cache_has_attachments, 
+	is_virtual, 
+	cache_default_attribute, 
+	date_add, 
+	date_upd,
+	advanced_stock_management)
+
+
+
+select
+	p.product_id as id_product,
+	null as id_supplier,
+	null as id_manufacturer,
+	2 as is_category_default,
+	1 as id_shop_default,
+	1 as id_tax_rules_group,
+	0 as on_sale,
+	
+	0 as online_only,
+	p.barcode_ean13 as ean13,
+	p.barcode_upca as upc,
+	0 as ecotax,
+	0 as quantity,
+	1 as minimal_quantity,
+	10 as price,
+	20 as wholesale_price,
+	49 as unity,
+	10 as unit_price_ratio,
+	0 as additional_shipping_cost,
+	p.reference as reference,
+	null as supplier_reference,
+	null as location,
+	p.width as width,
+	p.height as height,
+	0 as depth,
+	p.weight as weight,
+	2 as out_of_stock,
+	0 as quantity_discount,
+	0 as customizable,
+	0 as uploadable_files,
+	0 as text_fields,
+	p.flag_active as active,
+	'404' as redirect_type,
+	0 as id_product_redirected,
+	p.flag_active as available_for_order,
+	null as available_date,
+	'new' as `condition`,
+	1 as show_price,
+	1 as indexed,
+	'both' as visibility,
+	0 as cache_is_pack,
+	0 as cache_has_attachments,
+	0 as is_virtual,
+	null as cache_default_attribute,
+	now() as date_add,
+	now() as date_upd,
+	0 as advanced_stock_management
+
+from openstore_production.product p;
+
+-- for product_shop
+
+replace into prestashop.ps_product_shop
+(
+	id_product, 
+	id_shop,
+	id_category_default, 
+	id_tax_rules_group, 
+	on_sale, 
+	online_only, 
+	ecotax,
+	minimal_quantity, 
+	price, 
+    wholesale_price, 
+	unity, 
+	unit_price_ratio,
+	additional_shipping_cost,
+	
+	customizable,
+	uploadable_files, 
+	text_fields, 
+	active, 
+	redirect_type,
+	id_product_redirected, 
+	available_for_order,
+	available_date, 
+	`condition`, 
+	show_price,
+	indexed, 
+	visibility, 
+	cache_default_attribute, 
+	date_add, 
+	date_upd
+	)
+
+
+
+select
+	p.product_id as id_product,
+	1 as id_shop,
+	null as id_category_default,
+	1 as id_tax_rules_group,
+	0 as on_sale,
+	
+	0 as online_only,
+	0 as ecotax,
+	1 as minimal_quantity,
+	10 as price,
+	20 as wholesale_price,
+	49 as unity,
+	10 as unit_price_ratio,
+	0 as additional_shipping_cost,
+
+
+	0 as customizable,
+	0 as uploadable_files,
+	0 as text_fields,
+	p.flag_active as active,
+	'404' as redirect_type,
+	0 as id_product_redirected,
+	p.flag_active as available_for_order,
+	null as available_date,
+	'new' as `condition`,
+	1 as show_price,
+	1 as indexed,
+	'both' as visibility,
+	null as cache_default_attribute,
+	now() as date_add,
+	now() as date_upd
+from openstore_production.product p
+
+-- import lang
+
+INSERT INTO prestashop.`ps_product_lang`
+(	`id_product`, 
+	`id_shop`, 
+	`id_lang`, 
+	`name`, 
+	`description`, 
+	`description_short`, 
+	`link_rewrite`,
+	`available_now`, 
+	`available_later`)
+select 
+	p18.product_id as `id_product`,
+	1 as `id_shop`,
+	psl.id_lang as `id_lang`,
+	COALESCE(p18.title, p18.invoice_title, p.title, p.invoice_title, p.reference) as `name`,
+	CONCAT_WS('<br>' , COALESCE(p18.description, p.description, ''), COALESCE(p18.characteristic, p.characteristic, '')) as `description`,
+	CONCAT_WS(' ' , COALESCE(p18.description, p.description, ''), COALESCE(p18.characteristic, p.characteristic, '')) as `description_short`,
+	COALESCE(p18.slug, p.slug, p.product_id) as `link_rewrite`, 
+	CASE p18.lang
+		WHEN 'fr' THEN 'En stock'
+		WHEN 'en' THEN 'On stock'
+		ELSE 'On Stock' 
+	END as `available_now`,
+	'' as `available_later`
+
+from openstore_production.product_translation p18
+inner join openstore_production.`language` l on p18.lang = l.lang
+inner join openstore_production.product p on p18.product_id = p.product_id
+-- left outer join openstore_production.product_pricelist pp on pp.product_id = p.product_id
+inner join prestashop.ps_lang psl on psl.iso_code = l.lang COLLATE utf8_general_ci
+-- where p.flag_active = 1
+-- group by 1,2,3
+-- having count(distinct pp.pricelist_id) > 0
+ON DUPLICATE KEY UPDATE
+	`name` = COALESCE(p18.title, p18.invoice_title, p.title, p.invoice_title, p.reference),
+	`description` = CONCAT_WS('<br>' , COALESCE(p18.description, p.description, ''), COALESCE(p18.characteristic, p.characteristic, '')),
+	`description_short` = CONCAT_WS(' ' , COALESCE(p18.description, p.description, ''), COALESCE(p18.characteristic, p.characteristic, '')),
+	`link_rewrite` = COALESCE(p18.slug, p.slug, p.product_id),
+	`available_now` = 	CASE p18.lang
+							WHEN 'fr' THEN 'En stock'
+							WHEN 'en' THEN 'On stock'
+							ELSE 'On Stock' 
+						END,
+	`available_later` = ''
+
+
+
+-- insert into ps_category_product
+
+replace into prestashop.ps_category_product (id_category, id_product, position)
+select 
+	2 as id_category,  -- default_category
+	p.id_product as id_product,
+	0 as position
+from prestashop.ps_product p
+
+
+
+
+
+
+
+

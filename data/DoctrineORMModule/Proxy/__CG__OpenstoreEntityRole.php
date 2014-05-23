@@ -64,10 +64,10 @@ class Role extends \Openstore\Entity\Role implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'role_id', 'name', 'lft', 'rgt', 'parent', 'root', 'level', 'children', 'permissions', 'users');
+            return array('__isInitialized__', 'role_id', 'name', '' . "\0" . 'Openstore\\Entity\\Role' . "\0" . 'lft', '' . "\0" . 'Openstore\\Entity\\Role' . "\0" . 'rgt', '' . "\0" . 'Openstore\\Entity\\Role' . "\0" . 'parent', '' . "\0" . 'Openstore\\Entity\\Role' . "\0" . 'root', '' . "\0" . 'Openstore\\Entity\\Role' . "\0" . 'level', '' . "\0" . 'Openstore\\Entity\\Role' . "\0" . 'children', 'permissions', '' . "\0" . 'Openstore\\Entity\\Role' . "\0" . 'users');
         }
 
-        return array('__isInitialized__', 'role_id', 'name', 'lft', 'rgt', 'parent', 'root', 'level', 'children', 'permissions', 'users');
+        return array('__isInitialized__', 'role_id', 'name', '' . "\0" . 'Openstore\\Entity\\Role' . "\0" . 'lft', '' . "\0" . 'Openstore\\Entity\\Role' . "\0" . 'rgt', '' . "\0" . 'Openstore\\Entity\\Role' . "\0" . 'parent', '' . "\0" . 'Openstore\\Entity\\Role' . "\0" . 'root', '' . "\0" . 'Openstore\\Entity\\Role' . "\0" . 'level', '' . "\0" . 'Openstore\\Entity\\Role' . "\0" . 'children', 'permissions', '' . "\0" . 'Openstore\\Entity\\Role' . "\0" . 'users');
     }
 
     /**

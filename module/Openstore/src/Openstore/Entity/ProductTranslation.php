@@ -61,7 +61,7 @@ class ProductTranslation implements InputFilterAwareInterface
 
 	/**
 	 * @Gedmo\Slug(fields={"title"})
-	 * @ORM\Column(length=64, nullable=true, options={"comment" = "Unique slug for this record"})
+	 * @ORM\Column(length=255, nullable=true, options={"comment" = "Unique slug for this record"})
 	 */
 	private $slug;
 

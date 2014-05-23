@@ -36,6 +36,27 @@ return array(
 						)
 					)
 				),
+				'openstore-recreatedbextra' => array(
+					'options' => array(
+						'route' => 'openstore recreatedbextra',
+						'defaults' => array(
+							'controller' => 'Openstore\Controller\Console',
+							'action' => 'recreatedbextra'
+						)
+						
+					)
+				),
+				'openstore-updateproductslug' => array(
+					'options' => array(
+						'route' => 'openstore updateproductslug',
+						'defaults' => array(
+							'controller' => 'Openstore\Controller\Console',
+							'action' => 'updateproductslug'
+						)
+						
+					)
+				),				
+				
 				'openstore-build-all-reload' => array(
 					'options' => array(
 						'route' => 'openstore build-all-reload',

@@ -19,10 +19,14 @@ class SearchController extends AbstractActionController
 	
 	/**
 	 *
-	 * @var \Openstore\Options
+	 * @var Openstore\Options
 	 */
 	protected $config;
-	
+
+	/**
+	 *
+	 * @var Zend\Db\Adapter\Adapter
+	 */
 	protected $adapter;
 	
 	
