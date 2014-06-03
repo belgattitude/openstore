@@ -47,13 +47,10 @@ replace into prestashop.ps_product
 	date_add, 
 	date_upd,
 	advanced_stock_management)
-
-
-
 select
 	p.product_id as id_product,
-	null as id_supplier,
-	null as id_manufacturer,
+	0 as id_supplier,        -- constant
+	0 as id_manufacturer,    -- constant
 	2 as is_category_default,
 	1 as id_shop_default,
 	1 as id_tax_rules_group,
@@ -69,10 +66,10 @@ select
 	20 as wholesale_price,
 	49 as unity,
 	10 as unit_price_ratio,
-	0 as additional_shipping_cost,
+	0 as additional_shipping_cost,  -- constant
 	p.reference as reference,
-	null as supplier_reference,
-	null as location,
+	"" as supplier_reference,  -- constant
+	"" as location,  -- constant
 	p.width as width,
 	p.height as height,
 	0 as depth,
@@ -83,18 +80,18 @@ select
 	0 as uploadable_files,
 	0 as text_fields,
 	p.flag_active as active,
-	'404' as redirect_type,
+	'404' as redirect_type,  -- constant, enum '','404', '301', '302'
 	0 as id_product_redirected,
 	p.flag_active as available_for_order,
 	null as available_date,
 	'new' as `condition`,
 	1 as show_price,
-	1 as indexed,
+	0 as indexed,
 	'both' as visibility,
 	0 as cache_is_pack,
 	0 as cache_has_attachments,
 	0 as is_virtual,
-	null as cache_default_attribute,
+	0 as cache_default_attribute, -- constant
 	now() as date_add,
 	now() as date_upd,
 	0 as advanced_stock_management
@@ -181,6 +178,10 @@ INSERT INTO prestashop.`ps_product_lang`
 	`name`, 
 	`description`, 
 	`description_short`, 
+	`meta_description`,
+	`meta_keywords`,
+	`meta_title`,
+
 	`link_rewrite`,
 	`available_now`, 
 	`available_later`)
@@ -192,6 +193,9 @@ select
 	CONCAT_WS('<br>' , COALESCE(p18.description, p.description, ''), COALESCE(p18.characteristic, p.characteristic, '')) as `description`,
 	CONCAT_WS(' ' , COALESCE(p18.description, p.description, ''), COALESCE(p18.characteristic, p.characteristic, '')) as `description_short`,
 	COALESCE(p18.slug, p.slug, p.product_id) as `link_rewrite`, 
+	'' as `meta_description`,
+	'' as `meta_keywords`,
+	'' as `meta_title`,
 	CASE p18.lang
 		WHEN 'fr' THEN 'En stock'
 		WHEN 'en' THEN 'On stock'

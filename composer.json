@@ -25,7 +25,7 @@
 		"zf-commons/zfc-user": "1.*",
 		
 		
-		"symfony/yaml": "2.4.*",
+		"symfony/yaml": "2.5.*",
 		"zendframework/zend-developer-tools": "dev-master",
 		"bjyoungblood/bjy-profiler" : "dev-master",
 		"widmogrod/zf2-assetic-module": "dev-master",
