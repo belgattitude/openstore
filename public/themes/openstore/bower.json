@@ -9,15 +9,16 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "~1.11.0",
+    "jquery": "~1.11.1",
     "bootstrap": "~3.1.1",
     "jquery-ui": "~1.10.4",
     "bootswatch": "~3.1.1",
     "modernizr": "~2.7.2",
     "typeahead.js": "~0.10.2",
+	"handlebars.js": "~1.3.0",
     "font-awesome": "~4.0.3",
-    "bootstrap-sass": "~3.0.1",
-	"select2": "~3.4.6",
+    "bootstrap-sass-official": "~3.1.1",
+	"select2": "~3.4.8",
 	"colorbox": "~1.5.5"
   }
 }

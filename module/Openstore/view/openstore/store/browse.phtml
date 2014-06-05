@@ -75,7 +75,7 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 
 			</div>
 		</div>				
-		
+
 		<?php
 		echo $this->partial('snippets/breadcrumb_control', array(
 			'category_breadcrumb' => $this->category_breadcrumb,
@@ -83,9 +83,9 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 			'brands' => $this->brands
 		))
 		?>
-		
+
 		<?php
-			$columns = 3;
+		$columns = 3;
 		?>
 		<?php foreach ($this->products as $idx => $product) : ?>
 			<?php
@@ -95,8 +95,8 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 			$last_idx = count($this->products);
 			?>
 			<?php if ($break) : ?>
-			<div class="row" > <!-- start row <?php echo "idx" . $idx . " --- ($idx % 3)" ?> -->	
-			<?php endif; ?>	
+				<div class="row" > <!-- start row <?php echo "idx" . $idx . " --- ($idx % 3)" ?> -->	
+				<?php endif; ?>	
 				<div class="col-md-4" style="margin-bottom: 5px">
 					<!-- <div class="thumbnail wrapper"> -->
 					<div class="thumbnail wrapper" style="background-color: white">
@@ -116,46 +116,47 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 							<div style="width: 100%; max-height: 200px; min-height: 80px; line-height: 150px; text-align: center;">
 								<a href="<?= $this->url('store/product', array('product_id' => $product['product_id']), array(), false); ?>">
 									<?php if ($product->picture_media_id != '') : ?>
-									
-									<img style="vertical-align: middle" src="<?= 
+
+										<img style="vertical-align: middle" src="<?=
 										$this->url('media/picture', array(
-														'type' => 'product', 
-														'id' => $product->product_id,
-														'resolution' => '170x200',
-														'quality' => 90), array(), $reuseMatchedParams = false); ?>" alt="" />
-									<?php endif; ?>
+											'type' => 'product',
+											'id' => $product->product_id,
+											'resolution' => '170x200',
+											'quality' => 90), array(), $reuseMatchedParams = false);
+										?>" alt="" />
+	<?php endif; ?>
 								</a>
 							</div>
 
 						</div>
 						<div class="btn-group" style="float: right">
-							<?php 
+							<?php
 							if ($product->picture_media_id != '') {
 								$onclick = 'onclick="';
-								$href =  $this->url('media/picture', array(
-													'type' => 'product', 
-													'id' => $product->product_id,
-													'resolution' => '1024x768',
-													'quality' => 90), array(), $reuseMatchedParams = false);
+								$href = $this->url('media/picture', array(
+									'type' => 'product',
+									'id' => $product->product_id,
+									'resolution' => '1024x768',
+									'quality' => 90), array(), $reuseMatchedParams = false);
 
-								$onclick .= "javascript: $.colorbox({maxWidth: '90%', maxHeight: '90%', title: '" . 
-											 $escaper->escapeJs((string) $product->brand_title) . ' &raquo; ' . 
-											 $escaper->escapeJs((string) $product->reference) . ' &raquo; ' . 
-											 $escaper->escapeJs((string) $product->title) . "', href: '$href'})";
+								$onclick .= "javascript: $.colorbox({maxWidth: '90%', maxHeight: '90%', title: '" .
+										$escaper->escapeJs((string) $product->brand_title) . ' &raquo; ' .
+										$escaper->escapeJs((string) $product->reference) . ' &raquo; ' .
+										$escaper->escapeJs((string) $product->title) . "', href: '$href'})";
 								$onclick .= '"';
 							}
 							?>
 							<button class="btn btn-sm" <?= $onclick ?>>								
 								<span class="glyphicon glyphicon-zoom-in"></span> 
 							</button>
-							
-							
+
+
 							<button class="btn btn-sm">
 								<a href="<?= $this->url('store/product', array('product_id' => $product['product_id']), array(), false); ?>" >
-								<span class="glyphicon glyphicon-info-sign"></span> 
+									<span class="glyphicon glyphicon-info-sign"></span> 
 								</a>
 							</button>
-								
+
 							<button class="btn btn-sm">
 								<span class="glyphicon glyphicon-heart-empty"></span> 
 							</button>
@@ -173,7 +174,7 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 
 							<!--
 							<div style="max-height: 80px; text-overflow: ellipsis; overflow:hidden">
-							<?php echo $product->description ?>
+	<?php echo $product->description ?>
 							</div>
 							-->
 							<!--
@@ -183,23 +184,23 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 								<div style="float: right">								
 									<span class="label label-info price"><?= $this->currencyFormat($product->price, "EUR", "fr_FR") . ' / ' . $product->unit_reference ?></span>
 								</div>	
-								
+
 								<div id="test" class="input-group shopcart_add_group">
-								  <input type="text" class="form-control" placeholder="Qty" style="width: 120px">
-								  <span class="input-group-btn">
-									<button disabled="disabled" class="btn btn-warning" type="button"><span class="glyphicon glyphicon-shopping-cart"></span> Add</button>
-								  </span>
+									<input type="text" class="form-control" placeholder="Qty" style="width: 120px">
+									<span class="input-group-btn">
+										<button disabled="disabled" class="btn btn-warning" type="button"><span class="glyphicon glyphicon-shopping-cart"></span> Add</button>
+									</span>
 								</div>
-								
+
 							</div>
 						</div>
 					</div>
 				</div>
-			<?php if (((($idx + 1) % $columns) == 0) || $idx + 1 == $last_idx) : ?>	
-				<hr><hr><hr>
-			</div> <!-- end row -->	
+	<?php if (((($idx + 1) % $columns) == 0) || $idx + 1 == $last_idx) : ?>	
+					<hr><hr><hr>
+				</div> <!-- end row -->	
 			<?php endif; ?>
-		<?php endforeach; ?>
+<?php endforeach; ?>
 
 		<!--</div>-->
 
@@ -217,136 +218,218 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 </div>
 <script type="text/javascript">
 
-$(document).ready(function() {
-        $(".shopcart_add_group input[type='text']").bind('change', function(event) {
-            console.log('event', event.currentTarget);
+	$(document).ready(function() {
+		$(".shopcart_add_group input[type='text']").bind('change', function(event) {
+			console.log('event', event.currentTarget);
 			//var id = $("button").closest("div").attr("id");
 			var group = $(this).closest("div");
 			var button = group.find("button");
 			console.log('button', button);
 			button.prop('disabled', false);
-			
-    });
-});	
-	
+
+		});
+	});
+
 </script>	
 <?php
 $escaper = new Zend\Escaper\Escaper('utf-8');
 $image_baseurl = $this->basePath() . '/media/picture/';
-
 ?>
 <script type="text/javascript">
 	/*
-var brandStore = new Bloodhound({
-	datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-	queryTokenizer: Bloodhound.tokenizers.whitespace,
-	remote: '<?= $this->url('store/search', array(
-								'action' => 'brand'
-					 		 //'categories' => $category['reference'],
-							 //'page' => 1
-						    ), 
-			                array(), 
-						    $reuseMatchedParams = true)
-			?>?query=%QUERY'
+	 var brandStore = new Bloodhound({
+	 datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+	 queryTokenizer: Bloodhound.tokenizers.whitespace,
+	 remote: '<?=
+$this->url('store/search', array(
+	'action' => 'brand'
+		//'categories' => $category['reference'],
+		//'page' => 1
+		), array(), $reuseMatchedParams = true)
+?>?query=%QUERY'
+	 
+	 
+	 });
+	 
+	 brandStore.initialize();*/
+	/* 
+	 $('#product_search').typeahead(null, {
+	 name: 'best-pictures',
+	 displayKey: 'value',
+	 source: bestPictures.ttAdapter()
+	 });*/
 
-
-});
- 
-brandStore.initialize();*/
-/* 
-$('#product_search').typeahead(null, {
-name: 'best-pictures',
-displayKey: 'value',
-source: bestPictures.ttAdapter()
-});*/	
-	
 </script>	
 
 <script type="text/javascript">
-					$('#product_search').typeahead([
-						{
-							name: 'dataset_brand_globalsearch',
-							valueKey: 'reference',
-							limit: 5,
-							minLength: 1,
-							header: '<h5 class="league-name"><?= $this->translate('Brands') ?></h5>',
-							remote: {
-								url: '<?=
+	var brandStoreUrl = '<?= $this->url('store/search', array('action' => 'brand'), array(), $reuseMatchedParams = true) ?>';
+	var productStoreUrl = '<?= $this->url('store/search', array('action' => 'product'), array(), $reuseMatchedParams = true) ?>';
+
+	var brandStore = new Bloodhound({
+		datumTokenizer: function(d) {
+			alert('cool');
+			return Bloodhound.tokenizers.whitespace(d.title);
+		},
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		remote: {
+			url: brandStoreUrl + "?query=%QUERY",
+			filter: function(brands) {
+				return brands.data;
+			}
+		}
+	});
+
+	var productStore = new Bloodhound({
+		datumTokenizer: function(d) {
+			alert('cool');
+			return Bloodhound.tokenizers.whitespace(d.title);
+		},
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		remote: {
+			url: productStoreUrl + "?query=%QUERY",
+			filter: function(brands) {
+				return brands.data;
+			}
+		}
+	});
+
+// initialize the bloodhound suggestion engine
+	brandStore.initialize();
+	productStore.initialize();
+
+// instantiate the typeahead UI
+	var searchTypeAhead = $('#product_search').typeahead({
+		highlight: true,
+		
+	},
+	{
+		name: 'dataset-brands',
+		displayKey: 'title',
+		source: brandStore.ttAdapter(),
+		templates: {
+			header: '<h3 class="league-name">Brands</h3>'
+		}
+	},
+	{
+		name: 'dataset-products',
+		displayKey: 'title',
+		source: productStore.ttAdapter(),
+		templates: {
+			header: '<h3 class="league-name">Products</h3>',
+			suggestion: Handlebars.compile('<p><strong>{{reference}}</strong> – {{title}}</p>')			
+		}
+	});
+	
+	searchTypeAhead.on('typeahead:selected', function(evt,data,data_set){
+		console.log('typeahead:selected:evt', evt);
+		console.log('typeahead:selected:data', data);
+		console.log('typeahead:selected:dataset', data_set);
+		var new_location = '';
+		if (data_set == 'dataset-brands') {
+			var brand_reference = data.reference;
+			new_location = '<?= $this->url('store/browse', array('pricelist' => $this->routeparams('pricelist'), 'language' => $this->routeParams('language')), array(), false); ?>' + '/brands/' + brand_reference;
+		} else if (data_set == 'dataset-products') {
+			var product_id = data.product_id;
+			new_location = '<?= $this->url('store/product', array('pricelist' => $this->routeparams('pricelist'), 'language' => $this->routeParams('language'), 'product_id' => ''), false); ?>' + product_id;
+		}
+		if (new_location != '') {
+			document.location.href = new_location;
+		}
+		return false;
+	});
+
+
+
+
+
+	/*
+	 $('#product_search').typeahead([
+	 {
+	 name: 'dataset_brand_globalsearch',
+	 valueKey: 'reference',
+	 limit: 5,
+	 minLength: 1,
+	 header: '<h5 class="league-name"><?= $this->translate('Brands') ?></h5>',
+	 remote: {
+	 url: '<?=
 $this->url('store/search', array(
 	'action' => 'brand'
 		//'categories' => $category['reference'],
 		//'page' => 1
 		), array(), $reuseMatchedParams = true)
 ?>?query=%QUERY',
-								cache: true,
-								timeout: 3000,
-								filter: function(response) {
-									//console.log('response', response);
-									return response.data;
-								}
-							},
-							template: [
-								'<div>',
-								'{{title}}',
-								'</div>'
-							].join(''),
-							engine: Hogan
-
-						},
-						{
-							name: 'dataset_product_globalsearch',
-							valueKey: 'reference',
-							limit: 30,
-							minLength: 2,
-							header: '<h5 class="league-name"><?= $this->translate('Products') ?></h5>',
-							remote: {
-								url: '<?=
+	 cache: true,
+	 timeout: 3000,
+	 filter: function(response) {
+	 //console.log('response', response);
+	 return response.data;
+	 }
+	 },
+	 template: [
+	 '<div>',
+	 '{{title}}',
+	 '</div>'
+	 ].join(''),
+	 engine: Hogan
+	 
+	 },
+	 {
+	 name: 'dataset_product_globalsearch',
+	 valueKey: 'reference',
+	 limit: 30,
+	 minLength: 2,
+	 header: '<h5 class="league-name"><?= $this->translate('Products') ?></h5>',
+	 remote: {
+	 url: '<?=
 $this->url('store/search', array(
 	'action' => 'product'
 		//'categories' => $category['reference'],
 		//'page' => 1
 		), array(), $reuseMatchedParams = true)
 ?>?query=%QUERY',
-								cache: true,
-								timeout: 3000,
-								filter: function(response) {
-									//console.log('response', response);
-									return response.data;
-								}
-							},
-							template: [
-								'<div>',
-								'<div style=";">',
-								'{{#picture_media_id}}',
-								'<img src="<?= $image_baseurl ?>{{picture_media_id}}_30x30-85.jpg" width="30" />',
-								'{{/picture_media_id}}',
-								'{{^picture_media_id}}',
-								'<img src="https://www.google.be/images/srpr/logo11w.png" width="30" />',
-								'{{/picture_media_id}}',
-								'<div>{{title}}</div>',
-								
-								'<div style="float: right; style="width: 40px; height: 40px; overflow: hidden; border: 1px solid #E6E6E6; margin-right: 5px;>',
-								'{{reference}}',
-								'</div>',
-								'</div>',
-								'</div>'
-							].join(''),
-							engine: Hogan
-						}]
+	 cache: true,
+	 timeout: 3000,
+	 filter: function(response) {
+	 //console.log('response', response);
+	 return response.data;
+	 }
+	 },
+	 template: [
+	 '<div>',
+	 '<div style=";">',
+	 '{{#picture_media_id}}',
+	 '<img src="<?= $image_baseurl ?>{{picture_media_id}}_30x30-85.jpg" width="30" />',
+	 '{{/picture_media_id}}',
+	 '{{^picture_media_id}}',
+	 '<img src="https://www.google.be/images/srpr/logo11w.png" width="30" />',
+	 '{{/picture_media_id}}',
+	 '<div>{{title}}</div>',
+	 
+	 '<div style="float: right; style="width: 40px; height: 40px; overflow: hidden; border: 1px solid #E6E6E6; margin-right: 5px;>',
+	 '{{reference}}',
+	 '</div>',
+	 '</div>',
+	 '</div>'
+	 ].join(''),
+	 engine: Hogan
+	 }]
+	 
+	 ).on('typeahead:selected', function(e, data, data_set) {
+	 var new_location = '';
+	 if (data_set == 'dataset_brand_globalsearch') {
+	 var brand_reference = data.reference;
+	 new_location = '<?= $this->url('store/browse', array('pricelist' => $this->routeparams('pricelist'), 'language' => $this->routeParams('language')), array(), false); ?>' + '/brands/' + brand_reference;
+	 } else if (data_set == 'dataset_product_globalsearch') {
+	 var product_id = data.product_id;
+	 new_location = '<?= $this->url('store/product', array('pricelist' => $this->routeparams('pricelist'), 'language' => $this->routeParams('language'), 'product_id' => ''), false); ?>' + product_id;
+	 }
+	 if (new_location != '') {
+	 document.location.href = new_location;
+	 }
+	 return false;
+	 }
+	 );
+	 */
 
-							).on('typeahead:selected', function(e, data, data_set) {
-						var new_location = '';
-						if (data_set == 'dataset_brand_globalsearch') {
-							var brand_reference = data.reference;
-							new_location = '<?= $this->url('store/browse', array('pricelist' => $this->routeparams('pricelist'), 'language' => $this->routeParams('language')), array(), false); ?>' + '/brands/' + brand_reference;
-						} else if (data_set == 'dataset_product_globalsearch') {
-							var product_id = data.product_id;
-							new_location = '<?= $this->url('store/product', array('pricelist' => $this->routeparams('pricelist'), 'language' => $this->routeParams('language'), 'product_id' => ''), false); ?>' + product_id;
-						}
-						if (new_location != '') {
-							document.location.href = new_location;
-						}
-						return false;
-					}
-					);
+
 </script>

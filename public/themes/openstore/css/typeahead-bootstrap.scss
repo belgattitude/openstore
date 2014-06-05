@@ -1,0 +1,61 @@
+//colors
+$color_0: #ffffff;
+$color_1: #cccccc;
+$color_2: rgba(0, 0, 0, 0.15);
+$color_3: rgba(0, 0, 0, 0.175);
+$color_4: #333333;
+$color_5: #428bca;
+
+//@extend-elements
+//original selectors
+//.tt-suggestion > p:hover,  .tt-suggestion > p:focus,  .tt-suggestion.tt-cursor p
+%extend_1 {
+	color: $color_0;
+	text-decoration: none;
+	outline: 0;
+	background-color: $color_5;
+}
+
+
+.tt-dropdown-menu {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	z-index: 1000;
+	display: none;
+	float: left;
+	min-width: 160px;
+	padding: 5px 0;
+	margin: 2px 0 0;
+	list-style: none;
+	font-size: 14px;
+	background-color: $color_0;
+	border: 1px solid $color_1;
+	border: 1px solid $color_2;
+	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+	border-radius: 4px;
+	//Instead of the line below you could use @include box-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+	box-shadow: 0 6px 12px $color_3;
+	//Instead of the line below you could use @include background-clip($clip)
+	background-clip: padding-box;
+}
+.tt-suggestion {
+	> p {
+		display: block;
+		padding: 3px 20px;
+		clear: both;
+		font-weight: normal;
+		line-height: 1.428571429;
+		color: $color_4;
+		white-space: nowrap;
+		&:hover {
+			@extend %extend_1;
+		}
+		&:focus {
+			@extend %extend_1;
+		}
+	}
+	&.tt-cursor p {
+		@extend %extend_1;
+	}
+}

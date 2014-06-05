@@ -10,7 +10,9 @@ module.exports = function(grunt) {
 				src: [
 					'vendor/jquery/dist/jquery.js', 
 					'vendor/bootstrap/dist/js/bootstrap.js', 
-					'vendor/select2/select2.js', // All JS in the libs folder
+					'vendor/select2/select2.js', 
+					'vendor/typeahead.js/dist/typeahead.bundle.js', 
+					'js/handlebars/handlebars.js'
 					//'js/global.js'  // This specific file
 				],
 				dest: 'dist/js/production.js',
@@ -28,14 +30,17 @@ module.exports = function(grunt) {
 					//style: 'compressed'
 				},
 				files: {
-					'dist/css/global.css': 'css/global.scss'
-				}
+					'dist/css/global.css': 'css/global.scss',
+					'dist/css/typeahead-bootstrap.css': 'css/typeahead-bootstrap.scss'
+				}				
 			} 
 		},
+		
         autoprefixer: {
             dist: {
                 files: {
-                    'dist/css/global.prefixed.css': 'dist/css/global.css'
+                    'dist/css/global.prefixed.css': 'dist/css/global.css',
+					'dist/css/typeahead-bootstrap.prefixed.css': 'dist/css/typeahead-bootstrap.css'
                 }
             }
         },
@@ -61,7 +66,8 @@ module.exports = function(grunt) {
 				'dist/css/global.min.css': [
 						  'vendor/select2/select2.css',
 						  'vendor/select2/select2-bootstrap.css',
-						  'dist/css/global.prefixed.css'
+						  'dist/css/global.prefixed.css',
+						  'dist/css/typeahead-bootstrap.prefixed.css'
 				  ]
 			  }
 			},
