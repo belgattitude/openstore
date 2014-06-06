@@ -34,6 +34,7 @@ class ProductCatalogService extends AbstractService {
 		$this->checkListParams($params);
 		$select = new Select();
 		$lang = $params['language'];
+
 		$pricelist_reference = $params['pricelist'];
 		
 		$select->from(array('p' => 'product'), array())
@@ -44,6 +45,9 @@ class ProductCatalogService extends AbstractService {
 						new Expression('pb.brand_id = p.brand_id'), array())
 				->join(array('p2' => 'product'),
 						new Expression('p2.product_id = p.parent_id'), array(), $select::JOIN_LEFT)
+				->join(array('p2_18' => 'product_translation'),
+						new Expression("p2.product_id = p2_18.product_id and p2_18.lang='$lang'"), array(), $select::JOIN_LEFT)
+				
 				->join(array('pu' => 'product_unit'),
 						new Expression('p.unit_id = pu.unit_id'), array(), $select::JOIN_LEFT)
 				
@@ -90,7 +94,7 @@ class ProductCatalogService extends AbstractService {
 			
 			'product_title'			=> new Expression('COALESCE(p18.title, p18.invoice_title, p.title, p.invoice_title)'),
 			'product_invoice_title' => new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
-			'product_description'	=> new Expression('COALESCE(p18.description, p.description)'),
+			'product_description'	=> new Expression('if (p2.product_id is null, COALESCE(p18.description, p.description), COALESCE(p2_18.description, p.description) )'),
 			'product_characteristic'=> new Expression('COALESCE(p18.characteristic, p.characteristic)'),
 			
 			'price'					=> new Expression('ROUND(ppl.price, 2)'),

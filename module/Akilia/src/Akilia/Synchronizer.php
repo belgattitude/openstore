@@ -1179,7 +1179,8 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				$title = "if (trim(i.libelle$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i.libelle$sfx") . "))";
 				$invoice_title = "if (trim(a.libelle$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("a.libelle$sfx") . "))";
 				$description = "if (i2.id_article is not null, 
-									if (trim(i2.desc$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i2.desc$sfx") . ")),		
+									-- if (trim(i2.desc$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i2.desc$sfx") . ")),		
+									null,			
 									if (trim(i.desc$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i.desc$sfx") . "))
 								)
 				";
@@ -1189,7 +1190,8 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				$title = "if (trim(i.libelle$sfx) = '', null, trim(i.libelle$sfx))";
 				$invoice_title = "if (trim(a.libelle$sfx) = '', null, trim(a.libelle$sfx))";
 				$description = "if (i2.id_article is not null, 
-									if (trim(i2.desc$sfx) = '', null, trim(i2.desc$sfx)),		
+									-- if (trim(i2.desc$sfx) = '', null, trim(i2.desc$sfx)),		
+									null,	
 									if (trim(i.desc$sfx) = '', null, trim(i.desc$sfx))
 								)
 				";
