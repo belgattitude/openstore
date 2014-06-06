@@ -106,7 +106,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 	
 	function synchronizeAll()
 	{
-		
+		/*
 		$this->synchronizeCountry();
 		$this->synchronizeCustomer();
 		$this->synchronizeApi();
@@ -117,10 +117,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 		$this->synchronizeProductCategory();
 		$this->synchronizeProductModel();
 		$this->synchronizeProduct();
+		 * 
+		 */
 		$this->synchronizeProductTranslation();
-		$this->synchronizeProductPricelist();
+		//$this->synchronizeProductPricelist();
 		
-		$this->synchronizeProductStock();
+		//$this->synchronizeProductStock();
 		
 		
 /**
@@ -1152,13 +1154,49 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		
 	}
 	
+	/**
+	 * 
+	 * @param string $column_name
+	 * @return string
+	 */
+	protected function hackUtf8TranslationColumn($column_name)
+	{
+		return "CONVERT(CONVERT(CONVERT($column_name USING latin1) using binary) USING utf8)";
+	}
+	
 	function synchronizeProductTranslation()
 	{
 		$akilia1db = $this->akilia1Db;
 		$db = $this->openstoreDb;
 		
 		$langs = $this->akilia1lang;
+
+		
 		foreach($langs as $lang => $sfx) {
+			
+			if ($lang == 'zh') {
+				// Handle a double encoding bug in chinese only
+				$title = "if (trim(i.libelle$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i.libelle$sfx") . "))";
+				$invoice_title = "if (trim(a.libelle$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("a.libelle$sfx") . "))";
+				$description = "if (i2.id_article is not null, 
+									if (trim(i2.desc$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i2.desc$sfx") . ")),		
+									if (trim(i.desc$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i.desc$sfx") . "))
+								)
+				";
+				$characteristic = "if (trim(i.couleur$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i.couleur$sfx") . "))";
+				
+			} else {
+				$title = "if (trim(i.libelle$sfx) = '', null, trim(i.libelle$sfx))";
+				$invoice_title = "if (trim(a.libelle$sfx) = '', null, trim(a.libelle$sfx))";
+				$description = "if (i2.id_article is not null, 
+									if (trim(i2.desc$sfx) = '', null, trim(i2.desc$sfx)),		
+									if (trim(i.desc$sfx) = '', null, trim(i.desc$sfx))
+								)
+				";
+				$characteristic = "if (trim(i.couleur$sfx) = '', null, trim(i.couleur$sfx))";
+				
+			}
+			
 			$replace = "insert into product_translation 
 				 ( product_id,
 				   lang,
@@ -1171,30 +1209,28 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				  select
 				    p.product_id as product_id, 
 					'$lang' as lang,
-					if (trim(i.libelle$sfx) = '', null, trim(i.libelle$sfx)) as title,
-					if (trim(a.libelle$sfx) = '', null, trim(a.libelle$sfx)) as invoice_title,	
-					if (i2.id_article is not null, 
-							if (trim(i2.desc$sfx) = '', null, trim(i2.desc$sfx)),		
-							if (trim(i.desc$sfx) = '', null, trim(i.desc$sfx))
-					) as description,
-					if (trim(i.couleur$sfx) = '', null, trim(i.couleur$sfx)) as characteristic,		
+					$title as title,
+					$invoice_title as invoice_title,	
+					$description as description,
+					$characteristic as characteristic,		
 					'{$this->legacy_synchro_at}'	
 				  from $akilia1db.article a
 				  inner join $db.product p on p.legacy_mapping = a.id_article 	
 				  left outer join $akilia1db.cst_art_infos i on i.id_article = a.id_article
 				  left outer join $akilia1db.cst_art_infos i2 on 
 					  (i.id_art_tete = i2.id_article and i.id_art_tete <> 0 and i.id_art_tete <> '')
+				 where 
+					CHAR_LENGTH(coalesce(trim(a.libelle$sfx), '')) + CHAR_LENGTH(coalesce(trim(i.libelle$sfx), '')) +
+					CHAR_LENGTH(coalesce(trim(i.desc$sfx), '')) + CHAR_LENGTH(coalesce(trim(i.couleur$sfx), '')) +
+					CHAR_LENGTH(coalesce(trim(i2.desc$sfx), '')) > 0
 			     on duplicate key update
-				  title = if (trim(i.libelle$sfx) = '', null, trim(i.libelle$sfx)),
-				  invoice_title = if (trim(a.libelle$sfx) = '', null, trim(a.libelle$sfx)),
-				  description = if (i2.id_article is not null, 
-							if (trim(i2.desc$sfx) = '', null, trim(i2.desc$sfx)),		
-							if (trim(i.desc$sfx) = '', null, trim(i.desc$sfx))
-					),
-
-				  characteristic = if (trim(i.couleur$sfx) = '', null, trim(i.couleur$sfx)),
+				  title = $title,
+				  invoice_title = $invoice_title,
+				  description = $description,
+				  characteristic = $characteristic,
 				  legacy_synchro_at = '{$this->legacy_synchro_at}'	  
 			";
+				  
 				  
 		
 			$this->executeSQL("Replace product translations", $replace);
