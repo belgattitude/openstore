@@ -106,7 +106,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 	
 	function synchronizeAll()
 	{
-		/*
+		
 		$this->synchronizeCountry();
 		$this->synchronizeCustomer();
 		$this->synchronizeApi();
@@ -117,12 +117,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 		$this->synchronizeProductCategory();
 		$this->synchronizeProductModel();
 		$this->synchronizeProduct();
-		 * 
-		 */
 		$this->synchronizeProductTranslation();
-		//$this->synchronizeProductPricelist();
+		$this->synchronizeProductPricelist();
 		
-		//$this->synchronizeProductStock();
+		$this->synchronizeProductStock();
 		
 		
 /**
