@@ -1334,6 +1334,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 	/**
 	 * 
 	 * @param \Zend\Db\Adapter\Adapter $adapter
+         * @return Synchronizer
 	 */
 	public function setDbAdapter(Adapter $adapter) {
 		$this->adapter = $adapter;
