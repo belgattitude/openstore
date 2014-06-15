@@ -602,7 +602,10 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 					from $akilia1db.art_tarif as at
 					inner join $db.pricelist pl on at.id_pays = pl.legacy_mapping
 					inner join $akilia1db.article a on at.id_article = a.id_article	
-					where at.prix_unit_ht > 0
+					where 
+                                                at.prix_unit_ht > 0
+                                        and a.flag_archive = 0
+                                        
 					on duplicate key update
 							price = at.prix_unit_ht,
 							promo_discount = if((at.flag_promo = 1 or at.flag_liquidation = 1) and at.remise1 > 0, at.remise1, null),
@@ -679,7 +682,9 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 					inner join $akilia1Db.article a on t.id_article = a.id_article
 					inner join $db.pricelist pl on t.id_pays = pl.legacy_mapping
 						$pricelist_clause
-					
+                                                    
+                                        where a.flag_archive = 0
+
 					on duplicate key update
 							available_stock = if(product_stock.updated_at > t.date_synchro, product_stock.available_stock, t.stock),
 							theoretical_stock = if(product_stock.updated_at > t.date_synchro, product_stock.theoretical_stock, t.stock_theorique),
@@ -731,6 +736,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 						'{$this->legacy_synchro_at}' as legacy_synchro_at
 
 					from $akilia2db.base_pricelist as bp
+                                            
 					on duplicate key update
 							stock_id = if(pricelist.stock_id is null, $stock_id, pricelist.stock_id),
 							currency_id = if(pricelist.currency_id is null, {$this->default_currency_id}, pricelist.currency_id),
@@ -1222,9 +1228,13 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				  left outer join $akilia1db.cst_art_infos i2 on 
 					  (i.id_art_tete = i2.id_article and i.id_art_tete <> 0 and i.id_art_tete <> '')
 				 where 
+                                        a.flag_archive = 0
+                                        and
+
 					CHAR_LENGTH(coalesce(trim(a.libelle$sfx), '')) + CHAR_LENGTH(coalesce(trim(i.libelle$sfx), '')) +
 					CHAR_LENGTH(coalesce(trim(i.desc$sfx), '')) + CHAR_LENGTH(coalesce(trim(i.couleur$sfx), '')) +
 					CHAR_LENGTH(coalesce(trim(i2.desc$sfx), '')) > 0
+                                        
 			     on duplicate key update
 				  title = $title,
 				  invoice_title = $invoice_title,
