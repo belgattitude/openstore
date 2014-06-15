@@ -1105,6 +1105,8 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				left outer join $db.product_category as category on category.legacy_mapping = a.id_categorie
 				left outer join $db.product_model as pm on pm.legacy_mapping = a.id_modele	
 				
+                                where a.flag_archive = 0
+
 				on duplicate key update
 						model_id = pm.model_id,
 						brand_id = brand.brand_id,

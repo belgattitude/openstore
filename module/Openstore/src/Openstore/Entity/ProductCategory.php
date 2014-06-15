@@ -25,6 +25,7 @@ use Zend\InputFilter\InputFilterInterface;
  *     @ORM\Index(name="slug_idx", columns={"slug"}),
  *     @ORM\Index(name="lft_idx", columns={"lft"}),
  *     @ORM\Index(name="rgt_idx", columns={"rgt"}),
+ *     @ORM\Index(name="lvl_idx", columns={"lvl"}),
  *   },
  *   options={"comment" = "Product category table"}
  * )
