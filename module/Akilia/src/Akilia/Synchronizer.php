@@ -17,10 +17,10 @@ use Gaufrette\Exception as GException;
 
 
 function convertMemorySize($size)
- {
+{
     $unit=array('b','kb','mb','gb','tb','pb');
     return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
- };
+};
 
 class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterface 
 {
@@ -38,7 +38,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 	
 	/**
 	 * mysqli connection
-	 * @param \Doctrine\ORM\EntityManager $em
+	 * @param Mysqli
 	 */
 	protected $mysqli;
 
