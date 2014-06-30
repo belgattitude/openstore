@@ -466,18 +466,37 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 					legacy_synchro_at
 				)
 
-				select
-					pl.pricelist_id,
-					c.customer_id,
-					1 as flag_active,
-				   '{$this->legacy_synchro_at}' as legacy_synchro_at
-					
-				from $akilia2db.base_customer_pricelist bcpl
-				inner join $akilia2db.base_pricelist bpl on bcpl.pricelist_id = bpl.id
-				inner join $db.pricelist	pl on pl.reference = bpl.reference
-				inner join $db.customer c on c.legacy_mapping = bcpl.customer_id
+
+                                select 
+                                    pricelist_id, customer_id, flag_active, legacy_synchro_at
+                                from
+                                    ((select distinct
+                                        aup.pricelist_id,
+                                            c.customer_id,
+                                            c.flag_active,
+                                            '{$this->legacy_synchro_at}' as legacy_synchro_at
+                                    FROM
+                                        $akilia2db.auth_user_pricelist aup
+                                    inner join $akilia2db.auth_user au ON aup.user_id = au.id
+                                    inner join $akilia2db.auth_user_customer auc ON auc.user_id = au.id
+                                    inner join $akilia2db.base_pricelist bpl ON aup.pricelist_id = bpl.id
+                                    inner join $db.pricelist pl ON pl.reference = bpl.reference
+                                    inner join $db.customer c ON c.legacy_mapping = auc.customer_id) 
+                                union distinct (
+                                        select distinct
+                                        pl.pricelist_id,
+                                            c.customer_id,
+                                            c.flag_active,
+                                            '{$this->legacy_synchro_at}' as legacy_synchro_at
+                                    from
+                                        $akilia2db.base_customer_pricelist bcpl
+                                    inner join $akilia2db.base_pricelist bpl ON bcpl.pricelist_id = bpl.id
+                                    inner join $db.pricelist pl ON pl.reference = bpl.reference
+                                    inner join $db.customer c ON c.legacy_mapping = bcpl.customer_id)) 
+                                as u
+
 				on duplicate key update
-					   flag_active = 1,
+					   flag_active = u.flag_active,
 					   legacy_synchro_at = '{$this->legacy_synchro_at}'
 					 ";
 		
