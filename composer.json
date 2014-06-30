@@ -1,7 +1,7 @@
 {
     "name": "nuvolia/zf2-openstore",
     "description": "An attempt to create an ecommerce solution in zf2",
-    "license": "GPL v2 Clause",
+    "license": "MIT",
     "keywords": [
         "openstore",
         "zf2",
