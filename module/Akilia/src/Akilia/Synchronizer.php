@@ -471,7 +471,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
                                     pricelist_id, customer_id, flag_active, legacy_synchro_at
                                 from
                                     ((select distinct
-                                        aup.pricelist_id,
+                                        pl.pricelist_id,
                                             c.customer_id,
                                             c.flag_active,
                                             '{$this->legacy_synchro_at}' as legacy_synchro_at

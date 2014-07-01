@@ -40,7 +40,7 @@ module.exports = function(grunt) {
             dist: {
                 files: {
                     'dist/css/global.prefixed.css': 'dist/css/global.css',
-					'dist/css/typeahead-bootstrap.prefixed.css': 'dist/css/typeahead-bootstrap.css'
+		    'dist/css/typeahead-bootstrap.prefixed.css': 'dist/css/typeahead-bootstrap.css'
                 }
             }
         },
