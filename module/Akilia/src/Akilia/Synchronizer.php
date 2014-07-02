@@ -344,6 +344,10 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		    delete from $db.api_key_customer 
 			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 		$this->executeSQL("Delete eventual removed api_key_customer", $delete);				
+                
+                
+                // Resync customer pricelists access
+                $this->synchronizeCustomerPricelist();
 		
 	}
 	
