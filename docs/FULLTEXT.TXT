@@ -1,0 +1,45 @@
+
+Test for fulltext searches
+
+CREATE TABLE IF NOT EXISTS `product_search` (
+  `product_id` bigint(20) NOT NULL,
+  `keywords` varchar(1500) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `product_search`
+--
+
+INSERT INTO `product_search` (`product_id`, `keywords`) VALUES
+(1, 'guitare power sw203'),
+(2, 'guitare bleue');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `product_search`
+--
+ALTER TABLE `product_search`
+ ADD PRIMARY KEY (`product_id`), ADD FULLTEXT KEY `keywords` (`keywords`);
+
+
+SQL:
+
+SELECT * FROM `product_search` 
+WHERE MATCH (keywords)
+AGAINST ('+bleue +guitare -blou' IN BOOLEAN MODE)
+
+
+SELECT * FROM `product_search` 
+
+where match(keywords)
+AGAINST ('guitare bleue' IN NATURAL LANGUAGE MODE)
+
+
+
+SELECT product_id, keywords, match(keywords) AGAINST ('guitare bleue' IN NATURAL LANGUAGE MODE) as relevance_natural, match(keywords) AGAINST ('guitare bleue' IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION) as relevance_expansion, match(keywords) AGAINST ('guitare bleue' IN BOOLEAN MODE) as relevance_boolean FROM `product_search` where match(keywords) AGAINST ('guitare bleue' IN NATURAL LANGUAGE MODE)
+
+
+SELECT id_article, libelle_1, desc_1, couleur_1, match(libelle_1, desc_1, couleur_1) AGAINST ('guitare bleue' IN NATURAL LANGUAGE MODE) as relevance_natural, match(libelle_1, desc_1, couleur_1) AGAINST ('guitare bleue' IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION) as relevance_expansion, match(libelle_1, desc_1, couleur_1) AGAINST ('+guitare +bleue' IN BOOLEAN MODE) as relevance_boolean FROM `cst_art_infos` where match(libelle_1, desc_1, couleur_1) AGAINST ('guitare bleue' IN NATURAL LANGUAGE MODE)

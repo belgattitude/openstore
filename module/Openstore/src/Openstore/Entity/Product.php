@@ -33,762 +33,700 @@ use Zend\InputFilter\InputFilterInterface;
  * )
  * @Gedmo\SoftDeleteable(fieldName="deleted_at")
  */
-class Product implements InputFilterAwareInterface
-{
-	
-	/**
-	 * @var \Zend\InputFilter\InputFilterInterface $inputFilter
-	 */
-	protected $inputFilter;
+class Product implements InputFilterAwareInterface {
+
+    /**
+     * @var \Zend\InputFilter\InputFilterInterface $inputFilter
+     */
+    protected $inputFilter;
 
     /**
      * @ORM\OneToMany(targetEntity="ProductTranslation", mappedBy="product_id")
-     **/
-    private $translations;	
-	
-	/**
-	 * @ORM\Id
-	 * @ORM\Column(name="product_id", type="bigint", nullable=false, options={"unsigned"=true})
-	 * @ORM\GeneratedValue(strategy="AUTO")
-	 */
-	private $product_id;
+     * */
+    private $translations;
 
-	/**
-	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Unique reference"})
-	 */
-	private $reference;
+    /**
+     * @ORM\Id
+     * @ORM\Column(name="product_id", type="bigint", nullable=false, options={"unsigned"=true})
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $product_id;
 
-	
-	/**
-	 * @ORM\Column(type="string", length=60, nullable=true, options={"comment" = "Displayable reference, common for search and display"})
-	 */
-	private $display_reference;	
-	
+    /**
+     * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Unique reference"})
+     */
+    private $reference;
+
+    /**
+     * @ORM\Column(type="string", length=60, nullable=true, options={"comment" = "Displayable reference, common for search and display"})
+     */
+    private $display_reference;
+
     /**
      * @ORM\ManyToOne(targetEntity="Product", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="product_id", onDelete="CASCADE")
      */
-    private $parent_id;	
-	
-	/**
-	 * 
+    private $parent_id;
+
+    /**
+     * 
      * @ORM\ManyToOne(targetEntity="ProductBrand", inversedBy="products", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="brand_id", referencedColumnName="brand_id", onDelete="CASCADE", nullable=true)
-	 */
-	private $brand_id;
+     */
+    private $brand_id;
 
-	/**
-	 * 
+    /**
+     * 
      * @ORM\ManyToOne(targetEntity="ProductGroup", inversedBy="products", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="group_id", referencedColumnName="group_id", onDelete="CASCADE", nullable=true)
-	 */
-	private $group_id;
+     */
+    private $group_id;
 
-	/**
-	 * 
+    /**
+     * 
      * @ORM\ManyToOne(targetEntity="ProductModel", inversedBy="products", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="model_id", referencedColumnName="model_id", onDelete="CASCADE", nullable=true)
-	 */
-	private $model_id;	
-	
-	/**
-	 * 
+     */
+    private $model_id;
+
+    /**
+     * 
      * @ORM\ManyToOne(targetEntity="ProductCategory", inversedBy="products", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="category_id", referencedColumnName="category_id", onDelete="CASCADE", nullable=true)
-	 */
-	private $category_id;
+     */
+    private $category_id;
 
-	/**
-	 * Type id
+    /**
+     * Type id
      * @ORM\ManyToOne(targetEntity="ProductType", inversedBy="products", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", onDelete="CASCADE", nullable=true)
-	 */
-	private $type_id;		
-	
-	/**
-	 * Sales unit
+     */
+    private $type_id;
+
+    /**
+     * Sales unit
      * @ORM\ManyToOne(targetEntity="ProductUnit", inversedBy="products", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="unit_id", referencedColumnName="unit_id", onDelete="CASCADE", nullable=true)
-	 */
-	private $unit_id;	
+     */
+    private $unit_id;
 
-	/**
-	 * @Gedmo\Slug(fields={"title"})
-	 * @ORM\Column(length=255, nullable=true, options={"comment" = "Unique slug for this record"})
-	 */
-	private $slug;
+    /**
+     * @Gedmo\Slug(fields={"title"})
+     * @ORM\Column(length=255, nullable=true, options={"comment" = "Unique slug for this record"})
+     */
+    private $slug;
 
-	/**
-	 * @ORM\Column(type="string", length=150, nullable=true)
-	 */
-	private $title;
-	
-	/**
-	 * @ORM\Column(type="string", length=100, nullable=true)
-	 */
-	private $invoice_title;	
-	
+    /**
+     * @ORM\Column(type="string", length=150, nullable=true)
+     */
+    private $title;
 
-	/**
-	 * @ORM\Column(type="string", length=15000, nullable=true)
-	 */
-	private $description;
+    /**
+     * @ORM\Column(type="string", length=100, nullable=true)
+     */
+    private $invoice_title;
 
-	/**
-	 * @ORM\Column(type="string", length=150, nullable=true)
-	 */
-	private $characteristic;
+    /**
+     * @ORM\Column(type="string", length=15000, nullable=true)
+     */
+    private $description;
 
+    /**
+     * @ORM\Column(type="string", length=150, nullable=true)
+     */
+    private $characteristic;
 
-	/**
-	 * @ORM\Column(type="string", length=255, nullable=true)
-	 */
-	private $keywords;	
-	
-	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Volume per sales unit in m3"})
-	 */
-	private $volume;
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $keywords;
 
-	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Weight per sales unit in Kg"})
-	 */
-	private $weight;
-	
-	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Length per sales unit in meter"})
-	 */
-	private $length;
+    /**
+     * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Volume per sales unit in m3"})
+     */
+    private $volume;
 
-	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Heigth per sales unit in meter"})
-	 */
-	private $height;
-	
-	/**
-	 * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Width per sales unit in meter"})
-	 */
-	private $width;
+    /**
+     * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Weight per sales unit in Kg"})
+     */
+    private $weight;
 
-	/**
-	 * @ORM\Column(type="decimal", precision=15, scale=6, nullable=true, options={"comment"="Packaging items per box"})
-	 */
-	private $pack_qty_box;
-	
-	
-	/**
-	 * @ORM\Column(type="decimal", precision=15, scale=6, nullable=true, options={"comment"="Packaging items per carton"})
-	 */
-	private $pack_qty_carton;
-	
-	/**
-	 * @ORM\Column(type="decimal", precision=15, scale=6, nullable=true, options={"comment"="Packaging items per master carton"})
-	 */
-	private $pack_qty_master_carton;
+    /**
+     * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Length per sales unit in meter"})
+     */
+    private $length;
 
-	/**
-	 * @ORM\Column(type="decimal", precision=15, scale=6, nullable=true, options={"comment"="Packaging items per palet"})
-	 */
-	private $pack_qty_palet;
-	
-	
-	/**
-	 * @ORM\Column(type="string", length=13, nullable=true, options={"comment"="EAN13 barcode"})
-	 */
-	private $barcode_ean13;	
-	
-	/**
-	 * @ORM\Column(type="string", length=12, nullable=true, options={"comment"="UPCA barcode"})
-	 */
-	private $barcode_upca;	
-	
-	
-	/**
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the product is active in public website"})
-	 */
-	private $flag_active;
-	
-	
-	/**
-	 * @ORM\Column(type="date", nullable=true, options={"comment" = "Date on which product was actived/available"})
-	 */
-	private $activated_at;	
-	
-	/**
-	 * @ORM\Column(type="string", length=40, nullable=true)
-	 */
-	private $icon_class;
-	
-	
-	/**
-	 * @Gedmo\Timestampable(on="create")
-	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record creation timestamp"})
-	 */
-	private $created_at;
+    /**
+     * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Heigth per sales unit in meter"})
+     */
+    private $height;
 
-	/**
-	 * @Gedmo\Timestampable(on="update")
-	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record last update timestamp"})
-	 */
-	private $updated_at;
-	
-	/**
-	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record deletion date"})
-	 */
-	private $deleted_at;
+    /**
+     * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Width per sales unit in meter"})
+     */
+    private $width;
 
-	/**
-	 * @Gedmo\Blameable(on="create")
-	 * @ORM\Column(type="string", length=40, nullable=true, options={"comment" = "Creator name"})
-	 */
-	private $created_by;
+    /**
+     * @ORM\Column(type="decimal", precision=15, scale=6, nullable=true, options={"comment"="Packaging items per box"})
+     */
+    private $pack_qty_box;
 
-	/**
-	 * @Gedmo\Blameable(on="update")
-	 * @ORM\Column(type="string", length=40, nullable=true, options={"comment" = "Last updater name"})
-	 */
-	private $updated_by;
+    /**
+     * @ORM\Column(type="decimal", precision=15, scale=6, nullable=true, options={"comment"="Packaging items per carton"})
+     */
+    private $pack_qty_carton;
 
-	/**
-	 * @ORM\Column(type="string",length=40,nullable=true, options={"comment" = "Unique reference of this record taken from legacy system"})
-	 */
-	protected $legacy_mapping;
+    /**
+     * @ORM\Column(type="decimal", precision=15, scale=6, nullable=true, options={"comment"="Packaging items per master carton"})
+     */
+    private $pack_qty_master_carton;
 
-	/**
-	 * @ORM\Column(type="datetime",nullable=true, options={"comment" = "Last synchro timestamp"})
-	 */
-	protected $legacy_synchro_at;
+    /**
+     * @ORM\Column(type="decimal", precision=15, scale=6, nullable=true, options={"comment"="Packaging items per palet"})
+     */
+    private $pack_qty_palet;
 
-	
-	
-	public function __construct()
-	{
-		
-		 $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
-		 
-		 /**
-		  * Default value for flag_active
-		  */
-		 $this->flag_active = true; 
-		 
-		 
-	}
+    /**
+     * @ORM\Column(type="string", length=13, nullable=true, options={"comment"="EAN13 barcode"})
+     */
+    private $barcode_ean13;
 
-	/**
-	 * 
-	 * @param integer $product_id
-	 */
-	public function setProductId($product_id)
-	{
-		$this->product_id = $product_id;
-		return $this;
-	}	
-	
-	/**
-	 * 
-	 * @return integer
-	 */
-	public function getProductId()
-	{
-		return $this->product_id;
-	}
+    /**
+     * @ORM\Column(type="string", length=12, nullable=true, options={"comment"="UPCA barcode"})
+     */
+    private $barcode_upca;
 
-	/**
-	 * Set reference
-	 * @param string $reference
-	 */
-	public function setReference($reference)
-	{
-		$this->reference = $reference;
-		return $this;
-	}
+    /**
+     * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the product is active in public website"})
+     */
+    private $flag_active;
 
-	/**
-	 * Return reference 
-	 * @return string
-	 */
-	public function getReference()
-	{
-		return $this->reference;
-	}
+    /**
+     * @ORM\Column(type="date", nullable=true, options={"comment" = "Date on which product was actived/available"})
+     */
+    private $activated_at;
 
-	/**
-	 * @param string $slug
-	 */
-	public function setSlug($slug)
-	{
-		$this->slug = $slug;
-		return $this;
-	}
+    /**
+     * @ORM\Column(type="string", length=40, nullable=true)
+     */
+    private $icon_class;
 
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getSlug()
-	{
-		return $this->slug;
-	}
+    /**
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record creation timestamp"})
+     */
+    private $created_at;
 
-	/**
-	 * 
-	 * @param string $title
-	 */
-	public function setTitle($title)
-	{
-		$this->title = $title;
-		return $this;
-	}
+    /**
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record last update timestamp"})
+     */
+    private $updated_at;
 
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getTitle()
-	{
-		return $this->title;
-	}
+    /**
+     * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record deletion date"})
+     */
+    private $deleted_at;
 
-	/**
-	 * 
-	 * @param string $description
-	 */
-	public function setDescription($description)
-	{
-		$this->description = $description;
-		return $this;
-	}
+    /**
+     * @Gedmo\Blameable(on="create")
+     * @ORM\Column(type="string", length=40, nullable=true, options={"comment" = "Creator name"})
+     */
+    private $created_by;
 
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getDescription()
-	{
-		return $this->description;
-	}
+    /**
+     * @Gedmo\Blameable(on="update")
+     * @ORM\Column(type="string", length=40, nullable=true, options={"comment" = "Last updater name"})
+     */
+    private $updated_by;
 
-	/**
-	 * 
-	 * @param float $type_id
-	 * @return \Openstore\Entity\Product
-	 */
-	function setTypeId($type_id) {
-		$this->type_id = $type_id;
-		return $this;
-	}
-	
-	/**
-	 * @return integer
-	 */
-	function getTypeId()
-	{
-		return $this->type_id;
-	}
-	
-	/**
-	 * 
-	 * @param float $unit_id
-	 * @return \Openstore\Entity\Product
-	 */
-	function setUnitId($unit_id) {
-		$this->unit_id = $unit_id;
-		return $this;
-	}
-	
-	/**
-	 * @return integer
-	 */
-	function getUnitId()
-	{
-		return $this->unit_id;
-	}
-	/**
-	 * Set volume
-	 * @return Product
-	 */
-	function setVolume($volume) {
-		$this->volume = $volume;
-		return $this;
-	}
-	
-	/**
-	 * 
-	 * @return float
-	 */
-	function getVolume()
-	{
-		return $this->volume;
-	}
-	
-	/**
-	 * Set weight
-	 * @return Product
-	 */
-	function setWeight($weight) {
-		$this->weight = $weight;
-		return $this;
-	}
-	
-	/**
-	 * 
-	 * @return float
-	 */
-	function getWeight()
-	{
-		return $this->weight;
-	}
-	
-	/**
-	 * Set length
-	 * @return Product
-	 */
-	function setLength($length) {
-		$this->length = $length;
-		return $this;
-	}
-	
-	/**
-	 * 
-	 * @return float
-	 */
-	function getLength()
-	{
-		return $this->length;
-	}
-	
-	/**
-	 * Set height
-	 * @return Product
-	 */
-	function setHeight($height) {
-		$this->height = $height;
-		return $this;
-	}
-	
-	/**
-	 * 
-	 * @return decimal
-	 */
-	function getHeight()
-	{
-		return $this->height;
-	}
+    /**
+     * @ORM\Column(type="string",length=40,nullable=true, options={"comment" = "Unique reference of this record taken from legacy system"})
+     */
+    protected $legacy_mapping;
 
-	/**
-	 * Set width
-	 * @return Product
-	 */
-	function setWidth($width) {
-		$this->width = $with;
-		return $this;
-	}
-	
-	/**
-	 * 
-	 * @return decimal
-	 */
-	function getWidth()
-	{
-		return $this->width;
-	}
+    /**
+     * @ORM\Column(type="datetime",nullable=true, options={"comment" = "Last synchro timestamp"})
+     */
+    protected $legacy_synchro_at;
 
-	/**
-	 * Set barcode_ean13
-	 * @param string $barcode_ean13
-	 * @return Product
-	 */
-	function setBarcodeEan13($barcode_ean13) {
-		$this->barcode_ean13 = $barcode_ean13;
-		return $this;
-	}
-	
-	/**
-	 * 
-	 * @return string
-	 */
-	function getBarcodeEan13()
-	{
-		return $this->barcode_ean13;
-	}	
-	
+    public function __construct() {
 
-	/**
-	 * 
-	 * @return string
-	 */
-	public function setIconClass($icon_class)
-	{
-		$this->icon_class = $icon_class;
-		return $this;
-	}
-	
-	
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getIconClass()
-	{
-		return $this->icon_class;
-	}
-	
-	/**
-	 * 
-	 * @return boolean
-	 */
-	public function getFlagActive()
-	{
-		return (boolean) $this->flag_active;
-	}
+        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
 
-	
-	/**
-	 * 
-	 */
-	public function setFlagActive($flag_active)
-	{
-		$this->flag_active = $flag_active;
-		return $this;
-	}
-	
+        /**
+         * Default value for flag_active
+         */
+        $this->flag_active = true;
+    }
 
-	/**
-	 * 
-	 * @return date
-	 */
-	public function getActivatedAt()
-	{
-		return $this->activated_at;
-	}
+    /**
+     * 
+     * @param integer $product_id
+     */
+    public function setProductId($product_id) {
+        $this->product_id = $product_id;
+        return $this;
+    }
 
-	
-	/**
-	 * @param string $activated_at date in Y-m-d H:i:s format
-	 */
-	public function setActivatedAt($activated_at)
-	{
-		$this->activated_at = $activated_at;
-		return $this;
-	}	
-		
-	
+    /**
+     * 
+     * @return integer
+     */
+    public function getProductId() {
+        return $this->product_id;
+    }
 
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getCreatedAt()
-	{
-		return $this->created_at;
-	}
+    /**
+     * Set reference
+     * @param string $reference
+     */
+    public function setReference($reference) {
+        $this->reference = $reference;
+        return $this;
+    }
 
-	/**
-	 * 
-	 * @param string $created_at
-	 */
-	public function setCreatedAt($created_at)
-	{
-		$this->created_at = $created_at;
-		return $this;
-	}
+    /**
+     * Return reference 
+     * @return string
+     */
+    public function getReference() {
+        return $this->reference;
+    }
 
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getUpdatedAt()
-	{
-		return $this->updated_at;
-	}
+    /**
+     * @param string $slug
+     */
+    public function setSlug($slug) {
+        $this->slug = $slug;
+        return $this;
+    }
 
-	/**
-	 * 
-	 * @param string $updated_at
-	 */
-	public function setUpdatedAt($updated_at)
-	{
-		$this->updated_at = $updated_at;
-		return $this;
-	}
-	
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getDeletedAt()
-	{
-		return $this->deleted_at;
-	}
+    /**
+     * 
+     * @return string
+     */
+    public function getSlug() {
+        return $this->slug;
+    }
 
-	/**
-	 * 
-	 * @param string $updated_at
-	 */
-	public function setDeletedAt($deleted_at)
-	{
-		$this->deleted_at = $deleted_at;
-		return $this;
-	}
-	
+    /**
+     * 
+     * @param string $title
+     */
+    public function setTitle($title) {
+        $this->title = $title;
+        return $this;
+    }
 
-	/**
-	 * Return creator username
-	 * @return string
-	 */
-	public function getCreatedBy()
-	{
-		return $this->created_by;
-	}
+    /**
+     * 
+     * @return string
+     */
+    public function getTitle() {
+        return $this->title;
+    }
 
-	/**
-	 * Set creator username
-	 * @param string $created_by
-	 */
-	public function setCreatedBy($created_by)
-	{
-		$this->created_by = $created_by;
-		return $this;
-	}
+    /**
+     * 
+     * @param string $description
+     */
+    public function setDescription($description) {
+        $this->description = $description;
+        return $this;
+    }
 
-	/**
-	 * Return last updater username
-	 * @return string
-	 */
-	public function getUpdatedBy()
-	{
-		return $this->updated_by;
-	}
+    /**
+     * 
+     * @return string
+     */
+    public function getDescription() {
+        return $this->description;
+    }
 
-	/**
-	 * Set the last updater username
-	 * @param string $updated_by
-	 */
-	public function setUpdatedBy($updated_by)
-	{
-		$this->updated_by = $updated_by;
-		return $this;
-	}
+    /**
+     * 
+     * @param float $type_id
+     * @return \Openstore\Entity\Product
+     */
+    function setTypeId($type_id) {
+        $this->type_id = $type_id;
+        return $this;
+    }
 
-	/**
-	 * Return legacy mapping 
-	 * @return string $legacy_mapping
-	 */
-	public function getLegacyMapping()
-	{
-		return $this->legacy_mapping;
-	}
+    /**
+     * @return integer
+     */
+    function getTypeId() {
+        return $this->type_id;
+    }
 
-	/**
-	 * Set a legacy mapping for this record
-	 * @param string $legacy_mapping
-	 */
-	public function setLegacyMapping($legacy_mapping)
-	{
-		$this->legacy_mapping = $legacy_mapping;
-		return $this;
-	}
+    /**
+     * 
+     * @param float $unit_id
+     * @return \Openstore\Entity\Product
+     */
+    function setUnitId($unit_id) {
+        $this->unit_id = $unit_id;
+        return $this;
+    }
 
-	/**
-	 * Set legacy synchro time
-	 * @param string $legacy_mapping
-	 */
-	public function setLegacySynchroAt($legacy_synchro_at)
-	{
-		$this->legacy_synchro_at = $legacy_synchro_at;
-		return $this;
-	}
+    /**
+     * @return integer
+     */
+    function getUnitId() {
+        return $this->unit_id;
+    }
 
-	/**
-	 * Return legacy synchro timestamp 
-	 * @return string 
-	 */
-	public function getLegacySynchroAt()
-	{
-		return $this->legacy_synchro_at;
-	}
+    /**
+     * Set volume
+     * @return Product
+     */
+    function setVolume($volume) {
+        $this->volume = $volume;
+        return $this;
+    }
 
-	/**
-	 * Convert the object to an array.
-	 *
-	 * @return array
-	 */
-	public function getArrayCopy()
-	{
-		return get_object_vars($this);
-	}
+    /**
+     * 
+     * @return float
+     */
+    function getVolume() {
+        return $this->volume;
+    }
 
-	/**
-	 * 
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return $this->getTitle();
-	}
+    /**
+     * Set weight
+     * @return Product
+     */
+    function setWeight($weight) {
+        $this->weight = $weight;
+        return $this;
+    }
 
-	
-	/**
-	 * Magic getter to expose protected properties.
-	 *
-	 * @param string $property
-	 * @return mixed
-	 */
-	public function __get($property) {
-		return $this->$property;
-	}
+    /**
+     * 
+     * @return float
+     */
+    function getWeight() {
+        return $this->weight;
+    }
 
-	/**
-	 * Magic setter to save protected properties.
-	 *
-	 * @param string $property
-	 * @param mixed $value
-	 */
-	public function __set($property, $value) {
-		$this->$property = $value;
-	}	
-	
-	/**
-	 * 
-	 * @param \Zend\InputFilter\InputFilterInterface $inputFilter
-	 */
-	public function setInputFilter(InputFilterInterface $inputFilter) {
-		$this->inputFiler = $inputFilter;
-		return $this;
-	}
+    /**
+     * Set length
+     * @return Product
+     */
+    function setLength($length) {
+        $this->length = $length;
+        return $this;
+    }
 
-	/**
-	 * 
-	 * @return \Zend\InputFilter\InputFilterInterface $inputFilter
-	 */
-	public function getInputFilter() {
-		if (!$this->inputFilter) {
-			$inputFilter = new InputFilter();
-			$factory = new InputFactory();
+    /**
+     * 
+     * @return float
+     */
+    function getLength() {
+        return $this->length;
+    }
 
-			$inputFilter->add($factory->createInput(array(
-						'name' => 'reference',
-						'required' => true,
-						'filters' => array(
-							array('name' => 'StripTags'),
-							array('name' => 'StringTrim'),
-						),
-						'validators' => array(
-							array(
-								'name' => 'StringLength',
-								'options' => array(
-									'encoding' => 'UTF-8',
-									'min' => 1,
-									'max' => 60,
-								),
-							),
-						),
-					)));
+    /**
+     * Set height
+     * @return Product
+     */
+    function setHeight($height) {
+        $this->height = $height;
+        return $this;
+    }
 
-			$this->inputFilter = $inputFilter;
-		}
+    /**
+     * 
+     * @return decimal
+     */
+    function getHeight() {
+        return $this->height;
+    }
 
-		return $this->inputFilter;
-	}
-	
+    /**
+     * Set width
+     * @return Product
+     */
+    function setWidth($width) {
+        $this->width = $with;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return decimal
+     */
+    function getWidth() {
+        return $this->width;
+    }
+
+    /**
+     * Set barcode_ean13
+     * @param string $barcode_ean13
+     * @return Product
+     */
+    function setBarcodeEan13($barcode_ean13) {
+        $this->barcode_ean13 = $barcode_ean13;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    function getBarcodeEan13() {
+        return $this->barcode_ean13;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function setIconClass($icon_class) {
+        $this->icon_class = $icon_class;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getIconClass() {
+        return $this->icon_class;
+    }
+
+    /**
+     * 
+     * @return boolean
+     */
+    public function getFlagActive() {
+        return (boolean) $this->flag_active;
+    }
+
+    /**
+     * 
+     */
+    public function setFlagActive($flag_active) {
+        $this->flag_active = $flag_active;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return date
+     */
+    public function getActivatedAt() {
+        return $this->activated_at;
+    }
+
+    /**
+     * @param string $activated_at date in Y-m-d H:i:s format
+     */
+    public function setActivatedAt($activated_at) {
+        $this->activated_at = $activated_at;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getCreatedAt() {
+        return $this->created_at;
+    }
+
+    /**
+     * 
+     * @param string $created_at
+     */
+    public function setCreatedAt($created_at) {
+        $this->created_at = $created_at;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getUpdatedAt() {
+        return $this->updated_at;
+    }
+
+    /**
+     * 
+     * @param string $updated_at
+     */
+    public function setUpdatedAt($updated_at) {
+        $this->updated_at = $updated_at;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getDeletedAt() {
+        return $this->deleted_at;
+    }
+
+    /**
+     * 
+     * @param string $updated_at
+     */
+    public function setDeletedAt($deleted_at) {
+        $this->deleted_at = $deleted_at;
+        return $this;
+    }
+
+    /**
+     * Return creator username
+     * @return string
+     */
+    public function getCreatedBy() {
+        return $this->created_by;
+    }
+
+    /**
+     * Set creator username
+     * @param string $created_by
+     */
+    public function setCreatedBy($created_by) {
+        $this->created_by = $created_by;
+        return $this;
+    }
+
+    /**
+     * Return last updater username
+     * @return string
+     */
+    public function getUpdatedBy() {
+        return $this->updated_by;
+    }
+
+    /**
+     * Set the last updater username
+     * @param string $updated_by
+     */
+    public function setUpdatedBy($updated_by) {
+        $this->updated_by = $updated_by;
+        return $this;
+    }
+
+    /**
+     * Return legacy mapping 
+     * @return string $legacy_mapping
+     */
+    public function getLegacyMapping() {
+        return $this->legacy_mapping;
+    }
+
+    /**
+     * Set a legacy mapping for this record
+     * @param string $legacy_mapping
+     */
+    public function setLegacyMapping($legacy_mapping) {
+        $this->legacy_mapping = $legacy_mapping;
+        return $this;
+    }
+
+    /**
+     * Set legacy synchro time
+     * @param string $legacy_mapping
+     */
+    public function setLegacySynchroAt($legacy_synchro_at) {
+        $this->legacy_synchro_at = $legacy_synchro_at;
+        return $this;
+    }
+
+    /**
+     * Return legacy synchro timestamp 
+     * @return string 
+     */
+    public function getLegacySynchroAt() {
+        return $this->legacy_synchro_at;
+    }
+
+    /**
+     * Convert the object to an array.
+     *
+     * @return array
+     */
+    public function getArrayCopy() {
+        return get_object_vars($this);
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function __toString() {
+        return $this->getTitle();
+    }
+
+    /**
+     * Magic getter to expose protected properties.
+     *
+     * @param string $property
+     * @return mixed
+     */
+    public function __get($property) {
+        return $this->$property;
+    }
+
+    /**
+     * Magic setter to save protected properties.
+     *
+     * @param string $property
+     * @param mixed $value
+     */
+    public function __set($property, $value) {
+        $this->$property = $value;
+    }
+
+    /**
+     * 
+     * @param \Zend\InputFilter\InputFilterInterface $inputFilter
+     */
+    public function setInputFilter(InputFilterInterface $inputFilter) {
+        $this->inputFiler = $inputFilter;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return \Zend\InputFilter\InputFilterInterface $inputFilter
+     */
+    public function getInputFilter() {
+        if (!$this->inputFilter) {
+            $inputFilter = new InputFilter();
+            $factory = new InputFactory();
+
+            $inputFilter->add($factory->createInput(array(
+                        'name' => 'reference',
+                        'required' => true,
+                        'filters' => array(
+                            array('name' => 'StripTags'),
+                            array('name' => 'StringTrim'),
+                        ),
+                        'validators' => array(
+                            array(
+                                'name' => 'StringLength',
+                                'options' => array(
+                                    'encoding' => 'UTF-8',
+                                    'min' => 1,
+                                    'max' => 60,
+                                ),
+                            ),
+                        ),
+            )));
+
+            $this->inputFilter = $inputFilter;
+        }
+
+        return $this->inputFilter;
+    }
+
 }
