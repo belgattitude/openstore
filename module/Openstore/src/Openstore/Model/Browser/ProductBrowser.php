@@ -44,6 +44,10 @@ class ProductBrowser extends AbstractBrowser {
 				->join(array('p18' => 'product_translation'),
 						new Expression("p18.product_id = p.product_id and p18.lang = '$lang'"), 
 						array(), $select::JOIN_LEFT)
+				->join(array('psi' => 'product_search'),
+						new Expression("psi.product_id = p.product_id and psi.lang = '$lang'"), 
+						array(), $select::JOIN_LEFT)
+                        
 				->join(array('ppl' => 'product_pricelist'),
 						new Expression('ppl.product_id = p.product_id'), array())
 				->join(array('pl' => 'pricelist'),
@@ -167,15 +171,34 @@ class ProductBrowser extends AbstractBrowser {
 			$qRef = $platform->quoteValue($query . '%');
 			$qTitle = $platform->quoteValue('%' . $query . '%');
 			
+                        $ftKeywords = $platform->quoteValue('+' . str_replace(' ', ' +', $query));
+                        
 			$qclauses = array(
 				"p.reference like $qRef",
-				"p.title like $qTitle",
+				
 				"p18.title like $qTitle",
-				"p.display_reference like $qRef"
+				"p.display_reference like $qRef",
+                                // FULLTEXT
+                                "match(psi.keywords) against ($ftKeywords in boolean mode)"
 			);
 			$select->where("(" . join(' or ', $qclauses) .")");
+                        $select->order(array(
+                                new Expression(
+                                      "if (p.reference like $qRef, 1000,
+                                           if (p18.title like $qTitle, 900,
+                                               if (p.display_reference like $qRef, 800,
+                                                        match(psi.keywords) against ($ftKeywords in boolean mode) 
+                                               )
+                                            )
+                                      ) desc"
+                                )    
+                            )
+                        );
 		}
-		
+                
+                
+                
+  		
 		return $select;
 	}
 	

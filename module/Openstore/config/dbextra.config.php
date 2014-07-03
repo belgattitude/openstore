@@ -110,6 +110,7 @@ BEGIN
             strip_tags(
                         TRIM(
                                 CONCAT_WS(' ',
+                                        COALESCE(p.reference, ''),
                                         COALESCE(pb.title, ''),
                                         COALESCE(p18.title, p.title, ''),
                                         COALESCE(p18.invoice_title, p.invoice_title, ''),
@@ -148,6 +149,7 @@ BEGIN
             keywords = strip_tags(
                         TRIM(
                                 CONCAT_WS(' ',
+                                        COALESCE(p.reference, ''),
                                         COALESCE(pb.title, ''),
                                         COALESCE(p18.title, p.title, ''),
                                         COALESCE(p18.invoice_title, p.invoice_title, ''),

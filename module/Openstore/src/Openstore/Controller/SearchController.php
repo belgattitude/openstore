@@ -58,18 +58,18 @@ class SearchController extends AbstractActionController
 							->setColumns(
 								array(
 									'product_id'		=> new Expression('p.product_id'),
-									'reference'			=> new Expression('p.reference'),
-									'display_reference' => new Expression('COALESCE(p.display_reference, p.reference)'),
+									'reference'		=> new Expression('p.reference'),
+									'display_reference'     => new Expression('COALESCE(p.display_reference, p.reference)'),
 									'brand_title'		=> new Expression('pb.title'),
-									'category_reference'=> new Expression('pc.reference'),
+									'category_reference'    => new Expression('pc.reference'),
 									'category_title'	=> new Expression('COALESCE(pc18.title, pc.title)'),
-									'title'				=> new Expression('COALESCE(p18.title, p.title)'),
+									'title'			=> new Expression('COALESCE(p18.title, p.title)'),
 									'invoice_title'		=> new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
 									'picture_media_id'	=> new Expression('pm.media_id'),
 								)						
 							)
 							->addFilter($searchParams->getFilter());
-							
+		//var_dump(get_class($browser)); die();					
 		$store = $browser->getStore();
 		
 		$writer = new JsonWriter($store);

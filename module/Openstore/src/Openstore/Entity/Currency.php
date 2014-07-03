@@ -51,6 +51,11 @@ class Currency implements InputFilterAwareInterface
 	 */
 	private $title;
 
+        
+	/**
+	 * @ORM\Column(type="string", length=4, nullable=false, options={"comment" = "Symbol"})
+	 */
+	private $symbol;        
 	
 	/**
 	 * @ORM\Column(type="string", length=40, nullable=true)
