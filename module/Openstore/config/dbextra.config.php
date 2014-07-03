@@ -7,7 +7,7 @@ $stmts = array();
 ####################################################################
 
 // For fulltext index on MyISAM
-$stmts['alter/product_search/add-fulltext'] = "ALTER TABLE `product_search` ADD FULLTEXT(`keywords`)";
+//$stmts['alter/product_search/add-fulltext'] = "ALTER TABLE `product_search` ADD FULLTEXT(`keywords`)";
 
 
 ####################################################################
@@ -107,13 +107,13 @@ BEGIN
 	SELECT
 		p.product_id,
 		p18.lang,
-		TRIM(CONCAT_WS(' ',
+		strip_tags(TRIM(CONCAT_WS(' ',
 					COALESCE(pb.title, ''),
 					COALESCE(p18.title, p.title, ''),
 					COALESCE(p18.invoice_title, p.invoice_title, ''),
 					COALESCE(p18.description, p.description, ''),
 					COALESCE(p18.characteristic, p.characteristic, ''),
-					COALESCE(p18.keywords, p.keywords, ''))) as keywords,
+					COALESCE(p18.keywords, p.keywords, '')))) as keywords,
 		NOW() as updated_at
 	from
 		product p
@@ -123,13 +123,13 @@ BEGIN
 		product_brand pb ON p.brand_id = pb.brand_id
 	order by p.product_id , p18.lang
 	on duplicate key update
-		  keywords = TRIM(CONCAT_WS(' ',
+		  keywords = strip_tags(TRIM(CONCAT_WS(' ',
 					COALESCE(pb.title, ''),
 					COALESCE(p18.title, p.title, ''),
 					COALESCE(p18.invoice_title, p.invoice_title, ''),
 					COALESCE(p18.description, p.description, ''),
 					COALESCE(p18.characteristic, p.characteristic, ''),
-					COALESCE(p18.keywords, p.keywords, ''))),
+					COALESCE(p18.keywords, p.keywords, '')))),
 		   updated_at = NOW();
 END
 ENDQ;
