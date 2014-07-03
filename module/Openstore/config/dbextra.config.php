@@ -114,8 +114,8 @@ BEGIN
                                         COALESCE(p18.title, p.title, ''),
                                         COALESCE(p18.invoice_title, p.invoice_title, ''),
                                         IF(p2.product_id is not null,
-                                    COALESCE(p18_2.description, p2.description, ''),
-                                    COALESCE(p18.description, p.description, '')
+                                            COALESCE(p18_2.description, p2.description, ''),
+                                            COALESCE(p18.description, p.description, '')
                                         ),
                                         COALESCE(p18.characteristic, p.characteristic, ''),
                                         COALESCE(p18.keywords, p.keywords, ''),
@@ -152,8 +152,8 @@ BEGIN
                                         COALESCE(p18.title, p.title, ''),
                                         COALESCE(p18.invoice_title, p.invoice_title, ''),
                                         IF(p2.product_id is not null,
-                                    COALESCE(p18_2.description, p2.description, ''),
-                                    COALESCE(p18.description, p.description, '')
+                                            COALESCE(p18_2.description, p2.description, ''),
+                                            COALESCE(p18.description, p.description, '')
                                         ),
                                         COALESCE(p18.characteristic, p.characteristic, ''),
                                         COALESCE(p18.keywords, p.keywords, ''),
