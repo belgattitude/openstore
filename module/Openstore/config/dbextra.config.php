@@ -104,33 +104,64 @@ $stmts['create/procedure/rebuild_product_search']	= <<< ENDQ
 CREATE PROCEDURE `rebuild_product_search` ()
 BEGIN
 	INSERT INTO product_search (product_id, lang, keywords, updated_at)
-	SELECT
-		p.product_id,
-		p18.lang,
-		strip_tags(TRIM(CONCAT_WS(' ',
-					COALESCE(pb.title, ''),
-					COALESCE(p18.title, p.title, ''),
-					COALESCE(p18.invoice_title, p.invoice_title, ''),
-					COALESCE(p18.description, p.description, ''),
-					COALESCE(p18.characteristic, p.characteristic, ''),
-					COALESCE(p18.keywords, p.keywords, '')))) as keywords,
-		NOW() as updated_at
-	from
-		product p
-			left outer join
-		product_translation p18 ON p18.product_id = p.product_id
-			left outer join
-		product_brand pb ON p.brand_id = pb.brand_id
-	order by p.product_id , p18.lang
+        SELECT 
+            p.product_id,
+            p18.lang,
+            strip_tags(
+                        TRIM(
+                                CONCAT_WS(' ',
+                                        COALESCE(pb.title, ''),
+                                        COALESCE(p18.title, p.title, ''),
+                                        COALESCE(p18.invoice_title, p.invoice_title, ''),
+                                        IF(p2.product_id is not null,
+                                    COALESCE(p18_2.description, p2.description, ''),
+                                    COALESCE(p18.description, p.description, '')
+                                        ),
+                                        COALESCE(p18.characteristic, p.characteristic, ''),
+                                        COALESCE(p18.keywords, p.keywords, ''),
+                                        COALESCE(pg18.title, pg.title, '')
+                                )
+                        )
+                ) as keywords,
+            NOW() as updated_at
+        from
+            product p
+                left outer join
+            product_translation p18 ON p18.product_id = p.product_id
+                left outer join
+            product_brand pb ON p.brand_id = pb.brand_id
+                left outer join
+            product p2 ON p2.product_id = p.parent_id
+                left outer join
+            product_translation p18_2 ON p18_2.product_id = p2.product_id
+                and p18_2.lang = p18.lang
+                left outer join
+            product_group pg ON p.group_id = pg.group_id
+                left outer join
+            product_group_translation pg18 ON pg18.group_id = pg.group_id
+                and pg18.lang = p18.lang
+        where
+            1=1
+            and p.flag_active = 1
+        order by p.product_id , p18.lang
 	on duplicate key update
-		  keywords = strip_tags(TRIM(CONCAT_WS(' ',
-					COALESCE(pb.title, ''),
-					COALESCE(p18.title, p.title, ''),
-					COALESCE(p18.invoice_title, p.invoice_title, ''),
-					COALESCE(p18.description, p.description, ''),
-					COALESCE(p18.characteristic, p.characteristic, ''),
-					COALESCE(p18.keywords, p.keywords, '')))),
-		   updated_at = NOW();
+            keywords = strip_tags(
+                        TRIM(
+                                CONCAT_WS(' ',
+                                        COALESCE(pb.title, ''),
+                                        COALESCE(p18.title, p.title, ''),
+                                        COALESCE(p18.invoice_title, p.invoice_title, ''),
+                                        IF(p2.product_id is not null,
+                                    COALESCE(p18_2.description, p2.description, ''),
+                                    COALESCE(p18.description, p.description, '')
+                                        ),
+                                        COALESCE(p18.characteristic, p.characteristic, ''),
+                                        COALESCE(p18.keywords, p.keywords, ''),
+                                        COALESCE(pg18.title, pg.title, '')
+                                )
+                        )
+                ), 
+            updated_at = NOW();
 END
 ENDQ;
         
