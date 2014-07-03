@@ -1,6 +1,19 @@
 <?php
 
 $stmts = array();
+
+####################################################################
+# 1. DATABASE ALTER                                                #
+####################################################################
+
+// For fulltext index on MyISAM
+$stmts['alter/product_search/add-fulltext'] = "ALTER TABLE `product_search` ADD FULLTEXT(`keywords`)";
+
+
+####################################################################
+# 2. DATABASE FUNCTIONS                                            #
+####################################################################
+
 $stmts['drop/function/slugify']		= "DROP FUNCTION IF EXISTS `slugify`";
 $stmts['create/function/slugify']	= <<< ENDQ
 CREATE FUNCTION `slugify` (dirty_string varchar(255))
@@ -81,7 +94,57 @@ BEGIN
     RETURN Dirty;
 END;
 ENDQ;
-	
+
+####################################################################
+# 3. DATABASE PROCEDURES                                           #
+####################################################################
+
+$stmts['drop/procedure/rebuild_product_search'] = "DROP PROCEDURE IF EXISTS `rebuild_product_search`";
+$stmts['create/procedure/rebuild_product_search']	= <<< ENDQ
+CREATE PROCEDURE `rebuild_product_search` ()
+BEGIN
+	INSERT INTO product_search (product_id, lang, keywords, updated_at)
+	SELECT
+		p.product_id,
+		p18.lang,
+		TRIM(CONCAT_WS(' ',
+					COALESCE(pb.title, ''),
+					COALESCE(p18.title, p.title, ''),
+					COALESCE(p18.invoice_title, p.invoice_title, ''),
+					COALESCE(p18.description, p.description, ''),
+					COALESCE(p18.characteristic, p.characteristic, ''),
+					COALESCE(p18.keywords, p.keywords, ''))) as keywords,
+		NOW() as updated_at
+	from
+		product p
+			left outer join
+		product_translation p18 ON p18.product_id = p.product_id
+			left outer join
+		product_brand pb ON p.brand_id = pb.brand_id
+	order by p.product_id , p18.lang
+	on duplicate key update
+		  keywords = TRIM(CONCAT_WS(' ',
+					COALESCE(pb.title, ''),
+					COALESCE(p18.title, p.title, ''),
+					COALESCE(p18.invoice_title, p.invoice_title, ''),
+					COALESCE(p18.description, p.description, ''),
+					COALESCE(p18.characteristic, p.characteristic, ''),
+					COALESCE(p18.keywords, p.keywords, ''))),
+		   updated_at = NOW();
+END
+ENDQ;
+        
+
+####################################################################
+# 4. DATABASE TRIGGERS                                             #
+####################################################################
+
+
+####################################################################
+# 5. DATABASE EVENTS                                               #
+####################################################################
+
+
 
 return array(
 	'dbextra' => array(

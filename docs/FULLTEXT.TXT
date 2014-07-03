@@ -43,3 +43,19 @@ SELECT product_id, keywords, match(keywords) AGAINST ('guitare bleue' IN NATURAL
 
 
 SELECT id_article, libelle_1, desc_1, couleur_1, match(libelle_1, desc_1, couleur_1) AGAINST ('guitare bleue' IN NATURAL LANGUAGE MODE) as relevance_natural, match(libelle_1, desc_1, couleur_1) AGAINST ('guitare bleue' IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION) as relevance_expansion, match(libelle_1, desc_1, couleur_1) AGAINST ('+guitare +bleue' IN BOOLEAN MODE) as relevance_boolean FROM `cst_art_infos` where match(libelle_1, desc_1, couleur_1) AGAINST ('guitare bleue' IN NATURAL LANGUAGE MODE)
+----
+SELECT 
+    product_id,
+    if(keywords like '%guitare%classique%',
+        100,
+        match (keywords) AGAINST ('+guitare +classique' IN BOOLEAN MODE)) as relz,
+    keywords,
+    match (keywords) AGAINST ('+guitare +classique' IN BOOLEAN MODE) as relevance_boolean
+FROM
+    openstore_production.`product_search`
+where
+    (match (keywords) AGAINST ('+guitare +classique' IN BOOLEAN MODE)
+        or keywords like 'guitare%noir%')
+order by if(keywords like '%guitare%classique%',
+    100,
+    match (keywords) AGAINST ('+guitare +classique' IN BOOLEAN MODE)) desc

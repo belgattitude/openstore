@@ -51,7 +51,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 		  $paths = $templatePathResolver->getPaths();
 		  foreach($paths as $idx => $path) {
 		  var_dump($path);
-
+C
 		  }
 		  //$templatePathResolver->getPaths()->push(__DIR__ . '/view'); // here is your skin name
 
@@ -387,8 +387,11 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 			'openstore recreatedb' => 'Recreate database schema.',
 			'openstore build-all-reload' => 'Recreate database schema and load initial fixtures.',			
 			'openstore updatedb' => 'Update database schema and reload initial fixtures.',
+			'openstore recreatedbextra' => 'Recreate database extra features (trigger, procedures, functions...).',
+                    
 			'openstore relocategroupcateg' => 'Replace product categories by product groups',
 			'openstore clearcache' => 'Clear all system caches.',
+
 			'openstore clearmediacache' => 'Clear media cache.',
 		);
 	}
