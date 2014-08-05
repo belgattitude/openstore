@@ -1,4 +1,5 @@
 <?php
+
 namespace Openstore\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -31,39 +32,36 @@ use Zend\InputFilter\InputFilterInterface;
  * )
  * @ORM\Entity(repositoryClass="Openstore\Entity\Repository\ProductCategoryRepository")
  */
-class ProductCategory implements InputFilterAwareInterface
-{
+class ProductCategory implements InputFilterAwareInterface {
 
-	/**
-	 * @var \Zend\InputFilter\InputFilterInterface $inputFilter
-	 */
-	protected $inputFilter;
+    /**
+     * @var \Zend\InputFilter\InputFilterInterface $inputFilter
+     */
+    protected $inputFilter;
 
     /**
      * @ORM\OneToMany(targetEntity="ProductBrandTranslation", mappedBy="brand_id")
-     **/
-    private $translations;	
-	
-	
-	/**
-	 * @ORM\Id
-	 * @ORM\Column(name="category_id", type="integer", nullable=false,  options={"unsigned"=true})
-	 * @ORM\GeneratedValue(strategy="AUTO")
-	 */	
-	
+     * */
+    private $translations;
+
+    /**
+     * @ORM\Id
+     * @ORM\Column(name="category_id", type="integer", nullable=false,  options={"unsigned"=true})
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
     private $category_id;
 
     /**
      * @ORM\Column(length=50, nullable=true)
      */
     private $reference;
-	
+
     /**
      * @Gedmo\Slug(fields={"title"})
      * @ORM\Column(length=64, unique=true)
      */
-    private $slug;	
-	
+    private $slug;
+
     /**
      * @ORM\Column(length=64)
      */
@@ -79,11 +77,11 @@ class ProductCategory implements InputFilterAwareInterface
      */
     private $sort_index;
 
-	/**
-	 * @ORM\Column(type="string", length=40, nullable=true)
-	 */
-	private $icon_class;	
-	
+    /**
+     * @ORM\Column(type="string", length=40, nullable=true)
+     */
+    private $icon_class;
+
     /**
      * @Gedmo\TreeLeft
      * @ORM\Column(type="integer", options={"unsigned"=true})
@@ -143,381 +141,330 @@ class ProductCategory implements InputFilterAwareInterface
      * @ORM\Column(type="string",length=40,nullable=true)
      */
     private $updated_by;
-	
-	/**
-	 * @ORM\Column(type="string",length=40,nullable=true)
-	 */
-	protected $legacy_mapping;
 
-	/**
-	 * @ORM\Column(type="datetime",nullable=true)
-	 */
-	protected $legacy_synchro_at;
-	
+    /**
+     * @ORM\Column(type="string",length=40,nullable=true)
+     */
+    protected $legacy_mapping;
 
-    public function __construct()
-    {
+    /**
+     * @ORM\Column(type="datetime",nullable=true)
+     */
+    protected $legacy_synchro_at;
+
+    public function __construct() {
         $this->children = new ArrayCollection();
     }
 
-	/**
-	 * 
-	 * @return integer
-	 */
-    public function getId()
-    {
+    /**
+     * 
+     * @return integer
+     */
+    public function getId() {
         return $this->id;
     }
 
-	/**
-	 * 
-	 * @param string $reference
-	 */
-    public function setReference($reference)
-    {
+    /**
+     * 
+     * @param string $reference
+     */
+    public function setReference($reference) {
         $this->reference = $reference;
     }
 
-	/**
-	 * 
-	 * @return string
-	 */
-    public function getReference()
-    {
+    /**
+     * 
+     * @return string
+     */
+    public function getReference() {
         return $this->reference;
     }
-	
-	
-	/**
-	 * 
-	 * @param string $title
-	 */
-    public function setTitle($title)
-    {
+
+    /**
+     * 
+     * @param string $title
+     */
+    public function setTitle($title) {
         $this->title = $title;
     }
 
-	/**
-	 * 
-	 * @return string
-	 */
-    public function getTitle()
-    {
+    /**
+     * 
+     * @return string
+     */
+    public function getTitle() {
         return $this->title;
     }
 
-	/**
-	 * 
-	 * @param string $description
-	 */
-    public function setDescription($description)
-    {
+    /**
+     * 
+     * @param string $description
+     */
+    public function setDescription($description) {
         $this->description = $description;
     }
 
-	/**
-	 * 
-	 * @return string
-	 */
-    public function getDescription()
-    {
+    /**
+     * 
+     * @return string
+     */
+    public function getDescription() {
         return $this->description;
     }
 
-	/**
-	 * 
-	 * @param string $slug
-	 */
-    public function setSlug($slug)
-    {
+    /**
+     * 
+     * @param string $slug
+     */
+    public function setSlug($slug) {
         $this->slug = $slug;
     }
-	
-	
-	/**
-	 * 
-	 * @return string
-	 */
-    public function getSlug()
-    {
+
+    /**
+     * 
+     * @return string
+     */
+    public function getSlug() {
         return $this->slug;
     }
-	
-	/**
-	 * 
-	 * @param integer $sort_index
-	 * @return ProductCategory
-	 */
-	public function setSortIndex($sort_index)
-	{
-		$this->sort_index = $sort_index;
-		return $this;
-	}		
-	
-	/**
-	 * 
-	 * @return integer
-	 */
-    public function getSortIndex()
-    {
+
+    /**
+     * 
+     * @param integer $sort_index
+     * @return ProductCategory
+     */
+    public function setSortIndex($sort_index) {
+        $this->sort_index = $sort_index;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return integer
+     */
+    public function getSortIndex() {
         return $this->sort_index;
     }
 
-	
-	/**
-	 * 
-	 * @return string
-	 */
-	public function setIconClass($icon_class)
-	{
-		$this->icon_class = $icon_class;
-		return $this;
-	}
-	
-	
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getIconClass()
-	{
-		return $this->icon_class;
-	}
-	
-	
-	
+    /**
+     * 
+     * @return string
+     */
+    public function setIconClass($icon_class) {
+        $this->icon_class = $icon_class;
+        return $this;
+    }
 
-	public function setParent($parent)
-    {
+    /**
+     * 
+     * @return string
+     */
+    public function getIconClass() {
+        return $this->icon_class;
+    }
+
+    public function setParent($parent) {
         $this->parent = $parent;
     }
 
-    public function getParent()
-    {
+    public function getParent() {
         return $this->parent;
     }
 
-    public function getRoot()
-    {
+    public function getRoot() {
         return $this->root;
     }
 
-    public function getLevel()
-    {
+    public function getLevel() {
         return $this->level;
     }
 
-    public function getChildren()
-    {
+    public function getChildren() {
         return $this->children;
     }
 
-    public function getLeft()
-    {
-    	return $this->lft;
+    public function getLeft() {
+        return $this->lft;
     }
 
-	public function getRight()
-    {
+    public function getRight() {
         return $this->rgt;
     }
 
-	/**
-	 * 
-	 * @return string
-	 */
-    public function getCreatedAt()
-    {
+    /**
+     * 
+     * @return string
+     */
+    public function getCreatedAt() {
         return $this->created_at;
     }
-	
-	/**
-	 * 
-	 * @param string $created_at
-	 */
-	public function setCreatedAt($created_at)
-	{
-		$this->created_at = $created_at;
-	}
 
-	/**
-	 * 
-	 * @return string
-	 */
-    public function getUpdatedAt()
-    {
+    /**
+     * 
+     * @param string $created_at
+     */
+    public function setCreatedAt($created_at) {
+        $this->created_at = $created_at;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getUpdatedAt() {
         return $this->updated_at;
     }
 
-	/**
-	 * 
-	 * @param string $updated_at
-	 */
-	public function setUpdatedAt($updated_at)
-	{
-		$this->updated_at = $updated_at;
-	}
-	
+    /**
+     * 
+     * @param string $updated_at
+     */
+    public function setUpdatedAt($updated_at) {
+        $this->updated_at = $updated_at;
+    }
 
-	/**
-	 * Return creator username
-	 * @return string
-	 */
-    public function getCreatedBy()
-    {
+    /**
+     * Return creator username
+     * @return string
+     */
+    public function getCreatedBy() {
         return $this->created_by;
     }
 
-	/**
-	 * Set creator username
-	 * @param string $created_by
-	 */
-    public function setCreatedBy($created_by)
-    {
+    /**
+     * Set creator username
+     * @param string $created_by
+     */
+    public function setCreatedBy($created_by) {
         $this->created_by = $created_by;
     }
-	
-	
-	/**
-	 * Return last updater username
-	 * @return string
-	 */
-    public function getUpdatedBy()
-    {
+
+    /**
+     * Return last updater username
+     * @return string
+     */
+    public function getUpdatedBy() {
         return $this->updated_by;
     }
-	
-	/**
-	 * Set the last updater username
-	 * @param string $updated_by
-	 */
-    public function setUpdatedBy($updated_by)
-    {
+
+    /**
+     * Set the last updater username
+     * @param string $updated_by
+     */
+    public function setUpdatedBy($updated_by) {
         $this->updated_by = $updated_by;
     }
-	
 
-	/**
-	 * Return legacy mapping 
-	 * @return string $legacy_mapping
-	 */
-	public function getLegacyMapping()
-	{
-		return $this->legacy_mapping;
-	}
-	
-	
-	/**
-	 * Set a legacy mapping for this record
-	 * @param string $legacy_mapping
-	 */
-	public function setLegacyMapping($legacy_mapping)
-	{
-		$this->legacy_mapping = $legacy_mapping;
-	}
-	
-	
-	/**
-	 * Set legacy synchro time
-	 * @param string $legacy_mapping
-	 */
-	public function setLegacySynchroAt($legacy_synchro_at)
-	{
-		$this->legacy_synchro_at = $legacy_synchro_at;
-	}
+    /**
+     * Return legacy mapping 
+     * @return string $legacy_mapping
+     */
+    public function getLegacyMapping() {
+        return $this->legacy_mapping;
+    }
 
-	/**
-	 * Return legacy synchro timestamp 
-	 * @return string 
-	 */
-	public function getLegacySynchroAt()
-	{
-		return $this->legacy_synchro_at;
-	}
-	
+    /**
+     * Set a legacy mapping for this record
+     * @param string $legacy_mapping
+     */
+    public function setLegacyMapping($legacy_mapping) {
+        $this->legacy_mapping = $legacy_mapping;
+    }
 
-	/**
-	 * 
-	 * @return string
-	 */
-    public function __toString()
-    {
+    /**
+     * Set legacy synchro time
+     * @param string $legacy_mapping
+     */
+    public function setLegacySynchroAt($legacy_synchro_at) {
+        $this->legacy_synchro_at = $legacy_synchro_at;
+    }
+
+    /**
+     * Return legacy synchro timestamp 
+     * @return string 
+     */
+    public function getLegacySynchroAt() {
+        return $this->legacy_synchro_at;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function __toString() {
         return $this->getTitle();
     }
-	
-	/**
-	 * Convert the object to an array.
-	 *
-	 * @return array
-	 */
-	public function getArrayCopy()
-	{
-		return get_object_vars($this);
-	}
 
+    /**
+     * Convert the object to an array.
+     *
+     * @return array
+     */
+    public function getArrayCopy() {
+        return get_object_vars($this);
+    }
 
-	
-	/**
-	 * Magic getter to expose protected properties.
-	 *
-	 * @param string $property
-	 * @return mixed
-	 */
-	public function __get($property) {
-		return $this->$property;
-	}
+    /**
+     * Magic getter to expose protected properties.
+     *
+     * @param string $property
+     * @return mixed
+     */
+    public function __get($property) {
+        return $this->$property;
+    }
 
-	/**
-	 * Magic setter to save protected properties.
-	 *
-	 * @param string $property
-	 * @param mixed $value
-	 */
-	public function __set($property, $value) {
-		$this->$property = $value;
-	}	
-	
-	/**
-	 * 
-	 * @param \Zend\InputFilter\InputFilterInterface $inputFilter
-	 */
-	public function setInputFilter(InputFilterInterface $inputFilter) {
-		$this->inputFiler = $inputFilter;
-		return $this;
-	}
+    /**
+     * Magic setter to save protected properties.
+     *
+     * @param string $property
+     * @param mixed $value
+     */
+    public function __set($property, $value) {
+        $this->$property = $value;
+    }
 
-	/**
-	 * 
-	 * @return \Zend\InputFilter\InputFilterInterface $inputFilter
-	 */
-	public function getInputFilter() {
-		if (!$this->inputFilter) {
-			$inputFilter = new InputFilter();
-			$factory = new InputFactory();
+    /**
+     * 
+     * @param \Zend\InputFilter\InputFilterInterface $inputFilter
+     */
+    public function setInputFilter(InputFilterInterface $inputFilter) {
+        $this->inputFiler = $inputFilter;
+        return $this;
+    }
 
-			$inputFilter->add($factory->createInput(array(
-						'name' => 'reference',
-						'required' => true,
-						'filters' => array(
-							array('name' => 'StripTags'),
-							array('name' => 'StringTrim'),
-						),
-						'validators' => array(
-							array(
-								'name' => 'StringLength',
-								'options' => array(
-									'encoding' => 'UTF-8',
-									'min' => 1,
-									'max' => 60,
-								),
-							),
-						),
-					)));
+    /**
+     * 
+     * @return \Zend\InputFilter\InputFilterInterface $inputFilter
+     */
+    public function getInputFilter() {
+        if (!$this->inputFilter) {
+            $inputFilter = new InputFilter();
+            $factory = new InputFactory();
 
-			$this->inputFilter = $inputFilter;
-		}
+            $inputFilter->add($factory->createInput(array(
+                        'name' => 'reference',
+                        'required' => true,
+                        'filters' => array(
+                            array('name' => 'StripTags'),
+                            array('name' => 'StringTrim'),
+                        ),
+                        'validators' => array(
+                            array(
+                                'name' => 'StringLength',
+                                'options' => array(
+                                    'encoding' => 'UTF-8',
+                                    'min' => 1,
+                                    'max' => 60,
+                                ),
+                            ),
+                        ),
+            )));
 
-		return $this->inputFilter;
-	}
-	
+            $this->inputFilter = $inputFilter;
+        }
+
+        return $this->inputFilter;
+    }
+
 }

@@ -20,5 +20,8 @@
     "bootstrap-sass-official": "~3.2.0",
     "select2": "~3.5.0",
     "colorbox": "~1.5.9"
+  },
+  "resolutions": {
+    "jquery": ">= 1.9.0"
   }
 }

@@ -200,6 +200,11 @@ class Product implements InputFilterAwareInterface {
      * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the product is active in public website"})
      */
     private $flag_active;
+    
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $sort_index;    
 
     /**
      * @ORM\Column(type="date", nullable=true, options={"comment" = "Date on which product was actived/available"})

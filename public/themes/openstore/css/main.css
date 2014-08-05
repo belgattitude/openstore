@@ -6,6 +6,7 @@ body {
   padding-bottom: 20px;
 }
 
+/*
 footer {
    position:fixed;
    left:0px;
@@ -14,7 +15,7 @@ footer {
    width:100%;
    background:#999;
 }
-
+*/
 
 /* Set widths on the navbar form inputs since otherwise they're 100% wide */
 .navbar-form input[type="text"],
