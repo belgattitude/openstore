@@ -53,7 +53,7 @@ class Currency implements InputFilterAwareInterface
 
         
 	/**
-	 * @ORM\Column(type="string", length=4, nullable=false, options={"comment" = "Symbol"})
+	 * @ORM\Column(type="string", length=4, nullable=true, options={"comment" = "Symbol"})
 	 */
 	private $symbol;        
 	
@@ -143,7 +143,27 @@ class Currency implements InputFilterAwareInterface
 		return $this->reference;
 	}
 
+	/**
+	 * Set symbol
+	 * @param string $symbol
+	 */
+	public function setSymbol($symbol)
+	{
+		$this->symbol = $symbol;
+		return $this;
+	}
 
+	/**
+	 * Return symbol
+	 * @return string
+	 */
+	public function getSymbol()
+	{
+		return $this->symbol;
+	}
+
+        
+        
 	/**
 	 * 
 	 * @param string $title

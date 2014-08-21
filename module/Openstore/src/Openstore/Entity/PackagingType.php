@@ -10,22 +10,19 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="sale_order_type",
+ *   name="packaging_type",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
  *   }, 
- *   options={"comment" = "Order type table"}
+ *   indexes={
+ *   },
+ *   options={"comment" = "Product packaging type table"}
  * )
  */
-class SaleOrderType 
+class PackagingType 
 {
-	
-    /**
-     * @ORM\OneToMany(targetEntity="SaleOrderTypeTranslation", mappedBy="type_id")
-     **/
-    private $translations;	
-	
+
 	
 	/**
 	 * @ORM\Id
@@ -33,7 +30,6 @@ class SaleOrderType
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
 	private $type_id;
-	
 
 	/**
 	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
@@ -46,12 +42,22 @@ class SaleOrderType
 	 */
 	private $title;
 
+	/**
+	 * @ORM\Column(type="string", length=15000, nullable=true)
+	 */
+	private $description;
 
 	
 	/**
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the model is active in public website"})
+	 * @ORM\Column(type="boolean", nullable=true, options={"default"=1, "comment"="Whether the packaging type is active"})
 	 */
-	private $flag_active;
+	private $flag_active;        
+        
+	
+	/**
+	 * @ORM\Column(type="string", length=40, nullable=true)
+	 */
+	private $icon_class;
 	
 	
 	/**
@@ -93,8 +99,6 @@ class SaleOrderType
 	public function __construct()
 	{
 		
-		 $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
-		 
 		 /**
 		  * Default value for flag_active
 		  */
@@ -102,21 +106,10 @@ class SaleOrderType
 		 
 		 
 	}
-	
-	
-	public function getId()
-	{
-		return $this->type_id;
-	}
-	
-	public function getTranslations()
-	{
-		return $this->translations;
-	}
-	
+
 	/**
 	 * 
-	 * @param integer $type_id
+	 * @param integer $id
 	 */
 	public function setTypeId($type_id)
 	{
@@ -131,10 +124,7 @@ class SaleOrderType
 	public function getTypeId()
 	{
 		return $this->type_id;
-	}	
-
-	
-
+	}
 
 	/**
 	 * Set reference
@@ -155,6 +145,9 @@ class SaleOrderType
 		return $this->reference;
 	}
 
+
+        
+
 	/**
 	 * 
 	 * @param string $title
@@ -174,6 +167,48 @@ class SaleOrderType
 		return $this->title;
 	}
 
+	/**
+	 * 
+	 * @param string $description
+	 */
+	public function setDescription($description)
+	{
+		$this->description = $description;
+		return $this;
+	}
+
+	/**
+	 * Return description
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return $this->description;
+	}
+	
+        
+	
+
+	/**
+	 * 
+	 * @return string
+	 */
+	public function setIconClass($icon_class)
+	{
+		$this->icon_class = $icon_class;
+		return $this;
+	}
+	
+	
+	/**
+	 * 
+	 * @return string
+	 */
+	public function getIconClass()
+	{
+		return $this->icon_class;
+	}
+	
 	/**
 	 * 
 	 * @return boolean
@@ -328,26 +363,4 @@ class SaleOrderType
 		return $this->getTitle();
 	}
 
-	
-	/**
-	 * Magic getter to expose protected properties.
-	 *
-	 * @param string $property
-	 * @return mixed
-	 */
-	public function __get($property) {
-		return $this->$property;
-	}
-
-	/**
-	 * Magic setter to save protected properties.
-	 *
-	 * @param string $property
-	 * @param mixed $value
-	 */
-	public function __set($property, $value) {
-		$this->$property = $value;
-	}	
-	
-	
 }

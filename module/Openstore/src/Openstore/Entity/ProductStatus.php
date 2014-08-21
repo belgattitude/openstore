@@ -10,30 +10,28 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="sale_order_type",
+ *   name="product_status",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
+ *     @ORM\UniqueConstraint(name="unique_flag_default_idx",columns={"flag_default"}),
  *   }, 
- *   options={"comment" = "Order type table"}
+ *   indexes={
+ *   },
+ *   options={"comment" = "Product status table"}
  * )
  */
-class SaleOrderType 
+class ProductStatus
 {
 	
-    /**
-     * @ORM\OneToMany(targetEntity="SaleOrderTypeTranslation", mappedBy="type_id")
-     **/
-    private $translations;	
-	
+
 	
 	/**
 	 * @ORM\Id
-	 * @ORM\Column(name="type_id", type="integer", nullable=false, options={"unsigned"=true})
+	 * @ORM\Column(name="status_id", type="integer", nullable=false, options={"unsigned"=true})
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
-	private $type_id;
-	
+	private $status_id;
 
 	/**
 	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
@@ -46,12 +44,31 @@ class SaleOrderType
 	 */
 	private $title;
 
+	/**
+	 * @ORM\Column(type="string", length=15000, nullable=true)
+	 */
+	private $description;
 
+        
+	/**
+	 * @ORM\Column(type="boolean", nullable=true, options={"default"=0, "comment"="Tells if products in this status are kept for history purpose"})
+	 */
+        private $flag_product_archived;
+        
+	/**
+	 * @ORM\Column(type="boolean", nullable=true, options={"default"=null, "comment"="Is the default state"})
+	 */
+	private $flag_default;        
 	
 	/**
-	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the model is active in public website"})
+	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the status is active"})
 	 */
-	private $flag_active;
+	private $flag_active;        
+	
+	/**
+	 * @ORM\Column(type="string", length=40, nullable=true)
+	 */
+	private $icon_class;
 	
 	
 	/**
@@ -93,8 +110,6 @@ class SaleOrderType
 	public function __construct()
 	{
 		
-		 $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
-		 
 		 /**
 		  * Default value for flag_active
 		  */
@@ -102,25 +117,14 @@ class SaleOrderType
 		 
 		 
 	}
-	
-	
-	public function getId()
-	{
-		return $this->type_id;
-	}
-	
-	public function getTranslations()
-	{
-		return $this->translations;
-	}
-	
+
 	/**
 	 * 
-	 * @param integer $type_id
+	 * @param integer $status_id
 	 */
-	public function setTypeId($type_id)
+	public function setStatusId($status_id)
 	{
-		$this->type_id = $type_id;
+		$this->status_id = $status_id;
 		return $this;
 	}	
 	
@@ -128,14 +132,13 @@ class SaleOrderType
 	 * 
 	 * @return integer
 	 */
-	public function getTypeId()
+	public function getStatusId()
 	{
-		return $this->type_id;
-	}	
+		return $this->status_id;
+	}
 
-	
-
-
+        
+        
 	/**
 	 * Set reference
 	 * @param string $reference
@@ -154,6 +157,7 @@ class SaleOrderType
 	{
 		return $this->reference;
 	}
+
 
 	/**
 	 * 
@@ -176,6 +180,88 @@ class SaleOrderType
 
 	/**
 	 * 
+	 * @param string $description
+	 */
+	public function setDescription($description)
+	{
+		$this->description = $description;
+		return $this;
+	}
+
+	/**
+	 * Return description
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return $this->description;
+	}
+	
+        
+        
+	
+	/**
+	 * 
+	 * @return boolean
+	 */
+	public function getFlagDefault()
+	{
+		return (boolean) $this->flag_default;
+	}
+
+	
+	/**
+	 * 
+	 */
+	public function setFlagDefault($flag_default)
+	{
+		$this->flag_default = $flag_default;
+		return $this;
+	}	
+        
+
+	/**
+	 * 
+	 * @return string
+	 */
+	public function setIconClass($icon_class)
+	{
+		$this->icon_class = $icon_class;
+		return $this;
+	}
+	
+	
+	/**
+	 * 
+	 * @return string
+	 */
+	public function getIconClass()
+	{
+		return $this->icon_class;
+	}
+	
+	/**
+	 * 
+	 * @return boolean
+	 */
+	public function getFlagProductArchived()
+	{
+		return (boolean) $this->flag_product_archived;
+	}
+
+	
+	/**
+	 * 
+	 */
+	public function setFlagProductArchived($flag_product_archived)
+	{
+		$this->flag_product_archived = $flag_product_archived;
+		return $this;
+	}
+	
+
+	/**
+	 * 
 	 * @return boolean
 	 */
 	public function getFlagActive()
@@ -192,8 +278,7 @@ class SaleOrderType
 		$this->flag_active = $flag_active;
 		return $this;
 	}
-	
-	
+        
 
 	/**
 	 * 

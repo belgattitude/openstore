@@ -6,10 +6,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\Factory as InputFactory;
-use Zend\InputFilter\InputFilterAwareInterface;
-use Zend\InputFilter\InputFilterInterface;
 
 /**
  * @ORM\Entity
@@ -33,12 +29,9 @@ use Zend\InputFilter\InputFilterInterface;
  * )
  * @Gedmo\SoftDeleteable(fieldName="deleted_at")
  */
-class Product implements InputFilterAwareInterface {
+class Product {
 
-    /**
-     * @var \Zend\InputFilter\InputFilterInterface $inputFilter
-     */
-    protected $inputFilter;
+
 
     /**
      * @ORM\OneToMany(targetEntity="ProductTranslation", mappedBy="product_id")
@@ -103,6 +96,14 @@ class Product implements InputFilterAwareInterface {
      */
     private $type_id;
 
+    /**
+     * Status id
+     * @ORM\ManyToOne(targetEntity="ProductStatus", inversedBy="products", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="status_id", referencedColumnName="status_id", onDelete="CASCADE", nullable=true)
+     */
+    private $status_id;
+    
+    
     /**
      * Sales unit
      * @ORM\ManyToOne(targetEntity="ProductUnit", inversedBy="products", cascade={"persist", "remove"})
@@ -192,7 +193,7 @@ class Product implements InputFilterAwareInterface {
     private $barcode_ean13;
 
     /**
-     * @ORM\Column(type="string", length=12, nullable=true, options={"comment"="UPCA barcode"})
+     * @ORM\Column(type="string", length=20, nullable=true, options={"comment"="UPCA barcode"})
      */
     private $barcode_upca;
 
@@ -351,8 +352,8 @@ class Product implements InputFilterAwareInterface {
 
     /**
      * 
-     * @param float $type_id
-     * @return \Openstore\Entity\Product
+     * @param int $type_id
+     * @return Product
      */
     function setTypeId($type_id) {
         $this->type_id = $type_id;
@@ -366,6 +367,25 @@ class Product implements InputFilterAwareInterface {
         return $this->type_id;
     }
 
+    
+    /**
+     * 
+     * @param int $status_id
+     * @return Product
+     */
+    function setStatusId($status_id) {
+        $this->status_id = $status_id;
+        return $this;
+    }
+
+    /**
+     * @return integer|null
+     */
+    function getStatusId() {
+        return $this->status_id;
+    }
+    
+    
     /**
      * 
      * @param float $unit_id
@@ -691,47 +711,5 @@ class Product implements InputFilterAwareInterface {
         $this->$property = $value;
     }
 
-    /**
-     * 
-     * @param \Zend\InputFilter\InputFilterInterface $inputFilter
-     */
-    public function setInputFilter(InputFilterInterface $inputFilter) {
-        $this->inputFiler = $inputFilter;
-        return $this;
-    }
-
-    /**
-     * 
-     * @return \Zend\InputFilter\InputFilterInterface $inputFilter
-     */
-    public function getInputFilter() {
-        if (!$this->inputFilter) {
-            $inputFilter = new InputFilter();
-            $factory = new InputFactory();
-
-            $inputFilter->add($factory->createInput(array(
-                        'name' => 'reference',
-                        'required' => true,
-                        'filters' => array(
-                            array('name' => 'StripTags'),
-                            array('name' => 'StringTrim'),
-                        ),
-                        'validators' => array(
-                            array(
-                                'name' => 'StringLength',
-                                'options' => array(
-                                    'encoding' => 'UTF-8',
-                                    'min' => 1,
-                                    'max' => 60,
-                                ),
-                            ),
-                        ),
-            )));
-
-            $this->inputFilter = $inputFilter;
-        }
-
-        return $this->inputFilter;
-    }
 
 }

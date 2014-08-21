@@ -6,10 +6,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\Factory as InputFactory;
-use Zend\InputFilter\InputFilterAwareInterface;
-use Zend\InputFilter\InputFilterInterface;
 
 /**
  * @ORM\Entity
@@ -18,19 +14,16 @@ use Zend\InputFilter\InputFilterInterface;
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
+ *     @ORM\UniqueConstraint(name="unique_flag_default_idx",columns={"flag_default"}),
  *   }, 
  *   indexes={
  *   },
  *   options={"comment" = "Product type table"}
  * )
  */
-class ProductType implements InputFilterAwareInterface
+class ProductType
 {
 	
-	/**
-	 * @var \Zend\InputFilter\InputFilterInterface $inputFilter
-	 */
-	protected $inputFilter;
 
 	
 	/**
@@ -57,6 +50,16 @@ class ProductType implements InputFilterAwareInterface
 	private $description;
 
 	
+	/**
+	 * @ORM\Column(type="boolean", nullable=true, options={"default"=null, "comment"="Is the default state"})
+	 */
+	private $flag_default;        
+        
+	/**
+	 * @ORM\Column(type="boolean", nullable=true, options={"default"=1, "comment"="Whether the type is active"})
+	 */
+	private $flag_active;        
+        
 	
 	/**
 	 * @ORM\Column(type="string", length=40, nullable=true)
@@ -180,7 +183,7 @@ class ProductType implements InputFilterAwareInterface
 	}
 
 	/**
-	 * 
+	 * Return description
 	 * @return string
 	 */
 	public function getDescription()
@@ -188,6 +191,25 @@ class ProductType implements InputFilterAwareInterface
 		return $this->description;
 	}
 	
+	/**
+	 * 
+	 * @return boolean
+	 */
+	public function getFlagDefault()
+	{
+		return (boolean) $this->flag_default;
+	}
+
+	
+	/**
+	 * 
+	 */
+	public function setFlagDefault($flag_default)
+	{
+		$this->flag_default = $flag_default;
+		return $this;
+	}	
+        
 	
 
 	/**
@@ -384,48 +406,5 @@ class ProductType implements InputFilterAwareInterface
 	public function __set($property, $value) {
 		$this->$property = $value;
 	}	
-	
-	/**
-	 * 
-	 * @param \Zend\InputFilter\InputFilterInterface $inputFilter
-	 */
-	public function setInputFilter(InputFilterInterface $inputFilter) {
-		$this->inputFiler = $inputFilter;
-		return $this;
-	}
-
-	/**
-	 * 
-	 * @return \Zend\InputFilter\InputFilterInterface $inputFilter
-	 */
-	public function getInputFilter() {
-		if (!$this->inputFilter) {
-			$inputFilter = new InputFilter();
-			$factory = new InputFactory();
-
-			$inputFilter->add($factory->createInput(array(
-						'name' => 'reference',
-						'required' => true,
-						'filters' => array(
-							array('name' => 'StripTags'),
-							array('name' => 'StringTrim'),
-						),
-						'validators' => array(
-							array(
-								'name' => 'StringLength',
-								'options' => array(
-									'encoding' => 'UTF-8',
-									'min' => 1,
-									'max' => 60,
-								),
-							),
-						),
-					)));
-
-			$this->inputFilter = $inputFilter;
-		}
-
-		return $this->inputFilter;
-	}
 	
 }
