@@ -3,7 +3,6 @@ module.exports = function(grunt) {
     // 1. All configuration goes here 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-
 		concat: {   
 			// 2. Configuration for concatinating files goes here.
 			dist: {
@@ -36,14 +35,14 @@ module.exports = function(grunt) {
 			} 
 		},
 		
-        autoprefixer: {
-            dist: {
-                files: {
-                    'dist/css/global.prefixed.css': 'dist/css/global.css',
-		    'dist/css/typeahead-bootstrap.prefixed.css': 'dist/css/typeahead-bootstrap.css'
-                }
-            }
-        },
+                autoprefixer: {
+                    dist: {
+                        files: {
+                            'dist/css/global.prefixed.css': 'dist/css/global.css',
+                            'dist/css/typeahead-bootstrap.prefixed.css': 'dist/css/typeahead-bootstrap.css'
+                        }
+                    }
+                },
 		
 		cssrb: {
 		  main: {
@@ -64,10 +63,10 @@ module.exports = function(grunt) {
 			  },
 			  files: {
 				'dist/css/global.min.css': [
-						  'vendor/select2/select2.css',
-						  'vendor/select2/select2-bootstrap.css',
-						  'dist/css/global.prefixed.css',
-						  'dist/css/typeahead-bootstrap.prefixed.css'
+                                        'vendor/select2/select2.css',
+                                        'vendor/select2/select2-bootstrap.css',
+					'dist/css/global.prefixed.css',
+					'dist/css/typeahead-bootstrap.prefixed.css'
 				  ]
 			  }
 			},
@@ -135,14 +134,15 @@ module.exports = function(grunt) {
 
     // 3. Where we tell Grunt we plan to use this plug-in.
     grunt.loadNpmTasks('grunt-contrib-concat');
-	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-contrib-sass');
-	grunt.loadNpmTasks('grunt-autoprefixer');
-	grunt.loadNpmTasks('grunt-contrib-cssmin');
-	grunt.loadNpmTasks('grunt-cssrb');
-	grunt.loadNpmTasks('grunt-check-modules');
-	//grunt.loadNpmTasks('grunt-yui-compressor');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-sass');
+    grunt.loadNpmTasks('grunt-autoprefixer');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.loadNpmTasks('grunt-cssrb');
+    grunt.loadNpmTasks('grunt-check-modules');
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    //grunt.loadNpmTasks('grunt-yui-compressor');
 
     // 4. Where we tell Grunt what to do when we type "grunt" into the terminal.
     grunt.registerTask('default', ['concat', 'uglify', 'sass', 'autoprefixer', 'cssrb', 'cssmin']);

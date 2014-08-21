@@ -41,7 +41,7 @@ return array(
 						'route' => 'openstore recreatedbextra',
 						'defaults' => array(
 							'controller' => 'Openstore\Controller\Console',
-							'action' => 'recreatedbextra'
+							'action'     => 'recreatedbextra'
 						)
 						
 					)
@@ -135,7 +135,7 @@ return array(
 							'spec' => '/dynamic/%type%/%resolution%/%id%.%format%',
 							'defaults' => array(
 								'action'	=> 'picture',
-								'resolution'=> '1024x768',
+								'resolution'    => '1024x768',
 								'quality'	=> '90',
 								'format'	=> 'jpg'
 							)

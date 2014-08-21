@@ -15932,7 +15932,7 @@ the specific language governing permissions and limitations under the Apache Lic
 }(jQuery));
 
 /*!
- * typeahead.js 0.10.4
+ * typeahead.js 0.10.5
  * https://github.com/twitter/typeahead.js
  * Copyright 2013-2014 Twitter, Inc. and other contributors; Licensed MIT
  */
@@ -16059,7 +16059,7 @@ the specific language governing permissions and limitations under the Apache Lic
             noop: function() {}
         };
     }();
-    var VERSION = "0.10.4";
+    var VERSION = "0.10.5";
     var tokenizers = function() {
         "use strict";
         return {

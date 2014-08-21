@@ -18,6 +18,7 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 
 		<div class="row">
 			<div class="col-md-12">
+                           
 				<?php $browse_filter = $this->searchParams->getFilter()->getName() ?>
 				<ul class="nav nav-tabs pull-right">
 					<li <?= ($browse_filter == '' || $browse_filter == 'all') ? 'class="active"' : '' ?>>
