@@ -76,6 +76,11 @@ class ProductCategory implements InputFilterAwareInterface {
      * @ORM\Column(type="integer", nullable=true)
      */
     private $sort_index;
+    
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $global_sort_index;    
 
     /**
      * @ORM\Column(type="string", length=40, nullable=true)

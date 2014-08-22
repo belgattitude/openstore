@@ -63,7 +63,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 	
 	/**
 	 *
-	 * @var \Zend\Db\Adapter\Adapter
+	 * @var Adapter
 	 */
 	protected $adapter;
 	
@@ -77,7 +77,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 	/**
 	 * 
 	 * @param \Doctrine\ORM\EntityManager $em
-	 * @param \Zend\Db\Adapter\Adapter $zendDb
+	 * @param Adapter $zendDb
 	 */
 	function __construct(\Doctrine\ORM\EntityManager $em, Adapter $zendDb)
 	{
@@ -1042,7 +1042,57 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		
 	}
 	
+        function synchronizeProductPackaging()
+        {
+            $sql = "
+                (select 
+                    id_article,
+                    'CARTON' as packaging_id,
+                    qty_carton as quantity,
+                    barcode_pack_box_ean,
+                    barcode_pack_box_upc,
+                        (volume * qty_carton) as volume,
+                        (poids * qty_carton) as weight,
+                        (pack_length * qty_carton) as length,
+                        (pack_height * qty_carton) as height,
+                        (pack_width * qty_carton) as width
+                from
+                    emd00.article
+                where qty_carton > 0
+                ) union (select 
+                    id_article,
+                    'MASTERCARTON' as packaging_id,
+                    qty_master_carton as quantity,
+                    barcode_pack_master_ean,
+                    barcode_pack_master_upc,
+                        (volume * qty_master_carton) as volume,
+                        (poids * qty_master_carton) as weight,
+                        (pack_length * qty_master_carton) as length,
+                        (pack_height * qty_master_carton) as height,
+                        (pack_width * qty_master_carton) as width
 
+                from
+                    emd00.article
+                where qty_master_carton > 0
+                ) union (select 
+                    id_article,
+                    'UNIT' as packaging_id,
+                    1 as quantity,
+                    barcode_ean13,
+                    barcode_upca,
+                        (volume * 1) as volume,
+                        (poids * 1) as weight,
+                        (pack_length * 1) as length,
+                        (pack_height * 1) as height,
+                        (pack_width * 1) as width
+
+                from
+                    emd00.article)
+                order by id_article ";
+
+
+            
+        }
 	
 	function synchronizeProduct()
 	{
@@ -1084,6 +1134,8 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 					barcode_ean13,
 					barcode_upca,
 					
+                                        sort_index,    
+
 					activated_at,
 
 					legacy_mapping, 
@@ -1110,17 +1162,17 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 					null as icon_class,
 					a.volume as volume,
 					a.poids as weight,
-					null as length,
-					null as height,
-					null as width,
+					pack_length as length,
+					pack_height as height,
+					pack_width as width,
 					
 					bp.pack_qty_box,
 					bp.pack_qty_carton,
 					bp.pack_qty_master_carton,
 					
-
 					a.barcode_ean13 as barcode_ean13,
 					a.barcode_upca as barcode_upca,
+                                        a.code_tri_marque_famille as sort_index,
 					a.date_creation,
 					a.id_article as legacy_mapping,
 					'{$this->legacy_synchro_at}' as legacy_synchro_at
@@ -1147,6 +1199,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 						category_id = category.category_id,
 						reference = upper(a.reference),
 						slug = null,
+                                                sort_index = a.code_tri_marque_famille,
 						type_id = {$this->default_product_type_id},
 						title = if(trim(i.libelle_1) = '', null, trim(i.libelle_1)),
 						invoice_title = if(trim(a.libelle_1) = '', null, trim(a.libelle_1)),
@@ -1156,9 +1209,9 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 						icon_class = null,
 						volume = a.volume,
 						weight = a.poids,
-						length = null,
-						height = null,
-						width = null,
+						length = a.pack_length,
+						height = a.pack_height,
+						width = a.pack_width,
 						
 						pack_qty_box = bp.pack_qty_box,
 						pack_qty_carton = bp.pack_qty_carton,
