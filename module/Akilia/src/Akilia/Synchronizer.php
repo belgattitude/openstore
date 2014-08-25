@@ -1050,7 +1050,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
         function synchronizeProductPackaging()
         {
             $akilia1db = $this->akilia1Db;
-            $akilia2db = $this->akilia2Db;
+
             $db = $this->openstoreDb;
 
             
@@ -1091,7 +1091,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
                                 (pack_height * qty_carton) as height,
                                 (pack_width * qty_carton) as width
                         from
-                            $db.article
+                            $akilia1db.article
                         where
                             qty_carton > 0 ) 
                         union (select 
@@ -1106,7 +1106,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
                                 (pack_height * qty_master_carton) as height,
                                 (pack_width * qty_master_carton) as width
                         from
-                            $db.article
+                            $akilia1db.article
                         where
                             qty_master_carton > 0
                         ) 
@@ -1114,19 +1114,19 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
                             id_article as product_id,
                                 'UNIT' as packaging_reference,
                                 1 as quantity,
-                                barcode_ean,
-                                barcode_upc,
+                                barcode_ean13 as barcode_ean,
+                                barcode_upca as barcode_upc,
                                 (volume * 1) as volume,
                                 (poids * 1) as weight,
                                 (pack_length * 1) as length,
                                 (pack_height * 1) as height,
                                 (pack_width * 1) as width
                         from
-                            $db.article)) as packs
+                            $akilia1db.article)) as packs
                             inner join
-                        nuvolia.packaging_type pt ON packs.packaging_reference = pt.reference
+                        $db.packaging_type pt ON packs.packaging_reference = pt.reference
                              inner join
-                        nuvolia.product p on p.product_id = packs.product_id
+                        $db.product p on p.product_id = packs.product_id
                     order by packs.product_id , pt.type_id
                     ON DUPLICATE KEY update
                             barcode_ean = packs.barcode_ean,

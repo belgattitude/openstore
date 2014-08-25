@@ -223,12 +223,12 @@ class ProductPackaging
     }
 
     /**
-     * Set barcode_ean13
-     * @param string $barcode_ean13
+     * Set barcode_ean
+     * @param string $barcode_ean
      * @return Product
      */
-    function setBarcodeEan13($barcode_ean13) {
-        $this->barcode_ean13 = $barcode_ean13;
+    function setBarcodeEan($barcode_ean) {
+        $this->barcode_ean = $barcode_ean;
         return $this;
     }
 
@@ -236,11 +236,30 @@ class ProductPackaging
      * 
      * @return string
      */
-    function getBarcodeEan13() {
-        return $this->barcode_ean13;
+    function getBarcodeEan() {
+        return $this->barcode_ean;
     }
     
+    /**
+     * Set barcode_upc
+     * @param string $barcode_upc
+     * @return Product
+     */
+    function setBarcodeUpc($barcode_upc) {
+        $this->barcode_upc = $barcode_upc;
+        return $this;
+    }
 
+    /**
+     * 
+     * @return string
+     */
+    function getBarcodeUpc() {
+        return $this->barcode_upc;
+    }
+
+
+    
     /**
      * Return legacy mapping 
      * @return string $legacy_mapping
