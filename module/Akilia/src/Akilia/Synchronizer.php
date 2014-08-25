@@ -1058,6 +1058,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
                     insert into $db.product_packaging (
                             product_id, 
                             type_id, 
+                            quantity,
                             barcode_ean, 
                             barcode_upc, 
                             volume, 
@@ -1070,6 +1071,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
                     select 
                         packs.product_id,
                         pt.type_id,
+                        packs.quantity,
                         packs.barcode_ean,
                         packs.barcode_upc,
                         packs.volume,
@@ -1129,6 +1131,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
                         $db.product p on p.product_id = packs.product_id
                     order by packs.product_id , pt.type_id
                     ON DUPLICATE KEY update
+                            quantity = packs.quantity,
                             barcode_ean = packs.barcode_ean,
                             barcode_upc = packs.barcode_upc,
                             volume = packs.volume,
