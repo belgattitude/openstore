@@ -6,10 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\Factory as InputFactory;
-use Zend\InputFilter\InputFilterAwareInterface;
-use Zend\InputFilter\InputFilterInterface;
+
 
 /**
  * @Gedmo\Tree(type="nested")
@@ -27,12 +24,13 @@ use Zend\InputFilter\InputFilterInterface;
  *     @ORM\Index(name="lft_idx", columns={"lft"}),
  *     @ORM\Index(name="rgt_idx", columns={"rgt"}),
  *     @ORM\Index(name="lvl_idx", columns={"lvl"}),
+ *     @ORM\Index(name="alt_mapping_reference_idx", columns={"alt_mapping_reference"}),
  *   },
  *   options={"comment" = "Product category table"}
  * )
  * @ORM\Entity(repositoryClass="Openstore\Entity\Repository\ProductCategoryRepository")
  */
-class ProductCategory implements InputFilterAwareInterface {
+class ProductCategory  {
 
     /**
      * @var \Zend\InputFilter\InputFilterInterface $inputFilter
@@ -87,6 +85,7 @@ class ProductCategory implements InputFilterAwareInterface {
      */
     private $icon_class;
 
+    
     /**
      * @Gedmo\TreeLeft
      * @ORM\Column(type="integer", options={"unsigned"=true})
@@ -123,6 +122,13 @@ class ProductCategory implements InputFilterAwareInterface {
      */
     private $children;
 
+    
+    /**
+     * @ORM\Column(type="string", length=10, nullable=true, options={"comment" = "Alternative free reference code"})
+     */
+    private $alt_mapping_reference;    
+    
+    
     /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
@@ -298,6 +304,23 @@ class ProductCategory implements InputFilterAwareInterface {
 
     /**
      * 
+     * @param string|int $alt_mapping_reference
+     */
+    public function setAltMappingReference($alt_mapping_reference) {
+        $this->alt_mapping_reference = $alt_mapping_reference;
+    }
+    
+    /**
+     * 
+     * @return string|int
+     */
+    public function getAltMappingReference() {
+        return $this->alt_mapping_reference;
+    }
+            
+    
+    /**
+     * 
      * @return string
      */
     public function getCreatedAt() {
@@ -429,47 +452,6 @@ class ProductCategory implements InputFilterAwareInterface {
         $this->$property = $value;
     }
 
-    /**
-     * 
-     * @param \Zend\InputFilter\InputFilterInterface $inputFilter
-     */
-    public function setInputFilter(InputFilterInterface $inputFilter) {
-        $this->inputFiler = $inputFilter;
-        return $this;
-    }
 
-    /**
-     * 
-     * @return \Zend\InputFilter\InputFilterInterface $inputFilter
-     */
-    public function getInputFilter() {
-        if (!$this->inputFilter) {
-            $inputFilter = new InputFilter();
-            $factory = new InputFactory();
-
-            $inputFilter->add($factory->createInput(array(
-                        'name' => 'reference',
-                        'required' => true,
-                        'filters' => array(
-                            array('name' => 'StripTags'),
-                            array('name' => 'StringTrim'),
-                        ),
-                        'validators' => array(
-                            array(
-                                'name' => 'StringLength',
-                                'options' => array(
-                                    'encoding' => 'UTF-8',
-                                    'min' => 1,
-                                    'max' => 60,
-                                ),
-                            ),
-                        ),
-            )));
-
-            $this->inputFilter = $inputFilter;
-        }
-
-        return $this->inputFilter;
-    }
 
 }
