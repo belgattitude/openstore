@@ -118,9 +118,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 		$this->synchronizeProductModel();
 		$this->synchronizeProduct();
 		$this->synchronizeProductTranslation();
+                $this->rebuildProductSearch();
 		$this->synchronizeProductPricelist();
-		
 		$this->synchronizeProductStock();
+                $this->synchronizeProductPackaging();
 		
 		
 /**
@@ -831,6 +832,8 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				CONVERT(c.libelle_5 USING utf8) as libelle_5,
 				c.date_synchro,
 				category.category_id as category_id,
+                                c.alt_mapping_id,
+                                c.global_sort_index,
 				count(*) as doubled_categs
 				
 			from $akilia1db.categories c
@@ -869,6 +872,8 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 			
 			$pc->setReference($row['id_categorie']);
 			$pc->setSortIndex($row['sort_index']);
+                        $pc->setGlobalSortIndex($row['global_sort_index']);
+                        $pc->setAltMappingReference($row['alt_mapping_id']);
 			$pc->setLegacyMapping($row['id_categorie']);
 			//$pc->setCreatedAt($row['date_synchro']);
 			
@@ -1044,53 +1049,104 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 	
         function synchronizeProductPackaging()
         {
-            $sql = "
-                (select 
-                    id_article,
-                    'CARTON' as packaging_id,
-                    qty_carton as quantity,
-                    barcode_pack_box_ean,
-                    barcode_pack_box_upc,
-                        (volume * qty_carton) as volume,
-                        (poids * qty_carton) as weight,
-                        (pack_length * qty_carton) as length,
-                        (pack_height * qty_carton) as height,
-                        (pack_width * qty_carton) as width
-                from
-                    emd00.article
-                where qty_carton > 0
-                ) union (select 
-                    id_article,
-                    'MASTERCARTON' as packaging_id,
-                    qty_master_carton as quantity,
-                    barcode_pack_master_ean,
-                    barcode_pack_master_upc,
-                        (volume * qty_master_carton) as volume,
-                        (poids * qty_master_carton) as weight,
-                        (pack_length * qty_master_carton) as length,
-                        (pack_height * qty_master_carton) as height,
-                        (pack_width * qty_master_carton) as width
+            $akilia1db = $this->akilia1Db;
+            $akilia2db = $this->akilia2Db;
+            $db = $this->openstoreDb;
 
-                from
-                    emd00.article
-                where qty_master_carton > 0
-                ) union (select 
-                    id_article,
-                    'UNIT' as packaging_id,
-                    1 as quantity,
-                    barcode_ean13,
-                    barcode_upca,
-                        (volume * 1) as volume,
-                        (poids * 1) as weight,
-                        (pack_length * 1) as length,
-                        (pack_height * 1) as height,
-                        (pack_width * 1) as width
+            
+            $replace = "
+                    insert into $db.product_packaging (
+                            product_id, 
+                            type_id, 
+                            barcode_ean, 
+                            barcode_upc, 
+                            volume, 
+                            weight, 
+                            length, 
+                            height, 
+                            width, 
+                            legacy_synchro_at
+                    )
+                    select 
+                        packs.product_id,
+                        pt.type_id,
+                        packs.barcode_ean,
+                        packs.barcode_upc,
+                        packs.volume,
+                        packs.weight,
+                        packs.length,
+                        packs.height,
+                        packs.width,
+                        '{$this->legacy_synchro_at}' as legacy_synchro_at
+                    from
+                        ((select 
+                            id_article as product_id,
+                                'CARTON' as packaging_reference,
+                                qty_carton as quantity,
+                                barcode_pack_box_ean as barcode_ean,
+                                barcode_pack_box_upc as barcode_upc,
+                                (volume * qty_carton) as volume,
+                                (poids * qty_carton) as weight,
+                                (pack_length * qty_carton) as length,
+                                (pack_height * qty_carton) as height,
+                                (pack_width * qty_carton) as width
+                        from
+                            $db.article
+                        where
+                            qty_carton > 0 ) 
+                        union (select 
+                            id_article as product_id,
+                                'MASTERCARTON' as packaging_reference,
+                                qty_master_carton as quantity,
+                                barcode_pack_master_ean as barcode_ean,
+                                barcode_pack_master_upc as barcode_upc,
+                                (volume * qty_master_carton) as volume,
+                                (poids * qty_master_carton) as weight,
+                                (pack_length * qty_master_carton) as length,
+                                (pack_height * qty_master_carton) as height,
+                                (pack_width * qty_master_carton) as width
+                        from
+                            $db.article
+                        where
+                            qty_master_carton > 0
+                        ) 
+                        union (select 
+                            id_article as product_id,
+                                'UNIT' as packaging_reference,
+                                1 as quantity,
+                                barcode_ean,
+                                barcode_upc,
+                                (volume * 1) as volume,
+                                (poids * 1) as weight,
+                                (pack_length * 1) as length,
+                                (pack_height * 1) as height,
+                                (pack_width * 1) as width
+                        from
+                            $db.article)) as packs
+                            inner join
+                        nuvolia.packaging_type pt ON packs.packaging_reference = pt.reference
+                             inner join
+                        nuvolia.product p on p.product_id = packs.product_id
+                    order by packs.product_id , pt.type_id
+                    ON DUPLICATE KEY update
+                            barcode_ean = packs.barcode_ean,
+                            barcode_upc = packs.barcode_upc,
+                            volume = packs.volume,
+                            weight = packs.weight,
+                            length = packs.length,
+                            height = packs.height,
+                            width = packs.width,
+                            legacy_synchro_at = '{$this->legacy_synchro_at}'
+                ";
 
-                from
-                    emd00.article)
-                order by id_article ";
+		$this->executeSQL("Replace product packagings", $replace);
 
+		// 2. Deleting - old links in case it changes
+		$delete = "
+		    delete from $db.product_packaging 
+			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
+		$this->executeSQL("Delete eventual removed product packagings", $delete);		
             
         }
 	
@@ -1335,6 +1391,14 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 		
 	}
 	
+        
+        function rebuildProductSearch()
+        {
+            
+            $query = "CALL rebuild_product_search()";
+            $this->executeSQL('Rebuild product search', $query);
+        }
+        
 	
 	/**
 	 * Execute a query on the database and logs it

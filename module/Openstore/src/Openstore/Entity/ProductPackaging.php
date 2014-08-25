@@ -80,14 +80,14 @@ class ProductPackaging
     private $width;    
     
     /**
-     * @ORM\Column(type="string", length=13, nullable=true, options={"comment"="EAN13 barcode"})
+     * @ORM\Column(type="string", length=20, nullable=true, options={"comment"="EAN barcode"})
      */
-    private $barcode_ean13;
+    private $barcode_ean;
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true, options={"comment"="UPCA barcode"})
      */
-    private $barcode_upca;
+    private $barcode_upc;
     
     
     /**

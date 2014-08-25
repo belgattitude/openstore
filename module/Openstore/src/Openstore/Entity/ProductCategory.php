@@ -71,12 +71,12 @@ class ProductCategory  {
     private $description;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer", nullable=true, options={"unsigned"=true, "comment"="Relative sort index"})
      */
     private $sort_index;
     
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="bigint", nullable=true, options={"unsigned"=true, "comment"="Global sort index"})
      */
     private $global_sort_index;    
 
@@ -257,6 +257,24 @@ class ProductCategory  {
         return $this->sort_index;
     }
 
+    /**
+     * 
+     * @param integer $global_sort_index
+     * @return ProductCategory
+     */
+    public function setGlobalSortIndex($global_sort_index) {
+        $this->global_sort_index = $global_sort_index;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return integer
+     */
+    public function getGlobalSortIndex() {
+        return $this->global_sort_index;
+    }    
+    
     /**
      * 
      * @return string
