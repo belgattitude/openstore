@@ -1083,15 +1083,17 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
                     from
                         ((select 
                             id_article as product_id,
-                                'CARTON' as packaging_reference,
+                                'BOX' as packaging_reference,
                                 qty_carton as quantity,
                                 barcode_pack_box_ean as barcode_ean,
                                 barcode_pack_box_upc as barcode_upc,
                                 (volume * qty_carton) as volume,
                                 (poids * qty_carton) as weight,
-                                (pack_length * qty_carton) as length,
-                                (pack_height * qty_carton) as height,
-                                (pack_width * qty_carton) as width
+                                -- We can only trust length, width and height for
+                                -- products not packaged in master carton or box
+                                if ((qty_carton=1 and qty_master_carton=1), pack_length, null) as length,
+                                if ((qty_carton=1 and qty_master_carton=1), pack_height, null) as height,
+                                if ((qty_carton=1 and qty_master_carton=1), pack_width, null) as width
                         from
                             $akilia1db.article
                         where
@@ -1120,9 +1122,11 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
                                 barcode_upca as barcode_upc,
                                 (volume * 1) as volume,
                                 (poids * 1) as weight,
-                                (pack_length * 1) as length,
-                                (pack_height * 1) as height,
-                                (pack_width * 1) as width
+                                -- We can only trust length, width and height for
+                                -- products not packaged in master carton or box
+                                if ((qty_carton=1 and qty_master_carton=1), pack_length, null) as length,
+                                if ((qty_carton=1 and qty_master_carton=1), pack_height, null) as height,
+                                if ((qty_carton=1 and qty_master_carton=1), (pack_width), null) as width
                         from
                             $akilia1db.article)) as packs
                             inner join

@@ -201,10 +201,11 @@ class LoadUserData implements FixtureInterface {
     function importPackagingType(ObjectManager $manager) {
 
         $pack_types = array(
-            1 => array('reference' => 'UNIT', 'title' => 'UNIT', 'description' => 'Unit'),
-            2 => array('reference' => 'BOX', 'title' => 'BOX', 'description' => 'Box'),
-            3 => array('reference' => 'CARTON', 'title' => 'CARTON', 'description' => 'Carton'),
-            4 => array('reference' => 'MASTERCARTON', 'title' => 'MASTERCARTON', 'description' => 'Mastercarton'),
+            1 => array('reference' => 'UNIT', 'title' => 'Unit', 'description' => 'Unit'),
+            2 => array('reference' => 'BOX', 'title' => 'Box', 'description' => 'Box'),
+            3 => array('reference' => 'CARTON', 'title' => 'Carton', 'description' => 'Carton'),
+            4 => array('reference' => 'MASTERCARTON', 'title' => 'Mastercarton', 'description' => 'Mastercarton'),
+            5 => array('reference' => 'PALET', 'title' => 'Palet', 'description' => 'Palet'),
         );
 
         foreach ($pack_types as $id => $infos) {
