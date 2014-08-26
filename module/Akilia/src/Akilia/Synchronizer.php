@@ -1225,12 +1225,14 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 					null as icon_class,
 					a.volume as volume,
 					a.poids as weight,
-					pack_length as length,
-					pack_height as height,
-					pack_width as width,
+                                        -- dimensions are not yet supported
+					null as length,
+					null as height,
+					null as width,
 					
 					bp.pack_qty_box,
-					bp.pack_qty_carton,
+                                        -- Qty carton has been deprecated, use pack_qty_carton
+					null as pack_qty_carton,
 					bp.pack_qty_master_carton,
 					
 					a.barcode_ean13 as barcode_ean13,
@@ -1272,12 +1274,14 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 						icon_class = null,
 						volume = a.volume,
 						weight = a.poids,
-						length = a.pack_length,
-						height = a.pack_height,
-						width = a.pack_width,
+                                                -- Dimensions are not yet supported
+						length = null,
+						height = null,
+						width = null,
 						
 						pack_qty_box = bp.pack_qty_box,
-						pack_qty_carton = bp.pack_qty_carton,
+                                                -- Qty carton has been deprecated, use pack_qty_carton
+						pack_qty_carton = null,
 						pack_qty_master_carton = bp.pack_qty_master_carton,
 						
 						barcode_ean13 = a.barcode_ean13,

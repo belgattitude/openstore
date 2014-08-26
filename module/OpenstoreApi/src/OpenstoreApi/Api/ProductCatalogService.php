@@ -37,6 +37,47 @@ class ProductCatalogService extends AbstractService {
 
 		$pricelist_reference = $params['pricelist'];
 		
+                
+                // Step 1: Inner select packaging selection
+                $packSelect = new Select();
+                $packSelect->from(array('pp' => 'product_packaging'), array())
+                            ->join(array('pt' => 'packaging_type'),
+                                    new Expression("pp.type_id = pt.type_id"), array());
+                $packSelect->columns(
+                    array(
+                        'product_id'          => new Expression('pp.product_id'), 
+                        'pack_unit_qty'           => new Expression("MAX(if (pt.reference = 'UNIT', pp.quantity, null))"),
+                        'pack_unit_barcode_ean'   => new Expression("MAX(if (pt.reference = 'UNIT', pp.barcode_ean, null))"),
+                        'pack_unit_barcode_upc'   => new Expression("MAX(if (pt.reference = 'UNIT', pp.barcode_upc, null))"),
+                        'pack_unit_volume'        => new Expression("MAX(if (pt.reference = 'UNIT', pp.volume, null))"),
+                        'pack_unit_weight'        => new Expression("MAX(if (pt.reference = 'UNIT', pp.weight, null))"),
+                        'pack_unit_length'        => new Expression("MAX(if (pt.reference = 'UNIT', pp.length, null))"),
+                        'pack_unit_width'         => new Expression("MAX(if (pt.reference = 'UNIT', pp.width, null))"),
+                        'pack_unit_height'        => new Expression("MAX(if (pt.reference = 'UNIT', pp.height, null))"),
+                        
+                        'pack_box_qty'           => new Expression("MAX(if (pt.reference = 'BOX', pp.quantity, null))"),
+                        'pack_box_barcode_ean'   => new Expression("MAX(if (pt.reference = 'BOX', pp.barcode_ean, null))"),
+                        'pack_box_barcode_upc'   => new Expression("MAX(if (pt.reference = 'BOX', pp.barcode_upc, null))"),
+                        'pack_box_volume'        => new Expression("MAX(if (pt.reference = 'BOX', pp.volume, null))"),
+                        'pack_box_weight'        => new Expression("MAX(if (pt.reference = 'BOX', pp.weight, null))"),
+                        'pack_box_length'        => new Expression("MAX(if (pt.reference = 'BOX', pp.length, null))"),
+                        'pack_box_width'         => new Expression("MAX(if (pt.reference = 'BOX', pp.width, null))"),
+                        'pack_box_height'        => new Expression("MAX(if (pt.reference = 'BOX', pp.height, null))"),
+                        'pack_mastercarton_qty'  => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.quantity, null))"),
+                        'pack_mastercarton_barcode_ean'  => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.barcode_ean, null))"),
+                        'pack_mastercarton_barcode_upc'  => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.barcode_upc, null))"),
+                        'pack_mastercarton_volume'       => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.volume, null))"),
+                        'pack_mastercarton_weight'       => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.weight, null))"),
+                        'pack_mastercarton_length'       => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.length, null))"),
+                        'pack_mastercarton_width'        => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.width, null))"),
+                        'pack_mastercarton_height'       => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.height, null))")                         
+                        )
+                ,true );
+                $packSelect->group(array('product_id'));
+                //echo $packSelect->getSqlString($this->adapter->getPlatform());
+                //die();
+                
+                
 		$select->from(array('p' => 'product'), array())
 				->join(array('p18' => 'product_translation'),
 						new Expression("p18.product_id = p.product_id and p18.lang='$lang'"), array(), $select::JOIN_LEFT)
@@ -80,7 +121,10 @@ class ProductCatalogService extends AbstractService {
 						array(), $select::JOIN_LEFT)
 				->join(array('pmt' => 'product_media_type'),
 						new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), 
-						array(), $select::JOIN_LEFT);
+						array(), $select::JOIN_LEFT)
+                                ->join(array('packs' => $packSelect),
+                                                new Expression("packs.product_id = p.product_id"),
+                                                array(), $select::JOIN_LEFT);
 				
 		$max_stock = 30;		
 				
@@ -155,9 +199,34 @@ class ProductCatalogService extends AbstractService {
 			'height'				=> new Expression('p.height'),
 			'pack_qty_box'			=> new Expression('p.pack_qty_box'),
 			'pack_qty_carton'		=> new Expression('p.pack_qty_carton'),
-			'pack_qty_master_carton'=> new Expression('p.pack_qty_master_carton'),
-			
+			'pack_qty_master_carton'        => new Expression('p.pack_qty_master_carton'),
 			'picture_media_id'		=> new Expression('pmed.media_id'),			
+                    
+                        // 
+                        'pack_unit_volume'        => new Expression("packs.pack_unit_volume"),
+                        'pack_unit_weight'        => new Expression("packs.pack_unit_weight"),
+                    
+                        'pack_unit_length'        => new Expression("packs.pack_unit_length"),
+                        'pack_unit_width'         => new Expression("packs.pack_unit_width"),
+                        'pack_unit_height'        => new Expression("packs.pack_unit_height"),
+                    
+                        //'pack_box_qty'           => new Expression("packs.pack_box_qty"),
+                        'pack_box_barcode_ean'   => new Expression("packs.pack_box_barcode_ean"),
+                        'pack_box_barcode_upc'   => new Expression("packs.pack_box_barcode_upc"),
+                        'pack_box_volume'        => new Expression("packs.pack_box_volume"),
+                        'pack_box_weight'        => new Expression("packs.pack_box_weight"),
+                        'pack_box_length'        => new Expression("packs.pack_box_length"),
+                        'pack_box_width'         => new Expression("packs.pack_box_width"),
+                        'pack_box_height'        => new Expression("packs.pack_box_height"),
+                        //'pack_mastercarton_qty'  => new Expression("packs.pack_mastercarton_qty"),
+                        'pack_mastercarton_barcode_ean'  => new Expression("packs.pack_mastercarton_barcode_ean"),
+                        'pack_mastercarton_barcode_upc'  => new Expression("packs.pack_mastercarton_barcode_upc"),
+                        'pack_mastercarton_volume'       => new Expression("packs.pack_mastercarton_volume"),
+                        'pack_mastercarton_weight'       => new Expression("packs.pack_mastercarton_weight"),
+                        'pack_mastercarton_length'       => new Expression("packs.pack_mastercarton_length"),
+                        'pack_mastercarton_width'        => new Expression("packs.pack_mastercarton_width"),
+                        'pack_mastercarton_height'       => new Expression("packs.pack_mastercarton_height"),                       
+                    
 			
 		);
 				
@@ -192,13 +261,16 @@ class ProductCatalogService extends AbstractService {
 		 * 
 		 */
 		
+                //echo $select->getSqlString($this->adapter->getPlatform());
+                //die();
+                
 		$parameters = array(
 			'adapter' => $this->adapter,
 			'select' => $select
 		);
 		$store = new FlexStore('zend\select', $parameters);
 		$store->getSource()->getData();
-
+                
 		//var_dump($store->getSource()->getData()->toArray());
 		//die();
 		return $store;
