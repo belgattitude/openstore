@@ -13,6 +13,7 @@
     "grunt-yui-compressor": "^0.3.3",
     "grunt-cssrb": "^0.1.1",
     "grunt-check-modules": "^0.2.0",
-    "grunt-bowercopy": "~1.1.0"
+    "grunt-bowercopy": "~1.1.0",
+    "grunt-contrib-copy": "~0.5.0"
   }
 }
