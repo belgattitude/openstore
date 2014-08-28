@@ -220,6 +220,7 @@ class MediaController extends AbstractActionController
 
 	function pictureAction() 
 	{
+            
 		
 		$tm = $this->getTableManager();
 		

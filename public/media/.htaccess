@@ -1,4 +1,3 @@
-<Directory>
 <FilesMatch "\.(gif|png|jpeg|jpg|swf)$">
     # Cached forever
     Header set Expires "Thu, 16 Apr 2020 20:00:00 GMT"
