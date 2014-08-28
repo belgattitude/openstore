@@ -1,9 +1,12 @@
 <FilesMatch "\.(gif|png|jpeg|jpg|swf)$">
+    # Cached for 10 minutes max
+    Header set Cache-Control "max-age=60, public"
+    # Danger with cache
     # Cached forever
-    Header set Expires "Thu, 16 Apr 2020 20:00:00 GMT"
-    Header unset Last-Modified
-    Header unset ETag
-    FileETag None 
+    #Header set Expires "Thu, 16 Apr 2020 20:00:00 GMT"
+    #Header unset Last-Modified
+    #Header unset ETag
+    #FileETag None 
 </FilesMatch>
 
 
