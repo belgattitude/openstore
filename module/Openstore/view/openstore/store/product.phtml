@@ -64,13 +64,16 @@
 							<div style="width: 100%; max-height: 200px; min-height: 80px; line-height: 150px; text-align: center;">
 								<a href="<?= $this->url('store/product', array('product_id' => $product['product_id']), array(), false); ?>">
 									<?php if ($product->picture_media_id != '') : ?>
-									<img style="vertical-align: middle" src="<?= 
-										$this->url('media/picture', array(
-														'type' => 'product', 
-														'id' => $product->product_id,
-														'size' => '600x500',
-														'quality' => 95), array(), $reuseMatchedParams = false); ?>" alt="" />
-									<?php endif; ?>
+										<img style="vertical-align: middle" src="<?=
+										$this->url('media/preview', array(
+											'type' => 'picture',
+											'media_id' => $product->picture_media_id,
+											'options' => '800x800-95',
+                                                                                        'prefix' => str_pad(substr($product->picture_media_id, -2), 2, "0", STR_PAD_LEFT)
+											), array(), $reuseMatchedParams = false);
+										?>" alt="" />
+                                                                        <?php endif; ?>
+                                                                            
 								</a>
 							</div>
 						</div>
@@ -78,12 +81,12 @@
 							<?php 
 							if ($product->picture_media_id != '') {
 								$onclick = 'onclick="';
-								$href =  $this->url('media/picture', array(
-													'type' => 'product', 
-													'id' => $product->product_id,
-													'size' => '1024x768',
-													'quality' => 90), array(), $reuseMatchedParams = false);
-;
+                                                                $href = $this->url('media/preview', array(
+										'type' => 'picture',
+										'media_id' => $product->picture_media_id,
+										'options' => '1024x768-95',
+                                                                                'prefix' => str_pad(substr($product->picture_media_id, -2), 2, "0", STR_PAD_LEFT)
+									), array(), $reuseMatchedParams = false);								
 								$onclick .= "javascript: $.colorbox({maxWidth: '90%', maxHeight: '90%', title: '" . 
 											 $escaper->escapeJs((string) $product->brand_title) . ' &raquo; ' . 
 											 $escaper->escapeJs((string) $product->reference) . ' &raquo; ' . 

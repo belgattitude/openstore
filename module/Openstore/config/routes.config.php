@@ -133,9 +133,10 @@ return array(
 							// i.e: /public/media/preview/picture/<media_id>_800x800-95.png
 							//'regex' => '/preview/((<type>(picture|sound))/)((<resolution>([0-9]+x[0-9]+)))(\-(<quality>([0-9]+))/)(?<id>[0-9]+)?(\.(?<format>(jpg|png|gif)))?',
                                                         'regex' => '/preview/((?<type>(picture|productpicture|sound))/)((?<options>([0-9A-Za-z-_]+))/)((?<prefix>[0-9]{1,2})/)(?<media_id>[0-9]+)?(\.(?<format>(jpg|png|gif|flv)))?',
-							'spec' => '/preview/%type%/%options%/%media_id%.%format%',
+							'spec' => '/preview/%type%/%options%/%prefix%/%media_id%.%format%',
 							'defaults' => array(
                                                             'action'	=> 'preview',
+                                                            'format' => 'jpg'
 							)
 						)                                            
                                             
