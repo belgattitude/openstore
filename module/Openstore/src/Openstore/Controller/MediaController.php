@@ -23,6 +23,21 @@ class MediaController extends AbstractActionController
 	function getTableManager() {
 		return $this->getServiceLocator()->get('SolubleNormalist\TableManager');
 	}
+        
+        
+        function previewAction()
+        {
+            $params     = $this->params();
+            $type       = $params->fromRoute('type');
+            $media_id   = $params->fromRoute('media_id');            
+            $resolution = $params->fromRoute('resolution');            
+            $quality    = $params->fromRoute('quality');            
+            $format     = $params->fromRoute('format');            
+            
+            echo $quality;
+            
+            die('cool');
+        }
 
 	function pictureAction() 
 	{

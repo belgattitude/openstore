@@ -127,6 +127,23 @@ return array(
 				),
 				'may_terminate' => true,
 				'child_routes' => array(
+                                        'preview' => array(
+                                                'type' => 'regex',
+						'options' => array(
+							// i.e: /public/media/preview/picture/<media_id>_800x800-95.png
+							//'regex' => '/preview/((<type>(picture|sound))/)((<resolution>([0-9]+x[0-9]+)))(\-(<quality>([0-9]+))/)(?<id>[0-9]+)?(\.(?<format>(jpg|png|gif)))?',
+                                                        'regex' => '/preview/((?<type>(picture|sound))/)((?<resolution>([0-9]+x[0-9]+)))(\-(?<quality>([0-9]+))/)(?<id>[0-9]+)?(\.(?<format>(jpg|png|gif)))?',
+							'spec' => '/preview/%type%/%resolution%-%quality%/%id%.%format%',
+							'defaults' => array(
+								'action'	=> 'preview',
+								'resolution'    => '1024x768',
+								'quality'	=> '90',
+								'format'	=> 'jpg'
+							)
+						)                                            
+                                            
+                                        ),
+                                    
 					'dynamic' => array(
 						'type' => 'regex',
 						'options' => array(
