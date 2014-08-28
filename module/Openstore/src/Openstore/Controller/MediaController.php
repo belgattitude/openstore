@@ -8,6 +8,10 @@ use Soluble\Media\BoxDimension;
 use Soluble\Media\Converter\ImageConverter;
 use Soluble\Normalist\Synthetic\TableManager;
 
+use Intervention\Image\Image;
+use Intervention\Image\ImageManager;
+
+
 class MediaController extends AbstractActionController
 {
 
@@ -24,19 +28,171 @@ class MediaController extends AbstractActionController
 		return $this->getServiceLocator()->get('SolubleNormalist\TableManager');
 	}
         
+        /**
+         * Parse picture options
+         * 
+         * @throws Exception 
+         * @param string $options
+         * @return array
+         */
+        protected function parsePictureOptions($options)
+        {
+            $regexp = '/^(([0-9]{1,4})x([0-9]{1,4}))\-([0-9]{2})$/';
+            if (!preg_match($regexp, $options)) {
+                throw new \Exception("Preview options '$options' are invalid.");
+            }
+            
+            preg_match_all($regexp, $options, $matches);
+            $params = array();
+            $params['width'] = $matches[2][0];
+            $params['height'] = $matches[3][0];
+            $params['quality'] = $matches[4][0];  
+            $params['resolution'] = $matches[1][0];
+
+            return $params;
+        }
         
         function previewAction()
         {
-            $params     = $this->params();
-            $type       = $params->fromRoute('type');
-            $media_id   = $params->fromRoute('media_id');            
-            $resolution = $params->fromRoute('resolution');            
-            $quality    = $params->fromRoute('quality');            
-            $format     = $params->fromRoute('format');            
+            $p          = $this->params();
+            $type       = $p->fromRoute('type');
+            $prefix     = $p->fromRoute('prefix');
+            $media_id   = $p->fromRoute('media_id');            
+            $options    = $p->fromRoute('options');            
+            $format     = $p->fromRoute('format');   
+
+            $mediaManager = $this->getServiceLocator()->get('MMan\MediaManager');            
             
-            echo $quality;
+            // Step 1: Parse options
+            switch ($type) {
+                case 'productpicture' :
+                    // Just get the product media_id
+                    $media_id = $this->getProductPictureMediaId($media_id);
+                    // NO break
+                case 'picture' :
+                    // parse options;
+                    try {
+                        $params = $this->parsePictureOptions($options);       
+
+                        // test params;
+                        $resolutions = $this->getAcceptedResolutions();
+                        if (!in_array($params['resolution'], $resolutions)) {
+                            throw new \Exception("Invalid resolution requested, only supported: " . join(',', $resolutions));
+                        }
+                        $formats = $this->getAcceptedFormats();
+                        if (!in_array($format, $formats)) {
+                            throw new \Exception("Invalid format requested, only supported: " . join(',', $formats));
+                        }
+                        $qualities = $this->getAcceptedQualities();
+                        if (!in_array($params['quality'], $qualities)) {
+                            throw new \Exception("Invalid quality requested, only supported: " . join(',', $qualities));
+                        }
+                        
+                    
+                        $imageManager = new ImageManager(array('driver' => 'imagick'));                    
+                        //var_dump($params); die();
+                        $media = $mediaManager->get($media_id);
+                        $filename = $media->getPath();
+                        $image = $imageManager->make($filename);
+                        $image->resize($params['width'], $params['height'], function ($constraint) {
+                             $constraint->aspectRatio();
+                        });
+                        $response = $image->encode($format, $params['quality']);
+                        
+                        // Step 2: try to cache resulting image
+                        
+                        //$cache_path = realpath(dirname(__FILE__) . '/../../../../../public/media/preview/');
+                        $base_cache_path = dirname(__FILE__) . '/../../../../../data/media';
+                        if (realpath($base_cache_path) == '') {
+                            throw new \Exception("Base cache path does not exists: $base_cache_path");
+                        }
+                        $cache_path = realpath($base_cache_path) . DIRECTORY_SEPARATOR . 'preview' . DIRECTORY_SEPARATOR . $prefix . DIRECTORY_SEPARATOR . $options;
+                        if (!file_exists($cache_path)) {
+                            $ret = @mkdir($cache_path, $mode=0777, $recursive=true);
+                            if ($ret === false) {
+                                // Cache directory is not writable
+                                //echo 'not cached';
+                            } else {
+                                //echo 'cached';
+                                $cache_file = $cache_path . DIRECTORY_SEPARATOR . $media_id . '.' . $format;
+                                // save response for future access
+                                file_put_contents($cache_file, $response);
+                            }
+                            $cache_file = $cache_path . DIRECTORY_SEPARATOR . $media_id . '.' . $format;
+                            echo "<pre>\n" . $cache_file. "\n";    
+                        }
+
+                        $this->outputResponse($format, $response);
+                    } catch (\Exception $e) {
+                        var_dump(get_class($e));
+                        var_dump($e->getMessage());
+                        die();
+                        throw $e;
+                    }            
+                    
+                    break;
+                default :
+                    throw new \Exception("Does not handle format '$type'");
+                
+            }
             
-            die('cool');
+        }
+        
+        protected function outputResponse($format, $response)
+        {
+
+            switch ($format) {
+                case 'jpg' :
+                    $content_type = 'image/jpeg';
+                case 'png':
+                    $content_type = 'image/png';
+                    break;
+                case 'gif':
+                    $content_type = 'image/gif';
+                    break;
+                default:
+                    throw new \Exception("Unsupported format '$format'");
+            }
+
+            header("Content-type: $content_type", true);
+            header("Accept-Ranges: bytes", true);
+            header("Cache-control: max-age=2592000, public", true);
+            header("Content-Disposition: inline; filename=\"$filename\";", true);
+            header('Last-Modified: '. gmdate('D, d M Y H:i:s', filemtime($filename)).' GMT', true);
+            header('Expires: ' . gmdate('D, d M Y H:i:s', strtotime('+1 years')) . ' GMT', true);
+            //header('Content-Disposition: attachment; filename="downloaded.pdf"');
+            header('Pragma: cache', true);
+            echo $response;
+            die();
+            
+            
+        }
+        
+        /**
+         * Return primary product picture media id
+         * 
+         * @param int $product_id
+         * @return int
+         * @throws \Exception
+         */
+        protected function getProductPictureMediaId($product_id)
+        {
+            $tm = $this->getTableManager();
+            $pmTable = $tm->table('product_media');
+            $search = $pmTable->search('pm')
+                        ->join(array('pmt' => 'product_media_type'), 'pmt.type_id = pm.type_id')
+                        ->where(array(
+                                        'pm.product_id' => $product_id,
+                                        'pm.flag_primary' => 1,
+                                        'pmt.reference' => 'PICTURE'
+                          ))->execute();
+            if ($search->count() > 0) {
+                $media_id = $search->current()->media_id;
+            } else {
+                throw new \Exception("Product id '$product_id' does not have an associated image.");
+            }
+            return $media_id;
+            
         }
 
 	function pictureAction() 
@@ -60,8 +216,9 @@ class MediaController extends AbstractActionController
 				if ($search->count() > 0) {
 					$media_id = $search->current()->media_id;
 				}
-				
+				//echo $media_id; die();
 				break;
+                                
 
 			case '' :
 				$media_id = $id;
