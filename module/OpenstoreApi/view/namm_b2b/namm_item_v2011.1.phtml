@@ -1,0 +1,220 @@
+<?= '<?xml version="1.0" encoding="utf-8" ?>'; ?>
+<NAMM_ITEM xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://namm.org/b2b/2009/schemas" version="2011.1">
+
+  <!--
+  <Timestamp>2011-08-11T05:39:10.887</Timestamp>
+  <Id>38A6C25A-2344-4343-B53D-B8706E1A37DA</Id>
+  <SupplierId>0670716045609</SupplierId>
+  -->
+  <Items>
+    <?php foreach($this->data as $line) : ?>
+    <Item>
+      <SupplierItemId><?= $line->product_id ?></SupplierItemId>
+      <SupplierModel><?= $line->product_reference ?></SupplierModel>
+      <SupplierItemDesc><?= $line->product_title ?></SupplierItemDesc>
+      <Kit>N</Kit>
+      <Serialized>Y</Serialized>
+      <BrandName><?= $line->brand_title ?></BrandName>
+      <!--
+      <CountryOrigin>IT</CountryOrigin>
+      <Length>30.0000</Length>
+      <Width>20.0000</Width>
+      <Height>15.0000</Height>
+      <DimUOM>IN</DimUOM>
+      -->
+      <Weight><?= $line['weight'] ?></Weight>
+      <WeightUOM>KG</WeightUOM>
+      <!--
+      <AnnounceDate>2008-01-17</AnnounceDate>
+      <AvailableDate>2008-02-17</AvailableDate>
+      <UnavailableDate>2012-01-05</UnavailableDate>
+      -->
+      <WarrantyPartTerm>365</WarrantyPartTerm>
+      <WarrantyPartUOM>Day</WarrantyPartUOM>
+      <WarrantyLabTerm>0</WarrantyLabTerm>
+      <WarrantyLabUOM>Day</WarrantyLabUOM>
+      <Barcodes>
+        <Barcode>
+          <ID><?= $line->product_barcode_upca ?></ID>
+          <Type>UPCA</Type>
+        </Barcode>
+          
+        <Barcode>
+          <ID><?= $line->product_barcode_ean13 ?></ID>
+          <Type>GTIN-13</Type>
+        </Barcode>
+          
+      </Barcodes>
+      <Pricing>
+        <Price type="MSRP"
+               Currency="<?= $line->currency_reference ?>">4600.00</Price>
+        <Price type="MAP"
+               Currency="<?= $line->currency_reference ?>">4</Price>
+        <Price type="Cost"
+               Currency="<?= $line->currency_reference ?>"
+               Qty="1">3</Price>
+      </Pricing>
+      <Containers>
+        <Container>
+          <Type>Each</Type>
+          <Length>52.0000</Length>
+          <Width>20.0000</Width>
+          <Height>11.0000</Height>
+          <DimUOM>IN</DimUOM>
+          <Weight>54.5000</Weight>
+          <WeightUOM>LBS</WeightUOM>
+          <UOM>EA</UOM>
+          <QtyPerUOM>1</QtyPerUOM>
+          <Barcodes>
+            <Barcode>
+              <ID>4959112057029</ID>
+              <Type>GTIN-13</Type>
+            </Barcode>
+          </Barcodes>
+        </Container>
+      </Containers>
+      <MarketingInfo>
+        <PrimaryCategory>4018156706</PrimaryCategory>
+        <!--
+        <ProductURL>http://www.gork.com/pas/pa4xpro</ProductURL>
+        -->
+        <ItemDescLong><?php echo  $line->product_title . $line->product_description . $line->product_characteristic ?></ItemDescLong>
+        <!--
+        <Bullets>
+          <Bullet>RX (Real eXperience) technology includes Defined
+          Nuance Control and EDS Synthesis for great sound</Bullet>
+          <Bullet>Style engine follows your voice-leading, chording
+          and timing for instant, on-the-fly arrangements</Bullet>
+          <Bullet>XDS Dual Song Player with crossfader;
+          Multi-track, Backing, and Step sequencing; Pad
+          Sequencing</Bullet>
+          <Bullet>950+ Sounds; 64 Drumkits; 400+ Styles; 4 Stereo
+          Multi-effects; 320 Performances, SongBook
+          database</Bullet>
+          <Bullet>Easy-to use motorized color TouchView display
+          with easy and expert modes and contextual help
+          screens</Bullet>
+        </Bullets>
+        -->
+        <!--
+        <Keywords>
+          <Keyword>61 Notes</Keyword>
+          <Keyword>Keyboard</Keyword>
+        </Keywords>
+        -->
+      </MarketingInfo>
+    </Item>
+    <?php endforeach; ?>  
+      <!--Musical Instrument Guitar Example-->
+      <!--
+    <Item>
+      <SupplierItemId>G100ACE</SupplierItemId>
+      <SupplierModel>G100ACE</SupplierModel>
+      <SupplierItemDesc>G100 Stage Series Auditorium Cutaway
+      Electric</SupplierItemDesc>
+      <Kit>N</Kit>
+      <Serialized>Y</Serialized>
+      <BrandName>LAG</BrandName>
+      <Length>50.0000</Length>
+      <Width>20.0000</Width>
+      <Height>10.0000</Height>
+      <DimUOM>IN</DimUOM>
+      <Weight>10</Weight>
+      <WeightUOM>LBS</WeightUOM>
+      <AnnounceDate>2010-01-15</AnnounceDate>
+      <AvailableDate>2010-02-15</AvailableDate>
+      <WarrantyPartTerm>365</WarrantyPartTerm>
+      <WarrantyPartUOM>Day</WarrantyPartUOM>
+      <WarrantyLabTerm>0</WarrantyLabTerm>
+      <WarrantyLabUOM>Day</WarrantyLabUOM>
+      <Barcodes>
+        <Barcode>
+          <ID>3700166330283</ID>
+          <Type>GTIN-13</Type>
+        </Barcode>
+      </Barcodes>
+      <Pricing>
+        <Price type="MSRP"
+               Currency="USD">675.00</Price>
+        <Price type="MAP"
+               Currency="USD">4</Price>
+        <Price type="Cost"
+               Currency="USD"
+               Qty="1">3</Price>
+      </Pricing>
+      <Containers>
+        <Container>
+          <Type>Each</Type>
+          <Length>41.3300</Length>
+          <Width>18.5000</Width>
+          <Height>5.1100</Height>
+          <DimUOM>IN</DimUOM>
+          <Weight>6.3900</Weight>
+          <WeightUOM>LBS</WeightUOM>
+          <UOM>EA</UOM>
+          <QtyPerUOM>1</QtyPerUOM>
+          <Barcodes>
+            <Barcode>
+              <ID>3700166330283</ID>
+              <Type>GTIN-13</Type>
+            </Barcode>
+          </Barcodes>
+        </Container>
+        <Container>
+          <Type>Case Pack</Type>
+          <Length>42.3200</Length>
+          <Width>42.3200</Width>
+          <Height>5.7000</Height>
+          <DimUOM>IN</DimUOM>
+          <Weight>12.780000000000</Weight>
+          <WeightUOM>LBS</WeightUOM>
+          <UOM>CS</UOM>
+          <QtyPerUOM>2</QtyPerUOM>
+        </Container>
+      </Containers>
+      <MarketingInfo>
+        <PrimaryCategory>4025131110</PrimaryCategory>
+        <ProductURL>
+        http://gorkguitars.com/?page=fp&amp;np=14&amp;sg=1</ProductURL>
+        <ItemDescLong>The Stage Range starts with the high-gloss
+        G100 Series. Maple, mahogany, and black binding join the
+        dark mahogany back and sides to the solid Red Cedar top and
+        add character to the Occitan Cross rosette. The
+        honey-mahogany neck features a comfortable French satin
+        finish and a smooth Indonesian rosewood
+        fingerboard.</ItemDescLong>
+        <Bullets>
+          <Bullet>High-gloss natural finish; Red Cedar top with
+          dark mahogany back and sides</Bullet>
+          <Bullet>Maple, mahogany, and black colored body binding
+          &amp; Occitan Cross rosette pattern</Bullet>
+          <Bullet>French satin-finished honey mahogany neck;
+          Indonesian rosewood fingerboard</Bullet>
+          <Bullet>StudioLuge electronic system; five
+          expertly voiced EQ settings, volume control</Bullet>
+          <Bullet>Flexible NanoFlex piezo pickup mounted in the
+          bridge, under the saddle</Bullet>
+        </Bullets>
+      </MarketingInfo>
+      <RelatedItems>
+        <RelatedItem included="Y"
+                     type="accessory">
+          <SupplierItemId>D8B5518003B</SupplierItemId>
+          <Barcode>
+            <ID>1234567890123</ID>
+            <Type>GTIN-13</Type>
+          </Barcode>
+        </RelatedItem>
+        <RelatedItem included="N"
+                     type="ThirdParty">
+          <SupplierItemId>ProductX</SupplierItemId>
+          <Barcode>
+            <ID>1112345678911</ID>
+            <Type>GTIN-13</Type>
+          </Barcode>
+        </RelatedItem>
+      </RelatedItems>
+    </Item>
+-->
+  </Items>
+</NAMM_ITEM>
