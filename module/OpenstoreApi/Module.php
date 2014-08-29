@@ -12,6 +12,7 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Soluble\FlexStore\FlexStoreInterface;
 use Soluble\FlexStore\Writer\Zend\Json as JsonWriter;
 use Soluble\FlexStore\Writer\CSV as CSVWriter;
+use Soluble\FlexStore\Writer\Excel\LibXLWriter;
 use Soluble\FlexStore\Writer\SimpleXmlWriter;
 
 use OpenstoreApi\Authorize\Exception\AuthorizationException;
@@ -98,6 +99,11 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 					}
 
 					break;
+                                case 'xlsx' :
+                                        $csvWriter = new LibXLWriter($vars->getSource());
+					$csvWriter->send();
+					die();
+                                    
 				case 'csv' :
 					if ($vars instanceof FlexStoreInterface) {
 

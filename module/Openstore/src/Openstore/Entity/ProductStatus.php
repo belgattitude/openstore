@@ -58,8 +58,18 @@ class ProductStatus
 	/**
 	 * @ORM\Column(type="boolean", nullable=true, options={"default"=null, "comment"="Is the default state"})
 	 */
-	private $flag_default;        
-	
+	private $flag_default;     
+        
+	/**
+	 * @ORM\Column(type="boolean", nullable=true, options={"default"=false, "comment"="Whether the product is a available till end of stock"})
+	 */
+	private $flag_till_end_of_stock;           
+
+	/**
+	 * @ORM\Column(type="boolean", nullable=true, options={"default"=false, "comment"="Whether the product is in end of lifecycle"})
+	 */
+	private $flag_end_of_lifecycle;           
+        
 	/**
 	 * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the status is active"})
 	 */
@@ -197,7 +207,45 @@ class ProductStatus
 		return $this->description;
 	}
 	
+
+	/**
+	 * 
+	 * @return boolean
+	 */
+	public function getFlagTillEndOfStock()
+	{
+		return (boolean) $this->flag_till_end_of_stock;
+	}
+
+	
+	/**
+	 * 
+	 */
+	public function setFlagTillEndOfStock($flag_till_end_of_stock)
+	{
+		$this->flag_till_end_of_stock = $flag_till_end_of_stock;
+		return $this;
+	}        
+
         
+	/**
+	 * 
+	 * @return boolean
+	 */
+	public function getFlagEndOfLifecycle()
+	{
+		return (boolean) $this->flag_end_of_lifecycle;
+	}
+
+	
+	/**
+	 * 
+	 */
+	public function setFlagEndOfLifecycle($flag_end_of_lifecycle)
+	{
+		$this->flag_end_of_lifecycle = $flag_end_of_lifecycle;
+		return $this;
+	}        
         
 	
 	/**

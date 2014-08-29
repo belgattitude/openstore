@@ -226,11 +226,11 @@ class LoadUserData implements FixtureInterface {
     function importProductStatus(ObjectManager $manager) {
 
         $statuses = array(
-            10 => array('reference' => 'IN_DEVELOPMENT', 'title' => 'In development', 'description' => 'In development', 'flag_default' => null),
-            20 => array('reference' => 'NORMAL', 'title' => 'Normal', 'description' => 'Regular sellable product', 'flag_default' => 1),
-            30 => array('reference' => 'END_LIFECYCLE', 'title' => 'End of lyfecycle', 'description' => 'End of lyfecycle', 'flag_default' => null),
-            40 => array('reference' => 'OBSOLETE', 'title' => 'Obsolete', 'description' => 'Obsolete or replaced by another one', 'flag_default' => null),
-            40 => array('reference' => 'ARCHIVE', 'title' => 'Archive', 'description' => 'Archived product', 'flag_product_archived' => 1, 'flag_default' => null),
+            10 => array('reference' => 'IN_DEVELOPMENT', 'teos' => null, 'eol' => null, 'title' => 'In development', 'description' => 'In development', 'flag_default' => null),
+            20 => array('reference' => 'NORMAL', 'teos' => null, 'eol' => null, 'title' => 'Normal', 'description' => 'Regular sellable product', 'flag_default' => 1),
+            30 => array('reference' => 'END_LIFECYCLE', 'teos' => true, 'eol' => true, 'title' => 'End of lyfecycle', 'description' => 'End of lyfecycle', 'flag_default' => null),
+            40 => array('reference' => 'OBSOLETE', 'teos' => null, 'eol' => null, 'title' => 'Obsolete', 'description' => 'Obsolete or replaced by another one', 'flag_default' => null),
+            40 => array('reference' => 'ARCHIVE', 'teos' => null, 'eol' => null, 'title' => 'Archive', 'description' => 'Archived product', 'flag_product_archived' => 1, 'flag_default' => null),
         );
 
 
@@ -241,6 +241,8 @@ class LoadUserData implements FixtureInterface {
             $status->setTitle($infos['title']);
             $status->setDescription($infos['description']);
             $status->setFlagDefault($infos['flag_default']);
+            $status->setFlagTillEndOfStock($infos['teos']);
+            $status->setFlagEndOfLifecycle($infos['eol']);
             if ($infos['flag_product_archived'] == 1) {
                 $status->setFlagProductArchived(1);
             }

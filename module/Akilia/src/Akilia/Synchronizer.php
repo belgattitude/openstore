@@ -1,13 +1,14 @@
 <?php
+
 /**
  * 
  * @author Vanvelthem Sébastien
  */
+
 namespace Akilia;
 
 use Openstore\Entity;
 use Akilia\Utils\Akilia1Products;
-
 use MMan\Service\Manager as MManManager;
 use Zend\Db\Adapter\Adapter;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
@@ -15,251 +16,234 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Db\Adapter\AdapterAwareInterface;
 use Gaufrette\Exception as GException;
 
+function convertMemorySize($size) {
+    $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
+    return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
+}
 
-function convertMemorySize($size)
-{
-    $unit=array('b','kb','mb','gb','tb','pb');
-    return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
-};
+;
 
-class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterface 
-{
-	
-	/**
-	 *
-	 * @var array
-	 */
-	protected $configuration;
-	
-	/**
-	 * @var Doctrine\Orm\EntityManager
-	 */
-	protected $em;
-	
-	/**
-	 * mysqli connection
-	 * @param Mysqli
-	 */
-	protected $mysqli;
+class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterface {
 
-	/**
-	 *
-	 * @var string
-	 */
-	protected $openstoreDb;
-	
-	/**
-	 *
-	 * @var string
-	 */
-	protected $akilia2Db;
-	
-	/**
-	 *
-	 * @var string
-	 */
-	protected $akilia1Db;
-	
-	
-	/**
-	 *
-	 * @var Adapter
-	 */
-	protected $adapter;
-	
-	protected $default_currency_id = 1;
-	protected $default_stock_id = 1;
-	protected $default_unit_id = 1;	
-	protected $default_product_type_id = 1;
-	
-	protected $legacy_synchro_at;
-	
-	/**
-	 * 
-	 * @param \Doctrine\ORM\EntityManager $em
-	 * @param Adapter $zendDb
-	 */
-	function __construct(\Doctrine\ORM\EntityManager $em, Adapter $zendDb)
-	{
-		$this->em = $em;
+    /**
+     *
+     * @var array
+     */
+    protected $configuration;
 
-		$this->openstoreDb = $em->getConnection()->getDatabase();
-		$this->mysqli = $em->getConnection()->getWrappedConnection()->getWrappedResourceHandle();
-		$this->setDbAdapter($zendDb);
-		$this->legacy_synchro_at = date('Y-m-d H:i:s');
-		
-	}
-	
-	/**
-	 * 
-	 * @param array $config
-	 * @return \Akilia\Synchronizer
-	 */
-	function setConfiguration(array $config) {
-		$this->akilia2Db	= $config['db_akilia2'];
-		$this->akilia1Db	= $config['db_akilia1'];
-		$this->akilia1lang	= $config['akilia1_language_map'];
-		$this->configuration = $config;
-		return $this;
-	}
-	
-	
-	function synchronizeAll()
-	{
-		
-		$this->synchronizeCountry();
-		$this->synchronizeCustomer();
-		$this->synchronizeApi();
-		$this->synchronizePricelist();
-		$this->synchronizeCustomerPricelist();
-		$this->synchronizeProductGroup();
-		$this->synchronizeProductBrand();
-		$this->synchronizeProductCategory();
-		$this->synchronizeProductModel();
-		$this->synchronizeProduct();
-		$this->synchronizeProductTranslation();
-                $this->rebuildProductSearch();
-		$this->synchronizeProductPricelist();
-		$this->synchronizeProductStock();
-                $this->synchronizeProductPackaging();
-		
-		
-/**
-		 
-INSERT INTO `nuvolia`.`user_scope` (
-`id` ,
-`user_id` ,
-`customer_id` ,
-`flag_active` ,
-`created_at` ,
-`updated_at` ,
-`created_by` ,
-`updated_by` ,
-`legacy_mapping` ,
-`legacy_synchro_at`
-)
-VALUES (
-NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
-);
-		 		  
-*/
-		
-	}
-	
-	/**
-	 * @return \Soluble\Normalist\Synthetic\TableManager
-	 */
-	function getTableManager() {
-		return $this->getServiceLocator()->get('SolubleNormalist\TableManager');
-	}	
-	
-	
-	function synchronizeProductMedia()
-	{
-		ini_set('memory_limit', "1G");
-		
-		$sl = $this->getServiceLocator();
-		$configuration = $sl->get('Configuration');
-		if (!is_array($configuration['akilia'])) {
-			throw new \Exception("Cannot find akilia configuration, please see you global config files");
-		}
-		$configuration =  $configuration['akilia'];		
-		$products = new Akilia1Products($configuration);
-		$products->setServiceLocator($this->getServiceLocator());
-		$products->setDbAdapter($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
-		
-		$list = $products->getProductPictures();
-		
-		$mediaManager = $this->getServiceLocator()->get('MMan/MediaManager');
-		
-		$tm = $this->getTableManager();
-		$mcTable = $tm->table('media_container');
-		$container = $mcTable->findOneBy(array('reference' => 'PRODUCT_MEDIAS'));
-		if (!$container) {
-			throw new \Exception("Cannot find media container 'PRODUCT_MEDIAS'");
-		}
-		
-		$pmtTable = $tm->table('product_media_type');
-		$media_type_id = $pmtTable->findOneBy(array('reference' => 'PICTURE'))->type_id;
-		
-		if ($media_type_id == '') {
-			throw new \Exception("Cannot find PICTURE product media type in your database");
-		}
+    /**
+     * @var Doctrine\Orm\EntityManager
+     */
+    protected $em;
 
-		
-		$limit_to_import = 25000;
-		$count = count($list);
-		$productTable = $tm->table('product');
-		$mediaTable = $tm->table('product_media');
-		$product_ids = $productTable->search()->columns(array('product_id'))->toArrayColumn('product_id', 'product_id');
-		for ($i = 0; ($i < $limit_to_import && $i < $count); $i++) {
-			$infos = $list[$i];
-			//var_dump($infos);
-			$importElement = new \MMan\Import\Element();
-			
-			$importElement->setFilename($infos['filename']);
-			$importElement->setLegacyMapping($infos['md5']);
+    /**
+     * mysqli connection
+     * @param Mysqli
+     */
+    protected $mysqli;
 
-			$media_id = $mediaManager->import($importElement, $container['container_id']);
+    /**
+     *
+     * @var string
+     */
+    protected $openstoreDb;
 
-			
-			if (array_key_exists($infos['product_id'], $product_ids)) {
-				/*
-				$product_id = $infos['product_id'];
-				echo "- " . count($product_ids) . "\n";
-				echo "- product_id:" . $product_ids[$product_id] . "\n";
-				unset($product_ids[$product_id]);
-				echo "- " . count($product_ids) . "\n";
-				echo "- product_id:" . $product_ids[$product_id] . "\n";
-				die();
-				*/
-				//unset($product_ids[$infos['product_id']]);
-				$data = array(
-					'media_id'		=> $media_id,
-					'product_id'	=> $infos['product_id'],
-					'flag_primary'	=> $infos['alternate_index'] == '' ? 1 : null,
-					'sort_index'	=> $infos['alternate_index'] == '' ? 0 : $infos['alternate_index'],
-					'type_id'		=> $media_type_id,
-					'updated_at'	=> date('Y-m-d H:i:s')
-				);
-				try {	
-					echo "[+] Importing product " . $infos['product_id'] . " as media_id $media_id [" . ($i+1) . "/$count]\n";
-					$productMedia = $mediaTable->insertOnDuplicateKey($data, $duplicate_exclude=array());
-					
-				} catch(\Exception $e) {
-					echo "[Error] Cannot insert : \n";
-					var_dump($data);
-					echo "\n";
-					throw $e;
-				}
-				
-				
-			} else {
-				echo "[+] Warning product '" . $infos['product_id'] . "' does not exists in database\n";
-			}
-			
-			if (($i % 500) == 0) {
-				echo "-----------------------------------------------------------\n";
-				echo "Memory: " . convertMemorySize(memory_get_usage($real_usage=true)) . "\n";
-				echo "-----------------------------------------------------------\n";
-			}
-			
-		}
+    /**
+     *
+     * @var string
+     */
+    protected $akilia2Db;
 
-		echo "-----------------------------------------------------------\n";
-		echo "Memory: " . convertMemorySize(memory_get_usage($real_usage=true)) . "\n";
-		echo "-----------------------------------------------------------\n";
-		
-	}
+    /**
+     *
+     * @var string
+     */
+    protected $akilia1Db;
 
-	function synchronizeApi()
-	{
-		$akilia2db = $this->akilia2Db;
-		$db = $this->openstoreDb;
+    /**
+     *
+     * @var Adapter
+     */
+    protected $adapter;
+    protected $default_currency_id = 1;
+    protected $default_stock_id = 1;
+    protected $default_unit_id = 1;
+    protected $default_product_type_id = 1;
+    protected $legacy_synchro_at;
 
-		// Step 1: let's synchronize the api services
+    /**
+     * 
+     * @param \Doctrine\ORM\EntityManager $em
+     * @param Adapter $zendDb
+     */
+    function __construct(\Doctrine\ORM\EntityManager $em, Adapter $zendDb) {
+        $this->em = $em;
 
-		$replace = " insert
+        $this->openstoreDb = $em->getConnection()->getDatabase();
+        $this->mysqli = $em->getConnection()->getWrappedConnection()->getWrappedResourceHandle();
+        $this->setDbAdapter($zendDb);
+        $this->legacy_synchro_at = date('Y-m-d H:i:s');
+    }
+
+    /**
+     * 
+     * @param array $config
+     * @return \Akilia\Synchronizer
+     */
+    function setConfiguration(array $config) {
+        $this->akilia2Db = $config['db_akilia2'];
+        $this->akilia1Db = $config['db_akilia1'];
+        $this->akilia1lang = $config['akilia1_language_map'];
+        $this->configuration = $config;
+        return $this;
+    }
+
+    function synchronizeAll() {
+
+        $this->synchronizeCountry();
+        $this->synchronizeCustomer();
+        $this->synchronizeApi();
+        $this->synchronizePricelist();
+        $this->synchronizeCustomerPricelist();
+        $this->synchronizeProductGroup();
+        $this->synchronizeProductBrand();
+        $this->synchronizeProductCategory();
+        $this->synchronizeProductModel();
+        $this->synchronizeProduct();
+        $this->synchronizeProductTranslation();
+        $this->rebuildProductSearch();
+        $this->synchronizeProductPricelist();
+        $this->synchronizeProductStock();
+        $this->synchronizeProductPackaging();
+
+
+        /**
+
+          INSERT INTO `nuvolia`.`user_scope` (
+          `id` ,
+          `user_id` ,
+          `customer_id` ,
+          `flag_active` ,
+          `created_at` ,
+          `updated_at` ,
+          `created_by` ,
+          `updated_by` ,
+          `legacy_mapping` ,
+          `legacy_synchro_at`
+          )
+          VALUES (
+          NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
+          );
+
+         */
+    }
+
+    /**
+     * @return \Soluble\Normalist\Synthetic\TableManager
+     */
+    function getTableManager() {
+        return $this->getServiceLocator()->get('SolubleNormalist\TableManager');
+    }
+
+    function synchronizeProductMedia() {
+        ini_set('memory_limit', "1G");
+
+        $sl = $this->getServiceLocator();
+        $configuration = $sl->get('Configuration');
+        if (!is_array($configuration['akilia'])) {
+            throw new \Exception("Cannot find akilia configuration, please see you global config files");
+        }
+        $configuration = $configuration['akilia'];
+        $products = new Akilia1Products($configuration);
+        $products->setServiceLocator($this->getServiceLocator());
+        $products->setDbAdapter($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
+
+        $list = $products->getProductPictures();
+
+        $mediaManager = $this->getServiceLocator()->get('MMan/MediaManager');
+
+        $tm = $this->getTableManager();
+        $mcTable = $tm->table('media_container');
+        $container = $mcTable->findOneBy(array('reference' => 'PRODUCT_MEDIAS'));
+        if (!$container) {
+            throw new \Exception("Cannot find media container 'PRODUCT_MEDIAS'");
+        }
+
+        $pmtTable = $tm->table('product_media_type');
+        $media_type_id = $pmtTable->findOneBy(array('reference' => 'PICTURE'))->type_id;
+
+        if ($media_type_id == '') {
+            throw new \Exception("Cannot find PICTURE product media type in your database");
+        }
+
+
+        $limit_to_import = 25000;
+        $count = count($list);
+        $productTable = $tm->table('product');
+        $mediaTable = $tm->table('product_media');
+        $product_ids = $productTable->search()->columns(array('product_id'))->toArrayColumn('product_id', 'product_id');
+        for ($i = 0; ($i < $limit_to_import && $i < $count); $i++) {
+            $infos = $list[$i];
+            //var_dump($infos);
+            $importElement = new \MMan\Import\Element();
+
+            $importElement->setFilename($infos['filename']);
+            $importElement->setLegacyMapping($infos['md5']);
+
+            $media_id = $mediaManager->import($importElement, $container['container_id']);
+
+
+            if (array_key_exists($infos['product_id'], $product_ids)) {
+                /*
+                  $product_id = $infos['product_id'];
+                  echo "- " . count($product_ids) . "\n";
+                  echo "- product_id:" . $product_ids[$product_id] . "\n";
+                  unset($product_ids[$product_id]);
+                  echo "- " . count($product_ids) . "\n";
+                  echo "- product_id:" . $product_ids[$product_id] . "\n";
+                  die();
+                 */
+                //unset($product_ids[$infos['product_id']]);
+                $data = array(
+                    'media_id' => $media_id,
+                    'product_id' => $infos['product_id'],
+                    'flag_primary' => $infos['alternate_index'] == '' ? 1 : null,
+                    'sort_index' => $infos['alternate_index'] == '' ? 0 : $infos['alternate_index'],
+                    'type_id' => $media_type_id,
+                    'updated_at' => date('Y-m-d H:i:s')
+                );
+                try {
+                    echo "[+] Importing product " . $infos['product_id'] . " as media_id $media_id [" . ($i + 1) . "/$count]\n";
+                    $productMedia = $mediaTable->insertOnDuplicateKey($data, $duplicate_exclude = array());
+                } catch (\Exception $e) {
+                    echo "[Error] Cannot insert : \n";
+                    var_dump($data);
+                    echo "\n";
+                    throw $e;
+                }
+            } else {
+                echo "[+] Warning product '" . $infos['product_id'] . "' does not exists in database\n";
+            }
+
+            if (($i % 500) == 0) {
+                echo "-----------------------------------------------------------\n";
+                echo "Memory: " . convertMemorySize(memory_get_usage($real_usage = true)) . "\n";
+                echo "-----------------------------------------------------------\n";
+            }
+        }
+
+        echo "-----------------------------------------------------------\n";
+        echo "Memory: " . convertMemorySize(memory_get_usage($real_usage = true)) . "\n";
+        echo "-----------------------------------------------------------\n";
+    }
+
+    function synchronizeApi() {
+        $akilia2db = $this->akilia2Db;
+        $db = $this->openstoreDb;
+
+        // Step 1: let's synchronize the api services
+
+        $replace = " insert
 		             into $db.api_service
 					(
 					service_id,	reference,	description,
@@ -273,17 +257,17 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 						description = apis.description,
 						legacy_synchro_at = '{$this->legacy_synchro_at}'
 					 ";
-		$this->executeSQL("Replace api_service", $replace);
-		// 2. Deleting - old links in case it changes
-		$delete = "
+        $this->executeSQL("Replace api_service", $replace);
+        // 2. Deleting - old links in case it changes
+        $delete = "
 		    delete from $db.api_service 
 			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-		$this->executeSQL("Delete eventual removed api_service", $delete);		
-		
-		
-		// Step 2: let' synchronize the api keys
+        $this->executeSQL("Delete eventual removed api_service", $delete);
 
-		$replace = " insert
+
+        // Step 2: let' synchronize the api keys
+
+        $replace = " insert
 		             into $db.api_key
 					(
 					api_id,	api_key, flag_active,
@@ -297,16 +281,16 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 						flag_active = aa.is_active,
 						legacy_synchro_at = '{$this->legacy_synchro_at}'
 					 ";
-		$this->executeSQL("Replace api_key", $replace);
-		// 2. Deleting - old links in case it changes
-		$delete = "
+        $this->executeSQL("Replace api_key", $replace);
+        // 2. Deleting - old links in case it changes
+        $delete = "
 		    delete from $db.api_key 
 			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-		$this->executeSQL("Delete eventual removed api_key", $delete);		
-		
-		// Step 3: api_key_services
+        $this->executeSQL("Delete eventual removed api_key", $delete);
 
-		$replace = " insert
+        // Step 3: api_key_services
+
+        $replace = " insert
 		             into $db.api_key_service
 					(
 					id, api_id,	service_id,
@@ -318,16 +302,16 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				on duplicate key update
 						legacy_synchro_at = '{$this->legacy_synchro_at}'
 					 ";
-		$this->executeSQL("Replace api_key_service", $replace);
-		// 2. Deleting - old links in case it changes
-		$delete = "
+        $this->executeSQL("Replace api_key_service", $replace);
+        // 2. Deleting - old links in case it changes
+        $delete = "
 		    delete from $db.api_key_service 
 			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-		$this->executeSQL("Delete eventual removed api_key_service", $delete);		
-		
-		
-		// Step 4: api_key_customers
-		$replace = " insert
+        $this->executeSQL("Delete eventual removed api_key_service", $delete);
+
+
+        // Step 4: api_key_customers
+        $replace = " insert
 		             into $db.api_key_customer
 					(
 					id, api_id,	customer_id,
@@ -339,27 +323,24 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				on duplicate key update
 						legacy_synchro_at = '{$this->legacy_synchro_at}'
 					 ";
-		$this->executeSQL("Replace api_key_customer", $replace);
-		// 2. Deleting - old links in case it changes
-		$delete = "
+        $this->executeSQL("Replace api_key_customer", $replace);
+        // 2. Deleting - old links in case it changes
+        $delete = "
 		    delete from $db.api_key_customer 
 			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-		$this->executeSQL("Delete eventual removed api_key_customer", $delete);				
-                
-                
-                // Resync customer pricelists access
-                $this->synchronizeCustomerPricelist();
-		
-	}
-	
-	
-	
-	function synchronizeCountry()
-	{
-		$akilia2db = $this->akilia2Db;
-		$db = $this->openstoreDb;
+        $this->executeSQL("Delete eventual removed api_key_customer", $delete);
+                              
 
-		$replace = " insert
+
+        // Resync customer pricelists access
+        $this->synchronizeCustomerPricelist();
+    }
+
+    function synchronizeCountry() {
+        $akilia2db = $this->akilia2Db;
+        $db = $this->openstoreDb;
+
+        $replace = " insert
 		             into $db.country
 					(
 					country_id,
@@ -379,26 +360,23 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 						name = co.name,
 						legacy_synchro_at = '{$this->legacy_synchro_at}'
 					 ";
-		
-		$this->executeSQL("Replace countries", $replace);
 
-		// 2. Deleting - old links in case it changes
-		$delete = "
+        $this->executeSQL("Replace countries", $replace);
+
+        // 2. Deleting - old links in case it changes
+        $delete = "
 		    delete from $db.country 
 			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
-		$this->executeSQL("Delete eventual removed countries", $delete);		
-		
-	}
-	
-	
-	function synchronizeCustomer()
-	{
+        $this->executeSQL("Delete eventual removed countries", $delete);
+    }
 
-		$akilia2db = $this->akilia2Db;
-		$db = $this->openstoreDb;
+    function synchronizeCustomer() {
 
-		$replace = " insert
+        $akilia2db = $this->akilia2Db;
+        $db = $this->openstoreDb;
+
+        $replace = " insert
 		             into $db.customer
 					(
 					customer_id,
@@ -444,25 +422,22 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 					   country_id = bc.country_id,				
 					   legacy_synchro_at = '{$this->legacy_synchro_at}'
 					 ";
-		
-		$this->executeSQL("Replace customers", $replace);
 
-		// 2. Deleting - old links in case it changes
-		$delete = "
+        $this->executeSQL("Replace customers", $replace);
+
+        // 2. Deleting - old links in case it changes
+        $delete = "
 		    delete from $db.customer
 			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
-		$this->executeSQL("Delete eventual removed customers", $delete);		
-		
-		
-	}
-	
-	function synchronizeCustomerPricelist()
-	{
-		$akilia2db = $this->akilia2Db;
-		$db = $this->openstoreDb;
+        $this->executeSQL("Delete eventual removed customers", $delete);
+    }
 
-		$replace = " insert
+    function synchronizeCustomerPricelist() {
+        $akilia2db = $this->akilia2Db;
+        $db = $this->openstoreDb;
+
+        $replace = " insert
 		             into $db.customer_pricelist
 					(
 					pricelist_id,
@@ -504,31 +479,29 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 					   flag_active = u.flag_active,
 					   legacy_synchro_at = '{$this->legacy_synchro_at}'
 					 ";
-		
-		$this->executeSQL("Replace customer pricelists", $replace);
 
-		// 2. Deleting - old links in case it changes
-		$delete = "
+        $this->executeSQL("Replace customer pricelists", $replace);
+
+        // 2. Deleting - old links in case it changes
+        $delete = "
 		    delete from $db.customer_pricelist 
 			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
-		$this->executeSQL("Delete eventual removed customer pricelists", $delete);		
-		
-	}
-	
-	
-	function synchronizeProductPricelist($use_akilia2=true)
-	{
-		$db = $this->openstoreDb;
-		
-		if ($use_akilia2) {
+        $this->executeSQL("Delete eventual removed customer pricelists", $delete);
+    }
 
-			$akilia2db = $this->akilia2Db;
-			$replace = " insert
+    function synchronizeProductPricelist($use_akilia2 = true) {
+        $db = $this->openstoreDb;
+
+        if ($use_akilia2) {
+
+            $akilia2db = $this->akilia2Db;
+            $replace = " insert
 						 into $db.product_pricelist
 						(
 						product_id,
 						pricelist_id,
+                                                status_id,
 						price,
 						list_price,
 						public_price,
@@ -549,6 +522,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				select 
 					bpp.product_id,
 					pl.pricelist_id,
+                                        ps.status_id as status_id,
 					(bpp.price_sale * (1-(bpp.discount_1/100)) * (1-(bpp.discount_2/100)) * (1-(bpp.discount_3/100)) * (1-(bpp.discount_4/100))) as price,
 					bpp.price_sale as list_price,
 					bpp.price_sale_public as public_price,
@@ -573,12 +547,15 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 					$db.pricelist pl ON pl.legacy_mapping = bp.legacy_mapping
 						inner join
 					$db.product p on p.product_id = bpp.product_id
+                                                left outer join
+                                        $db.product_status ps on ps.legacy_mapping = bpp.status_code
 					where bpp.price_sale > 0
 					on duplicate key update
 							price = (bpp.price_sale * (1-(bpp.discount_1/100)) * (1-(bpp.discount_2/100)) * (1-(bpp.discount_3/100)) * (1-(bpp.discount_4/100))),
 							list_price = bpp.price_sale,
 							public_price = bpp.price_sale_public,
 							discount_1 = bpp.discount_1,
+                                                        status_id = ps.status_id,
 							discount_2 = bpp.discount_2,
 							discount_3 = bpp.discount_3,
 							discount_4 = bpp.discount_4,
@@ -592,13 +569,11 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 							activated_at = p.created_at,
 							legacy_synchro_at = '{$this->legacy_synchro_at}'
 						 ";
-							
-			$this->executeSQL("Replace product pricelist", $replace);
-			
-			
-		} else {
-			$akilia1db = $this->akilia1Db;
-			$replace = " insert
+
+            $this->executeSQL("Replace product pricelist", $replace);
+        } else {
+            $akilia1db = $this->akilia1Db;
+            $replace = " insert
 						 into $db.product_pricelist
 						(
 						product_id,
@@ -641,50 +616,46 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 							legacy_synchro_at = '{$this->legacy_synchro_at}'
 						 ";
 
-			$this->executeSQL("Replace product pricelist", $replace);
-
-			
-		}
+            $this->executeSQL("Replace product pricelist", $replace);
+        }
 
 
-		// 2. Deleting - old links in case it changes
-		$delete = "
+        // 2. Deleting - old links in case it changes
+        $delete = "
 		    delete from $db.product_pricelist 
 			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
-		$this->executeSQL("Delete eventual removed product_pricelist", $delete);		
-		
-	}
-	
-	function synchronizeProductStock()
-	{
-		if (array_key_exists('options', $this->configuration) && 
-				is_array($this->configuration['options']['product_stock']) && 
-				is_array($this->configuration['options']['product_stock']['stocks'])) {
-			
-			$elements = $this->configuration['options']['product_stock']['stocks'];
-		} else {
-			$elements = array(
-				'DEFAULT' => array(
-								'akilia1db' => $this->akilia1Db, 
-								'pricelist' => null
-					)
-			);
-		}
-		
-		
-		
-		$db = $this->openstoreDb;
+        $this->executeSQL("Delete eventual removed product_pricelist", $delete);
+    }
 
-		foreach($elements as $key => $element) {
-			$akilia1Db = $element['akilia1db'];
-			if ($element['pricelist'] != '') {
-				$pricelist_clause = "and t.id_pays = '" . $element['pricelist'] . "'";
-			} else {
-				$pricelist_clause = '';
-			}
-			
-			$replace = " insert
+    function synchronizeProductStock() {
+        if (array_key_exists('options', $this->configuration) &&
+                is_array($this->configuration['options']['product_stock']) &&
+                is_array($this->configuration['options']['product_stock']['stocks'])) {
+
+            $elements = $this->configuration['options']['product_stock']['stocks'];
+        } else {
+            $elements = array(
+                'DEFAULT' => array(
+                    'akilia1db' => $this->akilia1Db,
+                    'pricelist' => null
+                )
+            );
+        }
+
+
+
+        $db = $this->openstoreDb;
+
+        foreach ($elements as $key => $element) {
+            $akilia1Db = $element['akilia1db'];
+            if ($element['pricelist'] != '') {
+                $pricelist_clause = "and t.id_pays = '" . $element['pricelist'] . "'";
+            } else {
+                $pricelist_clause = '';
+            }
+
+            $replace = " insert
 						 into $db.product_stock
 						(
 						product_id,
@@ -717,31 +688,26 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 
 						 ";
 
-			$this->executeSQL("Replace product stock [$key] ", $replace);
-			
-			
-		}
-		
+            $this->executeSQL("Replace product stock [$key] ", $replace);
+        }
 
-		// 2. Deleting - old links in case it changes
-		$delete = "
+
+        // 2. Deleting - old links in case it changes
+        $delete = "
 		    delete from $db.product_stock
 			where legacy_synchro_at < '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
-		$this->executeSQL("Delete eventual removed product_stock", $delete);		
-		
-	}
-	
-	
-	function synchronizePricelist($use_akilia2=true)
-	{
-		if ($use_akilia2) {
-			$akilia2db = $this->akilia2Db;
-			$db = $this->openstoreDb;
+        $this->executeSQL("Delete eventual removed product_stock", $delete);
+    }
 
-			$stock_id = $this->default_stock_id;
+    function synchronizePricelist($use_akilia2 = true) {
+        if ($use_akilia2) {
+            $akilia2db = $this->akilia2Db;
+            $db = $this->openstoreDb;
 
-			$replace = " insert
+            $stock_id = $this->default_stock_id;
+
+            $replace = " insert
 						 into $db.pricelist
 						(
 						reference,
@@ -768,16 +734,15 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 							legacy_synchro_at = '{$this->legacy_synchro_at}'
 						 ";
 
-			$this->executeSQL("Replace pricelist", $replace);
-			
-		} else {
-		
-			$akilia1db = $this->akilia1Db;
-			$db = $this->openstoreDb;
+            $this->executeSQL("Replace pricelist", $replace);
+        } else {
 
-			$stock_id = $this->default_stock_id;
+            $akilia1db = $this->akilia1Db;
+            $db = $this->openstoreDb;
 
-			$replace = " insert
+            $stock_id = $this->default_stock_id;
+
+            $replace = " insert
 						 into $db.pricelist
 						(
 						reference,
@@ -802,26 +767,23 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 							legacy_synchro_at = '{$this->legacy_synchro_at}'
 						 ";
 
-			$this->executeSQL("Replace pricelist", $replace);
-		}
-			
-		// 2. Deleting - old links in case it changes
-		$delete = "
+            $this->executeSQL("Replace pricelist", $replace);
+        }
+
+        // 2. Deleting - old links in case it changes
+        $delete = "
 		    delete from $db.pricelist 
 			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
-		$this->executeSQL("Delete eventual removed pricelist", $delete);		
-		
+        $this->executeSQL("Delete eventual removed pricelist", $delete);
+    }
 
-	}
-	
-	function synchronizeProductCategory()
-	{
-		$akilia1db = $this->akilia1Db;
-		$db = $this->openstoreDb;
-		$root_reference = 'ROOT';
-		
-		$select = "
+    function synchronizeProductCategory() {
+        $akilia1db = $this->akilia1Db;
+        $db = $this->openstoreDb;
+        $root_reference = 'ROOT';
+
+        $select = "
 			select upper(c.id_categorie) as id_categorie, 
 				substring( upper(c.id_categorie), 1, (length( c.id_categorie ) -2 )) AS parent_categorie, 
 				c.sort_index, 
@@ -841,54 +803,54 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 			group by 1
 			order by length( c.id_categorie ), c.sort_index
 		";
-		$rows = $this->em->getConnection()->query($select)->fetchAll();
-		$categs = array();
-		
-		$rootCategory = $this->em->getRepository('Openstore\Entity\ProductCategory')->findOneBy(array('reference' => $root_reference));
-		if ($rootCategory === null) {
-			$rootCategory = new \Openstore\Entity\ProductCategory();
-			$rootCategory->setReference($root_reference);
-			$rootCategory->setTitle('ROOT');
-			$this->em->persist($rootCategory);
-			$this->em->flush();
-		}
-	
-		foreach($rows as $row) {
+        $rows = $this->em->getConnection()->query($select)->fetchAll();
+        $categs = array();
 
-			if ($row['category_id'] === null) {
-				$pc = new \Openstore\Entity\ProductCategory;
-			} else {
-				$pc = $this->em->find('Openstore\Entity\ProductCategory', $row['category_id']);
-			}
-			
-			if ($row['parent_categorie'] != null) {
-				$pc->setParent($categs[$row['parent_categorie']]);
-			} else {
-				$pc->setParent($rootCategory);
-			}
-			
-			
-			$pc->setTitle($row['libelle_1']);
-			
-			$pc->setReference($row['id_categorie']);
-			$pc->setSortIndex($row['sort_index']);
-                        $pc->setGlobalSortIndex($row['global_sort_index']);
-                        $pc->setAltMappingReference($row['alt_mapping_id']);
-			$pc->setLegacyMapping($row['id_categorie']);
-			//$pc->setCreatedAt($row['date_synchro']);
-			
-			
-			$this->em->persist($pc);
-			
-			$categs[$row['id_categorie']] = $pc;
-		}
+        $rootCategory = $this->em->getRepository('Openstore\Entity\ProductCategory')->findOneBy(array('reference' => $root_reference));
+        if ($rootCategory === null) {
+            $rootCategory = new \Openstore\Entity\ProductCategory();
+            $rootCategory->setReference($root_reference);
+            $rootCategory->setTitle('ROOT');
+            $this->em->persist($rootCategory);
+            $this->em->flush();
+        }
 
-		$this->em->flush();	
-		
-		
-		$langs = $this->akilia1lang;
-		foreach($langs as $lang => $sfx) {
-			$replace = "insert into product_category_translation 
+        foreach ($rows as $row) {
+
+            if ($row['category_id'] === null) {
+                $pc = new \Openstore\Entity\ProductCategory;
+            } else {
+                $pc = $this->em->find('Openstore\Entity\ProductCategory', $row['category_id']);
+            }
+
+            if ($row['parent_categorie'] != null) {
+                $pc->setParent($categs[$row['parent_categorie']]);
+            } else {
+                $pc->setParent($rootCategory);
+            }
+
+
+            $pc->setTitle($row['libelle_1']);
+
+            $pc->setReference($row['id_categorie']);
+            $pc->setSortIndex($row['sort_index']);
+            $pc->setGlobalSortIndex($row['global_sort_index']);
+            $pc->setAltMappingReference($row['alt_mapping_id']);
+            $pc->setLegacyMapping($row['id_categorie']);
+            //$pc->setCreatedAt($row['date_synchro']);
+
+
+            $this->em->persist($pc);
+
+            $categs[$row['id_categorie']] = $pc;
+        }
+
+        $this->em->flush();
+
+
+        $langs = $this->akilia1lang;
+        foreach ($langs as $lang => $sfx) {
+            $replace = "insert into product_category_translation 
 				 ( category_id,
 				   lang,
 				   title,
@@ -905,27 +867,23 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				  title = c.libelle$sfx,
 				  legacy_synchro_at = '{$this->legacy_synchro_at}'	  
 			";
-		
-			$this->executeSQL("Replace categories translations", $replace);
-			
-		}
-		// 2. Deleting - old links in case it changes
-		$delete = "
+
+            $this->executeSQL("Replace categories translations", $replace);
+        }
+        // 2. Deleting - old links in case it changes
+        $delete = "
 		    delete from $db.product_category_translation 
 			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
-		$this->executeSQL("Delete eventual removed categories translations", $delete);		
-		
-		
-	}
-	
-	function synchronizeProductModel() 
-	{
-		
-		$akilia1Db = $this->akilia1Db;
-		$db = $this->openstoreDb;
+        $this->executeSQL("Delete eventual removed categories translations", $delete);
+    }
 
-		$replace = "insert into $db.product_model
+    function synchronizeProductModel() {
+
+        $akilia1Db = $this->akilia1Db;
+        $db = $this->openstoreDb;
+
+        $replace = "insert into $db.product_model
 				(reference, brand_id, title, legacy_mapping, legacy_synchro_at)
 				select 
 				trim(m.reference) as reference,
@@ -940,25 +898,22 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				brand_id = pb.brand_id,
 				title = m.libelle_1, 
 			    legacy_synchro_at = '{$this->legacy_synchro_at}'";
-		
-		$this->executeSQL("Replace product model", $replace);
 
-		// 2. Deleting - old links in case it changes
-		$delete = "
+        $this->executeSQL("Replace product model", $replace);
+
+        // 2. Deleting - old links in case it changes
+        $delete = "
 		    delete from $db.product_model where
 			legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
-		$this->executeSQL("Delete eventual removed product models", $delete);
-		
-		
-	}
+        $this->executeSQL("Delete eventual removed product models", $delete);
+    }
 
-	function synchronizeProductBrand()
-	{
-		$akilia2db = $this->akilia2Db;
-		$db = $this->openstoreDb;
+    function synchronizeProductBrand() {
+        $akilia2db = $this->akilia2Db;
+        $db = $this->openstoreDb;
 
-		$replace = "insert into $db.product_brand
+        $replace = "insert into $db.product_brand
 				(brand_id, reference, title, url, legacy_mapping, legacy_synchro_at)
 		        select bpb.id, TRIM(bpb.reference), bpb.name, bpb.url, bpb.legacy_mapping, '{$this->legacy_synchro_at}'
 			from $akilia2db.base_product_brand bpb
@@ -967,30 +922,29 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				title = bpb.name, 
 				url = bpb.url,
 			    legacy_synchro_at = '{$this->legacy_synchro_at}'";
-		
-		$this->executeSQL("Replace product brands", $replace);
 
-		// 2. Deleting - old links in case it changes
-		$delete = "
+        $this->executeSQL("Replace product brands", $replace);
+
+        // 2. Deleting - old links in case it changes
+        $delete = "
 		    delete from $db.product_brand where
 			legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
-		$this->executeSQL("Delete eventual removed brands", $delete);
-	}
-	
-	function synchronizeProductGroup()
-	{
-		$akilia1Db = $this->akilia1Db;
-		$db = $this->openstoreDb;
+        $this->executeSQL("Delete eventual removed brands", $delete);
+    }
 
-		$use_upper = false;
-		if ($use_upper) {
-			$group_ref_clause = "UPPER(TRIM(f.id_famille))";
-		} else {
-			$group_ref_clause = "TRIM(f.id_famille)";
-		}
-		
-		$replace = "insert into $db.product_group
+    function synchronizeProductGroup() {
+        $akilia1Db = $this->akilia1Db;
+        $db = $this->openstoreDb;
+
+        $use_upper = false;
+        if ($use_upper) {
+            $group_ref_clause = "UPPER(TRIM(f.id_famille))";
+        } else {
+            $group_ref_clause = "TRIM(f.id_famille)";
+        }
+
+        $replace = "insert into $db.product_group
 				(group_id, reference, title, legacy_mapping, legacy_synchro_at)
 		        select null, 
 					   $group_ref_clause, 
@@ -1002,20 +956,20 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				reference = $group_ref_clause,
 				title = f.libelle_1, 
 			    legacy_synchro_at = '{$this->legacy_synchro_at}'";
-		$this->executeSQL("Replace product groups", $replace);
+        $this->executeSQL("Replace product groups", $replace);
 
-		// 2. Deleting - old links in case it changes
-		$delete = "
+        // 2. Deleting - old links in case it changes
+        $delete = "
 		    delete from $db.product_group where
 			legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
-		$this->executeSQL("Delete eventual removed groups", $delete);
-		
-		// 3. Group translations
-		
-		$langs = $this->akilia1lang;
-		foreach($langs as $lang => $sfx) {
-			$replace = "insert into product_group_translation 
+        $this->executeSQL("Delete eventual removed groups", $delete);
+
+        // 3. Group translations
+
+        $langs = $this->akilia1lang;
+        foreach ($langs as $lang => $sfx) {
+            $replace = "insert into product_group_translation 
 				 ( group_id,
 				   lang,
 				   title,
@@ -1032,29 +986,25 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				on duplicate key update
 					title = f.libelle$sfx, 
 					legacy_synchro_at = '{$this->legacy_synchro_at}'";
-			
-		
-			$this->executeSQL("Replace product group translations", $replace);
-			
-		}
-		// 2. Deleting - old links in case it changes
-		$delete = "
+
+
+            $this->executeSQL("Replace product group translations", $replace);
+        }
+        // 2. Deleting - old links in case it changes
+        $delete = "
 		    delete from $db.product_group_translation 
 			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
-		$this->executeSQL("Delete eventual removed product group translations", $delete);		
-		
-		
-	}
-	
-        function synchronizeProductPackaging()
-        {
-            $akilia1db = $this->akilia1Db;
+        $this->executeSQL("Delete eventual removed product group translations", $delete);
+    }
 
-            $db = $this->openstoreDb;
+    function synchronizeProductPackaging() {
+        $akilia1db = $this->akilia1Db;
 
-            
-            $replace = "
+        $db = $this->openstoreDb;
+
+
+        $replace = "
                     insert into $db.product_packaging (
                             product_id, 
                             type_id, 
@@ -1146,25 +1096,23 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
                             legacy_synchro_at = '{$this->legacy_synchro_at}'
                 ";
 
-		$this->executeSQL("Replace product packagings", $replace);
+        $this->executeSQL("Replace product packagings", $replace);
 
-		// 2. Deleting - old links in case it changes
-		$delete = "
+        // 2. Deleting - old links in case it changes
+        $delete = "
 		    delete from $db.product_packaging 
 			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
-		$this->executeSQL("Delete eventual removed product packagings", $delete);		
-            
-        }
-	
-	function synchronizeProduct()
-	{
-		
-		$akilia1db = $this->akilia1Db;
-		$akilia2db = $this->akilia2Db;
-		$db = $this->openstoreDb;
+        $this->executeSQL("Delete eventual removed product packagings", $delete);
+    }
 
-		$replace = " insert
+    function synchronizeProduct() {
+
+        $akilia1db = $this->akilia1Db;
+        $akilia2db = $this->akilia2Db;
+        $db = $this->openstoreDb;
+
+        $replace = " insert
 		             into $db.product
 					(product_id,
 					model_id,
@@ -1173,6 +1121,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 					category_id,
 					unit_id,
 					type_id,
+                                        status_id,
 					parent_id,
 					reference, 
 					slug,
@@ -1213,6 +1162,8 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 					category.category_id as category_id,
 					{$this->default_unit_id} as unit_id,
 					{$this->default_product_type_id} as type_id,
+                                        
+                                        ps.status_id as status_id,    
 					if (i.id_art_tete <> 0 and i.id_art_tete <> '', i.id_art_tete, null) as parent_id, 	
 					upper(TRIM(a.reference)) as reference,
 					null as slug,
@@ -1249,7 +1200,8 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				left outer join $db.product_brand as brand on brand.legacy_mapping = a.id_marque
 				left outer join $db.product_group as product_group on product_group.legacy_mapping = a.id_famille
 				left outer join $db.product_category as category on category.legacy_mapping = a.id_categorie
-				left outer join $db.product_model as pm on pm.legacy_mapping = a.id_modele	
+				left outer join $db.product_model as pm on pm.legacy_mapping = a.id_modele
+                                left outer join $db.product_status ps on ps.legacy_mapping = a.code_suivi
 				
                                 where a.flag_archive = 0
 
@@ -1260,7 +1212,7 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 						group_id = product_group.group_id,
 						unit_id = {$this->default_unit_id},
 						parent_id = if (i.id_art_tete <> 0 and i.id_art_tete <> '', i.id_art_tete, null), 	
-							
+						status_id = ps.status_id,    	
 						category_id = category.category_id,
 						reference = upper(a.reference),
 						slug = null,
@@ -1290,65 +1242,58 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 						legacy_mapping = a.id_article,
 						legacy_synchro_at = '{$this->legacy_synchro_at}'
 					 ";
-		$this->executeSQL("Replace product", $replace);
+        $this->executeSQL("Replace product", $replace);
 
-		// 2. Deleting - old links in case it changes
-		$delete = "
+        // 2. Deleting - old links in case it changes
+        $delete = "
 		    delete from $db.product 
 			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
-		$this->executeSQL("Delete eventual removed products", $delete);		
-		
-		
-		
-	}
-	
-	/**
-	 * 
-	 * @param string $column_name
-	 * @return string
-	 */
-	protected function hackUtf8TranslationColumn($column_name)
-	{
-		return "CONVERT(CONVERT(CONVERT($column_name USING latin1) using binary) USING utf8)";
-	}
-	
-	function synchronizeProductTranslation()
-	{
-		$akilia1db = $this->akilia1Db;
-		$db = $this->openstoreDb;
-		
-		$langs = $this->akilia1lang;
+        $this->executeSQL("Delete eventual removed products", $delete);
+    }
 
-		
-		foreach($langs as $lang => $sfx) {
-			
-			if ($lang == 'zh') {
-				// Handle a double encoding bug in chinese only
-				$title = "if (trim(i.libelle$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i.libelle$sfx") . "))";
-				$invoice_title = "if (trim(a.libelle$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("a.libelle$sfx") . "))";
-				$description = "if (i2.id_article is not null, 
+    /**
+     * 
+     * @param string $column_name
+     * @return string
+     */
+    protected function hackUtf8TranslationColumn($column_name) {
+        return "CONVERT(CONVERT(CONVERT($column_name USING latin1) using binary) USING utf8)";
+    }
+
+    function synchronizeProductTranslation() {
+        $akilia1db = $this->akilia1Db;
+        $db = $this->openstoreDb;
+
+        $langs = $this->akilia1lang;
+
+
+        foreach ($langs as $lang => $sfx) {
+
+            if ($lang == 'zh') {
+                // Handle a double encoding bug in chinese only
+                $title = "if (trim(i.libelle$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i.libelle$sfx") . "))";
+                $invoice_title = "if (trim(a.libelle$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("a.libelle$sfx") . "))";
+                $description = "if (i2.id_article is not null, 
 									-- if (trim(i2.desc$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i2.desc$sfx") . ")),		
 									null,			
 									if (trim(i.desc$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i.desc$sfx") . "))
 								)
 				";
-				$characteristic = "if (trim(i.couleur$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i.couleur$sfx") . "))";
-				
-			} else {
-				$title = "if (trim(i.libelle$sfx) = '', null, trim(i.libelle$sfx))";
-				$invoice_title = "if (trim(a.libelle$sfx) = '', null, trim(a.libelle$sfx))";
-				$description = "if (i2.id_article is not null, 
+                $characteristic = "if (trim(i.couleur$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i.couleur$sfx") . "))";
+            } else {
+                $title = "if (trim(i.libelle$sfx) = '', null, trim(i.libelle$sfx))";
+                $invoice_title = "if (trim(a.libelle$sfx) = '', null, trim(a.libelle$sfx))";
+                $description = "if (i2.id_article is not null, 
 									-- if (trim(i2.desc$sfx) = '', null, trim(i2.desc$sfx)),		
 									null,	
 									if (trim(i.desc$sfx) = '', null, trim(i.desc$sfx))
 								)
 				";
-				$characteristic = "if (trim(i.couleur$sfx) = '', null, trim(i.couleur$sfx))";
-				
-			}
-			
-			$replace = "insert into product_translation 
+                $characteristic = "if (trim(i.couleur$sfx) = '', null, trim(i.couleur$sfx))";
+            }
+
+            $replace = "insert into product_translation 
 				 ( product_id,
 				   lang,
 				   title,
@@ -1385,150 +1330,133 @@ NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
 				  characteristic = $characteristic,
 				  legacy_synchro_at = '{$this->legacy_synchro_at}'	  
 			";
-				  
-				  
-		
-			$this->executeSQL("Replace product translations", $replace);
-			
-			
-		}
-		// 2. Deleting - old links in case it changes
-		$delete = "
+
+
+
+            $this->executeSQL("Replace product translations", $replace);
+        }
+        // 2. Deleting - old links in case it changes
+        $delete = "
 		    delete from $db.product_translation 
 			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
-		$this->executeSQL("Delete eventual removed product translations", $delete);		
-				
-		
-	}
-	
-        
-        function rebuildProductSearch()
-        {
-            
-            $query = "CALL rebuild_product_search()";
-            $this->executeSQL('Rebuild product search', $query);
-        }
-        
-	
-	/**
-	 * Execute a query on the database and logs it
-	 * 
-	 * @throws Exception
-	 * 
-	 * @param string $key name of the query
-	 * @param string $query 
-	 * @param boolean $disable_foreign_key_checks
-	 * @return void
-	 */
-	protected function executeSQL($key, $query, $disable_foreign_key_checks=true)
-	{
-		$this->log("Sync::executeSQL '$key'...\n");
+        $this->executeSQL("Delete eventual removed product translations", $delete);
+    }
 
-		$total_time_start = microtime(true);		
-		
-		if ($disable_foreign_key_checks) {
-			$time_start = microtime(true);
-			$this->mysqli->query('set foreign_key_checks=0');
-			$time_stop = microtime(true);
-			$time = number_format(($time_stop - $time_start), 2);
-			$this->log("  * Disabling foreign key checks (in time $time sec(s))\n");
-			
-		}
-		
-		
-		$time_start = microtime(true);
-		$result = $this->mysqli->query($query);
-		$affected_rows = $this->mysqli->affected_rows;
-		$time_stop = microtime(true);
-		$time = number_format(($time_stop - $time_start), 2);
-		$this->log("  * Querying database (in time $time sec(s))\n");
-		$formatted_query = preg_replace('/(\n)|(\r)|(\t)/', ' ', $query);
-		$formatted_query = preg_replace('/(\ )+/', ' ', $formatted_query);
-		
-		$this->log("  * " . substr($formatted_query, 0, 60));
-		
- 		if (!$result) {
-    	    $msg = "Error running query ({$this->mysqli->error}) : \n--------------------\n$query\n------------------\n";
-    	    $this->log("[+] $msg\n");
-			if ($disable_foreign_key_checks) {
-				$this->log("[Error] Error restoring foreign key checks\n");
-				$this->mysqli->query('set foreign_key_checks=1');
-			}
-			throw new \Exception($msg);
-	    } 
-		
-		if ($disable_foreign_key_checks) {
-			$time_start = microtime(true);
-			$this->mysqli->query('set foreign_key_checks=1');		
-			$time_stop = microtime(true);
-			$time = number_format(($time_stop - $time_start), 2);
-			$this->log("  * RESTORING foreign key checks  (in time $time sec(s))\n");
-		}
-		$time_stop = microtime(true);
-		$time = number_format(($time_stop - $total_time_start), 2);
-		$this->log(" [->] Success in ExecuteSQL '$key' in total $time secs, affected rows $affected_rows.\n");
-	}
-	
-	/**
-	 * Log message
-	 * @param string $message
-	 * @param int $priority
-	 * @return void
-	 */
-	protected function log($message, $priority=null)
-	{
-	    echo "$message\n";
-	}	
-	
-	
-	/**
-	 * 
-	 * @param \Zend\Db\Adapter\Adapter $adapter
-         * @return Synchronizer
-	 */
-	public function setDbAdapter(Adapter $adapter) {
-		$this->adapter = $adapter;
-		return $this;
-	}
-	
-	
-	/**
-	 * 
-	 * @return Zend\Db\Adapter\Adapter
-	 */
-	function getDbAdapter()
-	{
-		return $this->adapter;
-	}
-	
-	/**
-	 * 
-	 * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
-	 */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
+    function rebuildProductSearch() {
+
+        $query = "CALL rebuild_product_search()";
+        $this->executeSQL('Rebuild product search', $query);
+    }
+
+    /**
+     * Execute a query on the database and logs it
+     * 
+     * @throws Exception
+     * 
+     * @param string $key name of the query
+     * @param string $query 
+     * @param boolean $disable_foreign_key_checks
+     * @return void
+     */
+    protected function executeSQL($key, $query, $disable_foreign_key_checks = true) {
+        $this->log("Sync::executeSQL '$key'...\n");
+
+        $total_time_start = microtime(true);
+
+        if ($disable_foreign_key_checks) {
+            $time_start = microtime(true);
+            $this->mysqli->query('set foreign_key_checks=0');
+            $time_stop = microtime(true);
+            $time = number_format(($time_stop - $time_start), 2);
+            $this->log("  * Disabling foreign key checks (in time $time sec(s))\n");
+        }
+
+
+        $time_start = microtime(true);
+        $result = $this->mysqli->query($query);
+        $affected_rows = $this->mysqli->affected_rows;
+        $time_stop = microtime(true);
+        $time = number_format(($time_stop - $time_start), 2);
+        $this->log("  * Querying database (in time $time sec(s))\n");
+        $formatted_query = preg_replace('/(\n)|(\r)|(\t)/', ' ', $query);
+        $formatted_query = preg_replace('/(\ )+/', ' ', $formatted_query);
+
+        $this->log("  * " . substr($formatted_query, 0, 60));
+
+        if (!$result) {
+            $msg = "Error running query ({$this->mysqli->error}) : \n--------------------\n$query\n------------------\n";
+            $this->log("[+] $msg\n");
+            if ($disable_foreign_key_checks) {
+                $this->log("[Error] Error restoring foreign key checks\n");
+                $this->mysqli->query('set foreign_key_checks=1');
+            }
+            throw new \Exception($msg);
+        }
+
+        if ($disable_foreign_key_checks) {
+            $time_start = microtime(true);
+            $this->mysqli->query('set foreign_key_checks=1');
+            $time_stop = microtime(true);
+            $time = number_format(($time_stop - $time_start), 2);
+            $this->log("  * RESTORING foreign key checks  (in time $time sec(s))\n");
+        }
+        $time_stop = microtime(true);
+        $time = number_format(($time_stop - $total_time_start), 2);
+        $this->log(" [->] Success in ExecuteSQL '$key' in total $time secs, affected rows $affected_rows.\n");
+    }
+
+    /**
+     * Log message
+     * @param string $message
+     * @param int $priority
+     * @return void
+     */
+    protected function log($message, $priority = null) {
+        echo "$message\n";
+    }
+
+    /**
+     * 
+     * @param \Zend\Db\Adapter\Adapter $adapter
+     * @return Synchronizer
+     */
+    public function setDbAdapter(Adapter $adapter) {
+        $this->adapter = $adapter;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return Zend\Db\Adapter\Adapter
+     */
+    function getDbAdapter() {
+        return $this->adapter;
+    }
+
+    /**
+     * 
+     * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
         $this->serviceLocator = $serviceLocator;
         return $this;
     }
 
-	/**
-	 * 
-	 * @return \Zend\ServiceManager\ServiceLocatorInterface
-	 */
-    public function getServiceLocator()
-    {
+    /**
+     * 
+     * @return \Zend\ServiceManager\ServiceLocatorInterface
+     */
+    public function getServiceLocator() {
         return $this->serviceLocator;
     }
-	
-	/**
-	 * 
-	 * @return \MMan\Service\Manager
-	 */
-	public function getMManManager() {
-		return $this->getServiceLocator()->get('MMan\Manager');
-				
-	}
-	
-}
 
+    /**
+     * 
+     * @return \MMan\Service\Manager
+     */
+    public function getMManManager() {
+        return $this->getServiceLocator()->get('MMan\Manager');
+    }
+
+}
