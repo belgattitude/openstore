@@ -49,11 +49,6 @@ class NammProductCatalogController extends AbstractRestfulController
 	{
                 $view_path = realpath(dirname(__FILE__) . '/../../../view');
                 $view_template = $view_path . DIRECTORY_SEPARATOR . $this->template;
-                var_dump($view_template);
-                var_dump(file_exists($view_template));
-                //die();
-                //$view_template = 'namm_item_v2011.1';
-                //$view_template = 'test.phtml';
 
 		$params = $this->params()->fromQuery();
 		$this->apiKeyAccess->checkServiceAccess("2000-ProductCatalog");
@@ -84,16 +79,12 @@ class NammProductCatalogController extends AbstractRestfulController
                 
                 $view->setTemplate($this->template);
                 
+                header('Content-Type: text/xml');
+                $output = $renderer->render($view);
                 
-                $a = htmlspecialchars( $renderer->render($view) );
+                echo $output;
+                die();
                 
-                echo '<pre>' . $a . '</pre>';
-                
-            
-                die('cool');                
-                
-                die ('cool');
-		return $store;
 	}
 
 

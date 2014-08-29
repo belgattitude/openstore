@@ -1,4 +1,8 @@
-<?= '<?xml version="1.0" encoding="utf-8" ?>'; ?>
+<?php
+$esc = new Zend\Escaper\Escaper('utf-8');
+$picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_1024x768-90.jpg";
+?>
+<?= '<?xml version="1.0" encoding="utf-8" ?>' . "\n"; ?>
 <NAMM_ITEM xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://namm.org/b2b/2009/schemas" version="2011.1">
 
   <!--
@@ -10,11 +14,15 @@
     <?php foreach($this->data as $line) : ?>
     <Item>
       <SupplierItemId><?= $line->product_id ?></SupplierItemId>
-      <SupplierModel><?= $line->product_reference ?></SupplierModel>
-      <SupplierItemDesc><?= $line->product_title ?></SupplierItemDesc>
-      <Kit>N</Kit>
-      <Serialized>Y</Serialized>
-      <BrandName><?= $line->brand_title ?></BrandName>
+      <SupplierModel><?= $esc->escapeHtmlAttr($line->product_reference) ?></SupplierModel>
+      <SupplierItemDesc><?= $esc->escapeHtmlAttr($line->product_reference . ', ' . $line->product_title) ?></SupplierItemDesc>
+      <ItemDesc><?= $esc->escapeHtmlAttr($line->product_title) ?></ItemDesc>
+      <ItemDescLong><?=  $esc->escapeHtmlAttr(trim($line->product_title . ' ' . $line->product_description . ' ' . $line->product_characteristic)) ?></ItemDescLong>      
+      <BrandName><?= $esc->escapeHtmlAttr($line->brand_title) ?></BrandName>
+      <Category><?= $esc->escapeHtmlAttr($line->category_title) ?></Category>
+      <Images>
+          <ImageURL><?= str_replace('%picture_media_id%', $line->picture_media_id, $picture_url_spec); ?></ImageURL>
+      </Images>      
       <!--
       <CountryOrigin>IT</CountryOrigin>
       <Length>30.0000</Length>
@@ -36,73 +44,85 @@
       <Barcodes>
         <Barcode>
           <ID><?= $line->product_barcode_upca ?></ID>
-          <Type>UPCA</Type>
+          <Type>GTIN-12</Type>
         </Barcode>
-          
         <Barcode>
           <ID><?= $line->product_barcode_ean13 ?></ID>
           <Type>GTIN-13</Type>
         </Barcode>
-          
       </Barcodes>
       <Pricing>
         <Price type="MSRP"
-               Currency="<?= $line->currency_reference ?>">4600.00</Price>
+               Currency="<?= $line->currency_reference ?>"><?= $line->public_price ?></Price>
         <Price type="MAP"
-               Currency="<?= $line->currency_reference ?>">4</Price>
-        <Price type="Cost"
-               Currency="<?= $line->currency_reference ?>"
-               Qty="1">3</Price>
+               Currency="<?= $line->currency_reference ?>"><?= $line->price ?></Price>
       </Pricing>
       <Containers>
         <Container>
           <Type>Each</Type>
-          <Length>52.0000</Length>
-          <Width>20.0000</Width>
-          <Height>11.0000</Height>
-          <DimUOM>IN</DimUOM>
-          <Weight>54.5000</Weight>
+          <Length><?=  $line->pack_unit_length ?></Length>
+          <Width><?=  $line->pack_unit_width ?></Width>
+          <Height><?=  $line->pack_unit_height ?></Height>11
+          <DimUOM>M</DimUOM>
+          <Weight><?=  $line->pack_unit_weight * 2.20462 ?></Weight>
           <WeightUOM>LBS</WeightUOM>
           <UOM>EA</UOM>
           <QtyPerUOM>1</QtyPerUOM>
           <Barcodes>
             <Barcode>
-              <ID>4959112057029</ID>
+              <ID><?=  $line->product_barcode_ean13 ?></ID>
               <Type>GTIN-13</Type>
             </Barcode>
-          </Barcodes>
+            <Barcode>
+              <ID><?=  $line->product_barcode_upca ?></ID>
+              <Type>GTIN-12</Type>
+            </Barcode>
+          </Barcodes>          
         </Container>
+        <Container>
+          <Type>Box</Type>
+          <Length><?=  $line->pack_box_length ?></Length>
+          <Width><?=  $line->pack_box_width ?></Width>
+          <Height><?=  $line->pack_box_height ?></Height>
+          <DimUOM>M</DimUOM>
+          <Weight><?=  $line->pack_box_weight * 2.20462 ?></Weight>
+          <WeightUOM>LBS</WeightUOM>
+          <UOM>BX</UOM>
+          <QtyPerUOM><?= $line->pack_qty_box ?></QtyPerUOM>
+          <Barcodes>
+            <Barcode>
+              <ID><?=  $line->pack_box_barcode_ean ?></ID>
+              <Type>GTIN-14</Type>
+            </Barcode>
+            <Barcode>
+              <ID><?=  $line->pack_box_barcode_upc ?></ID>
+              <Type>GTIN-13</Type>
+            </Barcode>
+          </Barcodes>          
+        </Container>          
+        <Container>
+          <Type>Carton</Type>
+          <Length><?=  $line->pack_mastercarton_length ?></Length>
+          <Width><?=  $line->pack_mastercarton_width ?></Width>
+          <Height><?=  $line->pack_mastercarton_height ?></Height>
+          <DimUOM>M</DimUOM>
+          <Weight><?=  $line->pack_mastercarton_weight ?></Weight>
+          <WeightUOM>KG</WeightUOM>
+          <UOM>CTN</UOM>
+          <QtyPerUOM><?= $line->pack_qty_master_carton ?></QtyPerUOM>
+          <Barcodes>
+            <Barcode>
+              <ID><?=  $line->pack_mastercarton_barcode_ean ?></ID>
+              <Type>GTIN-14</Type>
+            </Barcode>
+            <Barcode>
+              <ID><?=  $line->pack_mastercarton_barcode_upc ?></ID>
+              <Type>GTIN-13</Type>
+            </Barcode>
+          </Barcodes>          
+        </Container>          
+          
       </Containers>
-      <MarketingInfo>
-        <PrimaryCategory>4018156706</PrimaryCategory>
-        <!--
-        <ProductURL>http://www.gork.com/pas/pa4xpro</ProductURL>
-        -->
-        <ItemDescLong><?php echo  $line->product_title . $line->product_description . $line->product_characteristic ?></ItemDescLong>
-        <!--
-        <Bullets>
-          <Bullet>RX (Real eXperience) technology includes Defined
-          Nuance Control and EDS Synthesis for great sound</Bullet>
-          <Bullet>Style engine follows your voice-leading, chording
-          and timing for instant, on-the-fly arrangements</Bullet>
-          <Bullet>XDS Dual Song Player with crossfader;
-          Multi-track, Backing, and Step sequencing; Pad
-          Sequencing</Bullet>
-          <Bullet>950+ Sounds; 64 Drumkits; 400+ Styles; 4 Stereo
-          Multi-effects; 320 Performances, SongBook
-          database</Bullet>
-          <Bullet>Easy-to use motorized color TouchView display
-          with easy and expert modes and contextual help
-          screens</Bullet>
-        </Bullets>
-        -->
-        <!--
-        <Keywords>
-          <Keyword>61 Notes</Keyword>
-          <Keyword>Keyboard</Keyword>
-        </Keywords>
-        -->
-      </MarketingInfo>
     </Item>
     <?php endforeach; ?>  
       <!--Musical Instrument Guitar Example-->
