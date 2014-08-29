@@ -126,25 +126,31 @@ class MediaController extends AbstractActionController
                                         DIRECTORY_SEPARATOR . $type .
                                         DIRECTORY_SEPARATOR . $options .
                                         DIRECTORY_SEPARATOR . $prefix;
-                                        
-                        if (!file_exists($cache_path)) {
-                            // For recursive we need to set umask
-                            $old_umask = umask(0);
-                            $ret = @mkdir($cache_path, $mode=0777, $recursive=true);
-                            umask($old_umask);
-                            if ($ret === false) {
-                                // Cache directory is not writable
-                                //echo 'not cached';
-                            } else {
-                                //echo 'cached';
-                                $cache_file = $cache_path . DIRECTORY_SEPARATOR . $media_id . '.' . $format;
-                                // save response for future access
-                                @file_put_contents($cache_file, $response);
-                            }
-                            //$cache_file = $cache_path . DIRECTORY_SEPARATOR . $media_id . '.' . $format;
-                            //echo "<pre>\n" . $cache_file. "\n";    
-                        }
 
+                        
+                        $old_umask = umask(0);                        
+                        
+                        try {
+                            // Create eventually the cache directory
+                            if (!file_exists($cache_path)) {
+                                $ret = @mkdir($cache_path, $mode=0777, $recursive=true);
+                                if ($ret === false) {
+                                    throw new \Exception("Cannot create cache path: $cache_path");
+                                }
+                            }
+                            
+                            // Try to save resized picture for later use
+                            $cache_file = $cache_path . DIRECTORY_SEPARATOR . $media_id . '.' . $format;
+                                   
+                            $ret = @file_put_contents($cache_file, $response, LOCK_EX);
+                            if ($ret === false) {
+                                throw new \Exception("Cannto save resized picture in $cache_file");
+                            }
+                        } catch (\Exception $e) {
+                           // Do nothing     
+                        }
+                        
+                        umask($old_umask);
                         $this->outputResponse($format, $response, "$media_id.$format");
                             
                         break;
