@@ -62,7 +62,6 @@ class MediaController extends AbstractActionController
             $format     = $p->fromRoute('format');   
 
             $mediaManager = $this->getServiceLocator()->get('MMan\MediaManager');            
-
             
             try {
                 // First ensure prefix is correct
@@ -129,7 +128,10 @@ class MediaController extends AbstractActionController
                                         DIRECTORY_SEPARATOR . $prefix;
                                         
                         if (!file_exists($cache_path)) {
+                            // For recursive we need to set umask
+                            $old_umask = umask(0);
                             $ret = @mkdir($cache_path, $mode=0777, $recursive=true);
+                            umask($old_umask);
                             if ($ret === false) {
                                 // Cache directory is not writable
                                 //echo 'not cached';
@@ -137,9 +139,9 @@ class MediaController extends AbstractActionController
                                 //echo 'cached';
                                 $cache_file = $cache_path . DIRECTORY_SEPARATOR . $media_id . '.' . $format;
                                 // save response for future access
-                                file_put_contents($cache_file, $response);
+                                @file_put_contents($cache_file, $response);
                             }
-                            $cache_file = $cache_path . DIRECTORY_SEPARATOR . $media_id . '.' . $format;
+                            //$cache_file = $cache_path . DIRECTORY_SEPARATOR . $media_id . '.' . $format;
                             //echo "<pre>\n" . $cache_file. "\n";    
                         }
 
