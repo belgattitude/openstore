@@ -24,6 +24,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *     @ORM\Index(name="lft_idx", columns={"lft"}),
  *     @ORM\Index(name="rgt_idx", columns={"rgt"}),
  *     @ORM\Index(name="lvl_idx", columns={"lvl"}),
+ *     @ORM\Index(name="breadcrumb_idx", columns={"breadcrumb"}),
  *     @ORM\Index(name="alt_mapping_reference_idx", columns={"alt_mapping_reference"}),
  *   },
  *   options={"comment" = "Product category table"}
@@ -61,14 +62,19 @@ class ProductCategory  {
     private $slug;
 
     /**
-     * @ORM\Column(length=64)
+     * @ORM\Column(type="string", length=64)
      */
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=15000, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $description;
+    
+    /**
+     * @ORM\Column(type="string", length=1500, nullable=true)
+     */
+    private $breadcrumb;    
 
     /**
      * @ORM\Column(type="integer", nullable=true, options={"unsigned"=true, "comment"="Relative sort index"})

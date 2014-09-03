@@ -111,10 +111,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->synchronizeProductModel();
         $this->synchronizeProduct();
         $this->synchronizeProductTranslation();
-        $this->rebuildProductSearch();
         $this->synchronizeProductPricelist();
         $this->synchronizeProductStock();
         $this->synchronizeProductPackaging();
+        
+        $this->rebuildCategoryBreadcrumbs();
+        $this->rebuildProductSearch();
 
 
         /**
@@ -1348,6 +1350,13 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $query = "CALL rebuild_product_search()";
         $this->executeSQL('Rebuild product search', $query);
     }
+    
+    function rebuildCategoryBreadcrumbs() {
+
+        $query = "CALL rebuild_category_breadcrumbs()";
+        $this->executeSQL('Rebuild category breadcrumbs', $query);
+    }
+    
 
     /**
      * Execute a query on the database and logs it

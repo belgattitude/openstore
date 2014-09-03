@@ -23,6 +23,7 @@ use Zend\InputFilter\InputFilterInterface;
  *     @ORM\Index(name="title_idx", columns={"title"}),
  *     @ORM\Index(name="description_idx", columns={"description"}),
  *     @ORM\Index(name="slug_idx", columns={"slug"}),
+ *     @ORM\Index(name="breadcrumb_idx", columns={"breadcrumb"}),
  *   },
  *   options={"comment" = "Product translation table"}
  * )
@@ -64,14 +65,19 @@ class ProductCategoryTranslation implements InputFilterAwareInterface
 	private $slug;
 
 	/**
-	 * @ORM\Column(type="string", length=80, nullable=true)
+	 * @ORM\Column(type="string", length=64, nullable=true)
 	 */
 	private $title;
 
 	/**
-	 * @ORM\Column(type="string", length=15000, nullable=true)
+	 * @ORM\Column(type="string", length=255, nullable=true)
 	 */
 	private $description;
+        
+	/**
+	 * @ORM\Column(type="string", length=1500, nullable=true)
+	 */
+	private $breadcrumb;        
 
 	
 	/**
