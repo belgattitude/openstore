@@ -839,6 +839,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             $pc->setGlobalSortIndex($row['global_sort_index']);
             $pc->setAltMappingReference($row['alt_mapping_id']);
             $pc->setLegacyMapping($row['id_categorie']);
+            $pc->setLegacySynchroAt(new \DateTime($this->legacy_synchro_at));
             //$pc->setCreatedAt($row['date_synchro']);
 
 
@@ -849,6 +850,13 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
         $this->em->flush();
 
+        
+        // 2. Deleting - old links in case it changes
+        $delete = "
+		    delete from $db.product_category 
+			where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+
+        $this->executeSQL("Delete eventual removed categories", $delete);        
 
         $langs = $this->akilia1lang;
         foreach ($langs as $lang => $sfx) {

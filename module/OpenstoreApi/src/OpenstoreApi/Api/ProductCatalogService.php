@@ -70,7 +70,7 @@ class ProductCatalogService extends AbstractService {
                         'pack_mastercarton_weight'       => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.weight, null))"),
                         'pack_mastercarton_length'       => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.length, null))"),
                         'pack_mastercarton_width'        => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.width, null))"),
-                        'pack_mastercarton_height'       => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.height, null))")                         
+                        'pack_mastercarton_height'       => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.height, null))"),
                         )
                 ,true );
                 $packSelect->group(array('product_id'));
@@ -96,7 +96,8 @@ class ProductCatalogService extends AbstractService {
 						new Expression('pm.model_id = p.model_id'), array(), $select::JOIN_LEFT)
 				->join(array('pc' => 'product_category'),
 						new Expression('p.category_id = pc.category_id'), array(), $select::JOIN_LEFT)
-				
+				->join(array('pc18' => 'product_category_translation'),
+						new Expression("pc.category_id = pc18.category_id and pc18.lang='$lang'"), array(), $select::JOIN_LEFT)				
 				->join(array('pg' => 'product_group'),
 						new Expression('pg.group_id = p.group_id'), array(), $select::JOIN_LEFT)
 				->join(array('pg18' => 'product_group_translation'),
@@ -116,6 +117,10 @@ class ProductCatalogService extends AbstractService {
 				->join(array('ps' => 'product_stock'),
 						new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'), 
 						array(), $select::JOIN_INNER)
+				->join(array('pst' => 'product_status'),
+						new Expression('pst.status_id = ppl.status_id'), 
+						array(), $select::JOIN_LEFT)
+                        
 				->join(array('pmed' => 'product_media'),
 						new Expression("pmed.product_id = p.product_id and pmed.flag_primary=1"), 
 						array(), $select::JOIN_LEFT)
@@ -225,7 +230,10 @@ class ProductCatalogService extends AbstractService {
                         'pack_mastercarton_weight'       => new Expression("packs.pack_mastercarton_weight"),
                         'pack_mastercarton_length'       => new Expression("packs.pack_mastercarton_length"),
                         'pack_mastercarton_width'        => new Expression("packs.pack_mastercarton_width"),
-                        'pack_mastercarton_height'       => new Expression("packs.pack_mastercarton_height"),                       
+                        'pack_mastercarton_height'       => new Expression("packs.pack_mastercarton_height"),
+                        'category_breadcrumb'            => new Expression('if (pc18.breadcrumb is null, pc.breadcrumb, pc18.breadcrumb)'),
+                        'flag_till_end_of_stock'         => new Expression('pst.flag_till_end_of_stock'),
+                        'flag_end_of_lifecycle'          => new Expression('pst.flag_end_of_lifecycle'),
                     
 			
 		);
