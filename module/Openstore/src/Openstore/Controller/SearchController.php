@@ -50,12 +50,12 @@ class SearchController extends AbstractActionController
 		$product = $this->getServiceLocator()->get('Openstore\Service')->getModel('Model\Product');
 		$browser = $product->getBrowser()->setSearchParams(
 							[
-								'query' => $searchParams->getQuery(),
+								'query'     => $searchParams->getQuery(),
 								'pricelist' => $searchParams->getPricelist(),
-								'language' => $searchParams->getLanguage()
+								'language'  => $searchParams->getLanguage()
 							])
-							->setLimit(20, $offset=0)
-							->setColumns(
+						->setLimit(20, $offset=0)
+						->setColumns(
 								array(
 									'product_id'		=> new Expression('p.product_id'),
 									'reference'		=> new Expression('p.reference'),
@@ -68,11 +68,14 @@ class SearchController extends AbstractActionController
 									'picture_media_id'	=> new Expression('pm.media_id'),
 								)						
 							)
-							->addFilter($searchParams->getFilter());
+						->addFilter($searchParams->getFilter());
+                
 		//var_dump(get_class($browser)); die();					
 		$store = $browser->getStore();
+                
 		
 		$writer = new JsonWriter($store);
+                //$writer->setDebug(true);
 		$json = $writer->send();
 		die();
 	}

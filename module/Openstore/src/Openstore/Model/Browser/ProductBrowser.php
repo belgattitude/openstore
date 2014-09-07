@@ -5,7 +5,7 @@ use Openstore\Core\Model\Browser\AbstractBrowser;
 //use Openstore\Catalog\Browser\SearchParams\SearchParamsAbstract as SearchParams; 
 //use Openstore\Catalog\Browser\ProductFilter;
 use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Select;
+use Soluble\Db\Sql\Select;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
 
@@ -40,6 +40,8 @@ class ProductBrowser extends AbstractBrowser {
 		$pricelist	= $params->get('pricelist');
 		
 		$select = new Select();
+                $select->setDbAdapter($this->adapter);
+                
 		$select->from(array('p' => 'product'), array('product_id', 'category_id'))
 				->join(array('p18' => 'product_translation'),
 						new Expression("p18.product_id = p.product_id and p18.lang = '$lang'"), 
@@ -86,7 +88,10 @@ class ProductBrowser extends AbstractBrowser {
 
 		$this->assignFilters($select);
 		
-		 
+		
+                
+                
+                
 		//$flag_new_min_date = ProductFilter::getParam('flag_new_minimum_date');
 				
 		if ($this->columns !== null && is_array($this->columns)) {
@@ -95,20 +100,20 @@ class ProductBrowser extends AbstractBrowser {
 
 			$select->columns(array(
 				'product_id'		=> new Expression('p.product_id'),
-				'reference'			=> new Expression('p.reference'),
+				'reference'		=> new Expression('p.reference'),
 				'display_reference'	=> new Expression('COALESCE(p.display_reference, p.reference)'),
-				'brand_id'			=> new Expression('p.brand_id'),
+				'brand_id'		=> new Expression('p.brand_id'),
 				'brand_reference'	=> new Expression('pb.reference'),
 				'brand_title'		=> new Expression('pb.title'),
 				'category_reference'=> new Expression('pc.reference'),
 				'category_title'	=> new Expression('COALESCE(pc18.title, pc.title)'),
-				'title'				=> new Expression('COALESCE(p18.title, p.title)'),
+				'title'			=> new Expression('COALESCE(p18.title, p.title)'),
 				'invoice_title'		=> new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
 				'description'		=> new Expression('COALESCE(p18.description, p.description)'),
 				'characteristic'	=> new Expression('COALESCE(p18.characteristic, p.characteristic)'),
-				'price'				=> new Expression('ppl.price'),
+				'price'			=> new Expression('ppl.price'),
 				'list_price'		=> new Expression('ppl.list_price'),
-				'flag_new'			=> new Expression("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.activated_at, p.activated_at))"),
+				'flag_new'		=> new Expression("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.activated_at, p.activated_at))"),
 				'discount_1'		=> new Expression('ppl.discount_1'),
 				'discount_2'		=> new Expression('ppl.discount_2'),
 				'discount_3'		=> new Expression('ppl.discount_3'),
@@ -116,10 +121,10 @@ class ProductBrowser extends AbstractBrowser {
 				'is_promotional'	=> new Expression('ppl.is_promotional'),
 				'is_bestseller'		=> new Expression('ppl.is_bestseller'),
 				'is_bestvalue'		=> new Expression('ppl.is_bestvalue'),
-				'is_hot'			=> new Expression('ppl.is_hot'),
+				'is_hot'		=> new Expression('ppl.is_hot'),
 				'available_stock'	=> new Expression('ps.available_stock'),
 				'theoretical_stock'	=> new Expression('ps.theoretical_stock'),
-				'currency_reference'=> new Expression('c.reference'),
+				'currency_reference'    => new Expression('c.reference'),
 				'unit_reference'	=> new Expression('pu.reference'),
 				'type_reference'	=> new Expression('pt.reference'),
 				'picture_media_id'	=> new Expression('pm.media_id'),
@@ -129,16 +134,16 @@ class ProductBrowser extends AbstractBrowser {
 
 		$product_id = $params->get('id');
 		if ($product_id != '') {
-			$select->where("p.product_id = $product_id");
+                    $select->where("p.product_id = $product_id");
 		}
 		
 		$brands = $params->get('brands');
 		if (count($brands) > 0) {
-			$brand_clauses = array();
-			foreach($brands as $brand_reference) {
-				$brand_clauses[] = "pb.reference = '$brand_reference'";	
-			}
-			$select->where('(' . join(' OR ', $brand_clauses) . ')');
+                    $brand_clauses = array();
+                    foreach($brands as $brand_reference) {
+			$brand_clauses[] = "pb.reference = '$brand_reference'";	
+                    }
+                    $select->where('(' . join(' OR ', $brand_clauses) . ')');
 		}
 		
 		$categories = $params->get('categories');
@@ -166,36 +171,63 @@ class ProductBrowser extends AbstractBrowser {
 		}
 		
 		if (($query = trim($params->get('query'))) != "") {
+                    
 			$platform = $this->adapter->getPlatform();
-			$query = str_replace(' ', '%', trim($query));				
-			$qRef = $platform->quoteValue($query . '%');
-			$qTitle = $platform->quoteValue('%' . $query . '%');
-			
-                        $ftKeywords = $platform->quoteValue('+' . str_replace(' ', ' +', $query));
+                        $relevance = new Expression('');
+                    
+                        // 1. TEST PART WITH 
+                        // BARCODE, SEARCH_REFERENCE, PRODUCT_ID,
                         
-			$qclauses = array(
-				"p.reference like $qRef",
-				
-				"p18.title like $qTitle",
-				"p.display_reference like $qRef",
-                                // FULLTEXT
-                                "match(psi.keywords) against ($ftKeywords in boolean mode)"
-			);
-			$select->where("(" . join(' or ', $qclauses) .")");
-                        $select->order(array(
-                                new Expression(
-                                      "if (p.reference like $qRef, 1000,
-                                           if (p18.title like $qTitle, 900,
-                                               if (p.display_reference like $qRef, 800,
-                                                        match(psi.keywords) against ($ftKeywords in boolean mode) 
-                                               )
-                                            )
-                                      ) desc"
-                                )    
-                            )
-                        );
-		}
+                        $matches = array();
+                        if (is_numeric($query) && strlen($query) < 20) {
+                            
+                            // Can be a barcode or a product_id, 
+                            $matches[100000000] = "p.product_id = $query";
+                            
+                            if (strlen($query) > 10) {
+                                $matches[ 100000000] = "p.barcode_ean13 = '$query'";
+                                $matches[  10000000] = "p.barcode_upca = '$query'";
+                            }
+                            
+                        } 
+                        
+                        $splitted = explode(' ', preg_replace('!\s+!', ' ', $query));
+                        
+                        // test title in order
+                        $matches[ 1000000] = 'p.search_reference like' . $platform->quoteValue('%' . join('%', $splitted) . '%');
+                        $matches[  100000] = 'p18.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
+                        $matches[   10000] = 'p.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
+                        $matches[    1000] = 'psi.keywords like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
+                        $matches[       0] = 'MATCH (psi.keywords) AGAINST (' . $platform->quoteValue(join(' ', $splitted)) .' IN NATURAL LANGUAGE MODE)';
+                        
+                        $relevance = '';
+                        $i = 0;
+                        foreach($matches as $weight => $condition) {
+                            if ($weight > 0) {
+                                $relevance .= "if ($condition, $weight, ";
+                            } else {
+                                $relevance .= $condition;
+                            }
+                        }
+                        $relevance .= str_repeat(')', count($matches) - 1);
+
+			$select->where("(" . join(' or ', array_values($matches)) .")");
+                        
+		} else {
+                    $relevance = "1";
+                }
                 
+                // Automatically add relevance column
+                $columns = array_merge($select->getRawState(Select::COLUMNS), array('relevance' => new Expression($relevance)));
+                $select->columns($columns);
+                
+                $select->order(array('relevance desc', 'pc.global_sort_index', 'p.sort_index', 'p.display_reference'));
+                
+               // echo '<pre>';
+                
+               // echo $select->getSql();
+               // die();
+                //$select->order($relevance);
                 
                 
   		

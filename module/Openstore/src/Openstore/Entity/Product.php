@@ -19,9 +19,11 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   indexes={
  *     @ORM\Index(name="title_idx", columns={"title"}),
  *     @ORM\Index(name="reference_idx", columns={"reference"}),
- *     @ORM\Index(name="display_reference_idx", columns={"display_reference"}),
+ *     @ORM\Index(name="search_reference_idx", columns={"search_reference"}),
  *     @ORM\Index(name="description_idx", columns={"description"}),
  *     @ORM\Index(name="characteristic_idx", columns={"characteristic"}),
+ *     @ORM\Index(name="barcode_ean13_idx", columns={"barcode_ean13"}), 
+ *     @ORM\Index(name="barcode_upca_idx", columns={"barcode_upca"}),  
  *     @ORM\Index(name="keywords_idx", columns={"keywords"}),
  *     @ORM\Index(name="slug_idx", columns={"slug"}),
  *   },
@@ -30,7 +32,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @Gedmo\SoftDeleteable(fieldName="deleted_at")
  */
 class Product {
-
 
 
     /**
@@ -46,15 +47,20 @@ class Product {
     private $product_id;
 
     /**
-     * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Unique reference"})
+     * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Unique reference, may include supplier information to maintain uniqueness"})
      */
     private $reference;
 
     /**
-     * @ORM\Column(type="string", length=60, nullable=true, options={"comment" = "Displayable reference, common for search and display"})
+     * @ORM\Column(type="string", length=60, nullable=true, options={"comment" = "Displayable reference, without extra info to maintain uniqueness"})
      */
     private $display_reference;
 
+    /**
+     * @ORM\Column(type="string", length=60, nullable=true, options={"comment" = "Reference used for searches, may differ from display reference, some chars may be replaced"})
+     */
+    private $search_reference;    
+    
     /**
      * @ORM\ManyToOne(targetEntity="Product", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="product_id", onDelete="CASCADE")

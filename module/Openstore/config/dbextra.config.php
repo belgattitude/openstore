@@ -75,8 +75,8 @@ ENDQ;
 
 $stmts['drop/function/strip_tags'] = "DROP FUNCTION IF EXISTS `strip_tags`";
 $stmts['create/function/strip_tags']	= <<< ENDQ
-CREATE FUNCTION strip_tags( Dirty varchar(4000) )
-RETURNS varchar(10000)
+CREATE FUNCTION strip_tags( Dirty varchar(3000) )
+RETURNS varchar(3000)
 DETERMINISTIC 
 BEGIN
   DECLARE iStart, iEnd, iLength int;
@@ -95,6 +95,24 @@ BEGIN
 END;
 ENDQ;
 
+
+$stmts['drop/function/delete_double_spaces'] = "DROP FUNCTION IF EXISTS `delete_double_spaces`";
+$stmts['create/function/delete_double_spaces']	= <<< ENDQ
+CREATE FUNCTION delete_double_spaces ( title VARCHAR(3000) )
+RETURNS VARCHAR(3000) DETERMINISTIC
+BEGIN
+    DECLARE result VARCHAR(3000);
+    SET result = REPLACE( title, '  ', ' ' );
+    WHILE (result <> title) DO 
+        SET title = result;
+        SET result = REPLACE( title, '  ', ' ' );
+    END WHILE;
+    RETURN result;
+END;
+ENDQ;
+
+
+
 ####################################################################
 # 3. DATABASE PROCEDURES                                           #
 ####################################################################
@@ -103,28 +121,39 @@ $stmts['drop/procedure/rebuild_product_search'] = "DROP PROCEDURE IF EXISTS `reb
 $stmts['create/procedure/rebuild_product_search']	= <<< ENDQ
 CREATE PROCEDURE `rebuild_product_search` ()
 BEGIN
+        SET @updated_at = NOW();
+        SET @default_lang := (SELECT lang FROM `language` where flag_default = 1);
+        IF (@default_lang is null) THEN 
+             SET @default_lang = 'en'; 
+        END IF;
 	INSERT INTO product_search (product_id, lang, keywords, updated_at)
         SELECT 
             p.product_id,
-            p18.lang,
-            strip_tags(
-                        TRIM(
-                                CONCAT_WS(' ',
-                                        COALESCE(p.reference, ''),
-                                        COALESCE(pb.title, ''),
-                                        COALESCE(p18.title, p.title, ''),
-                                        COALESCE(p18.invoice_title, p.invoice_title, ''),
-                                        IF(p2.product_id is not null,
-                                            COALESCE(p18_2.description, p2.description, ''),
-                                            COALESCE(p18.description, p.description, '')
-                                        ),
-                                        COALESCE(p18.characteristic, p.characteristic, ''),
-                                        COALESCE(p18.keywords, p.keywords, ''),
-                                        COALESCE(pg18.title, pg.title, '')
-                                )
-                        )
-                ) as keywords,
-            NOW() as updated_at
+            if (p18.lang is null, @default_lang, p18.lang) as lang,
+            UPPER(
+                delete_double_spaces(
+                    strip_tags(
+                            TRIM(
+                                    CONCAT_WS(' ',
+                                            COALESCE(p.reference, ''),
+                                            COALESCE(pb.title, ''),
+                                            COALESCE(p18.title, p.title, ''),
+                                            COALESCE(p18.invoice_title, p.invoice_title, ''),
+                                            IF(p2.product_id is not null,
+                                                COALESCE(p18_2.description, p2.description, ''),
+                                                COALESCE(p18.description, p.description, '')
+                                            ),
+                                            COALESCE(p18.characteristic, p.characteristic, ''),
+                                            COALESCE(p18.keywords, p.keywords, ''),
+                                            COALESCE(pc18.breadcrumb, pc.breadcrumb, ''),
+                                            COALESCE(pg18.title, pg.title, '')
+                                    )
+                            )
+                    )
+                )
+            )
+            as keywords,
+            @updated_at as updated_at
         from
             product p
                 left outer join
@@ -141,29 +170,43 @@ BEGIN
                 left outer join
             product_group_translation pg18 ON pg18.group_id = pg.group_id
                 and pg18.lang = p18.lang
+                left outer join
+            product_category pc on pc.category_id = p.category_id
+                left outer join
+            product_category_translation pc18 on pc18.category_id = p.category_id
+                and pc18.lang = p18.lang
         where
             1=1
             and p.flag_active = 1
-        order by p.product_id , p18.lang
+        order by if (p18.lang is null, @default_lang, p18.lang), p.product_id 
 	on duplicate key update
-            keywords = strip_tags(
-                        TRIM(
-                                CONCAT_WS(' ',
-                                        COALESCE(p.reference, ''),
-                                        COALESCE(pb.title, ''),
-                                        COALESCE(p18.title, p.title, ''),
-                                        COALESCE(p18.invoice_title, p.invoice_title, ''),
-                                        IF(p2.product_id is not null,
-                                            COALESCE(p18_2.description, p2.description, ''),
-                                            COALESCE(p18.description, p.description, '')
-                                        ),
-                                        COALESCE(p18.characteristic, p.characteristic, ''),
-                                        COALESCE(p18.keywords, p.keywords, ''),
-                                        COALESCE(pg18.title, pg.title, '')
-                                )
-                        )
-                ), 
-            updated_at = NOW();
+            keywords = UPPER(
+                delete_double_spaces(
+                    strip_tags(
+                            TRIM(
+                                    CONCAT_WS(' ',
+                                            COALESCE(p.reference, ''),
+                                            COALESCE(pb.title, ''),
+                                            COALESCE(p18.title, p.title, ''),
+                                            COALESCE(p18.invoice_title, p.invoice_title, ''),
+                                            IF(p2.product_id is not null,
+                                                COALESCE(p18_2.description, p2.description, ''),
+                                                COALESCE(p18.description, p.description, '')
+                                            ),
+                                            COALESCE(p18.characteristic, p.characteristic, ''),
+                                            COALESCE(p18.keywords, p.keywords, ''),
+                                            COALESCE(pc18.breadcrumb, pc.breadcrumb, ''),
+                                            COALESCE(pg18.title, pg.title, '')
+                                    )
+                            )
+                    )
+                )
+            )
+            ,
+            updated_at = @updated_at;
+        
+        -- REMOVE OLDER DATA
+        DELETE FROM product_search where updated_at < @updated_at and updated_at is not null;
 END
 ENDQ;
 
