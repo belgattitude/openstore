@@ -17,11 +17,11 @@ class UserSession implements ServiceLocatorAwareInterface {
 
     /**
      *
-     * @var \Zend\Session\Container
+     * @var Container
      */
     protected $container;
 
-    function __construct(\Zend\Session\Container $container) {
+    function __construct(Container $container) {
         $this->container = $container;
     }
 
@@ -34,7 +34,7 @@ class UserSession implements ServiceLocatorAwareInterface {
 
     /**
      * 
-     * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
+     * @param ServiceLocatorInterface $serviceLocator
      * @return \Openstore\Service
      */
     public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
@@ -44,7 +44,7 @@ class UserSession implements ServiceLocatorAwareInterface {
 
     /**
      * 
-     * @return \Zend\ServiceManager\ServiceLocatorInterface
+     * @return ServiceLocatorInterface
      */
     public function getServiceLocator() {
         return $this->serviceLocator;
