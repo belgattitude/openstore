@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ZfcUser Configuration
  *
@@ -13,7 +14,6 @@ $settings = array(
      * instance that ZfcUser should use.
      */
     'zend_db_adapter' => 'Zend\Db\Adapter\Adapter',
-
     /**
      * User Model Entity Class
      *
@@ -31,7 +31,6 @@ $settings = array(
      * Accepted values: boolean true or false
      */
     'enable_registration' => true,
-
     /**
      * Enable Username
      *
@@ -41,8 +40,7 @@ $settings = array(
      * Accepted values: boolean true or false
      */
     'enable_username' => false,
-
-    /**     
+    /**
      * Authentication Adapters
      *
      * Specify the adapters that will be used to try and authenticate the user
@@ -50,8 +48,7 @@ $settings = array(
      * Default value: array containing 'ZfcUser\Authentication\Adapter\Db' with priority 100
      * Accepted values: array containing services that implement 'ZfcUser\Authentication\Adapter\ChainableAdapter'
      */
-    'auth_adapters' => array( 100 => 'ZfcUser\Authentication\Adapter\Db' ),
-
+    'auth_adapters' => array(100 => 'ZfcUser\Authentication\Adapter\Db'),
     /**
      * Enable Display Name
      *
@@ -82,7 +79,6 @@ $settings = array(
      * Accepted values: positive int value
      */
     'login_form_timeout' => 300,
-
     /**
      * Registration form timeout
      *
@@ -92,7 +88,6 @@ $settings = array(
      * Accepted values: positive int value
      */
     'user_form_timeout' => 300,
-
     /**
      * Login After Registration
      *
@@ -102,7 +97,6 @@ $settings = array(
      * Accepted values: boolean true or false
      */
     'login_after_registration' => true,
-
     /**
      * Registration Form Captcha
      *
@@ -118,14 +112,14 @@ $settings = array(
      * this to configure which Zend\Captcha adapter to use, and the options to
      * pass to it. The default uses the Figlet captcha.
      */
-    /*'form_captcha_options' => array(
-        'class'   => 'figlet',
-        'options' => array(
-            'wordLen'    => 5,
-            'expiration' => 300,
-            'timeout'    => 300,
-        ),
-    ),*/
+    /* 'form_captcha_options' => array(
+      'class'   => 'figlet',
+      'options' => array(
+      'wordLen'    => 5,
+      'expiration' => 300,
+      'timeout'    => 300,
+      ),
+      ), */
 
     /**
      * Use Redirect Parameter If Present
@@ -135,13 +129,12 @@ $settings = array(
      * Accepted values: boolean true or false
      */
     'use_redirect_parameter_if_present' => true,
-
     /**
-	 * Sets the view template for the user login widget
-	 *
-	 * Default value: 'zfc-user/user/login.phtml'
+     * Sets the view template for the user login widget
+     *
+     * Default value: 'zfc-user/user/login.phtml'
      * Accepted values: string path to a view script
-	 */
+     */
     //'user_login_widget_view_template' => 'zfc-user/users/login.phtml',
 
     /**
@@ -154,7 +147,6 @@ $settings = array(
      *
      */
     'login_redirect_route' => 'home',
-
     /**
      * Logout Redirect Route
      *
@@ -164,7 +156,6 @@ $settings = array(
      * Accepted values: A valid route name within your application
      */
     'logout_redirect_route' => 'zfcuser/login',
-
     /**
      * Password Security
      *
@@ -177,7 +168,6 @@ $settings = array(
      * invalidating existing user accounts. Existing user passwords will be
      * re-hashed automatically on their next successful login.
      */
-
     /**
      * Password Cost
      *
@@ -193,9 +183,8 @@ $settings = array(
      * 
      * Should user's state be used in the registration/login process?
      */
-	// TODO SEB, put it again as false
+    // TODO SEB, put it again as false
     'enable_user_state' => false,
-    
     /**
      * Default user state upon registration
      * 
@@ -203,7 +192,6 @@ $settings = array(
      * Allowed value type: integer
      */
     'default_user_state' => 1,
-    
     /**
      * States which are allowing user to login
      * 
@@ -212,15 +200,14 @@ $settings = array(
      * Allowed value types: null and integer
      */
     //'allowed_login_states' => array( null, 1 ),
-    
+
     /**
      * User table name
      */
     'table_name' => 'user',
-    
-    /**
-     * End of ZfcUser configuration
-     */
+        /**
+         * End of ZfcUser configuration
+         */
 );
 
 /**
@@ -230,7 +217,7 @@ return array(
     'zfcuser' => $settings,
     'service_manager' => array(
         'aliases' => array(
-            'zfcuser_zend_db_adapter' => (isset($settings['zend_db_adapter'])) ? $settings['zend_db_adapter']: 'Zend\Db\Adapter\Adapter',
+            'zfcuser_zend_db_adapter' => (isset($settings['zend_db_adapter'])) ? $settings['zend_db_adapter'] : 'Zend\Db\Adapter\Adapter',
         ),
     ),
 );

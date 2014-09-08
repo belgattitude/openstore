@@ -14,67 +14,67 @@ $stmts = array();
 # 2. DATABASE FUNCTIONS                                            #
 ####################################################################
 
-$stmts['drop/function/slugify']		= "DROP FUNCTION IF EXISTS `slugify`";
-$stmts['create/function/slugify']	= <<< ENDQ
+$stmts['drop/function/slugify']        = "DROP FUNCTION IF EXISTS `slugify`";
+$stmts['create/function/slugify']    = <<< ENDQ
 CREATE FUNCTION `slugify` (dirty_string varchar(255))
 RETURNS varchar(255) CHARSET latin1
 DETERMINISTIC
 BEGIN
-	DECLARE x, y , z Int;
-	Declare temp_string, new_string VarChar(255);
-	Declare is_allowed Bool;
-	Declare c, check_char VarChar(1);
+    DECLARE x, y , z Int;
+    Declare temp_string, new_string VarChar(255);
+    Declare is_allowed Bool;
+    Declare c, check_char VarChar(1);
 
-	set temp_string = LOWER(dirty_string);
+    set temp_string = LOWER(dirty_string);
 
-	Set temp_string = replace(temp_string, '&', ' and ');
+    Set temp_string = replace(temp_string, '&', ' and ');
 
-	Select temp_string Regexp('[^a-z0-9\-]+') into x;
-	If x = 1 then
-		set z = 1;
-		While z <= Char_length(temp_string) Do
-			Set c = Substring(temp_string, z, 1);
-			Set is_allowed = False;
-			If !((ascii(c) = 45) or (ascii(c) >= 48 and ascii(c) <= 57) or (ascii(c) >= 97 and ascii(c) <= 122)) Then
-				Set temp_string = Replace(temp_string, c, '-');
-			End If;
-			set z = z + 1;
-		End While;
-	End If;
+    Select temp_string Regexp('[^a-z0-9\-]+') into x;
+    If x = 1 then
+        set z = 1;
+        While z <= Char_length(temp_string) Do
+            Set c = Substring(temp_string, z, 1);
+            Set is_allowed = False;
+            If !((ascii(c) = 45) or (ascii(c) >= 48 and ascii(c) <= 57) or (ascii(c) >= 97 and ascii(c) <= 122)) Then
+                Set temp_string = Replace(temp_string, c, '-');
+            End If;
+            set z = z + 1;
+        End While;
+    End If;
 
-	Select temp_string Regexp("^-|-$|'") into x;
-	If x = 1 Then
-		Set temp_string = Replace(temp_string, "'", '');
-		Set z = Char_length(temp_string);
-		Set y = Char_length(temp_string);
-		Dash_check: While z > 1 Do
-			If Strcmp(SubString(temp_string, -1, 1), '-') = 0 Then
-				Set temp_string = Substring(temp_string,1, y-1);
-				Set y = y - 1;
-			Else
-				Leave Dash_check;
-			End If;
-			Set z = z - 1;
-		End While;
-	End If;
+    Select temp_string Regexp("^-|-$|'") into x;
+    If x = 1 Then
+        Set temp_string = Replace(temp_string, "'", '');
+        Set z = Char_length(temp_string);
+        Set y = Char_length(temp_string);
+        Dash_check: While z > 1 Do
+            If Strcmp(SubString(temp_string, -1, 1), '-') = 0 Then
+                Set temp_string = Substring(temp_string,1, y-1);
+                Set y = y - 1;
+            Else
+                Leave Dash_check;
+            End If;
+            Set z = z - 1;
+        End While;
+    End If;
 
-	Repeat
-		Select temp_string Regexp("--") into x;
-		If x = 1 Then
-			Set temp_string = Replace(temp_string, "--", "-");
-		End If;
-	Until x <> 1 End Repeat;
+    Repeat
+        Select temp_string Regexp("--") into x;
+        If x = 1 Then
+            Set temp_string = Replace(temp_string, "--", "-");
+        End If;
+    Until x <> 1 End Repeat;
 
-	If LOCATE('-', temp_string) = 1 Then
-		Set temp_string = SUBSTRING(temp_string, 2);
-	End If;
+    If LOCATE('-', temp_string) = 1 Then
+        Set temp_string = SUBSTRING(temp_string, 2);
+    End If;
 
-	Return temp_string;
-END		
+    Return temp_string;
+END        
 ENDQ;
 
 $stmts['drop/function/strip_tags'] = "DROP FUNCTION IF EXISTS `strip_tags`";
-$stmts['create/function/strip_tags']	= <<< ENDQ
+$stmts['create/function/strip_tags']    = <<< ENDQ
 CREATE FUNCTION strip_tags( Dirty varchar(3000) )
 RETURNS varchar(3000)
 DETERMINISTIC 
@@ -97,7 +97,7 @@ ENDQ;
 
 
 $stmts['drop/function/delete_double_spaces'] = "DROP FUNCTION IF EXISTS `delete_double_spaces`";
-$stmts['create/function/delete_double_spaces']	= <<< ENDQ
+$stmts['create/function/delete_double_spaces']    = <<< ENDQ
 CREATE FUNCTION delete_double_spaces ( title VARCHAR(3000) )
 RETURNS VARCHAR(3000) DETERMINISTIC
 BEGIN
@@ -118,7 +118,7 @@ ENDQ;
 ####################################################################
 
 $stmts['drop/procedure/rebuild_product_search'] = "DROP PROCEDURE IF EXISTS `rebuild_product_search`";
-$stmts['create/procedure/rebuild_product_search']	= <<< ENDQ
+$stmts['create/procedure/rebuild_product_search']    = <<< ENDQ
 CREATE PROCEDURE `rebuild_product_search` ()
 BEGIN
         SET @updated_at = NOW();
@@ -126,7 +126,7 @@ BEGIN
         IF (@default_lang is null) THEN 
              SET @default_lang = 'en'; 
         END IF;
-	INSERT INTO product_search (product_id, lang, keywords, updated_at)
+        INSERT INTO product_search (product_id, lang, keywords, updated_at)
         SELECT 
             p.product_id,
             if (p18.lang is null, @default_lang, p18.lang) as lang,
@@ -179,7 +179,7 @@ BEGIN
             1=1
             and p.flag_active = 1
         order by if (p18.lang is null, @default_lang, p18.lang), p.product_id 
-	on duplicate key update
+    on duplicate key update
             keywords = UPPER(
                 delete_double_spaces(
                     strip_tags(
@@ -212,7 +212,7 @@ ENDQ;
 
 
 $stmts['drop/procedure/rebuild_category_breadcrumbs'] = "DROP PROCEDURE IF EXISTS `rebuild_category_breadcrumbs`";
-$stmts['create/procedure/rebuild_category_breadcrumbs']	= <<< ENDQ
+$stmts['create/procedure/rebuild_category_breadcrumbs']    = <<< ENDQ
 CREATE PROCEDURE `rebuild_category_breadcrumbs` ()
 BEGIN
     -- 1. Category     
@@ -224,7 +224,7 @@ BEGIN
                                     GROUP_CONCAT(
                                             pc2.title
                                             ORDER BY pc1.lvl , pc2.lvl
-                                            -- 	could be utf8 - &rarr; →
+                                            --     could be utf8 - &rarr; →
                                             SEPARATOR ' | '
                             ) AS `breadcrumb`
                     FROM
@@ -248,7 +248,7 @@ BEGIN
                                     GROUP_CONCAT(
                                             IF(pc18.title is null, pc2.title, pc18.title)
                                             ORDER BY pc1.lvl , pc2.lvl
-                                            -- 	could be utf8 - &rarr; →
+                                            --     could be utf8 - &rarr; →
                                             SEPARATOR ' | '
                             ) AS `breadcrumb`
                     FROM
@@ -279,8 +279,8 @@ ENDQ;
 
 
 return array(
-	'dbextra' => array(
-		'statements' => $stmts
-	)
-	
+    'dbextra' => array(
+        'statements' => $stmts
+    )
+    
 );

@@ -1,12 +1,13 @@
 <?php
+
 return array(
-	'mediamanager' => array(
-		'adapter' => array(
-			'class' => 'Gaufrette\Adapter\Local',
-			'options' => array(
-				'basePath' => '/web/data/images/mediamanager'
-			)
-		)
-	),
+    'mediamanager' => array(
+        'adapter' => array(
+            'class' => 'Gaufrette\Adapter\Local',
+            'options' => array(
+                'basePath' => '/web/data/images/mediamanager'
+            )
+        )
+    ),
 
 );

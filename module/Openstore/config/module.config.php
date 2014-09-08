@@ -16,7 +16,7 @@ return array(
         ),
         'aliases' => array(
             'translator' => 'MvcTranslator',
-        // 'Zend\Authentication\AuthenticationService' => 'zfcuser_auth_service'			
+        // 'Zend\Authentication\AuthenticationService' => 'zfcuser_auth_service'            
         ),
     ),
     'translator' => array(
@@ -59,7 +59,6 @@ return array(
         'template_path_stack' => array(
             //realpath(__DIR__ . '/../../public/themes'),
             realpath(__DIR__ . '/../view'),
-            
         ),
         'strategies' => array(
             'ViewJsonStrategy',
@@ -110,7 +109,7 @@ return array(
                 //'metadata_cache'    => 'my_memcache',
                 //'query_cache'       => 'my_memcache',
                 //'result_cache'      => 'my_memcache',
-                //'hydration_cache'   => 'my_memcache',				
+                //'hydration_cache'   => 'my_memcache',                
                 'drivers' => array(
                     __NAMESPACE__ . '\Entity' => __NAMESPACE__ . '_driver',
                 //'Gedmo\Translatable\Entity' => 'translatable_metadata_driver',

@@ -29,7 +29,7 @@ class ProductBrowser extends AbstractBrowser {
 	
 	/**
 	 * 
-	 * @return \Zend\Db\Sql\Select
+	 * @return Select
 	 */
 	function getSelect()
 	{
@@ -42,7 +42,7 @@ class ProductBrowser extends AbstractBrowser {
 		$select = new Select();
                 $select->setDbAdapter($this->adapter);
                 
-		$select->from(array('p' => 'product'), array('product_id', 'category_id'))
+		$select->from(array('p' => 'product'), array())
 				->join(array('p18' => 'product_translation'),
 						new Expression("p18.product_id = p.product_id and p18.lang = '$lang'"), 
 						array(), $select::JOIN_LEFT)
@@ -105,7 +105,7 @@ class ProductBrowser extends AbstractBrowser {
 				'brand_id'		=> new Expression('p.brand_id'),
 				'brand_reference'	=> new Expression('pb.reference'),
 				'brand_title'		=> new Expression('pb.title'),
-				'category_reference'=> new Expression('pc.reference'),
+				'category_reference'    => new Expression('pc.reference'),
 				'category_title'	=> new Expression('COALESCE(pc18.title, pc.title)'),
 				'title'			=> new Expression('COALESCE(p18.title, p.title)'),
 				'invoice_title'		=> new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),

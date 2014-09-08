@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -19,7 +20,6 @@
 /**
  * Copy-paste this file to your config/autoload folder (don't forget to remove the .dist extension!)
  */
-
 return [
     'zfc_rbac' => [
         /**
@@ -29,21 +29,20 @@ return [
          * interface, otherwise it will throw an exception.
          */
         //'identity_provider' => 'ZfcRbac\Identity\AuthenticationIdentityProvider',
-		'identity_provider' => 'MyCustomAuthenticationIdentityProvider',
-		/*
-		'identity_provider' => function($a) { 
-	
-			var_dump(get_class($a));
-			die();
-		
-		},*/
+        'identity_provider' => 'MyCustomAuthenticationIdentityProvider',
+        /*
+          'identity_provider' => function($a) {
+
+          var_dump(get_class($a));
+          die();
+
+          }, */
         /**
          * Set the guest role
          *
          * This role is used by the authorization service when the authentication service returns no identity
          */
         'guest_role' => 'guest',
-
         /**
          * Set the guards
          *
@@ -55,32 +54,27 @@ return [
          *          ]
          *      ]
          */
-			
-		'guards' => [
+        'guards' => [
             'ZfcRbac\Guard\RouteGuard' => [
                 'admin*' => ['admin'],
-				'zfcuser' => ['guest'],
-				'zfcuser/login' => ['guest'],
-				'zfcuser/logout' => ['*'],
-				'zfcuser/register' => ['guest'],
-				//'home' => ['guest', 'member'],
-				'home' => ['*'],
-				'store*' => ['customer', 'admin'],
-				
-				//store/browse, store/search, store/product
-				'shopcart*' => ['customer', 'admin'],
-				'media*' => ['*'],
-				// console
-				'openstore-recreatedb' => ['*'],
-				'openstore-updatedb' => ['*'],
-				'doctrine_orm_module_yuml' => ['member'],
-				'api*' => ['*'],
-				'zf-apigility*' => ['*'],
+                'zfcuser' => ['guest'],
+                'zfcuser/login' => ['guest'],
+                'zfcuser/logout' => ['*'],
+                'zfcuser/register' => ['guest'],
+                //'home' => ['guest', 'member'],
+                'home' => ['*'],
+                'store*' => ['customer', 'admin'],
+                //store/browse, store/search, store/product
+                'shopcart*' => ['customer', 'admin'],
+                'media*' => ['*'],
+                // console
+                'openstore-recreatedb' => ['*'],
+                'openstore-updatedb' => ['*'],
+                'doctrine_orm_module_yuml' => ['member'],
+                'api*' => ['*'],
+                'zf-apigility*' => ['*'],
             ]
-			
-			
         ],
-
         /**
          * As soon as one rule for either route or controller is specified, a guard will be automatically
          * created and will start to hook into the MVC loop.
@@ -92,7 +86,6 @@ return [
          * DENY is the most secure way, but it is more work for the developer
          */
         'protection_policy' => \ZfcRbac\Guard\GuardInterface::POLICY_DENY,
-
         /**
          * Configuration for role provider
          *
@@ -108,29 +101,25 @@ return [
          *
          * Supported options depend of the role provider, so please refer to the official documentation
          */
-		/*
+        /*
+          'role_provider' => [
+          'ZfcRbac\Role\InMemoryRoleProvider' => [
+          'admin' => [
+          'children'    => ['member'],
+          'permissions' => ['delete']
+          ],
+          'member' => [
+          'permissions' => ['edit']
+          ]
+          ]
+          ], */
         'role_provider' => [
-            'ZfcRbac\Role\InMemoryRoleProvider' => [
-                'admin' => [
-                    'children'    => ['member'],
-                    'permissions' => ['delete']
-                ],
-                'member' => [
-                    'permissions' => ['edit']
-                ]
-            ]
-        ],*/
-		
-
-		
-		'role_provider' => [
             'ZfcRbac\Role\ObjectRepositoryRoleProvider' => [
-                'object_manager'     => 'doctrine.entitymanager.orm_default',
-                'class_name'         => 'Openstore\Entity\Role',
+                'object_manager' => 'doctrine.entitymanager.orm_default',
+                'class_name' => 'Openstore\Entity\Role',
                 'role_name_property' => 'name'
             ]
-        ],		
-        
+        ],
         /**
          * Configure the unauthorized strategy. It is used to render a template whenever a user is unauthorized
          */
@@ -140,7 +129,6 @@ return [
              */
             'template' => 'error/403'
         ],
-
         /**
          * Configure the redirect strategy. It is used to redirect the user to another route when a user is
          * unauthorized
@@ -149,37 +137,33 @@ return [
             /**
              * Enable redirection when the user is connected
              */
-             'redirect_when_connected' => false,
-
+            'redirect_when_connected' => false,
             /**
              * Set the route to redirect when user is connected (of course, it must exist!)
              */
             'redirect_to_route_connected' => 'home',
-
             /**
              * Set the route to redirect when user is disconnected (of course, it must exist!)
              */
             'redirect_to_route_disconnected' => 'zfcuser/login',
-			//'redirect_to_route_disconnected' => 'home',
+            //'redirect_to_route_disconnected' => 'home',
 
             /**
              * If a user is unauthorized and redirected to another route (login, for instance), should we
              * append the previous URI (the one that was unauthorized) in the query params?
              */
             'append_previous_uri' => false,
-
             /**
              * If append_previous_uri option is set to true, this option set the query key to use when
              * the previous uri is appended
              */
             'previous_uri_query_key' => 'redirectTo'
         ],
-
-        /**
-         * Various plugin managers for guards and role providers. Each of them must follow a common
-         * plugin manager config format, and can be used to create your custom objects
-         */
-        // 'guard_manager'               => [],
-        // 'role_provider_manager'       => []
+    /**
+     * Various plugin managers for guards and role providers. Each of them must follow a common
+     * plugin manager config format, and can be used to create your custom objects
+     */
+    // 'guard_manager'               => [],
+    // 'role_provider_manager'       => []
     ]
 ];
