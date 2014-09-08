@@ -205,6 +205,8 @@ class ConsoleController extends AbstractActionController
 			echo "Executing $command\n";
 			passthru($command);
 		}
+                
+                $this->adapter->query("ALTER TABLE `product_search` ADD FULLTEXT(`keywords`)")->execute();
 	}
 	
 	public function relocategroupcategAction()

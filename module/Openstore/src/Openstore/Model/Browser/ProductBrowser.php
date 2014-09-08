@@ -173,7 +173,7 @@ class ProductBrowser extends AbstractBrowser {
 		if (($query = trim($params->get('query'))) != "") {
                     
 			$platform = $this->adapter->getPlatform();
-                        $relevance = new Expression('');
+                        
                         
                         $quoted   = $platform->quoteValue($query);
                         
@@ -257,9 +257,9 @@ class ProductBrowser extends AbstractBrowser {
          * @param string $reference
          * @return string
          */
-        protected function getSearchableReference($reference, $wildcards_starts_at_char=4)
+        protected function getSearchableReference($reference, $wildcards_starts_at_char=4, $max_reference_length=20)
         {
-            
+            $reference = substr($reference, 0, $max_reference_length);
             $quoted = $this->adapter->getPlatform()->quoteValue($reference);
             $ref = $this->adapter->query("select get_searchable_reference($quoted) as ref")->execute()->current()['ref'];
             $out = '';
