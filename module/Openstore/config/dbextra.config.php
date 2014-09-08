@@ -111,6 +111,57 @@ BEGIN
 END;
 ENDQ;
 
+$stmts['drop/function/get_searchable_reference'] = "DROP FUNCTION IF EXISTS `get_searchable_reference`";
+$stmts['create/function/get_searchable_reference']    = <<< ENDQ
+CREATE FUNCTION `get_searchable_reference` (`in_str` varchar(2048)) RETURNS varchar(2048) CHARSET utf8
+BEGIN
+    /*
+      This function escape a string from any non alphanumeric chars (A_Z0_9)
+      to get a searchable reference. Also try to remove any first 
+      non-significative zero.
+        
+      FOR example 'BA-0114-22' -> 'BA11422'  
+        
+    */    
+    DECLARE out_str VARCHAR(2048) DEFAULT '';
+    DECLARE c VARCHAR(1) DEFAULT '';
+    DECLARE prev_c VARCHAR(1) DEFAULT '';
+    DECLARE pointer INT DEFAULT 1;
+
+    IF ISNULL(in_str) THEN
+        RETURN NULL;
+    ELSE
+        WHILE pointer <= LENGTH(in_str) DO
+            SET c = UPPER(MID(in_str, pointer, 1));
+				  
+            -- TAKE ONLY [A-Z0-9] characters
+            IF  ((ASCII(c) > 64 AND ASCII(c) < 92) or (ASCII(c) > 47 AND ASCII(c) < 58))
+            THEN
+                -- IF A NUMBER, try to get rid of non-significave numbers
+                IF (ASCII(c) > 47 AND ASCII(c) < 58)
+                THEN 
+                    -- IF C is a zero and PREVIOUS CHARACTER IS NUMERIC
+                    IF (c = 0 and NOT (ASCII(prev_c) > 47 AND ASCII(prev_c) < 58))
+                    THEN
+                        -- NOTHING
+                        set c = c;
+                    ELSE
+                        SET out_str = CONCAT(out_str, c);
+                    END IF;
+                ELSE 
+                    SET out_str = CONCAT(out_str, c);
+                END IF;
+            END IF;
+            SET prev_c = c;
+            SET pointer = pointer + 1;
+        END WHILE;
+    END IF;
+
+    RETURN UPPER(out_str);
+END;
+ENDQ;
+
+
 
 
 ####################################################################

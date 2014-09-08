@@ -174,6 +174,13 @@ class ProductBrowser extends AbstractBrowser {
                     
 			$platform = $this->adapter->getPlatform();
                         $relevance = new Expression('');
+                        
+                        $quoted   = $platform->quoteValue($query);
+                        
+                        
+                        $searchable_ref = $this->getSearchableReference($query);
+                        
+                        
                     
                         // 1. TEST PART WITH 
                         // BARCODE, SEARCH_REFERENCE, PRODUCT_ID,
@@ -182,11 +189,11 @@ class ProductBrowser extends AbstractBrowser {
                         if (is_numeric($query) && strlen($query) < 20) {
                             
                             // Can be a barcode or a product_id, 
-                            $matches[100000000] = "p.product_id = $query";
+                            $matches[1000000000] = "p.product_id = $query";
                             
                             if (strlen($query) > 10) {
-                                $matches[ 100000000] = "p.barcode_ean13 = '$query'";
-                                $matches[  10000000] = "p.barcode_upca = '$query'";
+                                $matches[ 1000000000] = "p.barcode_ean13 = '$query'";
+                                $matches[  100000000] = "p.barcode_upca = '$query'";
                             }
                             
                         } 
@@ -194,12 +201,21 @@ class ProductBrowser extends AbstractBrowser {
                         $splitted = explode(' ', preg_replace('!\s+!', ' ', $query));
                         
                         // test title in order
-                        $matches[ 1000000] = 'p.search_reference like' . $platform->quoteValue('%' . join('%', $splitted) . '%');
-                        $matches[  100000] = 'p18.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
-                        $matches[   10000] = 'p.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
-                        $matches[    1000] = 'psi.keywords like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
-                        $matches[       0] = 'MATCH (psi.keywords) AGAINST (' . $platform->quoteValue(join(' ', $splitted)) .' IN NATURAL LANGUAGE MODE)';
                         
+                        $matches[ 10000000] = "p.search_reference like " . $platform->quoteValue($searchable_ref . '%');
+                        $matches[  1000000] = "p.search_reference like " . $platform->quoteValue('%' . $searchable_ref . '%');
+                        //echo "p.search_reference like CONCAT('%', get_searchable_reference($quoted), '%')";
+                        //die();
+                        if (strlen($query) > 3) {
+                            $matches[  1000000] = 'p18.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
+                            $matches[   100000] = 'p.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
+                        }
+                        if (strlen($query) > 5) {
+                            $matches[    10000] = 'psi.keywords like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
+                        }
+                        
+                        $matches[0] = 'MATCH (psi.keywords) AGAINST (' . $platform->quoteValue(join(' ', $splitted)) .' IN NATURAL LANGUAGE MODE)';
+                         
                         $relevance = '';
                         $i = 0;
                         foreach($matches as $weight => $condition) {
@@ -222,16 +238,38 @@ class ProductBrowser extends AbstractBrowser {
                 $select->columns($columns);
                 
                 $select->order(array('relevance desc', 'pc.global_sort_index', 'p.sort_index', 'p.display_reference'));
+                /*
+                echo '<pre>';
                 
-               // echo '<pre>';
-                
-               // echo $select->getSql();
-               // die();
+                echo $select->getSql();
+                die();
+                 * 
+                 */
                 //$select->order($relevance);
                 
                 
   		
 		return $select;
 	}
+        
+        /**
+         * Return quoted searchable reference from a keyword
+         * @param string $reference
+         * @return string
+         */
+        protected function getSearchableReference($reference, $wildcards_starts_at_char=4)
+        {
+            
+            $quoted = $this->adapter->getPlatform()->quoteValue($reference);
+            $ref = $this->adapter->query("select get_searchable_reference($quoted) as ref")->execute()->current()['ref'];
+            $out = '';
+            foreach(str_split($ref) as $idx => $c) {
+                if ($idx >= $wildcards_starts_at_char) {
+                    $out .= '%';
+                }
+                $out .= $c;
+            }
+            return $out;
+        }
 	
 }

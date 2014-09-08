@@ -16,6 +16,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   }, 
  *   indexes={
  *     @ORM\Index(name="keywords_idx", columns={"keywords"}),
+ *     @ORM\Index(name="keywords_ft_idx", columns={"keywords"}, flags={"fulltext"}),
  *   },
  *   options={"comment" = "Product search indexes", "engine":"MyISAM"}
  * )
@@ -53,6 +54,11 @@ class ProductSearch {
      */
     private $keywords;
 
+    /**
+     * @ORM\Column(type="string", length=700, nullable=true)
+     */
+    private $tags;    
+    
     /**
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record last update timestamp"})
