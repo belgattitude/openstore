@@ -92,6 +92,14 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
 
                     break;
                 case 'xlsx' :
+                    
+                    echo '<pre>';
+                    //$sm = new \Zend\ServiceManager\ServiceManager;
+                    //$sm->get
+                    $lm = $e->getApplication()->getServiceManager()->get('LicenseManager');
+                    $lic = $lm->get('libxl');
+
+                    LibXLWriter::setLicense($lic['license_name'], $lic['license_key']);
                     $csvWriter = new LibXLWriter($vars->getSource());
                     $csvWriter->send();
                     die();
@@ -243,7 +251,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
     public function getConfig() {
 
         $config = array_merge(
-                include __DIR__ . '/config/module.config.php', include __DIR__ . '/config/routes.config.php'
+                include __DIR__ . '/config/module.config.php', 
+                include __DIR__ . '/config/routes.config.php'
         );
 
         return $config;
@@ -253,16 +262,21 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
         return array(
             'initializers' => array(
                 'db' => function($service, $sm) {
-            if ($service instanceof AdapterAwareInterface) {
-                $service->setDbAdapter($sm->get('Zend\Db\Adapter\Adapter'));
-            }
-        },
+                            if ($service instanceof AdapterAwareInterface) {
+                                $service->setDbAdapter($sm->get('Zend\Db\Adapter\Adapter'));
+                            }
+                        },
                 'sm' => function($service, $sm) {
-            if ($service instanceof ServiceLocatorAwareInterface) {
-                $service->setServiceLocator($sm);
-            }
-        }
+                            if ($service instanceof ServiceLocatorAwareInterface) {
+                                $service->setServiceLocator($sm);
+                            }
+                        }
             ),
+            'factories' => array(
+                //'License\LicenceManager' => 'License\Service\LicenseManagerFactory',   
+                //'Test' => function ($sm) { return 'cool'; }
+                'LicenseManager' => 'License\Service\LicenseManagerFactory'
+            ),      
             'aliases' => array(
             ),
             'invokables' => array(
@@ -281,6 +295,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
             'Zend\Loader\StandardAutoloader' => array(
                 'namespaces' => array(
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
+                    'License' => __DIR__ . '/../Openstore/src/License'
                 ),
             ),
         );

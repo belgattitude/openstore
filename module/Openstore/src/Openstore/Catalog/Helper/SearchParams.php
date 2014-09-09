@@ -1,256 +1,237 @@
 <?php
+
 namespace Openstore\Catalog\Helper;
+
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 // SHOULD BE PAGEContext UserContext ?
-class SearchParams
-{
-	/**
-	 * @var ArrayObject
-	 */
-	protected $params;
-	
-	/**
-	 *
-	 * @var \Zend\ServiceManager\ServiceLocatorInterface 
-	 */
-	protected $serviceLocator;
-	
-	function __construct() {
-		$this->params = new \ArrayObject();
-	}
-	
-	/**
-	 * 
-	 * @param \Openstore\Controller\Zend\Mvc\Controller\Plugin\Params $params
-	 * @return \Openstore\Controller\searchParams
-	 */
-	static function createFromRequest(\Zend\Mvc\Controller\Plugin\Params $params, ServiceLocatorInterface $serviceLocator) {
-		$searchParams = new SearchParams();
-		$searchParams->setServiceLocator($serviceLocator);
-		
-		if (($filter = $params->fromRoute('filter')) == '') {
-			$filter = 'all';
-		}
-		$searchParams->setFilter($filter);
-		//var_dump($params->fromRoute('categories')); die();
-		$categories = $params->fromRoute('categories');
-		if (trim($categories) == '') {
-			$searchParams->setCategories(null);
-		} else {
-			$searchParams->setCategories(explode(',', $categories));
-		}
-		
+class SearchParams {
 
-		$brands = $params->fromRoute('brands');
-		if (trim($brands) == '') {
-			$searchParams->setBrands(null);
-		} else {
-			$searchParams->setBrands(explode(',', $brands));
-		}
-		
-		$searchParams->setQuery($params->fromQuery('query', ''));
-		//var_dump($searchParams->getQuery()); die('ggg');
-		$searchParams->setLimit($params->fromRoute('perPage', 20));
-		$searchParams->setPage($params->fromRoute('page', 1));
-		$searchParams->setSortBy($params->fromRoute('sortBy'));
-		$searchParams->setSortDir($params->fromRoute('sortDir', 'ASC'));
-		$searchParams->setLanguage($params->fromRoute('ui_language', 'en'));
-		$searchParams->setPricelist($params->fromRoute('pricelist'));
-		
-		return $searchParams; 
-	} 
-	
-	/**
-	 * 
-	 * @return \ArrayObject
-	 */
-	function toArray()
-	{
-		return $this->params;
-	}
-	
-	function setLanguage($language)
-	{
-		$this->params['language'] = $language;
-		return $this;
-	}
-	
-	function getLanguage()
-	{
-		return $this->params['language'];
-	}
-	
-	function setPricelist($pricelist)
-	{
-		$this->params['pricelist'] = $pricelist;
-		return $this;
-	}
-	
-	function getPricelist()
-	{
-		return $this->params['pricelist'];
-	}
-	
-	
-	/**
-	 * 
-	 * @param string $query
-	 * @return \Openstore\Controller\searchParams
-	 */
-	function setQuery($query) {
-		
-		$this->params['query'] = $query;
-		
-		return $this;
-	}
-	
-	function getQuery()
-	{
-		
-		return $this->params['query'];
-	}
-	
-	function setCategories($categories) {
-		
-		$categories = (array) $categories;
-		
-		if (count($categories) == 0) {
-			$this->params['categories'] = null; 
-		} else {
-			
-			$this->params['categories'] = $categories;
-			
-		}
-		return $this;
-		
-	}
-	
-	function getCategories()
-	{
-		return $this->params['categories'];
-	}
-	
-	function getFirstCategory()
-	{
-		if (is_array($this->params['categories']) && count($this->params['categories']) > 0) {
-			
-			return $this->params['categories'][0];
-		}
-		
-		return null;
-	}
-	
-	function setBrands($brands) {
+    /**
+     * @var ArrayObject
+     */
+    protected $params;
 
-		$brands = (array) $brands;
-		if (count($brands) == 0) {
-			$this->params['brands'] = null; 
-		} else {
-			$this->params['brands'] = $brands;
-		}
-		
-		return $this;
-		
-	}
-	
-	function getBrands() {
-		return $this->params['brands'];
-	}
+    /**
+     *
+     * @var \Zend\ServiceManager\ServiceLocatorInterface 
+     */
+    protected $serviceLocator;
 
-	function getFirstBrand()
-	{
-		if (is_array($this->params['brands']) && count($this->params['brands']) > 0) {
-			return $this->params['brands'][0];
-		}
-		return null;
-	}
-	
-	function setFilter($filter) {
-		
-		$this->params['filter'] = $filter;
-		return $this;
-		
-	}
-	
-	function getOffset() {
-		return ($this->getPage() - 1) * $this->getLimit();
-	}
+    function __construct() {
+        $this->params = new \ArrayObject();
+    }
 
-	/**
-	 * 
-	 * @return \Openstore\Core\Model\Browser\Filter\AbstractFilter
-	 */
-	function getFilter()
-	{
-		$filter_name = $this->params['filter'];
-		if ($filter_name == '') $filter_name = 'all';
-		
-		return $this->getServiceLocator()->get('Openstore\Service')->getProductFilters()->getFilter($filter_name);
-		
-	}
-	
-	
-	function setPage($page) {
-		
-		$this->params['page'] = $page;
-		return $this;
-	}
-	
-	function getPage() {
-		return $this->params['page'];
-	}
-	
-	function setLimit($limit) {
-		
-		$this->params['limit'] = $limit;
-		return $this;
-		
-	}
-	
-	function getLimit() {
-		return $this->params['limit'];
-	}
-	
-	function setSortBy($sortBy)
-	{
-		$this->params['sortBy'] = $sortBy;
-		return $this;
-		
-	}
-	
-	function getSortBy() {
-		return $this->params['sortBy'];
-	}
-	
-	function setSortDir($sortDir)
-	{
-		$this->params['sortDir'] = $sortDir;
-		return $this;
-	}
-	
-	function getSortDir()
-	{
-		return $this->params['sortDir'];
-	}
-	
-	/**
-	 * 
-	 * @return \Zend\ServiceManager\ServiceLocatorInterface
-	 */
-	public function getServiceLocator() {
-		return $this->serviceLocator;
-	}
+    /**
+     * 
+     * @param \Openstore\Controller\Zend\Mvc\Controller\Plugin\Params $params
+     * @return \Openstore\Controller\searchParams
+     */
+    static function createFromRequest(\Zend\Mvc\Controller\Plugin\Params $params, ServiceLocatorInterface $serviceLocator) {
+        $searchParams = new SearchParams();
+        $searchParams->setServiceLocator($serviceLocator);
 
-	/**
-	 * 
-	 * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
-	 * @return \Openstore\Core\Model\Browser\Filter\AbstractFilter
-	 */
-	public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
-		$this->serviceLocator = $serviceLocator;
-		return $this;
-	}
-	
+        if (($filter = $params->fromRoute('filter')) == '') {
+            $filter = 'all';
+        }
+        $searchParams->setFilter($filter);
+        //var_dump($params->fromRoute('categories')); die();
+        $categories = $params->fromRoute('categories');
+        if (trim($categories) == '') {
+            $searchParams->setCategories(null);
+        } else {
+            $searchParams->setCategories(explode(',', $categories));
+        }
+
+
+        $brands = $params->fromRoute('brands');
+        if (trim($brands) == '') {
+            $searchParams->setBrands(null);
+        } else {
+            $searchParams->setBrands(explode(',', $brands));
+        }
+
+        $searchParams->setQuery($params->fromQuery('query', ''));
+        //var_dump($searchParams->getQuery()); die('ggg');
+        $searchParams->setLimit($params->fromRoute('perPage', 20));
+        $searchParams->setPage($params->fromRoute('page', 1));
+        $searchParams->setSortBy($params->fromRoute('sortBy'));
+        $searchParams->setSortDir($params->fromRoute('sortDir', 'ASC'));
+        $searchParams->setLanguage($params->fromRoute('ui_language', 'en'));
+        $searchParams->setPricelist($params->fromRoute('pricelist'));
+
+        return $searchParams;
+    }
+
+    /**
+     * 
+     * @return \ArrayObject
+     */
+    function toArray() {
+        return $this->params;
+    }
+
+    function setLanguage($language) {
+        $this->params['language'] = $language;
+        return $this;
+    }
+
+    function getLanguage() {
+        return $this->params['language'];
+    }
+
+    function setPricelist($pricelist) {
+        $this->params['pricelist'] = $pricelist;
+        return $this;
+    }
+
+    function getPricelist() {
+        return $this->params['pricelist'];
+    }
+
+    /**
+     * 
+     * @param string $query
+     * @return \Openstore\Controller\searchParams
+     */
+    function setQuery($query) {
+
+        $this->params['query'] = $query;
+
+        return $this;
+    }
+
+    function getQuery() {
+
+        return $this->params['query'];
+    }
+
+    function setCategories($categories) {
+
+        $categories = (array) $categories;
+
+        if (count($categories) == 0) {
+            $this->params['categories'] = null;
+        } else {
+
+            $this->params['categories'] = $categories;
+        }
+        return $this;
+    }
+
+    function getCategories() {
+        return $this->params['categories'];
+    }
+
+    function getFirstCategory() {
+        if (is_array($this->params['categories']) && count($this->params['categories']) > 0) {
+
+            return $this->params['categories'][0];
+        }
+
+        return null;
+    }
+
+    function setBrands($brands) {
+
+        $brands = (array) $brands;
+        if (count($brands) == 0) {
+            $this->params['brands'] = null;
+        } else {
+            $this->params['brands'] = $brands;
+        }
+
+        return $this;
+    }
+
+    function getBrands() {
+        return $this->params['brands'];
+    }
+
+    function getFirstBrand() {
+        if (is_array($this->params['brands']) && count($this->params['brands']) > 0) {
+            return $this->params['brands'][0];
+        }
+        return null;
+    }
+
+    function setFilter($filter) {
+
+        $this->params['filter'] = $filter;
+        return $this;
+    }
+
+    function getOffset() {
+        return ($this->getPage() - 1) * $this->getLimit();
+    }
+
+    /**
+     * 
+     * @return \Openstore\Core\Model\Browser\Filter\AbstractFilter
+     */
+    function getFilter() {
+        $filter_name = $this->params['filter'];
+        if ($filter_name == '')
+            $filter_name = 'all';
+
+        return $this->getServiceLocator()->get('Openstore\Service')->getProductFilters()->getFilter($filter_name);
+    }
+
+    function setPage($page) {
+
+        $this->params['page'] = $page;
+        return $this;
+    }
+
+    function getPage() {
+        return $this->params['page'];
+    }
+
+    function setLimit($limit) {
+
+        $this->params['limit'] = $limit;
+        return $this;
+    }
+
+    function getLimit() {
+        return $this->params['limit'];
+    }
+
+    function setSortBy($sortBy) {
+        $this->params['sortBy'] = $sortBy;
+        return $this;
+    }
+
+    function getSortBy() {
+        return $this->params['sortBy'];
+    }
+
+    function setSortDir($sortDir) {
+        $this->params['sortDir'] = $sortDir;
+        return $this;
+    }
+
+    function getSortDir() {
+        return $this->params['sortDir'];
+    }
+
+    /**
+     * 
+     * @return \Zend\ServiceManager\ServiceLocatorInterface
+     */
+    public function getServiceLocator() {
+        return $this->serviceLocator;
+    }
+
+    /**
+     * 
+     * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
+     * @return \Openstore\Core\Model\Browser\Filter\AbstractFilter
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
+        $this->serviceLocator = $serviceLocator;
+        return $this;
+    }
+
 }

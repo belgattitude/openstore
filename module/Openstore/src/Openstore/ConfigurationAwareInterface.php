@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework (http://framework.zend.com/)
  *
@@ -8,10 +9,11 @@
  */
 
 namespace Openstore;
+
 use Openstore\Configuration;
 
-interface ConfigurationAwareInterface
-{
+interface ConfigurationAwareInterface {
+
     /**
      * Set configuration
      *
@@ -19,10 +21,9 @@ interface ConfigurationAwareInterface
      * @return ConfigurationAwareInterface
      */
     public function setConfiguration(Configuration $configuration);
-	
-	
-	/**
-	 * @return \Openstore\Configuration
-	 */
-	public function getConfiguration();
+
+    /**
+     * @return \Openstore\Configuration
+     */
+    public function getConfiguration();
 }

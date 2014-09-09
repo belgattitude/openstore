@@ -1,4 +1,5 @@
 <?php
+
 /**
  * BjyAuthorize Module (https://github.com/bjyoungblood/BjyAuthorize)
  *
@@ -17,34 +18,30 @@ use Zend\Db\Sql\Expression;
 use Zend\Permissions\Acl\Role\RoleInterface;
 use ZfcUser\Service\User;
 
-class OpenstoreDb extends ZfcUserZendDb
-{
+class OpenstoreDb extends ZfcUserZendDb {
 
-
-    public function getIdentityRoles()
-    {
+    public function getIdentityRoles() {
         $authService = $this->userService->getAuthService();
 
-        if (! $authService->hasIdentity()) {
+        if (!$authService->hasIdentity()) {
             return array($this->getDefaultRole());
         }
 
         // get roles associated with the logged in user
-        $sql    = new Sql($this->adapter);
+        $sql = new Sql($this->adapter);
         $select = $sql->select()
-					->from(array('ur' => 'user_role'), array())
-					->join(array('r' => 'role'), new Expression('ur.role_id = r.role_id'),
-						array())
-					->columns(array(
-						'reference' => new Expression('r.reference'),
-						'role_id' => new Expression('ur.role_id')
-					));
-					
-		
-        $where  = new Where();
+                ->from(array('ur' => 'user_role'), array())
+                ->join(array('r' => 'role'), new Expression('ur.role_id = r.role_id'), array())
+                ->columns(array(
+            'reference' => new Expression('r.reference'),
+            'role_id' => new Expression('ur.role_id')
+        ));
+
+
+        $where = new Where();
         $where->equalTo('user_id', $authService->getIdentity()->getId());
         $results = $sql->prepareStatementForSqlObject($select->where($where))->execute();
-        $roles     = array();
+        $roles = array();
         foreach ($results as $i) {
             $roles[] = $i['reference'];
         }
@@ -55,8 +52,7 @@ class OpenstoreDb extends ZfcUserZendDb
     /**
      * @return string|\Zend\Permissions\Acl\Role\RoleInterface
      */
-    public function getDefaultRole()
-    {
+    public function getDefaultRole() {
         return $this->defaultRole;
     }
 
@@ -65,14 +61,12 @@ class OpenstoreDb extends ZfcUserZendDb
      *
      * @throws \BjyAuthorize\Exception\InvalidRoleException
      */
-    public function setDefaultRole($defaultRole)
-    {
-        if (! ($defaultRole instanceof RoleInterface || is_string($defaultRole))) {
+    public function setDefaultRole($defaultRole) {
+        if (!($defaultRole instanceof RoleInterface || is_string($defaultRole))) {
             throw InvalidRoleException::invalidRoleInstance($defaultRole);
         }
 
         $this->defaultRole = $defaultRole;
     }
-	
-	
+
 }
