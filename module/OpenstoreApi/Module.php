@@ -93,7 +93,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
                     break;
                 case 'xlsx' :
                     
-                    echo '<pre>';
+                    
                     //$sm = new \Zend\ServiceManager\ServiceManager;
                     //$sm->get
                     $lm = $e->getApplication()->getServiceManager()->get('LicenseManager');
