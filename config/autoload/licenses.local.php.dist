@@ -1,0 +1,14 @@
+<?php
+
+return array(
+    /**
+     * Configuration for licenses
+     */
+    'licenses' => array(
+        'libxl' => array(
+            'license_name' => '',
+            'license_key' => ''
+         )
+     )
+);
+
