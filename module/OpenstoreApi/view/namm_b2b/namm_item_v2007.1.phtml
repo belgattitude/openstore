@@ -21,8 +21,17 @@ function convertDate($date) {
     return $date; 
 }
 
-$esc = new Zend\Escaper\Escaper('utf-8');
+function getPictureMediaUrl($picture_media_id)
+{
+    if ($picture_media_id == '') return '';
+    $p = 'http://api.emdmusic.com/media/preview/picture/170x200-90/%pref%/%picture_media_id%.jpg';
+    $p = str_replace('%pref%', substr($picture_media_id, 0, 2), $p);
+    $p = str_replace('%picture_media_id%', $picture_media_id, $p);
+    return $p;
+}
 
+$esc = new Zend\Escaper\Escaper('utf-8');
+http://api.emdmusic.com/media/preview/picture/170x200-90/%%/%picture_media_id%.jpg
 $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_1024x768-90.jpg";
 ?>
 <?= '<?xml version="1.0" encoding="utf-8" ?>' . "\n"; ?>
@@ -165,7 +174,7 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
         
         <Images>
             <?php if ($line->picture_media_id != '') : ?>
-            <ImageURL><?= str_replace('%picture_media_id%', $line->picture_media_id, $picture_url_spec); ?></ImageURL>
+            <ImageURL><?= getPictureMediaUrl($line->picture_media_id); ?></ImageURL>
             <?php else : ?>
                 <?= "<!-- No picture yet -->" ?>
             <?php endif; ?>
