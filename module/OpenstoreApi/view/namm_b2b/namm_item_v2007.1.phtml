@@ -2,6 +2,7 @@
 use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 
+
 function convertKgmInLbs($kg) {
     if ($kg == "")  return '';
     $mass = new Mass($kg, 'kg');
@@ -16,6 +17,10 @@ function convertMeterInInch($meter) {
     return $inches;
 }
 
+function convertDate($date) {
+    return $date; 
+}
+
 $esc = new Zend\Escaper\Escaper('utf-8');
 
 $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_1024x768-90.jpg";
@@ -26,7 +31,8 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
   <Items>
     <?php foreach($this->data as $line) : ?>
     <Item>
-        <SupplierItemId><?= $line->product_id ?></SupplierItemId>
+        <!-- EMD internal id : <?= $line->product_id ?> -->
+        <SupplierItemId><?= $esc->escapeHtml(trim($line->product_reference)) ?></SupplierItemId>
         <SupplierModel><?= $esc->escapeHtml(trim($line->product_reference)) ?></SupplierModel>
         <ItemDesc><?= $esc->escapeHtml(trim($line->product_title)) ?></ItemDesc>
         <ItemDescLong><![CDATA[<?php
@@ -51,13 +57,14 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
         
         <BrandName><?= $esc->escapeHtml($line->brand_name) ?></BrandName>
         <!--
-            Package dimensions may  not yet known on product level,
-            and include packaging (product in its box).
-            Item description will inform about exact dimensions.
+            Item dimensions without packaging are not known, refer to dimensions
+            as described in internal carton, carton and master carton
+            Technical information, specifying dimensions are generally
+            described in item description
         -->
-        <Length><?= convertMeterInInch($line->pack_unit_length) ?></Length>
-        <Width><?= convertMeterInInch($line->pack_unit_width) ?></Width>
-        <Height><?= convertMeterInInch($line->pack_unit_height) ?></Height>
+        <Length></Length>
+        <Width></Width>
+        <Height></Height>
         <DimUOM>In</DimUOM>
         
         <Weight><?= convertKgmInLbs($line->weight); ?></Weight>
@@ -90,24 +97,23 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
       ?></CQtyPerUOM>
         
         <!-- 
-            Internal carton does not apply
+            Internal carton 
         -->
-        <ICBarcodeId></ICBarcodeId>
-        <ICBarcodeDesc></ICBarcodeDesc>
-        <ICLength></ICLength>
-        <ICWidth></ICWidth>
-        <ICHeight></ICHeight>
-        <ICWeight></ICWeight>
-        <ICDimUOM></ICDimUOM>
-        <ICWeightUOM></ICWeightUOM>
-        <ICUOM></ICUOM>
-        <ICQtyPerUOM></ICQtyPerUOM>
+        <ICBarcodeId><?= $line->product_barcode_upca ?></ICBarcodeId>
+        <ICBarcodeDesc>UPC</ICBarcodeDesc>
+        <ICLength><?= convertMeterInInch($line->pack_unit_length) ?></ICLength>
+        <ICWidth><?= convertMeterInInch($line->pack_unit_width) ?></ICWidth>
+        <ICHeight><?= convertMeterInInch($line->pack_unit_height) ?></ICHeight>
+        <ICWeight><?= convertKgmInLbs($line->pack_carton_weight) ?></ICWeight>
+        <ICDimUOM>In</ICDimUOM>
+        <ICWeightUOM>Lbs</ICWeightUOM>
+        <ICUOM>EA</ICUOM>
+        <ICQtyPerUOM>1</ICQtyPerUOM>
         <!--
             Master carton information
         -->
         <MCBarcodeId><?= $line->pack_mastercarton_barcode_upc ?></MCBarcodeId>
-        <MCBarCodeType>UPC</MCBarCodeType>
-        <MCBarcodeDesc></MCBarcodeDesc>
+        <MCBarcodeDesc>UPC</MCBarcodeDesc>
         <MCLength><?= convertMeterInInch($line->pack_mastercarton_length) ?></MCLength>
         <MCWidth><?= convertMeterInInch($line->pack_mastercarton_width) ?></MCWidth>
         <MCHeight><?= convertMeterInInch($line->pack_mastercarton_height) ?></MCHeight>
@@ -140,7 +146,7 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
         <!--
             TODO: available date quality may be poor
         -->
-        <AvailableDate><?= $line->available_at ?></AvailableDate>
+        <AvailableDate><?= convertDate($line->available_at) ?></AvailableDate>
         <!--
             Unavailable date is not known in our system
         -->
