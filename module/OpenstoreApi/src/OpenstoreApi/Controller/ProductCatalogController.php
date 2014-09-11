@@ -46,7 +46,7 @@ class ProductCatalogController extends AbstractRestfulController {
         $api_key_log = $this->apiKeyAccess->addLog("2000-ProductCatalog");
         $store = $this->catalogService->getList($params);
         if (array_key_exists('columns', $params)) {
-            $columns = trim($params['columns']);
+            $columns = str_replace(' ', '', $params['columns']);
             if ($columns != '') {
                 $store->getSource()->setColumns(explode(',', $columns));
             }

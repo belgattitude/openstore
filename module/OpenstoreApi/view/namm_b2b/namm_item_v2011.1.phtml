@@ -14,12 +14,12 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
     <?php foreach($this->data as $line) : ?>
     <Item>
       <SupplierItemId><?= $line->product_id ?></SupplierItemId>
-      <SupplierModel><?= $esc->escapeHtmlAttr($line->product_reference) ?></SupplierModel>
-      <SupplierItemDesc><?= $esc->escapeHtmlAttr($line->product_reference . ', ' . $line->product_title) ?></SupplierItemDesc>
-      <ItemDesc><?= $esc->escapeHtmlAttr($line->product_title) ?></ItemDesc>
-      <ItemDescLong><?=  $esc->escapeHtmlAttr(trim($line->product_title . ' ' . $line->product_description . ' ' . $line->product_characteristic)) ?></ItemDescLong>      
-      <BrandName><?= $esc->escapeHtmlAttr($line->brand_title) ?></BrandName>
-      <Category><?= $esc->escapeHtmlAttr($line->category_title) ?></Category>
+      <SupplierModel><?= $esc->escapeHtml($line->product_reference) ?></SupplierModel>
+      <SupplierItemDesc><?= $esc->escapeHtml($line->product_reference . ', ' . $line->product_title) ?></SupplierItemDesc>
+      <ItemDesc><?= $esc->escapeHtml($line->product_title) ?></ItemDesc>
+      <ItemDescLong><?=  $esc->escapeHtml(trim($line->product_title . ' ' . $line->product_description . ' ' . $line->product_characteristic)) ?></ItemDescLong>      
+      <BrandName><?= $esc->escapeHtml($line->brand_title) ?></BrandName>
+      <Category><?= $esc->escapeHtml($line->category_title) ?></Category>
       <Images>
           <ImageURL><?= str_replace('%picture_media_id%', $line->picture_media_id, $picture_url_spec); ?></ImageURL>
       </Images>      
@@ -125,116 +125,5 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
       </Containers>
     </Item>
     <?php endforeach; ?>  
-      <!--Musical Instrument Guitar Example-->
-      <!--
-    <Item>
-      <SupplierItemId>G100ACE</SupplierItemId>
-      <SupplierModel>G100ACE</SupplierModel>
-      <SupplierItemDesc>G100 Stage Series Auditorium Cutaway
-      Electric</SupplierItemDesc>
-      <Kit>N</Kit>
-      <Serialized>Y</Serialized>
-      <BrandName>LAG</BrandName>
-      <Length>50.0000</Length>
-      <Width>20.0000</Width>
-      <Height>10.0000</Height>
-      <DimUOM>IN</DimUOM>
-      <Weight>10</Weight>
-      <WeightUOM>LBS</WeightUOM>
-      <AnnounceDate>2010-01-15</AnnounceDate>
-      <AvailableDate>2010-02-15</AvailableDate>
-      <WarrantyPartTerm>365</WarrantyPartTerm>
-      <WarrantyPartUOM>Day</WarrantyPartUOM>
-      <WarrantyLabTerm>0</WarrantyLabTerm>
-      <WarrantyLabUOM>Day</WarrantyLabUOM>
-      <Barcodes>
-        <Barcode>
-          <ID>3700166330283</ID>
-          <Type>GTIN-13</Type>
-        </Barcode>
-      </Barcodes>
-      <Pricing>
-        <Price type="MSRP"
-               Currency="USD">675.00</Price>
-        <Price type="MAP"
-               Currency="USD">4</Price>
-        <Price type="Cost"
-               Currency="USD"
-               Qty="1">3</Price>
-      </Pricing>
-      <Containers>
-        <Container>
-          <Type>Each</Type>
-          <Length>41.3300</Length>
-          <Width>18.5000</Width>
-          <Height>5.1100</Height>
-          <DimUOM>IN</DimUOM>
-          <Weight>6.3900</Weight>
-          <WeightUOM>LBS</WeightUOM>
-          <UOM>EA</UOM>
-          <QtyPerUOM>1</QtyPerUOM>
-          <Barcodes>
-            <Barcode>
-              <ID>3700166330283</ID>
-              <Type>GTIN-13</Type>
-            </Barcode>
-          </Barcodes>
-        </Container>
-        <Container>
-          <Type>Case Pack</Type>
-          <Length>42.3200</Length>
-          <Width>42.3200</Width>
-          <Height>5.7000</Height>
-          <DimUOM>IN</DimUOM>
-          <Weight>12.780000000000</Weight>
-          <WeightUOM>LBS</WeightUOM>
-          <UOM>CS</UOM>
-          <QtyPerUOM>2</QtyPerUOM>
-        </Container>
-      </Containers>
-      <MarketingInfo>
-        <PrimaryCategory>4025131110</PrimaryCategory>
-        <ProductURL>
-        http://gorkguitars.com/?page=fp&amp;np=14&amp;sg=1</ProductURL>
-        <ItemDescLong>The Stage Range starts with the high-gloss
-        G100 Series. Maple, mahogany, and black binding join the
-        dark mahogany back and sides to the solid Red Cedar top and
-        add character to the Occitan Cross rosette. The
-        honey-mahogany neck features a comfortable French satin
-        finish and a smooth Indonesian rosewood
-        fingerboard.</ItemDescLong>
-        <Bullets>
-          <Bullet>High-gloss natural finish; Red Cedar top with
-          dark mahogany back and sides</Bullet>
-          <Bullet>Maple, mahogany, and black colored body binding
-          &amp; Occitan Cross rosette pattern</Bullet>
-          <Bullet>French satin-finished honey mahogany neck;
-          Indonesian rosewood fingerboard</Bullet>
-          <Bullet>StudioLuge electronic system; five
-          expertly voiced EQ settings, volume control</Bullet>
-          <Bullet>Flexible NanoFlex piezo pickup mounted in the
-          bridge, under the saddle</Bullet>
-        </Bullets>
-      </MarketingInfo>
-      <RelatedItems>
-        <RelatedItem included="Y"
-                     type="accessory">
-          <SupplierItemId>D8B5518003B</SupplierItemId>
-          <Barcode>
-            <ID>1234567890123</ID>
-            <Type>GTIN-13</Type>
-          </Barcode>
-        </RelatedItem>
-        <RelatedItem included="N"
-                     type="ThirdParty">
-          <SupplierItemId>ProductX</SupplierItemId>
-          <Barcode>
-            <ID>1112345678911</ID>
-            <Type>GTIN-13</Type>
-          </Barcode>
-        </RelatedItem>
-      </RelatedItems>
-    </Item>
--->
   </Items>
 </NAMM_ITEM>

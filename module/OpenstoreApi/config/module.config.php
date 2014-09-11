@@ -37,6 +37,7 @@ return array(
             'OpenstoreApi\Controller\ProductStock' => 'OpenstoreApi\Controller\ProductStockController',
             'OpenstoreApi\Controller\ProductBrand' => 'OpenstoreApi\Controller\ProductBrandController',
             'OpenstoreApi\Controller\NammProductCatalog' => 'OpenstoreApi\Controller\NammProductCatalogController',
+            'OpenstoreApi\Controller\Generic' => 'OpenstoreApi\Controller\GenericController',
         ),
     ),
     /*

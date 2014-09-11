@@ -517,7 +517,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         promo_start_at,
                         promo_end_at,
                         flag_active,
-                        activated_at,
+                        available_at,
                         legacy_synchro_at
                     )
 
@@ -568,7 +568,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                             promo_end_at = null,
 
                             flag_active = bpp.is_active,
-                            activated_at = p.created_at,
+                            available_at = p.created_at,
                             legacy_synchro_at = '{$this->legacy_synchro_at}'
                          ";
 
@@ -586,7 +586,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         promo_start_at,
                         promo_end_at,
                         flag_active,
-                        activated_at,
+                        available_at,
                         legacy_synchro_at
                     )
 
@@ -597,7 +597,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                            null as promo_start_at,
                            null as promo_end_at,
                            at.flag_availability,
-                           a.date_creation,
+                           a.date_creation as available_at,
                         '{$this->legacy_synchro_at}' as legacy_synchro_at
 
                     from $akilia1db.art_tarif as at
@@ -614,7 +614,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                             promo_end_at = null,
 
                             flag_active = at.flag_availability,
-                            activated_at = a.date_creation,
+                            available_at = a.date_creation,
                             legacy_synchro_at = '{$this->legacy_synchro_at}'
                          ";
 
@@ -1043,17 +1043,17 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     from
                         ((select 
                             id_article as product_id,
-                                'BOX' as packaging_reference,
-                                qty_carton as quantity,
-                                barcode_pack_box_ean as barcode_ean,
-                                barcode_pack_box_upc as barcode_upc,
-                                (volume * qty_carton) as volume,
-                                (poids * qty_carton) as weight,
-                                -- We can only trust length, width and height for
-                                -- products not packaged in master carton or box
-                                if ((qty_carton=1 and qty_master_carton=1), pack_length, null) as length,
-                                if ((qty_carton=1 and qty_master_carton=1), pack_height, null) as height,
-                                if ((qty_carton=1 and qty_master_carton=1), pack_width, null) as width
+                            'CARTON' as packaging_reference,
+                            qty_carton as quantity,
+                            barcode_pack_box_ean as barcode_ean,
+                            barcode_pack_box_upc as barcode_upc,
+                            (volume * qty_carton) as volume,
+                            (poids * qty_carton) as weight,
+                            -- We can only trust length, width and height for
+                            -- carton having the same quantity as master carton (or no quantity in master)
+                            if ((qty_carton >= qty_master_carton), pack_length * qty_carton, null) as length,
+                            if ((qty_carton >= qty_master_carton), pack_height * qty_carton, null) as height,
+                            if ((qty_carton >= qty_master_carton), pack_width * qty_carton, null) as width
                         from
                             $akilia1db.article
                         where
@@ -1160,7 +1160,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     
                     sort_index,    
 
-                    activated_at,
+                    available_at,
 
                     legacy_mapping, 
                     legacy_synchro_at
@@ -1194,10 +1194,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     null as length,
                     null as height,
                     null as width,
-                    
+                        -- Qty box has been deprecated, use pack_qty_carton
                     bp.pack_qty_box,
-                                        -- Qty carton has been deprecated, use pack_qty_carton
-                    null as pack_qty_carton,
+                                        
+                    bp.pack_qty_box as pack_qty_carton,
                     bp.pack_qty_master_carton,
                     
                     a.barcode_ean13 as barcode_ean13,
@@ -1247,14 +1247,15 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         height = null,
                         width = null,
                         
-                        pack_qty_box = bp.pack_qty_box,
                         -- Qty carton has been deprecated, use pack_qty_carton
-                        pack_qty_carton = null,
+                        pack_qty_box = bp.pack_qty_box,
+                        
+                        pack_qty_carton = bp.pack_qty_box,
                         pack_qty_master_carton = bp.pack_qty_master_carton,
                         
                         barcode_ean13 = a.barcode_ean13,
                         barcode_upca = a.barcode_upca,
-                        activated_at = a.date_creation,
+                        available_at = a.date_creation,
                         legacy_mapping = a.id_article,
                         legacy_synchro_at = '{$this->legacy_synchro_at}'
                      ";

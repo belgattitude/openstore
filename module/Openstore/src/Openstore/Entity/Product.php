@@ -214,10 +214,16 @@ class Product {
     private $sort_index;    
 
     /**
-     * @ORM\Column(type="date", nullable=true, options={"comment" = "Date on which product was actived/available"})
+     * @ORM\Column(type="date", nullable=true, options={"comment" = "Date on which product was made available"})
      */
-    private $activated_at;
+    private $available_at;
 
+    /**
+     * @ORM\Column(type="date", nullable=true, options={"comment" = "Date on which product was/will be made unavailable"})
+     */
+    private $unavailable_at;    
+    
+    
     /**
      * @ORM\Column(type="string", length=40, nullable=true)
      */
@@ -549,15 +555,15 @@ class Product {
      * 
      * @return date
      */
-    public function getActivatedAt() {
-        return $this->activated_at;
+    public function getAvailableAt() {
+        return $this->available_at;
     }
 
     /**
-     * @param string $activated_at date in Y-m-d H:i:s format
+     * @param string $available_at date in Y-m-d H:i:s format
      */
-    public function setActivatedAt($activated_at) {
-        $this->activated_at = $activated_at;
+    public function setAvailableAt($available_at) {
+        $this->available_at = $available_at;
         return $this;
     }
 

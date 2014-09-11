@@ -20,7 +20,7 @@ class NewProducts extends AbstractFilter
 		//$config['product']['filter']['minimum_date'];
 		//die();
 		$minimum_date = '2012-06-01';
-		$select->where("(COALESCE(pl.new_product_min_date, '$minimum_date') <= COALESCE(ppl.activated_at, p.activated_at))");
+		$select->where("(COALESCE(pl.new_product_min_date, '$minimum_date') <= COALESCE(ppl.available_at, p.available_at))");
 		return $select;
 	}
 	
@@ -32,8 +32,8 @@ class NewProducts extends AbstractFilter
 	function addDefaultSortClause(Select $select)
 	{
 		$select->order(array(
-			'ppl.activated_at'	=> $select::ORDER_DESCENDING, 
-			'p.activated_at'	=> $select::ORDER_DESCENDING, 
+			'ppl.available_at'	=> $select::ORDER_DESCENDING, 
+			'p.available_at'	=> $select::ORDER_DESCENDING, 
 			'p.reference'		=> $select::ORDER_ASCENDING)
 		);
 		return $this;

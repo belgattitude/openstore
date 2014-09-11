@@ -28,7 +28,8 @@ return array(
 								'format'	=> 'json',
 							)							
 						),
-					),
+					)
+                                    
 				),
 			)
 		)

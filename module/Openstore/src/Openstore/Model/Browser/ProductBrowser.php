@@ -113,7 +113,7 @@ class ProductBrowser extends AbstractBrowser {
 				'characteristic'	=> new Expression('COALESCE(p18.characteristic, p.characteristic)'),
 				'price'			=> new Expression('ppl.price'),
 				'list_price'		=> new Expression('ppl.list_price'),
-				'flag_new'		=> new Expression("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.activated_at, p.activated_at))"),
+				'flag_new'		=> new Expression("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.available_at, p.available_at))"),
 				'discount_1'		=> new Expression('ppl.discount_1'),
 				'discount_2'		=> new Expression('ppl.discount_2'),
 				'discount_3'		=> new Expression('ppl.discount_3'),

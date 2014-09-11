@@ -156,9 +156,15 @@ class ProductPricelist implements InputFilterAwareInterface {
     private $promo_end_at;
 
     /**
-     * @ORM\Column(type="date", nullable=true, options={"comment" = "Date on which product was active in this pricelist, useful to display as new product"})
+     * @ORM\Column(type="date", nullable=true, options={"comment" = "Date on which product was made available, useful to display as new product"})
      */
-    private $activated_at;
+    private $available_at;
+    
+    /**
+     * @ORM\Column(type="date", nullable=true, options={"comment" = "Date on which product was/will be made unavailable"})
+     */
+    private $unavailable_at;    
+    
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -274,15 +280,32 @@ class ProductPricelist implements InputFilterAwareInterface {
      * 
      * @return date
      */
-    public function getActivatedAt() {
-        return $this->activated_at;
+    public function getUnavailableAt() {
+        return $this->unavailable_at;
     }
 
     /**
-     * @param string $activated_at date in Y-m-d H:i:s format
+     * @param string $unavailable_at date in Y-m-d H:i:s format
      */
-    public function setActivatedAt($activated_at) {
-        $this->activated_at = $activated_at;
+    public function setUnavailableAt($unavailable_at) {
+        $this->unavailable_at = $unavailable_at;
+        return $this;
+    }
+    
+    
+    /**
+     * 
+     * @return date
+     */
+    public function getAvailableAt() {
+        return $this->available_at;
+    }
+
+    /**
+     * @param string $available_at date in Y-m-d H:i:s format
+     */
+    public function setAvailableAt($available_at) {
+        $this->available_at = $available_at;
         return $this;
     }
 
