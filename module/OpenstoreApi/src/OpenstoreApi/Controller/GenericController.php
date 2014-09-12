@@ -103,10 +103,14 @@ class GenericController extends AbstractRestfulController {
 
         $view->setTemplate($view_template);
 
-        header('Content-Type: text/xml');
-        $output = $view_renderer->render($view);
-
-        echo $output;
+       // header('Content-Type: text/xml');
+        try {
+            $output = $view_renderer->render($view);
+            header('Content-Type: text/xml');
+            echo $output;
+        } catch (\Exception $e) {
+            throw $e;
+        } 
         die();
     }
 

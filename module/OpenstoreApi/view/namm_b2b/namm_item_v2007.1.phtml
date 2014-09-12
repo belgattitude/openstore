@@ -1,44 +1,85 @@
-<?php
+<?php 
+namespace OpenstoreApi\Custom\Namm2007;
+
 use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
+use \DateTime;
+use \DateTimeZone;
+use \Zend\Escaper\Escaper;
 
+class Fcts {
+    
+    static $enablePrintXMLComments = true;
 
-function convertKgmInLbs($kg) {
-    if ($kg == "")  return '';
-    $mass = new Mass($kg, 'kg');
-    $lbs = number_format($mass->toUnit('lbs'), 2);
-    return $lbs;
+    static function convertKgmInLbs($kg) {
+        if ($kg == "")  return '';
+        $mass = new Mass($kg, 'kg');
+        $lbs = number_format($mass->toUnit('lbs'), 2);
+        return $lbs;
+    }
+
+    static function convertMeterInInch($meter) {
+        if ($meter == "")  return '';
+        $length = new Length($meter, 'meter');
+        $inches = number_format($length->toUnit('inch'), 2);
+        return $inches;
+    }
+
+    static function convertDateTime($datetime)
+    {
+        if ($datetime == '') return '';
+        $dt = DateTime::createFromFormat('Y-m-d h:i:s', $datetime);
+        $datetime =  $dt->format(DateTime::ATOM);
+        //Y-m-d\TH:i:sP
+        //2011-08-11T05:39:10.887
+        
+        return $datetime; 
+        
+    }
+    
+    static function convertDate($date) {
+        if ($date == '') return '';
+        //$tz = new DateTimeZone('Europe\Brussels');
+        $d = DateTime::createFromFormat('Y-m-d', $date);
+        $date =  $d->format('Y-m-d');
+        return $date; 
+    }
+
+    static function getPictureMediaUrl($picture_media_id)
+    {
+        if ($picture_media_id == '') return '';
+        $p = 'http://api.emdmusic.com/media/preview/picture/170x200-90/%pref%/%picture_media_id%.jpg';
+        $p = str_replace('%pref%', substr($picture_media_id, 0, 2), $p);
+        $p = str_replace('%picture_media_id%', $picture_media_id, $p);
+        return $p;
+    }
+    
+    static function printXMLComment($comments)
+    {
+        if (self::$enablePrintXMLComments) {
+            echo '<!--';
+            echo $comments;
+            echo '-->';
+        }
+    }
 }
 
-function convertMeterInInch($meter) {
-    if ($meter == "")  return '';
-    $length = new Length($meter, 'meter');
-    $inches = number_format($length->toUnit('inch'), 2);
-    return $inches;
-}
-
-function convertDate($date) {
-    return $date; 
-}
-
-function getPictureMediaUrl($picture_media_id)
-{
-    if ($picture_media_id == '') return '';
-    $p = 'http://api.emdmusic.com/media/preview/picture/170x200-90/%pref%/%picture_media_id%.jpg';
-    $p = str_replace('%pref%', substr($picture_media_id, 0, 2), $p);
-    $p = str_replace('%picture_media_id%', $picture_media_id, $p);
-    return $p;
-}
-
-$esc = new Zend\Escaper\Escaper('utf-8');
+    
+$esc = new Escaper('utf-8');
 http://api.emdmusic.com/media/preview/picture/170x200-90/%%/%picture_media_id%.jpg
 $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_1024x768-90.jpg";
 ?>
 <?= '<?xml version="1.0" encoding="utf-8" ?>' . "\n"; ?>
 <NAMM_ITEM version="2007.1">
+  <!--
+  EMDMusic namm_item_v2007.1.xml template
+  Changelog:
+     [2014/09/12] Initial implementation
+  -->
   <SupplierId></SupplierId>    
   <Items>
-    <?php foreach($this->data as $line) : ?>
+    <?php foreach($this->data as $idx => $line) : ?>
+    <?php if ($idx > 0) Fcts::$enablePrintXMLComments = false; ?>  
     <Item>
         <!-- EMD internal id : <?= $line->product_id ?> -->
         <SupplierItemId><?= $esc->escapeHtml(trim($line->product_reference)) ?></SupplierItemId>
@@ -48,88 +89,63 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
                 $desc = trim($line->product_title . ' ' . $line->product_description . ' ' . $line->product_characteristic);
                 echo preg_replace('/(\ ){2,}/', ' ', $desc); ?>]]>
         </ItemDescLong>      
-        
-        <!--
-            MSRP price
-        -->
+        <?php Fcts::printXMLComment('MSRP/Retail Price'); ?>
         <RetailValue><?= number_format($line->public_price, 2); ?></RetailValue>
-        
-        <!--
-            Unit cost value, price for the dealer
-        -->
+        <?php Fcts::printXMLComment('Unit cost value, price for the dealer'); ?>
         <UCValue><?= number_format($line->price, 2); ?></UCValue>
-        
-        <!--
-            Mainly China
-        -->
         <CountryOrigin></CountryOrigin>
-        
         <BrandName><?= $esc->escapeHtml($line->brand_name) ?></BrandName>
-        <!--
+        <?php
+        Fcts::printXMLComment('
             Item dimensions without packaging are not known, refer to dimensions
             as described in internal carton, carton and master carton
             Technical information, specifying dimensions are generally
-            described in item description
-        -->
+            described in item description');
+        ?>
         <Length></Length>
         <Width></Width>
         <Height></Height>
         <DimUOM>In</DimUOM>
-        
-        <Weight><?= convertKgmInLbs($line->weight); ?></Weight>
+        <Weight><?= Fcts::convertKgmInLbs($line->weight); ?></Weight>
         <WeightUOM>Lbs</WeightUOM>
-        
-        <!--
-           Barcode in UPCA as printed for US and Canada markets
-        -->
+        <?php Fcts::printXMLComment('Barcode in UPCA as printed for US and Canada markets'); ?>
         <BarCodeId><?= $line->product_barcode_upca ?></BarCodeId>
         <BarCodeDesc>UPC</BarCodeDesc>
-        
-        <!--
-            Carton dimensions may not be known.
-            Master carton dimensions should always be known.
-        -->
-        <CLength><?= convertMeterInInch($line->pack_carton_length) ?></CLength>
-        <CWidth><?= convertMeterInInch($line->pack_carton_width) ?></CWidth>
-        <CHeight><?= convertMeterInInch($line->pack_carton_height) ?></CHeight>
-        <CWeight><?= convertKgmInLbs($line->pack_carton_weight) ?></CWeight>
+        <?php Fcts::printXMLComment('Carton dimensions may not be known. Master carton dimensions should always be known.'); ?>
+        <CLength><?= Fcts::convertMeterInInch($line->pack_carton_length) ?></CLength>
+        <CWidth><?= Fcts::convertMeterInInch($line->pack_carton_width) ?></CWidth>
+        <CHeight><?= Fcts::convertMeterInInch($line->pack_carton_height) ?></CHeight>
+        <CWeight><?= Fcts::convertKgmInLbs($line->pack_carton_weight) ?></CWeight>
         <CDimUOM>In</CDimUOM>
         <CWeightUOM>Lbs</CWeightUOM>
-        
-
-        <CUOM>EA</CUOM> <!-- EACH, see code table -->
+        <CUOM>EA</CUOM> <?php Fcts::printXMLComment('Each see code table') ?>
         <CQtyPerUOM><?php 
             $pack_qty_carton = $line->pack_qty_carton;
             if ($pack_qty_carton != '') {
                 echo number_format($pack_qty_carton, 0);
             }
       ?></CQtyPerUOM>
-        
-        <!-- 
-            Internal carton 
-        -->
+        <?php Fcts::printXMLComment('Internal Carton') ?>
         <ICBarcodeId><?= $line->product_barcode_upca ?></ICBarcodeId>
         <ICBarcodeDesc>UPC</ICBarcodeDesc>
-        <ICLength><?= convertMeterInInch($line->pack_unit_length) ?></ICLength>
-        <ICWidth><?= convertMeterInInch($line->pack_unit_width) ?></ICWidth>
-        <ICHeight><?= convertMeterInInch($line->pack_unit_height) ?></ICHeight>
-        <ICWeight><?= convertKgmInLbs($line->pack_carton_weight) ?></ICWeight>
+        <ICLength><?= Fcts::convertMeterInInch($line->pack_unit_length) ?></ICLength>
+        <ICWidth><?= Fcts::convertMeterInInch($line->pack_unit_width) ?></ICWidth>
+        <ICHeight><?= Fcts::convertMeterInInch($line->pack_unit_height) ?></ICHeight>
+        <ICWeight><?= Fcts::convertKgmInLbs($line->pack_unit_weight) ?></ICWeight>
         <ICDimUOM>In</ICDimUOM>
         <ICWeightUOM>Lbs</ICWeightUOM>
         <ICUOM>EA</ICUOM>
         <ICQtyPerUOM>1</ICQtyPerUOM>
-        <!--
-            Master carton information
-        -->
+        <?php Fcts::printXMLComment('Master carton') ?>
         <MCBarcodeId><?= $line->pack_mastercarton_barcode_upc ?></MCBarcodeId>
         <MCBarcodeDesc>UPC</MCBarcodeDesc>
-        <MCLength><?= convertMeterInInch($line->pack_mastercarton_length) ?></MCLength>
-        <MCWidth><?= convertMeterInInch($line->pack_mastercarton_width) ?></MCWidth>
-        <MCHeight><?= convertMeterInInch($line->pack_mastercarton_height) ?></MCHeight>
-        <MCWeight><?= convertKgmInLbs($line->pack_mastercarton_weight) ?></MCWeight>
+        <MCLength><?= Fcts::convertMeterInInch($line->pack_mastercarton_length) ?></MCLength>
+        <MCWidth><?= Fcts::convertMeterInInch($line->pack_mastercarton_width) ?></MCWidth>
+        <MCHeight><?= Fcts::convertMeterInInch($line->pack_mastercarton_height) ?></MCHeight>
+        <MCWeight><?= Fcts::convertKgmInLbs($line->pack_mastercarton_weight) ?></MCWeight>
         <MCDimUOM>In</MCDimUOM>
         <MCWeightUOM>Lbs</MCWeightUOM>
-        <MCUOM>EA</MCUOM> <!-- EACH -->
+        <MCUOM>EA</MCUOM> 
         <MCQtyPerUOM><?php 
             $pack_qty_master_carton = $line->pack_qty_master_carton;
             if ($pack_qty_master_carton != '') {
@@ -137,51 +153,22 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
             }
       ?></MCQtyPerUOM>
         <Kit>false</Kit>
-        <!--
-            If the product has a serial number
-        -->
-        <Serialized>true</Serialized>
-        <!--
-            Color and size are not yet known.
-            Refer to item description
-        -->
+        <?php Fcts::printXMLComment('If the product has a serial number') ?>
+        <Serialized>false</Serialized>
         <Color></Color>
         <Size></Size>
-        
-        <!-- Announce date is not known on our system -->
         <AnnounceDate></AnnounceDate>
-        
-        
-        <!--
-            TODO: available date quality may be poor
-        -->
-        <AvailableDate><?= convertDate($line->available_at) ?></AvailableDate>
-        <!--
-            Unavailable date is not known in our system
-        -->
+        <AvailableDate><?= Fcts::convertDate($line->available_at) ?></AvailableDate>
         <UnAvailDate></UnAvailDate>
         <EndOfProductionDate></EndOfProductionDate>
         <Replacement></Replacement>
-        
-        <!--
-            TODO: Warranty conditions still to be determined
-        --> 
         <WarrantyPartTerm>90</WarrantyPartTerm>
         <WarrantyPartUOM>Day</WarrantyPartUOM>
         <WarrantyLabTerm>365</WarrantyLabTerm>
         <WarrantyLabUOM>Day</WarrantyLabUOM>
         <Category><?= $esc->escapeHtml(str_replace("|", "/", $line->category_breadcrumb)) ?></Category>
-        
-        <Images>
-            <?php if ($line->picture_media_id != '') : ?>
-            <ImageURL><?= getPictureMediaUrl($line->picture_media_id); ?></ImageURL>
-            <?php else : ?>
-                <?= "<!-- No picture yet -->" ?>
-            <?php endif; ?>
-        </Images>
-        <!--
-            Product information url not yet available, see on staggmusic.com website.
-        -->
+        <Images><?php if ($line->picture_media_id != '') echo basename(Fcts::getPictureMediaUrl($line->picture_media_id)); ?></Images>
+        <ImageURL><?php if ($line->picture_media_id != '') echo dirname(Fcts::getPictureMediaUrl($line->picture_media_id)); ?></ImageURL>
         <ProductURL></ProductURL>
     </Item>
     <?php endforeach; ?>  
