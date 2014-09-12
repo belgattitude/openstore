@@ -157,10 +157,9 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
         <Serialized>false</Serialized>
         <Color></Color>
         <Size></Size>
-        <AnnounceDate></AnnounceDate>
+        <AnnounceDate><?= Fcts::convertDate($line->available_at) ?></AnnounceDate>
         <AvailableDate><?= Fcts::convertDate($line->available_at) ?></AvailableDate>
-        <UnAvailDate></UnAvailDate>
-        <EndOfProductionDate></EndOfProductionDate>
+        <?php Fcts::printXMLComment('UnAvailDate and EndOfProductionDate are not known') ?>
         <Replacement></Replacement>
         <WarrantyPartTerm>90</WarrantyPartTerm>
         <WarrantyPartUOM>Day</WarrantyPartUOM>

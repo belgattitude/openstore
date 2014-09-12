@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by Paul Ward (Roland Corporation U.S.) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="NAMM_ITEM">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="SupplierId"/>
+				<xs:element ref="Items"/>
+			</xs:choice>
+			<xs:attribute name="version" type="xs:string" use="required" fixed="2007.1"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="SupplierId"/>
+	<xs:element name="Items">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Item" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Item">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="SupplierItemId"/>
+				<xs:element name="SupplierModel" minOccurs="0"/>
+				<xs:element name="ItemDesc" minOccurs="0"/>
+				<xs:element name="ItemDescLong" minOccurs="0"/>
+				<xs:element name="RetailValue" minOccurs="0"/>
+				<xs:element name="Retail2Value" minOccurs="0"/>
+				<xs:element name="UCValue" minOccurs="0"/>
+				<xs:element name="CountryOrigin" minOccurs="0"/>
+				<xs:element name="BrandName"/>
+				<xs:element name="Length" minOccurs="0"/>
+				<xs:element name="Width" minOccurs="0"/>
+				<xs:element name="Height" minOccurs="0"/>
+				<xs:element name="DimUOM" minOccurs="0"/>
+				<xs:element name="Weight" minOccurs="0"/>
+				<xs:element name="WeightUOM" minOccurs="0"/>
+				<xs:element name="BarCodeId" minOccurs="0"/>
+				<xs:element name="BarCodeDesc" minOccurs="0"/>
+				<xs:element name="CLength" minOccurs="0"/>
+				<xs:element name="CWidth" minOccurs="0"/>
+				<xs:element name="CHeight" minOccurs="0"/>
+				<xs:element name="CWeight" minOccurs="0"/>
+				<xs:element name="CDimUOM" minOccurs="0"/>
+				<xs:element name="CWeightUOM" minOccurs="0"/>
+				<xs:element name="CUOM" minOccurs="0"/>
+				<xs:element name="CQtyPerUOM" minOccurs="0"/>
+				<xs:element name="ICBarcodeId" minOccurs="0"/>
+				<xs:element name="ICBarcodeDesc" minOccurs="0"/>
+				<xs:element name="ICLength" minOccurs="0"/>
+				<xs:element name="ICWidth" minOccurs="0"/>
+				<xs:element name="ICHeight" minOccurs="0"/>
+				<xs:element name="ICWeight" minOccurs="0"/>
+				<xs:element name="ICDimUOM" minOccurs="0"/>
+				<xs:element name="ICWeightUOM" minOccurs="0"/>
+				<xs:element name="ICUOM" minOccurs="0"/>
+				<xs:element name="ICQtyPerUOM" minOccurs="0"/>
+				<xs:element name="MCBarcodeId" minOccurs="0"/>
+				<xs:element name="MCBarcodeDesc" minOccurs="0"/>
+				<xs:element name="MCLength" minOccurs="0"/>
+				<xs:element name="MCWidth" minOccurs="0"/>
+				<xs:element name="MCHeight" minOccurs="0"/>
+				<xs:element name="MCWeight" minOccurs="0"/>
+				<xs:element name="MCDimUOM" minOccurs="0"/>
+				<xs:element name="MCWeightUOM" minOccurs="0"/>
+				<xs:element name="MCUOM" minOccurs="0"/>
+				<xs:element name="MCQtyPerUOM" minOccurs="0"/>
+				<xs:element name="Kit" type="xs:boolean"/>
+				<xs:element name="Serialized" type="xs:boolean"/>
+				<xs:element name="Color" minOccurs="0"/>
+				<xs:element name="Size" minOccurs="0"/>
+				<xs:element name="AnnounceDate" type="xs:date" minOccurs="0"/>
+				<xs:element name="AvailableDate" type="xs:date" minOccurs="0"/>
+				<xs:element name="UnAvailDate" type="xs:date" minOccurs="0"/>
+				<xs:element name="EndOfProductionDate" type="xs:date" minOccurs="0"/>
+				<xs:element name="Replacement" minOccurs="0"/>
+				<xs:element name="WarrantyPartTerm" minOccurs="0"/>
+				<xs:element name="WarrantyPartUOM" minOccurs="0"/>
+				<xs:element name="WarrantyLabTerm" minOccurs="0"/>
+				<xs:element name="WarrantyLabUOM" minOccurs="0"/>
+				<xs:element name="Category" minOccurs="0"/>
+				<xs:element name="Images" minOccurs="0"/>
+				<xs:element name="ImageURL" minOccurs="0"/>
+				<xs:element name="ProductURL" minOccurs="0"/>
+				<xs:element name="Level" minOccurs="0"/>
+				<xs:element name="ISBN" minOccurs="0"/>
+				<xs:element name="Publisher" minOccurs="0"/>
+				<xs:element name="Instrumentation" minOccurs="0"/>
+				<xs:element name="Arranger" minOccurs="0"/>
+				<xs:element name="Artist" minOccurs="0"/>
+				<xs:element name="Composer" minOccurs="0"/>
+				<xs:element name="PageCount" minOccurs="0"/>
+				<xs:element name="TOC" minOccurs="0"/>
+				<xs:element name="Content" minOccurs="0"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
