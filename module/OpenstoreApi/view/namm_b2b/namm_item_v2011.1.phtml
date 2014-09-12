@@ -1,5 +1,5 @@
 <?php 
-namespace OpenstoreApi\Custom\Namm2011;
+namespace OpenstoreApi\Custom\Namm2007;
 
 use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
@@ -48,8 +48,8 @@ class Fcts {
     static function getPictureMediaUrl($picture_media_id)
     {
         if ($picture_media_id == '') return '';
-        $p = 'http://api.emdmusic.com/media/preview/picture/170x200-90/%pref%/%picture_media_id%.jpg';
-        $p = str_replace('%pref%', substr($picture_media_id, 0, 2), $p);
+        $p = 'http://api.emdmusic.com/media/preview/picture/1024x768-90/%pref%/%picture_media_id%.jpg';
+        $p = str_replace('%pref%', str_pad(substr($picture_media_id, -2), 2, "0", STR_PAD_LEFT), $p);
         $p = str_replace('%picture_media_id%', $picture_media_id, $p);
         return $p;
     }
@@ -70,13 +70,17 @@ http://api.emdmusic.com/media/preview/picture/170x200-90/%%/%picture_media_id%.j
 $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_1024x768-90.jpg";
 ?>
 <?= '<?xml version="1.0" encoding="utf-8" ?>' . "\n"; ?>
-<NAMM_ITEM version="2007.1">
+<NAMM_ITEM version="2011.1">
   <!--
-  EMDMusic namm_item_v2007.1.xml template
+  EMDMusic namm_item_v2011.1.xml template
   Changelog:
      [2014/09/12] Initial implementation
   -->
-  <SupplierId></SupplierId>    
+  
+  <Timestamp>2011-08-11T05:39:10.887</Timestamp>
+  <Id>38A6C25A-2344-4343-B53D-B8706E1A37DA</Id>
+  
+  <SupplierId></SupplierId>  
   <Items>
     <?php foreach($this->data as $idx => $line) : ?>
     <?php if ($idx > 0) Fcts::$enablePrintXMLComments = false; ?>  
@@ -84,92 +88,140 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
         <!-- EMD internal id : <?= $line->product_id ?> -->
         <SupplierItemId><?= $esc->escapeHtml(trim($line->product_reference)) ?></SupplierItemId>
         <SupplierModel><?= $esc->escapeHtml(trim($line->product_reference)) ?></SupplierModel>
-        <ItemDesc><?= $esc->escapeHtml(trim($line->product_title)) ?></ItemDesc>
-        <ItemDescLong><![CDATA[<?php
-                $desc = trim($line->product_title . ' ' . $line->product_description . ' ' . $line->product_characteristic);
-                echo preg_replace('/(\ ){2,}/', ' ', $desc); ?>]]>
-        </ItemDescLong>      
-        <?php Fcts::printXMLComment('MSRP/Retail Price'); ?>
-        <RetailValue><?= number_format($line->public_price, 2); ?></RetailValue>
-        <?php Fcts::printXMLComment('Unit cost value, price for the dealer'); ?>
-        <UCValue><?= number_format($line->price, 2); ?></UCValue>
-        <CountryOrigin></CountryOrigin>
+        <SupplierItemDesc><?= $esc->escapeHtml(trim($line->product_title)) ?></SupplierItemDesc>
+        <Kit>N</Kit>
+        <Serialized>N</Serialized>
         <BrandName><?= $esc->escapeHtml($line->brand_name) ?></BrandName>
-        <?php
-        Fcts::printXMLComment('
-            Item dimensions without packaging are not known, refer to dimensions
-            as described in internal carton, carton and master carton
-            Technical information, specifying dimensions are generally
-            described in item description');
-        ?>
+        <CountryOrigin></CountryOrigin>
         <Length></Length>
         <Width></Width>
         <Height></Height>
         <DimUOM>In</DimUOM>
         <Weight><?= Fcts::convertKgmInLbs($line->weight); ?></Weight>
         <WeightUOM>Lbs</WeightUOM>
-        <?php Fcts::printXMLComment('Barcode in UPCA as printed for US and Canada markets'); ?>
-        <BarCodeId><?= $line->product_barcode_upca ?></BarCodeId>
-        <BarCodeDesc>UPC</BarCodeDesc>
-        <?php Fcts::printXMLComment('Carton dimensions may not be known. Master carton dimensions should always be known.'); ?>
-        <CLength><?= Fcts::convertMeterInInch($line->pack_carton_length) ?></CLength>
-        <CWidth><?= Fcts::convertMeterInInch($line->pack_carton_width) ?></CWidth>
-        <CHeight><?= Fcts::convertMeterInInch($line->pack_carton_height) ?></CHeight>
-        <CWeight><?= Fcts::convertKgmInLbs($line->pack_carton_weight) ?></CWeight>
-        <CDimUOM>In</CDimUOM>
-        <CWeightUOM>Lbs</CWeightUOM>
-        <CUOM>EA</CUOM> <?php Fcts::printXMLComment('Each see code table') ?>
-        <CQtyPerUOM><?php 
-            $pack_qty_carton = $line->pack_qty_carton;
-            if ($pack_qty_carton != '') {
-                echo number_format($pack_qty_carton, 0);
-            }
-      ?></CQtyPerUOM>
-        <?php Fcts::printXMLComment('Internal Carton') ?>
-        <ICBarcodeId><?= $line->product_barcode_upca ?></ICBarcodeId>
-        <ICBarcodeDesc>UPC</ICBarcodeDesc>
-        <ICLength><?= Fcts::convertMeterInInch($line->pack_unit_length) ?></ICLength>
-        <ICWidth><?= Fcts::convertMeterInInch($line->pack_unit_width) ?></ICWidth>
-        <ICHeight><?= Fcts::convertMeterInInch($line->pack_unit_height) ?></ICHeight>
-        <ICWeight><?= Fcts::convertKgmInLbs($line->pack_unit_weight) ?></ICWeight>
-        <ICDimUOM>In</ICDimUOM>
-        <ICWeightUOM>Lbs</ICWeightUOM>
-        <ICUOM>EA</ICUOM>
-        <ICQtyPerUOM>1</ICQtyPerUOM>
-        <?php Fcts::printXMLComment('Master carton') ?>
-        <MCBarcodeId><?= $line->pack_mastercarton_barcode_upc ?></MCBarcodeId>
-        <MCBarcodeDesc>UPC</MCBarcodeDesc>
-        <MCLength><?= Fcts::convertMeterInInch($line->pack_mastercarton_length) ?></MCLength>
-        <MCWidth><?= Fcts::convertMeterInInch($line->pack_mastercarton_width) ?></MCWidth>
-        <MCHeight><?= Fcts::convertMeterInInch($line->pack_mastercarton_height) ?></MCHeight>
-        <MCWeight><?= Fcts::convertKgmInLbs($line->pack_mastercarton_weight) ?></MCWeight>
-        <MCDimUOM>In</MCDimUOM>
-        <MCWeightUOM>Lbs</MCWeightUOM>
-        <MCUOM>EA</MCUOM> 
-        <MCQtyPerUOM><?php 
-            $pack_qty_master_carton = $line->pack_qty_master_carton;
-            if ($pack_qty_master_carton != '') {
-                echo number_format($pack_qty_master_carton, 0);
-            }
-      ?></MCQtyPerUOM>
-        <Kit>false</Kit>
-        <?php Fcts::printXMLComment('If the product has a serial number') ?>
-        <Serialized>false</Serialized>
-        <Color></Color>
-        <Size></Size>
-        <AnnounceDate></AnnounceDate>
+        <AnnounceDate><?= Fcts::convertDate($line->available_at) ?></AnnounceDate>
         <AvailableDate><?= Fcts::convertDate($line->available_at) ?></AvailableDate>
-        <UnAvailDate></UnAvailDate>
-        <EndOfProductionDate></EndOfProductionDate>
-        <Replacement></Replacement>
-        <WarrantyPartTerm>90</WarrantyPartTerm>
+        <?php Fcts::printXMLComment('UnAvailDate and EndOfProductionDate are not known') ?>
+        <WarrantyPartTerm>365</WarrantyPartTerm>
         <WarrantyPartUOM>Day</WarrantyPartUOM>
-        <WarrantyLabTerm>365</WarrantyLabTerm>
-        <WarrantyLabUOM>Day</WarrantyLabUOM>
-        <Category><?= $esc->escapeHtml(str_replace("|", "/", $line->category_breadcrumb)) ?></Category>
-        <Images><?php if ($line->picture_media_id != '') echo basename(Fcts::getPictureMediaUrl($line->picture_media_id)); ?></Images>
-        <ImageURL><?php if ($line->picture_media_id != '') echo dirname(Fcts::getPictureMediaUrl($line->picture_media_id)); ?></ImageURL>
-        <ProductURL></ProductURL>
+        <WarrantyLabTerm>0</WarrantyLabTerm>
+        <WarrantyLabUOM>Day</WarrantyLabUOM>        
+        <Barcodes>
+            <Barcode>
+                <!-- TODO CHECK -->
+                <ID><?= $line->product_barcode_upca ?></ID>
+                <Type>GTIN-14</Type>
+            </Barcode>
+            <Barcode>
+                <ID><?= $line->product_barcode_ean13 ?></ID>
+                <Type>GTIN-13</Type>
+            </Barcode>
+        </Barcodes>        
+        <Pricing>
+            <Price type="MSRP" Currency="<?= $line->currency_reference ?>"><?= number_format($line->public_price, 2); ?></Price>
+            <!-- TODO prices -->
+            <Price type="MAP" Currency="USD">4</Price>
+            <Price type="Cost" Currency="USD" Qty="1"><?= number_format($line->price, 2); ?></Price>
+        </Pricing>        
+        <Containers>
+            <Container>
+                <Type>Each</Type>
+                <Length>52.0000</Length>
+                <Width>20.0000</Width>
+                <Height>11.0000</Height>
+                <DimUOM>IN</DimUOM>
+                <Weight>54.5000</Weight>
+                <WeightUOM>LBS</WeightUOM>
+                <UOM>EA</UOM>
+                <QtyPerUOM>1</QtyPerUOM>
+                <Barcodes>
+                    <Barcode>
+                        <ID>4959112057029</ID>
+                        <Type>GTIN-13</Type>
+                    </Barcode>
+                </Barcodes>
+            </Container>
+            <?php if ($line_pack_qty_carton != '') : ?>
+            <Container>
+                <Type>Carton</Type>
+                <Length><?= Fcts::convertMeterInInch($line->pack_carton_length) ?></Length>
+                <Width><?= Fcts::convertMeterInInch($line->pack_carton_width) ?></Width>
+                <Height><?= Fcts::convertMeterInInch($line->pack_carton_height) ?></Height>
+                <DimUOM>IN</DimUOM>
+                <Weight><?= Fcts::convertKgmInLbs($line->pack_carton_weight) ?></Weight>
+                <WeightUOM>LBS</WeightUOM>
+                <UOM>EA</UOM>
+                <QtyPerUOM><?php 
+                    $pack_qty_carton = $line->pack_qty_carton;
+                    if ($pack_qty_carton != '') {
+                        echo number_format($pack_qty_carton, 0);
+                    }
+                ?></QtyPerUOM>
+                <Barcodes>
+                    <Barcode>
+                        <ID><?= $line->pack_carton_barcode_upc ?></ID>
+                        <Type>GTIN-14</Type>
+                    </Barcode>
+                    <Barcode>
+                        <ID><?= $line->pack_carton_barcode_ean ?></ID>
+                        <Type>GTIN-14</Type>
+                    </Barcode>
+                </Barcodes>
+            </Container>
+            <?php endif; ?>
+            <?php if ($line->pack_qty_master_carton != '') : ?>
+            <Container>
+                <Type>Mastercarton</Type>
+                <Length><?= Fcts::convertMeterInInch($line->pack_mastercarton_length) ?></Length>
+                <Width><?= Fcts::convertMeterInInch($line->pack_mastercarton_width) ?></Width>
+                <Height><?= Fcts::convertMeterInInch($line->pack_mastercarton_height) ?></Height>
+                <DimUOM>IN</DimUOM>
+                <Weight><?= Fcts::convertKgmInLbs($line->pack_mastercarton_weight) ?></Weight>
+                <WeightUOM>LBS</WeightUOM>
+                <UOM>EA</UOM>
+                <QtyPerUOM><?php 
+                    $pack_qty_master_carton = $line->pack_qty_master_carton;
+                    if ($pack_qty_master_carton != '') {
+                        echo number_format($pack_qty_master_carton, 0);
+                    }
+                ?></QtyPerUOM>
+                <Barcodes>
+                    <Barcode>
+                        <ID><?= $line->pack_mastercarton_barcode_upc ?></ID>
+                        <Type>GTIN-14</Type>
+                    </Barcode>
+                    <Barcode>
+                        <ID><?= $line->pack_mastercarton_barcode_ean ?></ID>
+                        <Type>GTIN-14</Type>
+                    </Barcode>
+                </Barcodes>
+            </Container>
+            <?php endif; ?>
+            
+            
+        </Containers>
+        <MarketingInfo>
+            <!-- todo -->
+            <PrimaryCategory>4018156706</PrimaryCategory>
+            <ProductURL></ProductURL>
+            <ItemDescLong><![CDATA[<?php
+                    $desc = trim($line->product_title . ' ' . $line->product_description . ' ' . $line->product_characteristic);
+                    echo preg_replace('/(\ ){2,}/', ' ', $desc); ?>]]>
+            </ItemDescLong>      
+            <Bullets>
+              <Bullet/>
+            </Bullets>
+            <Keywords>
+              <Keyword/>
+            </Keywords>
+            <Media>
+                <Images>
+                    <?php if ($line->picture_media_id != '') : ?>
+                    <Image Audience="Consumer" View="Primary"><?php if ($line->picture_media_id != '') echo Fcts::getPictureMediaUrl($line->picture_media_id); ?></Image>
+                    <?php endif; ?>
+                </Images>
+            </Media>        
+        </MarketingInfo>        
     </Item>
     <?php endforeach; ?>  
   </Items>

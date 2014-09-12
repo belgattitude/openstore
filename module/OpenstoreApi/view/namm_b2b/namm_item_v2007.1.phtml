@@ -111,6 +111,7 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
         <?php Fcts::printXMLComment('Barcode in UPCA as printed for US and Canada markets'); ?>
         <BarCodeId><?= $line->product_barcode_upca ?></BarCodeId>
         <BarCodeDesc>UPC</BarCodeDesc>
+        <?php if ($line->pack_qty_carton != '') : ?>
         <?php Fcts::printXMLComment('Carton dimensions may not be known. Master carton dimensions should always be known.'); ?>
         <CLength><?= Fcts::convertMeterInInch($line->pack_carton_length) ?></CLength>
         <CWidth><?= Fcts::convertMeterInInch($line->pack_carton_width) ?></CWidth>
@@ -125,6 +126,7 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
                 echo number_format($pack_qty_carton, 0);
             }
       ?></CQtyPerUOM>
+        <?php endif; ?>
         <?php Fcts::printXMLComment('Internal Carton') ?>
         <ICBarcodeId><?= $line->product_barcode_upca ?></ICBarcodeId>
         <ICBarcodeDesc>UPC</ICBarcodeDesc>
@@ -136,6 +138,7 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
         <ICWeightUOM>Lbs</ICWeightUOM>
         <ICUOM>EA</ICUOM>
         <ICQtyPerUOM>1</ICQtyPerUOM>
+        <?php if ($line->pack_qty_master_carton != '') : ?>
         <?php Fcts::printXMLComment('Master carton') ?>
         <MCBarcodeId><?= $line->pack_mastercarton_barcode_upc ?></MCBarcodeId>
         <MCBarcodeDesc>UPC</MCBarcodeDesc>
@@ -152,6 +155,7 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
                 echo number_format($pack_qty_master_carton, 0);
             }
       ?></MCQtyPerUOM>
+        <?php endif; ?>
         <Kit>false</Kit>
         <?php Fcts::printXMLComment('If the product has a serial number') ?>
         <Serialized>false</Serialized>
@@ -163,7 +167,7 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
         <Replacement></Replacement>
         <WarrantyPartTerm>365</WarrantyPartTerm>
         <WarrantyPartUOM>Day</WarrantyPartUOM>
-        <WarrantyLabTerm>365</WarrantyLabTerm>
+        <WarrantyLabTerm>0</WarrantyLabTerm>
         <WarrantyLabUOM>Day</WarrantyLabUOM>
         <Category><?= $esc->escapeHtml(str_replace("|", "/", $line->category_breadcrumb)) ?></Category>
         <Images><?php if ($line->picture_media_id != '') echo basename(Fcts::getPictureMediaUrl($line->picture_media_id)); ?></Images>
