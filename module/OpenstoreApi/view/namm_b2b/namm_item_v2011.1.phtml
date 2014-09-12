@@ -12,18 +12,25 @@ class Fcts {
     static $enablePrintXMLComments = true;
 
     static function convertKgmInLbs($kg) {
-        if ($kg == "")  return '';
+        if ($kg == "")  return 0;
         $mass = new Mass($kg, 'kg');
-        $lbs = number_format($mass->toUnit('lbs'), 2);
+        $lbs = self::formatNumber($mass->toUnit('lbs'), 2);
         return $lbs;
     }
 
     static function convertMeterInInch($meter) {
-        if ($meter == "")  return '';
+        if ($meter == "")  return 0;
         $length = new Length($meter, 'meter');
-        $inches = number_format($length->toUnit('inch'), 2);
+        $inches = self::formatNumber($length->toUnit('inch'), 2, '.', '');
+        
         return $inches;
     }
+    
+    static function formatNumber($number, $decimals=2)
+    {
+        return number_format($number, $decimals, '.', '');
+    }        
+                
 
     static function convertDateTime($datetime)
     {
@@ -64,13 +71,12 @@ class Fcts {
     }
 }
 
-    
 $esc = new Escaper('utf-8');
 http://api.emdmusic.com/media/preview/picture/170x200-90/%%/%picture_media_id%.jpg
 $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_1024x768-90.jpg";
 ?>
 <?= '<?xml version="1.0" encoding="utf-8" ?>' . "\n"; ?>
-<NAMM_ITEM version="2011.1">
+<NAMM_ITEM xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://namm.org/b2b/2009/schemas" version="2011.1">
   <!--
   EMDMusic namm_item_v2011.1.xml template
   Changelog:
@@ -80,7 +86,7 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
   <Timestamp>2011-08-11T05:39:10.887</Timestamp>
   <Id>38A6C25A-2344-4343-B53D-B8706E1A37DA</Id>
   
-  <SupplierId></SupplierId>  
+  <SupplierId>123121654654654</SupplierId>  
   <Items>
     <?php foreach($this->data as $idx => $line) : ?>
     <?php if ($idx > 0) Fcts::$enablePrintXMLComments = false; ?>  
@@ -93,9 +99,9 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
         <Serialized>N</Serialized>
         <BrandName><?= $esc->escapeHtml($line->brand_name) ?></BrandName>
         <CountryOrigin></CountryOrigin>
-        <Length></Length>
-        <Width></Width>
-        <Height></Height>
+        <Length><?= Fcts::convertMeterInInch($line->pack_unit_length) ?></Length>
+        <Width><?= Fcts::convertMeterInInch($line->pack_unit_width) ?></Width>
+        <Height><?= Fcts::convertMeterInInch($line->pack_unit_height) ?></Height>
         <DimUOM>In</DimUOM>
         <Weight><?= Fcts::convertKgmInLbs($line->weight); ?></Weight>
         <WeightUOM>Lbs</WeightUOM>
@@ -118,10 +124,10 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
             </Barcode>
         </Barcodes>        
         <Pricing>
-            <Price type="MSRP" Currency="<?= $line->currency_reference ?>"><?= number_format($line->public_price, 2); ?></Price>
+            <Price type="MSRP" Currency="<?= $line->currency_reference ?>"><?= Fcts::formatNumber($line->public_price, 2); ?></Price>
             <!-- TODO prices -->
             <Price type="MAP" Currency="USD">4</Price>
-            <Price type="Cost" Currency="USD" Qty="1"><?= number_format($line->price, 2); ?></Price>
+            <Price type="Cost" Currency="USD" Qty="1"><?= Fcts::formatNumber($line->price, 2); ?></Price>
         </Pricing>        
         <Containers>
             <Container>
@@ -182,7 +188,7 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
                 <QtyPerUOM><?php 
                     $pack_qty_master_carton = $line->pack_qty_master_carton;
                     if ($pack_qty_master_carton != '') {
-                        echo number_format($pack_qty_master_carton, 0);
+                        echo Fcts::formatNumber($pack_qty_master_carton, 0);
                     }
                 ?></QtyPerUOM>
                 <Barcodes>
@@ -211,16 +217,16 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
             <Bullets>
               <Bullet/>
             </Bullets>
+            <Media>
+                <?php if ($line->picture_media_id != '') : ?>
+                <Images>
+                    <Image Audience="Consumer" View="Primary"><?php if ($line->picture_media_id != '') echo Fcts::getPictureMediaUrl($line->picture_media_id); ?></Image>
+                </Images>
+                <?php endif; ?>
+            </Media>  
             <Keywords>
               <Keyword/>
-            </Keywords>
-            <Media>
-                <Images>
-                    <?php if ($line->picture_media_id != '') : ?>
-                    <Image Audience="Consumer" View="Primary"><?php if ($line->picture_media_id != '') echo Fcts::getPictureMediaUrl($line->picture_media_id); ?></Image>
-                    <?php endif; ?>
-                </Images>
-            </Media>        
+            </Keywords>            
         </MarketingInfo>        
     </Item>
     <?php endforeach; ?>  

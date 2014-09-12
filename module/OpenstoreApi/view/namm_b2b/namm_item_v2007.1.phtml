@@ -14,14 +14,14 @@ class Fcts {
     static function convertKgmInLbs($kg) {
         if ($kg == "")  return '';
         $mass = new Mass($kg, 'kg');
-        $lbs = number_format($mass->toUnit('lbs'), 2);
+        $lbs = self::formatNumber($mass->toUnit('lbs'), 2);
         return $lbs;
     }
 
     static function convertMeterInInch($meter) {
         if ($meter == "")  return '';
         $length = new Length($meter, 'meter');
-        $inches = number_format($length->toUnit('inch'), 2);
+        $inches = self::formatNumber($length->toUnit('inch'), 2);
         return $inches;
     }
 
@@ -36,6 +36,12 @@ class Fcts {
         return $datetime; 
         
     }
+    
+    static function formatNumber($number, $decimals=2)
+    {
+        return number_format($number, $decimals, '.', '');
+    }        
+            
     
     static function convertDate($date) {
         if ($date == '') return '';
@@ -90,9 +96,9 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
                 echo preg_replace('/(\ ){2,}/', ' ', $desc); ?>]]>
         </ItemDescLong>      
         <?php Fcts::printXMLComment('MSRP/Retail Price'); ?>
-        <RetailValue><?= number_format($line->public_price, 2); ?></RetailValue>
+        <RetailValue><?= Fcts::formatNumber($line->public_price, 2); ?></RetailValue>
         <?php Fcts::printXMLComment('Unit cost value, price for the dealer'); ?>
-        <UCValue><?= number_format($line->price, 2); ?></UCValue>
+        <UCValue><?= Fcts::formatNumber($line->price, 2); ?></UCValue>
         <CountryOrigin></CountryOrigin>
         <BrandName><?= $esc->escapeHtml($line->brand_name) ?></BrandName>
         <?php
@@ -123,7 +129,7 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
         <CQtyPerUOM><?php 
             $pack_qty_carton = $line->pack_qty_carton;
             if ($pack_qty_carton != '') {
-                echo number_format($pack_qty_carton, 0);
+                echo Fcts::formatNumber($pack_qty_carton, 0);
             }
       ?></CQtyPerUOM>
         <?php endif; ?>
@@ -152,7 +158,7 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
         <MCQtyPerUOM><?php 
             $pack_qty_master_carton = $line->pack_qty_master_carton;
             if ($pack_qty_master_carton != '') {
-                echo number_format($pack_qty_master_carton, 0);
+                echo Fcts::formatNumber($pack_qty_master_carton, 0);
             }
       ?></MCQtyPerUOM>
         <?php endif; ?>

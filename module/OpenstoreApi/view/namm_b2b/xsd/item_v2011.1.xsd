@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://namm.org/b2b/2009/schemas" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:element name="NAMM_ITEM">
     <xs:complexType>
