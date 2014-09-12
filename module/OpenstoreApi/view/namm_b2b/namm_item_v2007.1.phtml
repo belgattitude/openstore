@@ -48,8 +48,8 @@ class Fcts {
     static function getPictureMediaUrl($picture_media_id)
     {
         if ($picture_media_id == '') return '';
-        $p = 'http://api.emdmusic.com/media/preview/picture/170x200-90/%pref%/%picture_media_id%.jpg';
-        $p = str_replace('%pref%', substr($picture_media_id, 0, 2), $p);
+        $p = 'http://api.emdmusic.com/media/preview/picture/1024x768-90/%pref%/%picture_media_id%.jpg';
+        $p = str_replace('%pref%', str_pad(substr($picture_media_id, -2), 2, "0", STR_PAD_LEFT), $p);
         $p = str_replace('%picture_media_id%', $picture_media_id, $p);
         return $p;
     }
