@@ -70,6 +70,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
             switch ($format) {
 
                 case 'json' :
+                    header("Access-Control-Allow-Origin: *");
                     if ($vars instanceof FlexStoreInterface) {
                         $jsonWriter = new JsonWriter($vars->getSource());
                         $jsonWriter->setDebug($debug = false);

@@ -79,6 +79,7 @@ class ProductCatalogService extends AbstractService {
 
         $select->from(array('p' => 'product'), array())
                 ->join(array('p18' => 'product_translation'), new Expression("p18.product_id = p.product_id and p18.lang='$lang'"), array(), $select::JOIN_LEFT)
+                ->join(array('psi' => 'product_search'), new Expression("psi.product_id = p.product_id and psi.lang = '$lang'"), array(), $select::JOIN_LEFT)
                 ->join(array('pb' => 'product_brand'), new Expression('pb.brand_id = p.brand_id'), array())
                 ->join(array('p2' => 'product'), new Expression('p2.product_id = p.parent_id'), array(), $select::JOIN_LEFT)
                 ->join(array('p2_18' => 'product_translation'), new Expression("p2.product_id = p2_18.product_id and p2_18.lang='$lang'"), array(), $select::JOIN_LEFT)
@@ -202,6 +203,65 @@ class ProductCatalogService extends AbstractService {
         $select->where('p.flag_active = 1');
         $select->where('ppl.flag_active = 1');
 
+        $relevance = "1";        
+
+        if (array_key_exists('query', $params)) {
+            $query = trim($params['query']);
+            if ($query != "") {
+
+                $platform = $this->adapter->getPlatform();
+                $quoted = $platform->quoteValue($query);
+                $searchable_ref = $this->getSearchableReference($query);
+
+                // 1. TEST PART WITH 
+                // BARCODE, SEARCH_REFERENCE, PRODUCT_ID,
+
+                $matches = array();
+                if (is_numeric($query) && strlen($query) < 20) {
+
+                    // Can be a barcode or a product_id, 
+                    $matches[1000000000] = "p.product_id = $query";
+
+                    if (strlen($query) > 10) {
+                        $matches[1000000000] = "p.barcode_ean13 = '$query'";
+                        $matches[100000000] = "p.barcode_upca = '$query'";
+                    }
+                }
+
+                $splitted = explode(' ', preg_replace('!\s+!', ' ', $query));
+
+                // test title in order
+
+                $matches[10000000] = "p.search_reference like " . $platform->quoteValue($searchable_ref . '%');
+                $matches[1000000] = "p.search_reference like " . $platform->quoteValue('%' . $searchable_ref . '%');
+                //echo "p.search_reference like CONCAT('%', get_searchable_reference($quoted), '%')";
+                //die();
+                if (strlen($query) > 3) {
+                    $matches[1000000] = 'p18.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
+                    $matches[100000] = 'p.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
+                }
+                if (strlen($query) > 5) {
+                    $matches[10000] = 'psi.keywords like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
+                }
+
+                $matches[0] = 'MATCH (psi.keywords) AGAINST (' . $platform->quoteValue(join(' ', $splitted)) . ' IN NATURAL LANGUAGE MODE)';
+
+                $relevance = '';
+                $i = 0;
+                foreach ($matches as $weight => $condition) {
+                    if ($weight > 0) {
+                        $relevance .= "if ($condition, $weight, ";
+                    } else {
+                        $relevance .= $condition;
+                    }
+                }
+                $relevance .= str_repeat(')', count($matches) - 1);
+
+                $select->where("(" . join(' or ', array_values($matches)) . ")");
+            } 
+            
+            
+        }
 
 
         if (array_key_exists('brands', $params)) {
@@ -216,24 +276,54 @@ class ProductCatalogService extends AbstractService {
           $select->where("pl.reference = 'BE'");
          */
 
-        $select->order(array('p.product_id' => $select::ORDER_ASCENDING));
+        //$select->order(array('p.product_id' => $select::ORDER_ASCENDING));
 
+        $select->order(array(new Expression($relevance . ' desc'), 'pc.global_sort_index', 'p.sort_index', 'p.display_reference'));                        
         /**
          * 
          */
-        //echo $select->getSqlString($this->adapter->getPlatform());
+        echo $select->getSqlString($this->adapter->getPlatform());
         //die();
 
+        
+        
         $parameters = array(
             'adapter' => $this->adapter,
             'select' => $select
         );
         $store = new FlexStore('zend\select', $parameters);
-        //$store->getSource()->getData();
+        if (array_key_exists('limit', $params)) {
+            $store->getSource()->getOptions()->setLimit($params['limit']);
+        }
+        if (array_key_exists('offset', $params)) {
+            $store->getSource()->getOptions()->setOffset($params['offset']);
+        }
 
+        
+        
+        //$store->getSource()->getData();
         //var_dump($store->getSource()->getData()->toArray());
         //die();
         return $store;
+    }
+
+    /**
+     * Return quoted searchable reference from a keyword
+     * @param string $reference
+     * @return string
+     */
+    protected function getSearchableReference($reference, $wildcards_starts_at_char = 4, $max_reference_length = 20) {
+        $reference = substr($reference, 0, $max_reference_length);
+        $quoted = $this->adapter->getPlatform()->quoteValue($reference);
+        $ref = $this->adapter->query("select get_searchable_reference($quoted) as ref")->execute()->current()['ref'];
+        $out = '';
+        foreach (str_split($ref) as $idx => $c) {
+            if ($idx >= $wildcards_starts_at_char) {
+                $out .= '%';
+            }
+            $out .= $c;
+        }
+        return $out;
     }
 
 }
