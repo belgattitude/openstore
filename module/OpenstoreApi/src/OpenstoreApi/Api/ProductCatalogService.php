@@ -282,7 +282,7 @@ class ProductCatalogService extends AbstractService {
         /**
          * 
          */
-        echo $select->getSqlString($this->adapter->getPlatform());
+        //echo $select->getSqlString($this->adapter->getPlatform());
         //die();
 
         
