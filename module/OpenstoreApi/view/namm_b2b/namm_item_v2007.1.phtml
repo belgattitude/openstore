@@ -90,7 +90,7 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
         <!-- EMD internal id : <?= $line->product_id ?> -->
         <SupplierItemId><?= $esc->escapeHtml(trim($line->product_reference)) ?></SupplierItemId>
         <SupplierModel><?= $esc->escapeHtml(trim($line->product_reference)) ?></SupplierModel>
-        <ItemDesc><?= $esc->escapeHtml(trim($line->product_title)) ?></ItemDesc>
+        <ItemDesc><?= $esc->escapeHtml(trim($line->product_title)); ?></ItemDesc>
         <ItemDescLong><![CDATA[<?php
                 $desc = trim($line->product_title . ' ' . $line->product_description . ' ' . $line->product_characteristic);
                 echo preg_replace('/(\ ){2,}/', ' ', $desc); ?>]]>
@@ -100,7 +100,7 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
         <?php Fcts::printXMLComment('Unit cost value, price for the dealer'); ?>
         <UCValue><?= Fcts::formatNumber($line->price, 2); ?></UCValue>
         <CountryOrigin></CountryOrigin>
-        <BrandName><?= $esc->escapeHtml($line->brand_name) ?></BrandName>
+        <BrandName><?= $esc->escapeHtml($line->brand_title); ?></BrandName>
         <?php
         Fcts::printXMLComment('
             Item dimensions without packaging are not known, refer to dimensions
