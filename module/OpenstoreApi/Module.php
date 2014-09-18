@@ -14,6 +14,7 @@ use Soluble\FlexStore\Writer\CSV as CSVWriter;
 use Soluble\FlexStore\Writer\Excel\LibXLWriter;
 use Soluble\FlexStore\Writer\SimpleXmlWriter;
 use OpenstoreApi\Authorize\Exception\AuthorizationException;
+use Soluble\Spreadsheet\Library\LibXL;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
 
@@ -100,7 +101,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
                     $lm = $e->getApplication()->getServiceManager()->get('LicenseManager');
                     $lic = $lm->get('libxl');
 
-                    LibXLWriter::setLicense($lic['license_name'], $lic['license_key']);
+                    LibXL::setDefaultLicense(array('name' => $lic['license_name'], 'key' => $lic['license_key']));
+                    //LibXLWriter::setDefaultLicense($lic['license_name'], $lic['license_key']);
                     $csvWriter = new LibXLWriter($vars->getSource());
                     $csvWriter->send();
                     die();
