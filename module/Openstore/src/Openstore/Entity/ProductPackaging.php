@@ -20,11 +20,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   options={"comment" = "Product packaging information"}
  * )
  */
-class ProductPackaging
-{
-    
+class ProductPackaging {
 
-    
     /**
      * @ORM\Id
      * @ORM\Column(name="id", type="bigint", nullable=false, options={"unsigned"=true})
@@ -32,15 +29,13 @@ class ProductPackaging
      */
     private $id;
 
-
     /**
      * 
      * @ORM\ManyToOne(targetEntity="PackagingType", inversedBy="products", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", onDelete="CASCADE", nullable=false)
      */
     private $type_id;
-    
-    
+
     /**
      * 
      * @ORM\ManyToOne(targetEntity="Product", inversedBy="products", cascade={"persist", "remove"})
@@ -48,12 +43,11 @@ class ProductPackaging
      */
     private $product_id;
 
-    
     /**
      * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Product unit quantity in the packaging"})
      */
     private $quantity;
-    
+
     /**
      * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Volume per sales unit in m3"})
      */
@@ -77,8 +71,8 @@ class ProductPackaging
     /**
      * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Width per sales unit in meter"})
      */
-    private $width;    
-    
+    private $width;
+
     /**
      * @ORM\Column(type="string", length=20, nullable=true, options={"comment"="EAN barcode"})
      */
@@ -88,8 +82,7 @@ class ProductPackaging
      * @ORM\Column(type="string", length=20, nullable=true, options={"comment"="UPCA barcode"})
      */
     private $barcode_upc;
-    
-    
+
     /**
      * @ORM\Column(type="string",length=40,nullable=true, options={"comment" = "Unique reference of this record taken from legacy system"})
      */
@@ -100,35 +93,27 @@ class ProductPackaging
      */
     protected $legacy_synchro_at;
 
-    
-    
-    public function __construct()
-    {
-         
-         
-         
+    public function __construct() {
+        
     }
 
     /**
      * 
      * @param integer $id
      */
-    public function setId($id)
-    {
+    public function setId($id) {
         $this->id = $id;
         return $this;
-    }    
-    
+    }
+
     /**
      * 
      * @return integer
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
-    
     /**
      * 
      * @param float|int $quantity
@@ -136,7 +121,7 @@ class ProductPackaging
     public function setQuantity($quantity) {
         $this->quantity = $quantity;
     }
-    
+
     /**
      * Set volume
      * @return Product
@@ -239,7 +224,7 @@ class ProductPackaging
     function getBarcodeEan() {
         return $this->barcode_ean;
     }
-    
+
     /**
      * Set barcode_upc
      * @param string $barcode_upc
@@ -258,14 +243,11 @@ class ProductPackaging
         return $this->barcode_upc;
     }
 
-
-    
     /**
      * Return legacy mapping 
      * @return string $legacy_mapping
      */
-    public function getLegacyMapping()
-    {
+    public function getLegacyMapping() {
         return $this->legacy_mapping;
     }
 
@@ -273,8 +255,7 @@ class ProductPackaging
      * Set a legacy mapping for this record
      * @param string $legacy_mapping
      */
-    public function setLegacyMapping($legacy_mapping)
-    {
+    public function setLegacyMapping($legacy_mapping) {
         $this->legacy_mapping = $legacy_mapping;
         return $this;
     }
@@ -283,8 +264,7 @@ class ProductPackaging
      * Set legacy synchro time
      * @param string $legacy_synchro_at
      */
-    public function setLegacySynchroAt($legacy_synchro_at)
-    {
+    public function setLegacySynchroAt($legacy_synchro_at) {
         $this->legacy_synchro_at = $legacy_synchro_at;
         return $this;
     }
@@ -293,8 +273,7 @@ class ProductPackaging
      * Return legacy synchro timestamp 
      * @return string 
      */
-    public function getLegacySynchroAt()
-    {
+    public function getLegacySynchroAt() {
         return $this->legacy_synchro_at;
     }
 
@@ -303,8 +282,7 @@ class ProductPackaging
      *
      * @return array
      */
-    public function getArrayCopy()
-    {
+    public function getArrayCopy() {
         return get_object_vars($this);
     }
 
@@ -312,12 +290,10 @@ class ProductPackaging
      * 
      * @return string
      */
-    public function __toString()
-    {
+    public function __toString() {
         return $this->getAvailableStock();
     }
 
-    
     /**
      * Magic getter to expose protected properties.
      *
@@ -336,7 +312,6 @@ class ProductPackaging
      */
     public function __set($property, $value) {
         $this->$property = $value;
-    }    
-    
-    
+    }
+
 }

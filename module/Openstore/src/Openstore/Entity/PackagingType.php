@@ -20,347 +20,300 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   options={"comment" = "Product packaging type table"}
  * )
  */
-class PackagingType 
-{
+class PackagingType {
 
-	
-	/**
-	 * @ORM\Id
-	 * @ORM\Column(name="type_id", type="integer", nullable=false, options={"unsigned"=true})
-	 * @ORM\GeneratedValue(strategy="AUTO")
-	 */
-	private $type_id;
+    /**
+     * @ORM\Id
+     * @ORM\Column(name="type_id", type="smallint", nullable=false, options={"unsigned"=true})
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $type_id;
 
-	/**
-	 * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
-	 */
-	private $reference;
+    /**
+     * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
+     */
+    private $reference;
 
+    /**
+     * @ORM\Column(type="string", length=80, nullable=true)
+     */
+    private $title;
 
-	/**
-	 * @ORM\Column(type="string", length=80, nullable=true)
-	 */
-	private $title;
+    /**
+     * @ORM\Column(type="string", length=15000, nullable=true)
+     */
+    private $description;
 
-	/**
-	 * @ORM\Column(type="string", length=15000, nullable=true)
-	 */
-	private $description;
+    /**
+     * @ORM\Column(type="boolean", nullable=true, options={"default"=1, "comment"="Whether the packaging type is active"})
+     */
+    private $flag_active;
 
-	
-	/**
-	 * @ORM\Column(type="boolean", nullable=true, options={"default"=1, "comment"="Whether the packaging type is active"})
-	 */
-	private $flag_active;        
-        
-	
-	/**
-	 * @ORM\Column(type="string", length=40, nullable=true)
-	 */
-	private $icon_class;
-	
-	
-	/**
-	 * @Gedmo\Timestampable(on="create")
-	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record creation timestamp"})
-	 */
-	private $created_at;
+    /**
+     * @ORM\Column(type="string", length=40, nullable=true)
+     */
+    private $icon_class;
 
-	/**
-	 * @Gedmo\Timestampable(on="update")
-	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record last update timestamp"})
-	 */
-	private $updated_at;
+    /**
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record creation timestamp"})
+     */
+    private $created_at;
 
-	/**
-	 * @Gedmo\Blameable(on="create")
-	 * @ORM\Column(type="string", length=40, nullable=true, options={"comment" = "Creator name"})
-	 */
-	private $created_by;
+    /**
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record last update timestamp"})
+     */
+    private $updated_at;
 
-	/**
-	 * @Gedmo\Blameable(on="update")
-	 * @ORM\Column(type="string", length=40, nullable=true, options={"comment" = "Last updater name"})
-	 */
-	private $updated_by;
+    /**
+     * @Gedmo\Blameable(on="create")
+     * @ORM\Column(type="string", length=40, nullable=true, options={"comment" = "Creator name"})
+     */
+    private $created_by;
 
-	/**
-	 * @ORM\Column(type="string",length=40,nullable=true, options={"comment" = "Unique reference of this record taken from legacy system"})
-	 */
-	protected $legacy_mapping;
+    /**
+     * @Gedmo\Blameable(on="update")
+     * @ORM\Column(type="string", length=40, nullable=true, options={"comment" = "Last updater name"})
+     */
+    private $updated_by;
 
-	/**
-	 * @ORM\Column(type="datetime",nullable=true, options={"comment" = "Last synchro timestamp"})
-	 */
-	protected $legacy_synchro_at;
+    /**
+     * @ORM\Column(type="string",length=40,nullable=true, options={"comment" = "Unique reference of this record taken from legacy system"})
+     */
+    protected $legacy_mapping;
 
-	
-	
-	public function __construct()
-	{
-		
-		 /**
-		  * Default value for flag_active
-		  */
-		 $this->flag_active = true; 
-		 
-		 
-	}
+    /**
+     * @ORM\Column(type="datetime",nullable=true, options={"comment" = "Last synchro timestamp"})
+     */
+    protected $legacy_synchro_at;
 
-	/**
-	 * 
-	 * @param integer $id
-	 */
-	public function setTypeId($type_id)
-	{
-		$this->type_id = $type_id;
-		return $this;
-	}	
-	
-	/**
-	 * 
-	 * @return integer
-	 */
-	public function getTypeId()
-	{
-		return $this->type_id;
-	}
+    public function __construct() {
 
-	/**
-	 * Set reference
-	 * @param string $reference
-	 */
-	public function setReference($reference)
-	{
-		$this->reference = $reference;
-		return $this;
-	}
+        /**
+         * Default value for flag_active
+         */
+        $this->flag_active = true;
+    }
 
-	/**
-	 * Return reference 
-	 * @return string
-	 */
-	public function getReference()
-	{
-		return $this->reference;
-	}
+    /**
+     * 
+     * @param integer $id
+     */
+    public function setTypeId($type_id) {
+        $this->type_id = $type_id;
+        return $this;
+    }
 
+    /**
+     * 
+     * @return integer
+     */
+    public function getTypeId() {
+        return $this->type_id;
+    }
 
-        
+    /**
+     * Set reference
+     * @param string $reference
+     */
+    public function setReference($reference) {
+        $this->reference = $reference;
+        return $this;
+    }
 
-	/**
-	 * 
-	 * @param string $title
-	 */
-	public function setTitle($title)
-	{
-		$this->title = $title;
-		return $this;
-	}
+    /**
+     * Return reference 
+     * @return string
+     */
+    public function getReference() {
+        return $this->reference;
+    }
 
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getTitle()
-	{
-		return $this->title;
-	}
+    /**
+     * 
+     * @param string $title
+     */
+    public function setTitle($title) {
+        $this->title = $title;
+        return $this;
+    }
 
-	/**
-	 * 
-	 * @param string $description
-	 */
-	public function setDescription($description)
-	{
-		$this->description = $description;
-		return $this;
-	}
+    /**
+     * 
+     * @return string
+     */
+    public function getTitle() {
+        return $this->title;
+    }
 
-	/**
-	 * Return description
-	 * @return string
-	 */
-	public function getDescription()
-	{
-		return $this->description;
-	}
-	
-        
-	
+    /**
+     * 
+     * @param string $description
+     */
+    public function setDescription($description) {
+        $this->description = $description;
+        return $this;
+    }
 
-	/**
-	 * 
-	 * @return string
-	 */
-	public function setIconClass($icon_class)
-	{
-		$this->icon_class = $icon_class;
-		return $this;
-	}
-	
-	
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getIconClass()
-	{
-		return $this->icon_class;
-	}
-	
-	/**
-	 * 
-	 * @return boolean
-	 */
-	public function getFlagActive()
-	{
-		return (boolean) $this->flag_active;
-	}
+    /**
+     * Return description
+     * @return string
+     */
+    public function getDescription() {
+        return $this->description;
+    }
 
-	
-	/**
-	 * 
-	 */
-	public function setFlagActive($flag_active)
-	{
-		$this->flag_active = $flag_active;
-		return $this;
-	}
-	
-	
+    /**
+     * 
+     * @return string
+     */
+    public function setIconClass($icon_class) {
+        $this->icon_class = $icon_class;
+        return $this;
+    }
 
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getCreatedAt()
-	{
-		return $this->created_at;
-	}
+    /**
+     * 
+     * @return string
+     */
+    public function getIconClass() {
+        return $this->icon_class;
+    }
 
-	/**
-	 * 
-	 * @param string $created_at
-	 */
-	public function setCreatedAt($created_at)
-	{
-		$this->created_at = $created_at;
-		return $this;
-	}
+    /**
+     * 
+     * @return boolean
+     */
+    public function getFlagActive() {
+        return (boolean) $this->flag_active;
+    }
 
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getUpdatedAt()
-	{
-		return $this->updated_at;
-	}
+    /**
+     * 
+     */
+    public function setFlagActive($flag_active) {
+        $this->flag_active = $flag_active;
+        return $this;
+    }
 
-	/**
-	 * 
-	 * @param string $updated_at
-	 */
-	public function setUpdatedAt($updated_at)
-	{
-		$this->updated_at = $updated_at;
-		return $this;
-	}
+    /**
+     * 
+     * @return string
+     */
+    public function getCreatedAt() {
+        return $this->created_at;
+    }
 
-	/**
-	 * Return creator username
-	 * @return string
-	 */
-	public function getCreatedBy()
-	{
-		return $this->created_by;
-	}
+    /**
+     * 
+     * @param string $created_at
+     */
+    public function setCreatedAt($created_at) {
+        $this->created_at = $created_at;
+        return $this;
+    }
 
-	/**
-	 * Set creator username
-	 * @param string $created_by
-	 */
-	public function setCreatedBy($created_by)
-	{
-		$this->created_by = $created_by;
-		return $this;
-	}
+    /**
+     * 
+     * @return string
+     */
+    public function getUpdatedAt() {
+        return $this->updated_at;
+    }
 
-	/**
-	 * Return last updater username
-	 * @return string
-	 */
-	public function getUpdatedBy()
-	{
-		return $this->updated_by;
-	}
+    /**
+     * 
+     * @param string $updated_at
+     */
+    public function setUpdatedAt($updated_at) {
+        $this->updated_at = $updated_at;
+        return $this;
+    }
 
-	/**
-	 * Set the last updater username
-	 * @param string $updated_by
-	 */
-	public function setUpdatedBy($updated_by)
-	{
-		$this->updated_by = $updated_by;
-		return $this;
-	}
+    /**
+     * Return creator username
+     * @return string
+     */
+    public function getCreatedBy() {
+        return $this->created_by;
+    }
 
-	/**
-	 * Return legacy mapping 
-	 * @return string $legacy_mapping
-	 */
-	public function getLegacyMapping()
-	{
-		return $this->legacy_mapping;
-	}
+    /**
+     * Set creator username
+     * @param string $created_by
+     */
+    public function setCreatedBy($created_by) {
+        $this->created_by = $created_by;
+        return $this;
+    }
 
-	/**
-	 * Set a legacy mapping for this record
-	 * @param string $legacy_mapping
-	 */
-	public function setLegacyMapping($legacy_mapping)
-	{
-		$this->legacy_mapping = $legacy_mapping;
-		return $this;
-	}
+    /**
+     * Return last updater username
+     * @return string
+     */
+    public function getUpdatedBy() {
+        return $this->updated_by;
+    }
 
-	/**
-	 * Set legacy synchro time
-	 * @param string $legacy_mapping
-	 */
-	public function setLegacySynchroAt($legacy_synchro_at)
-	{
-		$this->legacy_synchro_at = $legacy_synchro_at;
-		return $this;
-	}
+    /**
+     * Set the last updater username
+     * @param string $updated_by
+     */
+    public function setUpdatedBy($updated_by) {
+        $this->updated_by = $updated_by;
+        return $this;
+    }
 
-	/**
-	 * Return legacy synchro timestamp 
-	 * @return string 
-	 */
-	public function getLegacySynchroAt()
-	{
-		return $this->legacy_synchro_at;
-	}
+    /**
+     * Return legacy mapping 
+     * @return string $legacy_mapping
+     */
+    public function getLegacyMapping() {
+        return $this->legacy_mapping;
+    }
 
-	/**
-	 * Convert the object to an array.
-	 *
-	 * @return array
-	 */
-	public function getArrayCopy()
-	{
-		return get_object_vars($this);
-	}
+    /**
+     * Set a legacy mapping for this record
+     * @param string $legacy_mapping
+     */
+    public function setLegacyMapping($legacy_mapping) {
+        $this->legacy_mapping = $legacy_mapping;
+        return $this;
+    }
 
-	/**
-	 * 
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return $this->getTitle();
-	}
+    /**
+     * Set legacy synchro time
+     * @param string $legacy_mapping
+     */
+    public function setLegacySynchroAt($legacy_synchro_at) {
+        $this->legacy_synchro_at = $legacy_synchro_at;
+        return $this;
+    }
+
+    /**
+     * Return legacy synchro timestamp 
+     * @return string 
+     */
+    public function getLegacySynchroAt() {
+        return $this->legacy_synchro_at;
+    }
+
+    /**
+     * Convert the object to an array.
+     *
+     * @return array
+     */
+    public function getArrayCopy() {
+        return get_object_vars($this);
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function __toString() {
+        return $this->getTitle();
+    }
 
 }

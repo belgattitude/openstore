@@ -6,10 +6,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\Factory as InputFactory;
-use Zend\InputFilter\InputFilterAwareInterface;
-use Zend\InputFilter\InputFilterInterface;
 
 /**
  * @ORM\Entity
@@ -20,230 +16,163 @@ use Zend\InputFilter\InputFilterInterface;
  *   options={"comment" = "Api usage logs"}
  * )
  */
-class ApiKeyLog implements InputFilterAwareInterface
-{
-	
+class ApiKeyLog {
 
-	/**
-	 * @ORM\Id
-	 * @ORM\Column(name="id", type="bigint", nullable=false, options={"unsigned"=true})
-	 * @ORM\GeneratedValue(strategy="AUTO")
-	 */
-	private $id;
-	
-	
-	
-	/**
-	 * 
+    /**
+     * @ORM\Id
+     * @ORM\Column(name="id", type="bigint", nullable=false, options={"unsigned"=true})
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * 
      * @ORM\ManyToOne(targetEntity="ApiKey", inversedBy="services", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="api_id", referencedColumnName="api_id", onDelete="CASCADE", nullable=false)
-	 */
-	private $api_id;	
-	
+     */
+    private $api_id;
 
-	/**
-	 * 
+    /**
+     * 
      * @ORM\ManyToOne(targetEntity="ApiService", inversedBy="keys", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="service_id", referencedColumnName="service_id", onDelete="CASCADE", nullable=true)
-	 */
-	private $service_id;	
-	
-	
-	/**
-	 * @ORM\Column(type="string", length=32, nullable=true, options={"comment" = "Remote api"})
-	 */
-	private $remote_ip;
+     */
+    private $service_id;
 
-	
-	/**
-	 * @Gedmo\Timestampable(on="create")
-	 * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record creation timestamp"})
-	 */
-	private $created_at;
+    /**
+     * @ORM\Column(type="string", length=32, nullable=true, options={"comment" = "Remote api"})
+     */
+    private $remote_ip;
 
-	
-	/**
-	 * @ORM\Column(type="string", length=255, nullable=true, options={"comment" = "Custom message"})
-	 */
-	private $message;
-	
+    /**
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record creation timestamp"})
+     */
+    private $created_at;
 
-	/**
-	 * @ORM\Column(type="integer", nullable=true, options={"comment" = "Time of execution in seconds", "unsigned"=true})
-	 */
-	private $execution_time;
-	
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true, options={"comment" = "Custom message"})
+     */
+    private $message;
 
-	/**
-	 * @ORM\Column(type="integer", nullable=true, options={"comment" = "Size in bytes", "unsigned"=true})
-	 */
-	private $network_usage;
-	
-	
-	/**
-	 * @ORM\Column(type="integer", nullable=false, options={"default"=1, "unsigned"=true, "comment"="Count usage"})
-	 */
-	private $usage_count;
-	
-	/**
-	 * 
-	 * @param integer $id
-	 */
-	public function setId($id)
-	{
-		$this->id = $id;
-		return $this;
-	}	
-	
-	/**
-	 * 
-	 * @return integer
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-	
-	/**
-	 * 
-	 * @param integer $api_id
-	 */
-	public function setApiId($api_id)
-	{
-		$this->api_id = $api_id;
-		return $this;
-	}	
-	
-	/**
-	 * 
-	 * @return integer
-	 */
-	public function getApiId()
-	{
-		return $this->api_id;
-	}
-	
-	/**
-	 * 
-	 * @param integer $service_id
-	 */
-	public function setServiceId($service_id)
-	{
-		$this->service_id = $service_id;
-		return $this;
-	}	
-	
-	/**
-	 * 
-	 * @return integer
-	 */
-	public function getServiceId()
-	{
-		return $this->service_id;
-	}
-	
+    /**
+     * @ORM\Column(type="integer", nullable=true, options={"comment" = "Time of execution in seconds", "unsigned"=true})
+     */
+    private $execution_time;
 
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getCreatedAt()
-	{
-		return $this->created_at;
-	}
+    /**
+     * @ORM\Column(type="integer", nullable=true, options={"comment" = "Size in bytes", "unsigned"=true})
+     */
+    private $network_usage;
 
-	/**
-	 * 
-	 * @param string $created_at
-	 */
-	public function setCreatedAt($created_at)
-	{
-		$this->created_at = $created_at;
-		return $this;
-	}
+    /**
+     * @ORM\Column(type="integer", nullable=false, options={"default"=1, "unsigned"=true, "comment"="Count usage"})
+     */
+    private $usage_count;
 
+    /**
+     * 
+     * @param integer $id
+     */
+    public function setId($id) {
+        $this->id = $id;
+        return $this;
+    }
 
-	/**
-	 * Convert the object to an array.
-	 *
-	 * @return array
-	 */
-	public function getArrayCopy()
-	{
-		return get_object_vars($this);
-	}
+    /**
+     * 
+     * @return integer
+     */
+    public function getId() {
+        return $this->id;
+    }
 
-	/**
-	 * 
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return $this->getTitle();
-	}
+    /**
+     * 
+     * @param integer $api_id
+     */
+    public function setApiId($api_id) {
+        $this->api_id = $api_id;
+        return $this;
+    }
 
-	
-	/**
-	 * Magic getter to expose protected properties.
-	 *
-	 * @param string $property
-	 * @return mixed
-	 */
-	public function __get($property) {
-		return $this->$property;
-	}
+    /**
+     * 
+     * @return integer
+     */
+    public function getApiId() {
+        return $this->api_id;
+    }
 
-	/**
-	 * Magic setter to save protected properties.
-	 *
-	 * @param string $property
-	 * @param mixed $value
-	 */
-	public function __set($property, $value) {
-		$this->$property = $value;
-	}	
-	
-	/**
-	 * 
-	 * @param \Zend\InputFilter\InputFilterInterface $inputFilter
-	 */
-	public function setInputFilter(InputFilterInterface $inputFilter) {
-		$this->inputFiler = $inputFilter;
-		return $this;
-	}
+    /**
+     * 
+     * @param integer $service_id
+     */
+    public function setServiceId($service_id) {
+        $this->service_id = $service_id;
+        return $this;
+    }
 
-	/**
-	 * 
-	 * @return \Zend\InputFilter\InputFilterInterface $inputFilter
-	 */
-	public function getInputFilter() {
-		if (!$this->inputFilter) {
-			$inputFilter = new InputFilter();
-			$factory = new InputFactory();
+    /**
+     * 
+     * @return integer
+     */
+    public function getServiceId() {
+        return $this->service_id;
+    }
 
-			$inputFilter->add($factory->createInput(array(
-						'name' => 'reference',
-						'required' => true,
-						'filters' => array(
-							array('name' => 'StripTags'),
-							array('name' => 'StringTrim'),
-						),
-						'validators' => array(
-							array(
-								'name' => 'StringLength',
-								'options' => array(
-									'encoding' => 'UTF-8',
-									'min' => 1,
-									'max' => 60,
-								),
-							),
-						),
-					)));
+    /**
+     * 
+     * @return string
+     */
+    public function getCreatedAt() {
+        return $this->created_at;
+    }
 
-			$this->inputFilter = $inputFilter;
-		}
+    /**
+     * 
+     * @param string $created_at
+     */
+    public function setCreatedAt($created_at) {
+        $this->created_at = $created_at;
+        return $this;
+    }
 
-		return $this->inputFilter;
-	}
-	
+    /**
+     * Convert the object to an array.
+     *
+     * @return array
+     */
+    public function getArrayCopy() {
+        return get_object_vars($this);
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function __toString() {
+        return $this->getTitle();
+    }
+
+    /**
+     * Magic getter to expose protected properties.
+     *
+     * @param string $property
+     * @return mixed
+     */
+    public function __get($property) {
+        return $this->$property;
+    }
+
+    /**
+     * Magic setter to save protected properties.
+     *
+     * @param string $property
+     * @param mixed $value
+     */
+    public function __set($property, $value) {
+        $this->$property = $value;
+    }
+
 }

@@ -33,7 +33,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Product {
 
-
     /**
      * @ORM\OneToMany(targetEntity="ProductTranslation", mappedBy="product_id")
      * */
@@ -59,8 +58,8 @@ class Product {
     /**
      * @ORM\Column(type="string", length=60, nullable=true, options={"comment" = "Reference used for searches, may differ from display reference, some chars may be replaced"})
      */
-    private $search_reference;    
-    
+    private $search_reference;
+
     /**
      * @ORM\ManyToOne(targetEntity="Product", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="product_id", onDelete="CASCADE")
@@ -108,8 +107,7 @@ class Product {
      * @ORM\JoinColumn(name="status_id", referencedColumnName="status_id", onDelete="CASCADE", nullable=true)
      */
     private $status_id;
-    
-    
+
     /**
      * Sales unit
      * @ORM\ManyToOne(targetEntity="ProductUnit", inversedBy="products", cascade={"persist", "remove"})
@@ -207,11 +205,11 @@ class Product {
      * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the product is active in public website"})
      */
     private $flag_active;
-    
+
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $sort_index;    
+    private $sort_index;
 
     /**
      * @ORM\Column(type="date", nullable=true, options={"comment" = "Date on which product was made available"})
@@ -221,9 +219,8 @@ class Product {
     /**
      * @ORM\Column(type="date", nullable=true, options={"comment" = "Date on which product was/will be made unavailable"})
      */
-    private $unavailable_at;    
-    
-    
+    private $unavailable_at;
+
     /**
      * @ORM\Column(type="string", length=40, nullable=true)
      */
@@ -379,7 +376,6 @@ class Product {
         return $this->type_id;
     }
 
-    
     /**
      * 
      * @param int $status_id
@@ -396,8 +392,7 @@ class Product {
     function getStatusId() {
         return $this->status_id;
     }
-    
-    
+
     /**
      * 
      * @param float $unit_id
@@ -722,6 +717,5 @@ class Product {
     public function __set($property, $value) {
         $this->$property = $value;
     }
-
 
 }

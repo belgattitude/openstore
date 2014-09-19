@@ -436,19 +436,21 @@ class LoadUserData implements FixtureInterface {
     function importCurrencies(ObjectManager $manager) {
         $currencies = array(
             $this->default_currency_id => array('reference' => 'EUR', 'title' => 'Euro', 'symbol' => '€'),
-            2 => array('reference' => 'USD', 'title' => 'US Dollar', 'symbol' => '$'),
-            3 => array('reference' => 'GBP', 'title' => 'British pound', 'symbol' => '£'),
-            4 => array('reference' => 'CAD', 'title' => 'Canadian dollar', 'symbol' => 'C$'),
-            5 => array('reference' => 'CNY', 'title' => 'Chinese Yuan', 'symbol' => '¥'),
+            2 => array('reference' => 'USD', 'title' => 'US Dollar', 'symbol' => '$', 'display_decimals' => 2),
+            3 => array('reference' => 'GBP', 'title' => 'British pound', 'symbol' => '£', 'display_decimals' => 2),
+            4 => array('reference' => 'CAD', 'title' => 'Canadian dollar', 'symbol' => 'C$', 'display_decimals' => 2),
+            5 => array('reference' => 'CNY', 'title' => 'Chinese Yuan', 'symbol' => '¥', 'display_decimals' => 2),
         );
 
         $manager->getConnection()->executeUpdate("DELETE FROM currency where currency_id in (" . join(',', array_keys($currencies)) . ')');
+        
         foreach ($currencies as $id => $infos) {
             $currency = new Entity\Currency();
             $currency->setCurrencyId($id);
             $currency->setReference($infos['reference']);
             $currency->setTitle($infos['title']);
             $currency->setSymbol($infos['symbol']);
+            $currency->setDisplayDecimals($infos['display_decimals']);
             $manager->persist($currency);
         }
 
@@ -460,9 +462,12 @@ class LoadUserData implements FixtureInterface {
 
     function importProductUnit(ObjectManager $manager) {
         $units = array(
-            $this->default_unit_id => array('reference' => 'PC', 'title' => 'Piece'),
-            2 => array('reference' => 'm2', 'title' => 'Square meter'),
-            3 => array('reference' => 'Kg', 'title' => 'Kilogram'),
+            $this->default_unit_id => array('reference' => 'PC', 'title' => 'Piece', 'display_decimals' => 0, 'symbol' => ''),
+            2 => array('reference' => 'M', 'title' => 'Meter', 'display_decimals' => 2, 'symbol' => 'm'),
+            3 => array('reference' => 'M2', 'title' => 'Square meter', 'display_decimals' => 2, 'symbol' => 'm²'),
+            4 => array('reference' => 'M3', 'title' => 'Square meter', 'display_decimals' => 2, 'symbol' => 'm³'),
+            5 => array('reference' => 'KG', 'title' => 'Kilogram', 'display_decimals' => 1, 'symbol' => 'kg'),
+            6 => array('reference' => 'T', 'title' => 'Ton', 'display_decimals' => 3, 'symbol' => 'T'),
         );
 
         foreach ($units as $unit_id => $infos) {
@@ -470,6 +475,8 @@ class LoadUserData implements FixtureInterface {
             $unit->setUnitId($unit_id);
             $unit->setReference($infos['reference']);
             $unit->setTitle($infos['title']);
+            $unit->setDisplayDecimals($infos['display_decimals']);
+            $unit->setSymbol($infos['symbol']);
             $manager->persist($unit);
         }
 

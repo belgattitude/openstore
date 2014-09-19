@@ -26,7 +26,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class ProductSearch {
 
-
     /**
      * @ORM\Id
      * @ORM\Column(name="id", type="bigint", nullable=false, options={"unsigned"=true, "comment" = "Primary key"})
@@ -47,7 +46,6 @@ class ProductSearch {
      */
     private $lang;
 
-
     /**
      * @ORM\Column(type="string", length=1500, nullable=true)
      */
@@ -56,14 +54,13 @@ class ProductSearch {
     /**
      * @ORM\Column(type="string", length=700, nullable=true)
      */
-    private $tags;    
-    
+    private $tags;
+
     /**
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record last update timestamp"})
      */
     private $updated_at;
-
 
     /**
      * 
@@ -81,7 +78,6 @@ class ProductSearch {
     public function getId() {
         return $this->id;
     }
-
 
     /**
      * 
@@ -150,6 +146,5 @@ class ProductSearch {
         $this->updated_at = $updated_at;
         return $this;
     }
-
 
 }

@@ -1,6 +1,6 @@
 <?php
-namespace Openstore\Entity;
 
+namespace Openstore\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -24,13 +24,13 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * )
  * 
  */
-class Role implements HierarchicalRoleInterface
-{
+class Role implements HierarchicalRoleInterface {
+
     /**
      * @var int|null
      *
      * @ORM\Id
-     * @ORM\Column(name="role_id", type="integer", nullable=false, options={"unsigned"=true})	 	 	 
+     * @ORM\Column(name="role_id", type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $role_id;
@@ -42,7 +42,6 @@ class Role implements HierarchicalRoleInterface
      */
     protected $name;
 
-	
     /**
      * @Gedmo\TreeLeft
      * @ORM\Column(type="integer", options={"unsigned"=true})
@@ -74,11 +73,10 @@ class Role implements HierarchicalRoleInterface
      */
     private $level;
 
-	
     /**
      * @ORM\OneToMany(targetEntity="Role", mappedBy="parent")
      */
-    private $children;	
+    private $children;
 
     /**
      * @var PermissionInterface[]|\Doctrine\Common\Collections\Collection
@@ -91,23 +89,18 @@ class Role implements HierarchicalRoleInterface
      */
     protected $permissions;
 
-     
-     /**
-      * @ORM\ManyToMany(targetEntity="Openstore\Entity\User", mappedBy="roles")
-      */
+    /**
+     * @ORM\ManyToMany(targetEntity="Openstore\Entity\User", mappedBy="roles")
+     */
     private $users;
-	
-	
- 	
-	
+
     /**
      * Init the Doctrine collection
      */
-    public function __construct()
-    {
-        $this->children    = new ArrayCollection();
+    public function __construct() {
+        $this->children = new ArrayCollection();
         $this->permissions = new ArrayCollection();
-		$this->users       = new ArrayCollection();        
+        $this->users = new ArrayCollection();
     }
 
     /**
@@ -115,8 +108,7 @@ class Role implements HierarchicalRoleInterface
      *
      * @return int
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->role_id;
     }
 
@@ -125,19 +117,17 @@ class Role implements HierarchicalRoleInterface
      *
      * @return int
      */
-    public function getRoleId()
-    {
+    public function getRoleId() {
         return $this->role_id;
-    }	
-	
+    }
+
     /**
      * Set the role name
      *
      * @param  string $name
      * @return void
      */
-    public function setName($name)
-    {
+    public function setName($name) {
         $this->name = (string) $name;
     }
 
@@ -146,25 +136,21 @@ class Role implements HierarchicalRoleInterface
      *
      * @return string
      */
-    public function getName()
-    {
+    public function getName() {
         return $this->name;
     }
 
     /**
      * {@inheritDoc}
      */
-	
-    public function addChild(HierarchicalRoleInterface $child)
-    {
+    public function addChild(HierarchicalRoleInterface $child) {
         $this->children[] = $child;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function addPermission($permission)
-    {
+    public function addPermission($permission) {
         if (is_string($permission)) {
             $permission = new Permission($permission);
         }
@@ -175,78 +161,65 @@ class Role implements HierarchicalRoleInterface
     /**
      * {@inheritDoc}
      */
-    public function hasPermission($permission)
-    {
+    public function hasPermission($permission) {
         // This can be a performance problem if your role has a lot of permissions. Please refer
         // to the cookbook to an elegant way to solve this issue
 
         return isset($this->permissions[(string) $permission]);
     }
-	
-	
 
-	public function setParent($parent)
-    {
+    public function setParent($parent) {
         $this->parent = $parent;
     }
 
-    public function getParent()
-    {
+    public function getParent() {
         return $this->parent;
     }
 
-    public function getRoot()
-    {
+    public function getRoot() {
         return $this->root;
     }
 
-    public function getLevel()
-    {
+    public function getLevel() {
         return $this->level;
     }
 
-    public function getChildren()
-    {
+    public function getChildren() {
         return $this->children;
     }
 
-    public function getLeft()
-    {
-    	return $this->lft;
+    public function getLeft() {
+        return $this->lft;
     }
 
-	public function getRight()
-    {
+    public function getRight() {
         return $this->rgt;
     }
 
     /**
      * {@inheritDoc}
      */
-	/*
-    public function getChildren()
-    {
-        return $this->children;
-    }
-	*/
+    /*
+      public function getChildren()
+      {
+      return $this->children;
+      }
+     */
 
     /**
      * {@inheritDoc}
      */
-	
-    public function hasChildren()
-    {
+    public function hasChildren() {
         return !$this->children->isEmpty();
     }
-	
+
     /**
      * Get users
      *
      * @return User
      */
-    public function getUsers()
-    {
+    public function getUsers() {
         return $this->users;
-    }	
-	
+    }
+
 }

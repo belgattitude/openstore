@@ -7,7 +7,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-
 /**
  * @Gedmo\Tree(type="nested")
  * @ORM\Table(
@@ -31,7 +30,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * )
  * @ORM\Entity(repositoryClass="Openstore\Entity\Repository\ProductCategoryRepository")
  */
-class ProductCategory  {
+class ProductCategory {
 
     /**
      * @var \Zend\InputFilter\InputFilterInterface $inputFilter
@@ -70,28 +69,27 @@ class ProductCategory  {
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $description;
-    
+
     /**
      * @ORM\Column(type="string", length=1500, nullable=true)
      */
-    private $breadcrumb;    
+    private $breadcrumb;
 
     /**
      * @ORM\Column(type="integer", nullable=true, options={"unsigned"=true, "comment"="Relative sort index"})
      */
     private $sort_index;
-    
+
     /**
      * @ORM\Column(type="bigint", nullable=true, options={"unsigned"=true, "comment"="Global sort index"})
      */
-    private $global_sort_index;    
+    private $global_sort_index;
 
     /**
      * @ORM\Column(type="string", length=40, nullable=true)
      */
     private $icon_class;
 
-    
     /**
      * @Gedmo\TreeLeft
      * @ORM\Column(type="integer", options={"unsigned"=true})
@@ -128,13 +126,11 @@ class ProductCategory  {
      */
     private $children;
 
-    
     /**
      * @ORM\Column(type="string", length=10, nullable=true, options={"comment" = "Alternative free reference code"})
      */
-    private $alt_mapping_reference;    
-    
-    
+    private $alt_mapping_reference;
+
     /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
@@ -279,8 +275,8 @@ class ProductCategory  {
      */
     public function getGlobalSortIndex() {
         return $this->global_sort_index;
-    }    
-    
+    }
+
     /**
      * 
      * @return string
@@ -333,7 +329,7 @@ class ProductCategory  {
     public function setAltMappingReference($alt_mapping_reference) {
         $this->alt_mapping_reference = $alt_mapping_reference;
     }
-    
+
     /**
      * 
      * @return string|int
@@ -341,8 +337,7 @@ class ProductCategory  {
     public function getAltMappingReference() {
         return $this->alt_mapping_reference;
     }
-            
-    
+
     /**
      * 
      * @return string
@@ -475,7 +470,5 @@ class ProductCategory  {
     public function __set($property, $value) {
         $this->$property = $value;
     }
-
-
 
 }

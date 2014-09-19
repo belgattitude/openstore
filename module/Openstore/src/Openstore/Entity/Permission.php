@@ -1,4 +1,5 @@
 <?php
+
 namespace Openstore\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -17,8 +18,8 @@ use ZfcRbac\Permission\PermissionInterface;
  *   options={"comment" = "Custom permissions"}
  * )
  */
-class Permission implements PermissionInterface
-{
+class Permission implements PermissionInterface {
+
     /**
      * @var int
      *
@@ -38,9 +39,8 @@ class Permission implements PermissionInterface
     /**
      * Constructor
      */
-    public function __construct($name)
-    {
-        $this->name  = (string) $name;
+    public function __construct($name) {
+        $this->name = (string) $name;
     }
 
     /**
@@ -48,26 +48,24 @@ class Permission implements PermissionInterface
      *
      * @return int
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->permission_id;
     }
-	
+
     /**
      * Get the permission identifier
      *
      * @return int
      */
-    public function getPermissionId()
-    {
+    public function getPermissionId() {
         return $this->permission_id;
-    }	
+    }
 
     /**
      * {@inheritDoc}
      */
-    public function __toString()
-    {
+    public function __toString() {
         return $this->name;
     }
+
 }
