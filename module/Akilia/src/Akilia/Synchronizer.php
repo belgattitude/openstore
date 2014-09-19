@@ -1216,7 +1216,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 left outer join $db.product_category as category on category.legacy_mapping = a.id_categorie
                 left outer join $db.product_model as pm on pm.legacy_mapping = a.id_modele
                 left outer join $db.product_status ps on ps.legacy_mapping = a.code_suivi
-                left outer join $db.product_type pt on pt.reference = a.product_type
+                left outer join $db.product_type pt on pt.legacy_mapping = a.product_type
                 
                 where a.flag_archive = 0
 
