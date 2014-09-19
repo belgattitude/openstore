@@ -188,6 +188,7 @@ class LoadUserData implements FixtureInterface {
             $type->setTitle($infos['title']);
             $type->setDescription($infos['description']);
             $type->setFlagActive($infos['flag_active']);
+            $type->setLegacyMapping($infos['reference']);
             $manager->persist($type);
         }
 
