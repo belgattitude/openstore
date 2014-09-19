@@ -46,6 +46,16 @@ class ProductType {
     private $description;
 
     /**
+     * @ORM\Column(type="boolean", nullable=true, options={"default"=false, "comment"="Tells whether the type should be excluded from product catalog"})
+     */
+    private $flag_excluded_catalog;    
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true, options={"default"=false, "comment"="Tells whether the type should be excluded from exported catalog"})
+     */
+    private $flag_excluded_export;    
+    
+    /**
      * @ORM\Column(type="boolean", nullable=true, options={"default"=null, "comment"="Is the default state"})
      */
     private $flag_default;
