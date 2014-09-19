@@ -1173,7 +1173,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     product_group.group_id as group_id,
                     category.category_id as category_id,
                     {$this->default_unit_id} as unit_id,
-                    {$this->default_product_type_id} as type_id,
+                    COALESCE(pt.type_id, {$this->default_product_type_id}) as type_id,
                                         
                                         ps.status_id as status_id,    
                     if (i.id_art_tete <> 0 and i.id_art_tete <> '', i.id_art_tete, null) as parent_id,     
@@ -1216,6 +1216,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 left outer join $db.product_category as category on category.legacy_mapping = a.id_categorie
                 left outer join $db.product_model as pm on pm.legacy_mapping = a.id_modele
                 left outer join $db.product_status ps on ps.legacy_mapping = a.code_suivi
+                left outer join $db.product_type pt on pt.reference = a.product_type
                 
                 where a.flag_archive = 0
 
@@ -1233,7 +1234,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         search_reference = get_searchable_reference(a.reference),                                                                                        
                         slug = null,
                         sort_index = a.code_tri_marque_famille,
-                        type_id = {$this->default_product_type_id},
+                        type_id = COALESCE(pt.type_id, {$this->default_product_type_id}),
                         title = if(trim(i.libelle_1) = '', null, trim(i.libelle_1)),
                         invoice_title = if(trim(a.libelle_1) = '', null, trim(a.libelle_1)),
                         description = if(trim(i.desc_1) = '', null, trim(i.desc_1)),
