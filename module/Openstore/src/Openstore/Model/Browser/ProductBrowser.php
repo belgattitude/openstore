@@ -230,7 +230,7 @@ class ProductBrowser extends AbstractBrowser {
 			$select->where("(" . join(' or ', array_values($matches)) .")");
                         
 		} else {
-                    $relevance = "1";
+                    $relevance = "'A'";  // Constant to sort on;
                 }
                 
                 // Automatically add relevance column

@@ -202,8 +202,11 @@ class ProductCatalogService extends AbstractService {
 
         $select->where('p.flag_active = 1');
         $select->where('ppl.flag_active = 1');
+        
+        // only product that are not 'OFFER' (combination of products)
+        $select->where("pt.reference <> 'OFFER'");
 
-        $relevance = "1";        
+        $relevance = "'A'";  // Constant to sort on     
 
         if (array_key_exists('query', $params)) {
             $query = trim($params['query']);
@@ -278,12 +281,10 @@ class ProductCatalogService extends AbstractService {
 
         //$select->order(array('p.product_id' => $select::ORDER_ASCENDING));
 
-        $select->order(array(new Expression($relevance . ' desc'), 'pc.global_sort_index', 'p.sort_index', 'p.display_reference'));                        
+        $select->order(array(new Expression($relevance . ' desc'), 'pb.reference', 'pc.global_sort_index', 'p.sort_index', 'p.display_reference'));                        
         /**
          * 
          */
-        //echo $select->getSqlString($this->adapter->getPlatform());
-        //die();
 
         
         

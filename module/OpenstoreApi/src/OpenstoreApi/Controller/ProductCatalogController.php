@@ -48,7 +48,10 @@ class ProductCatalogController extends AbstractRestfulController {
         if (array_key_exists('columns', $params)) {
             $columns = str_replace(' ', '', $params['columns']);
             if ($columns != '') {
-                $store->getSource()->setColumns(explode(',', $columns));
+                //$store->getSource()->setColumns(explode(',', $columns));
+                $limited_columns = explode(',', $columns);
+                $cm = $store->getSource()->getColumnModel();
+                $cm->setIncludeOnly($limited_columns);
             }
         }
         return $store;
