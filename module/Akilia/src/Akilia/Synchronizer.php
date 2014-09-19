@@ -1175,8 +1175,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     {$this->default_unit_id} as unit_id,
                     COALESCE(pt.type_id, {$this->default_product_type_id}) as type_id,
                                         
-                                        ps.status_id as status_id,    
-                    if (i.id_art_tete <> 0 and i.id_art_tete <> '', i.id_art_tete, null) as parent_id,     
+                    ps.status_id as status_id,    
+                    if (i.id_art_tete <> 0 and i.id_art_tete <> '' and i.id_art_tete is not null, i.id_art_tete, null) as parent_id,     
                     upper(TRIM(a.reference)) as reference,
                                         upper(TRIM(a.reference)) as display_reference,
                                         get_searchable_reference(a.reference) as search_reference,                                        
@@ -1190,7 +1190,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     null as icon_class,
                     a.volume as volume,
                     a.poids as weight,
-                                        -- dimensions are not yet supported
+                    -- dimensions are not yet supported
                     null as length,
                     null as height,
                     null as width,
@@ -1226,7 +1226,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         type_id = {$this->default_product_type_id},
                         group_id = product_group.group_id,
                         unit_id = {$this->default_unit_id},
-                        parent_id = if (i.id_art_tete <> 0 and i.id_art_tete <> '', i.id_art_tete, null),     
+                        parent_id = if (i.id_art_tete <> 0 and i.id_art_tete <> '' and i.id_art_tete is not null, i.id_art_tete, null),     
                         status_id = ps.status_id,        
                         category_id = category.category_id,
                         reference = upper(TRIM(a.reference)),

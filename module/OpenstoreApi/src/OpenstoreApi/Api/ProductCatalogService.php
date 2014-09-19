@@ -113,8 +113,8 @@ class ProductCatalogService extends AbstractService {
             'product_description' => new Expression('if (p2.product_id is null, COALESCE(p18.description, p.description), COALESCE(p2_18.description, p.description) )'),
             'product_characteristic' => new Expression('COALESCE(p18.characteristic, p.characteristic)'),
             'price' => new Expression('ROUND(ppl.price, 2)'),
-            'list_price' => new Expression('ppl.list_price'),
-            'public_price' => new Expression('ppl.public_price'),
+            'list_price' => new Expression('ROUND(ppl.list_price, 2)'),
+            'public_price' => new Expression('ROUND(ppl.public_price, 2)'),
             'discount_1' => new Expression('ppl.discount_1'),
             'discount_2' => new Expression('ppl.discount_2'),
             'discount_3' => new Expression('ppl.discount_3'),
@@ -205,6 +205,9 @@ class ProductCatalogService extends AbstractService {
         
         // only product that are not 'OFFER' (combination of products)
         $select->where("pt.reference <> 'OFFER'");
+        // FOR EMD - TODO add a flag in brand or product_type to automatically
+        // exclude some products
+        $select->where("pb.reference <> '****'");
 
         $relevance = "'A'";  // Constant to sort on     
 
