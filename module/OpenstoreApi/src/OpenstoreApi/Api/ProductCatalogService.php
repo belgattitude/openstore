@@ -160,9 +160,9 @@ class ProductCatalogService extends AbstractService {
             'length' => new Expression('p.length'),
             'width' => new Expression('p.width'),
             'height' => new Expression('p.height'),
-            'pack_qty_box' => new Expression('ROUND(p.pack_qty_box, COALESCE(pu.display_decimals, 0))'),
-            'pack_qty_carton' => new Expression('ROUND(p.pack_qty_carton, COALESCE(pu.display_decimals, 0))'),
-            'pack_qty_master_carton' => new Expression('ROUND(p.pack_qty_master_carton, COALESCE(pu.display_decimals, 0))'),
+            'pack_qty_box' => new Expression('p.pack_qty_box'),
+            'pack_qty_carton' => new Expression('p.pack_qty_carton'),
+            'pack_qty_master_carton' => new Expression('p.pack_qty_master_carton'),
             'picture_media_id' => new Expression('pmed.media_id'),
             // 
             'pack_unit_volume' => new Expression("packs.pack_unit_volume"),

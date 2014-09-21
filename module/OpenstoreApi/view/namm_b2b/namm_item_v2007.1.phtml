@@ -4,7 +4,7 @@ namespace OpenstoreApi\Custom\Namm2007;
 use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 use \DateTime;
-use \DateTimeZone;
+
 use \Zend\Escaper\Escaper;
 
 class Fcts {
@@ -87,8 +87,8 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
     <?php foreach($this->data as $idx => $line) : ?>
     <?php if ($idx > 0) Fcts::$enablePrintXMLComments = false; ?>  
     <Item>
-        <!-- EMD internal id : <?= $line->product_id ?> -->
-        <SupplierItemId><?= $esc->escapeHtml(trim($line->product_reference)) ?></SupplierItemId>
+        
+        <SupplierItemId><?= $line->product_id ?></SupplierItemId>
         <SupplierModel><?= $esc->escapeHtml(trim($line->product_reference)) ?></SupplierModel>
         <ItemDesc><?= $esc->escapeHtml(trim($line->product_title)); ?></ItemDesc>
         <ItemDescLong><![CDATA[<?php
