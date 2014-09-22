@@ -45,12 +45,17 @@ class ProductStockController extends AbstractRestfulController {
 
         $api_key_log = $this->apiKeyAccess->addLog("2000-ProductCatalog");
         $store = $this->stockService->getList($params);
+
         if (array_key_exists('columns', $params)) {
-            $columns = trim($params['columns']);
+            $columns = str_replace(' ', '', $params['columns']);
             if ($columns != '') {
-                $store->getSource()->setColumns(explode(',', $columns));
+                //$store->getSource()->setColumns(explode(',', $columns));
+                $limited_columns = explode(',', $columns);
+                $cm = $store->getSource()->getColumnModel();
+                $cm->setIncludeOnly($limited_columns);
             }
-        }
+        }        
+        
         return $store;
     }
 
