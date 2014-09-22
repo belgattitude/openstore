@@ -190,7 +190,6 @@ class CategoryBrowser extends AbstractBrowser {
         $sql_string = $sql->getSqlStringForSqlObject($select);
 //echo $sql_string;
 //die();
-
         //$results = $adapter->query($sql_string, Adapter::QUERY_MODE_EXECUTE);			
         //echo '<pre>';
         //var_dump($results->toArray());
