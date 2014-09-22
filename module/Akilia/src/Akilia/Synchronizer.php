@@ -105,6 +105,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->synchronizeApi();
         $this->synchronizePricelist();
         $this->synchronizeCustomerPricelist();
+        
         $this->synchronizeProductGroup();
         $this->synchronizeProductBrand();
         $this->synchronizeProductCategory();
@@ -114,7 +115,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->synchronizeProductPricelist();
         $this->synchronizeProductStock();
         $this->synchronizeProductPackaging();
-
+        $this->synchronizeDiscountCondition();
+        
         $this->rebuildCategoryBreadcrumbs();
         $this->rebuildProductSearch();
 
@@ -1115,6 +1117,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
         $this->executeSQL("Delete eventual removed product packagings", $delete);
     }
+    
+    
+    
 
     function synchronizeProduct() {
 
@@ -1359,6 +1364,96 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
         $this->executeSQL("Delete eventual removed product translations", $delete);
+    }
+    
+    
+    /**
+     * Synchronize discount conditions
+     * 
+     */
+    function synchronizeDiscountCondition() {
+        
+        $akilia1Db = $this->akilia1Db;
+        $db = $this->openstoreDb;
+
+        $replace = "
+            insert into $db.discount_condition(
+                pricelist_id,
+                customer_id,
+                customer_group_id,
+                brand_id,
+                product_group_id,
+                category_id,
+                model_id,
+                product_id,
+                fixed_price,
+                discount_1,
+                discount_2,
+                discount_3,
+                discount_4,
+                valid_from,
+                valid_till,
+                legacy_mapping,
+                legacy_synchro_at
+            )
+            select DISTINCT
+             pl.pricelist_id,
+             c.customer_id,
+             cg.group_id as customer_group_id,
+             pb.brand_id,
+             pg.group_id as product_group_id,
+             null as category_id,
+             null as model_id,
+             p.product_id,
+             null as fixed_price,
+             r.remise1 as discount_1,
+             r.remise2 as discount_2,
+             r.remise3 as discount_3,
+             r.remise4 as discount_4,
+             null as valid_from,
+             null as valid_till,
+             CONCAT_WS('&',
+                    CONCAT('pl:',   COALESCE(pl.pricelist_id, '*')), -- no pricelist
+                CONCAT('c:',    COALESCE(c.customer_id  , '*')),  -- no customer
+                CONCAT('cg:',   COALESCE(cg.group_id    , '*')), -- no customer_group
+                CONCAT('pb:',   COALESCE(pb.brand_id    , '*')), -- no product_brand
+                CONCAT('pg:',   COALESCE(pg.group_id    , '*')), -- no product_group
+                CONCAT('pc:',   COALESCE(null           , '*')), -- no product_category
+                CONCAT('pm:',   COALESCE(null           , '*')), -- no product_model
+                CONCAT('p:',    COALESCE(p.product_id   , '*')),  -- no product
+                CONCAT('from:', COALESCE(null           , '*')),  -- valid_from
+                CONCAT('till:', COALESCE(null           , '*'))   -- valid_till
+             ) as legacy_mapping,
+             '{$this->legacy_synchro_at}' as legacy_synchro_at
+
+            from $akilia1Db.remises r
+            inner join $db.customer c on c.legacy_mapping = r.id_client
+            left outer join $db.product_brand pb on pb.legacy_mapping = r.id_marque
+            left outer join $db.product_group pg on pg.legacy_mapping = r.id_famille
+            left outer join $db.product p on p.legacy_mapping = r.id_article
+            left outer join $db.pricelist pl on pl.legacy_mapping = r.code_tarif
+            left outer join $db.customer_group cg on cg.legacy_mapping = r.id_groupe_client
+            order by cg.group_id, c.customer_id, pl.pricelist_id, pb.brand_id, pg.group_id, p.product_id
+            on duplicate key update
+                discount_1 = r.remise1,
+                discount_2 = r.remise2,
+                discount_3 = r.remise3,
+                discount_4 = r.remise4,
+                fixed_price = null, -- not supported yet
+                legacy_synchro_at = '{$this->legacy_synchro_at}'
+        ";
+        
+
+        $this->executeSQL("Replace discount conditions", $replace);
+
+        // 2. Deleting - old links in case it changes
+        $delete = "
+            delete from $db.discount_condition where
+            legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+
+        $this->executeSQL("Delete eventual removed discount conditions", $delete);
+        
+        
     }
 
     function rebuildProductSearch() {

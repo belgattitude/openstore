@@ -12,8 +12,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(
  *   name="discount_condition",
  *   uniqueConstraints={
- *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *     @ORM\UniqueConstraint(name="unique_condition",columns={"pricelist_id", "customer_group_id", "customer_id", "brand_id", "product_group_id", "model_id", "category_id", "product_id", "valid_from", "valid_till"}),
+ *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"})
  *   },
  *   indexes={
  *     @ORM\Index(name="valid_from_idx", columns={"valid_from"}),
@@ -108,7 +107,7 @@ class DiscountCondition {
     private $discount_4;
 
     /**
-     * @ORM\Column(type="decimal", precision=12, scale=6, nullable=false, options={"comment"="Fixed price, only for products"})
+     * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Fixed price, only for products"})
      */
     private $fixed_price;
 
@@ -147,7 +146,7 @@ class DiscountCondition {
     private $updated_by;
 
     /**
-     * @ORM\Column(type="string",length=40,nullable=true, options={"comment" = "Unique reference of this record taken from legacy system"})
+     * @ORM\Column(type="string",length=80,nullable=true, options={"comment" = "Unique reference of this record taken from legacy system"})
      */
     protected $legacy_mapping;
 
