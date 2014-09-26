@@ -103,13 +103,16 @@ class GenericController extends AbstractRestfulController {
 
         $view->setTemplate($view_template);
 
-       // header('Content-Type: text/xml');
         try {
             $output = $view_renderer->render($view);
             if ($params['validate'] == 'true') {
                 $this->validateXml($output, $this->template['validate']['list']);
             }            
             header('Content-Type: text/xml');
+            if ($this->template['filename']['list'] != '') {
+                $filename = $this->template['filename']['list'];
+                header('Content-Disposition: attachement; filename="' . $filename . '"');
+            }
             echo $output;
         } catch (\Exception $e) {
             throw $e;
@@ -187,6 +190,9 @@ class GenericController extends AbstractRestfulController {
                 'validate' => array(
                     'list' => 'namm_b2b/xsd/item_v2007.1.xsd'
                 ),
+                'filename' => array(
+                    'list' => 'namm_item_v2007.1.xml'
+                ),
                 'check_service_access' => array(
                     '2000-ProductCatalog'
                 )
@@ -198,6 +204,9 @@ class GenericController extends AbstractRestfulController {
                 'validate' => array(
                     'list' => 'namm_b2b/xsd/item_v2011.1.xsd'
                 ),                
+                'filename' => array(
+                    'list' => 'namm_item_v2011.1.xml'
+                ),
                 'check_service_access' => array(
                     '2000-ProductCatalog'
                 )
