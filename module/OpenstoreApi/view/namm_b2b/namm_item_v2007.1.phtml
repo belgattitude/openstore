@@ -1,28 +1,61 @@
 <?php 
 namespace OpenstoreApi\Custom\Namm2007;
 
-use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
-use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 use \DateTime;
-
 use \Zend\Escaper\Escaper;
+
+// Super slow library removed
+// "triplepoint/php-units-of-measure": "1.3.1"
+//use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
+//use PhpUnitsOfMeasure\PhysicalQuantity\Length;
+
 
 class Fcts {
     
     static $enablePrintXMLComments = true;
+    static protected $escaper;
+    
+    /*
+    function getInstance()
+    {
+        return new Fcts();
+    }
+    
+    private function __construct()
+    {
+        
+    }
+    */
+    
+    static function setEscaper($escaper)
+    {
+        self::$escaper = $escaper;
+    }
 
     static function convertKgmInLbs($kg) {
         if ($kg == "")  return '';
+        
+        return self::formatNumber($kg * 2.20462, 2);
+        /*
         $mass = new Mass($kg, 'kg');
         $lbs = self::formatNumber($mass->toUnit('lbs'), 2);
         return $lbs;
+         * 
+         */
     }
 
     static function convertMeterInInch($meter) {
-        if ($meter == "")  return '';
+        if ($meter == "")  {
+            return '';
+        }
+        return self::formatNumber($meter * 39.3701, 2);
+        
+        /*
         $length = new Length($meter, 'meter');
         $inches = self::formatNumber($length->toUnit('inch'), 2);
         return $inches;
+         
+         */
     }
 
     static function convertDateTime($datetime)
@@ -44,11 +77,12 @@ class Fcts {
             
     
     static function convertDate($date) {
+        //return $date;
         if ($date == '') return '';
         //$tz = new DateTimeZone('Europe\Brussels');
-        $d = DateTime::createFromFormat('Y-m-d', $date);
-        $date =  $d->format('Y-m-d');
-        return $date; 
+        return DateTime::createFromFormat('Y-m-d', $date)->format('Y-m-d');
+        //$date =  $d->format('Y-m-d');
+        //return $date; 
     }
 
     static function getPictureMediaUrl($picture_media_id)
@@ -59,6 +93,11 @@ class Fcts {
         $p = str_replace('%picture_media_id%', $picture_media_id, $p);
         return $p;
     }
+    
+    static function escapeXMLText($text) {
+        return self::$escaper->escapeHtml(trim($text));
+    }
+    
     
     static function printXMLComment($comments)
     {
@@ -71,9 +110,11 @@ class Fcts {
 }
 
     
-$esc = new Escaper('utf-8');
-http://api.emdmusic.com/media/preview/picture/170x200-90/%%/%picture_media_id%.jpg
-$picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_1024x768-90.jpg";
+$escaper = new Escaper('utf-8');
+Fcts::setEscaper($escaper);
+
+//http://api.emdmusic.com/media/preview/picture/170x200-90/%%/%picture_media_id%.jpg
+//$picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_1024x768-90.jpg";
 ?>
 <?= '<?xml version="1.0" encoding="utf-8" ?>' . "\n"; ?>
 <NAMM_ITEM version="2007.1">
@@ -89,8 +130,8 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
     <Item>
         
         <SupplierItemId><?= $line->product_id ?></SupplierItemId>
-        <SupplierModel><?= $esc->escapeHtml(trim($line->product_reference)) ?></SupplierModel>
-        <ItemDesc><?= $esc->escapeHtml(trim($line->product_title)); ?></ItemDesc>
+        <SupplierModel><?= Fcts::escapeXMLText(trim($line->product_reference)) ?></SupplierModel>
+        <ItemDesc><?= Fcts::escapeXMLText(trim($line->product_title)); ?></ItemDesc>
         <ItemDescLong><![CDATA[<?php
                 $desc = trim($line->product_title . ' ' . $line->product_description . ' ' . $line->product_characteristic);
                 echo preg_replace('/(\ ){2,}/', ' ', $desc); ?>]]>
@@ -100,7 +141,7 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
         <?php Fcts::printXMLComment('Unit cost value, price for the dealer'); ?>
         <UCValue><?= Fcts::formatNumber($line->price, 2); ?></UCValue>
         <CountryOrigin></CountryOrigin>
-        <BrandName><?= $esc->escapeHtml($line->brand_title); ?></BrandName>
+        <BrandName><?= Fcts::escapeXMLText($line->brand_title); ?></BrandName>
         <?php
         Fcts::printXMLComment('
             Item dimensions without packaging are not known, refer to dimensions
@@ -167,15 +208,16 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
         <Serialized>false</Serialized>
         <Color></Color>
         <Size></Size>
-        <AnnounceDate><?= Fcts::convertDate($line->available_at) ?></AnnounceDate>
-        <AvailableDate><?= Fcts::convertDate($line->available_at) ?></AvailableDate>
+        <?php $available_date = Fcts::convertDate($line->available_at) ?>
+        <AnnounceDate><?= $available_date ?></AnnounceDate>
+        <AvailableDate><?= $available_date ?></AvailableDate>
         <?php Fcts::printXMLComment('UnAvailDate and EndOfProductionDate are not known') ?>
         <Replacement></Replacement>
         <WarrantyPartTerm>365</WarrantyPartTerm>
         <WarrantyPartUOM>Day</WarrantyPartUOM>
         <WarrantyLabTerm>0</WarrantyLabTerm>
         <WarrantyLabUOM>Day</WarrantyLabUOM>
-        <Category><?= $esc->escapeHtml(str_replace("|", "/", $line->category_breadcrumb)) ?></Category>
+        <Category><?= Fcts::escapeXMLText(str_replace("|", "/", $line->category_breadcrumb)) ?></Category>
         <Images><?php if ($line->picture_media_id != '') echo basename(Fcts::getPictureMediaUrl($line->picture_media_id)); ?></Images>
         <ImageURL><?php if ($line->picture_media_id != '') echo dirname(Fcts::getPictureMediaUrl($line->picture_media_id)); ?></ImageURL>
         <ProductURL></ProductURL>
