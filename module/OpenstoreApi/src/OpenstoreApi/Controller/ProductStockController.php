@@ -52,7 +52,7 @@ class ProductStockController extends AbstractRestfulController {
                 //$store->getSource()->setColumns(explode(',', $columns));
                 $limited_columns = explode(',', $columns);
                 $cm = $store->getSource()->getColumnModel();
-                $cm->setIncludeOnly($limited_columns);
+                $cm->includeOnly($limited_columns);
             }
         }        
         

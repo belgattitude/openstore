@@ -101,15 +101,9 @@ class ProductStockService extends AbstractService {
 
         $select->order(array('p.product_id' => $select::ORDER_ASCENDING));
 
-        /**
-         * 
-         */
-        $parameters = array(
-            'adapter' => $this->adapter,
-            'select' => $select
-        );
-        $store = new FlexStore('zend\select', $parameters);
-        $store->getSource()->getData();
+        $store = $this->getStore($select);
+
+       
 
         //var_dump($store->getSource()->getData()->toArray());
         //die();

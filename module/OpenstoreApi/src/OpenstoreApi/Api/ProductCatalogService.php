@@ -285,17 +285,9 @@ class ProductCatalogService extends AbstractService {
         //$select->order(array('p.product_id' => $select::ORDER_ASCENDING));
 
         $select->order(array(new Expression($relevance . ' desc'), 'pb.reference', 'pc.global_sort_index', 'p.sort_index', 'p.display_reference'));                        
-        /**
-         * 
-         */
 
+        $store = $this->getStore($select);
         
-        
-        $parameters = array(
-            'adapter' => $this->adapter,
-            'select' => $select
-        );
-        $store = new FlexStore('zend\select', $parameters);
         if (array_key_exists('limit', $params)) {
             $store->getSource()->getOptions()->setLimit($params['limit']);
         }

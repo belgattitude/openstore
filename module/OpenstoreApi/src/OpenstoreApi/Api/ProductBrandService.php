@@ -4,7 +4,7 @@ namespace OpenstoreApi\Api;
 
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
-use Soluble\FlexStore\FlexStore;
+use Soluble\FlexStore\Store;
 
 class ProductBrandService extends AbstractService {
 
@@ -48,11 +48,7 @@ class ProductBrandService extends AbstractService {
         $select->having('active_pricelists is not null');
         //$select->order(array('p.product_id' => $select::ORDER_ASCENDING));        
 
-        $parameters = array(
-            'adapter' => $this->adapter,
-            'select' => $select
-        );
-        $store = new FlexStore('zend\select', $parameters);
+        $store = $this->getStore($select);
         return $store;
     }
 

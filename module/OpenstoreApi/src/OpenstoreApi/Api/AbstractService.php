@@ -3,9 +3,12 @@
 namespace OpenstoreApi\Api;
 
 use Zend\Db\Adapter\Adapter;
+use Zend\Db\Sql\Select;
 use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Soluble\FlexStore\Store;
+use Soluble\FlexStore\Source\Zend\SqlSource;
 
 abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorAwareInterface {
 
@@ -16,14 +19,14 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
 
     /**
      *
-     * @var \Zend\Db\Adapter\Adapter
+     * @var Adapter
      */
     protected $adapter;
 
     /**
      * 
-     * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
-     * @param \Zend\Db\Adapter\Adapter $adapter
+     * @param ServiceLocatorInterface $serviceLocator
+     * @param Adapter $adapter
      */
     function __construct(ServiceLocatorInterface $serviceLocator = null, Adapter $adapter = null) {
         if ($serviceLocator !== null) {
@@ -48,7 +51,7 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
 
     /**
      * 
-     * @return \Zend\Db\Adapter\Adapter
+     * @return Adapter
      */
     public function getDbAdapter() {
         return $this->adapter;
@@ -73,6 +76,16 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
      */
     public function getServiceLocator() {
         return $this->serviceLocator;
+    }
+    
+    /**
+     * 
+     * @param Select $select
+     * @return Store
+     */
+    public function getStore(Select $select=null)
+    {
+        return new Store(new SqlSource($this->getDbAdapter(), $select));
     }
 
 }
