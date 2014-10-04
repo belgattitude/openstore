@@ -12,7 +12,8 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
 use Zend\Db\Sql\Expression;
 
-use Soluble\FlexStore\Source\Zend\SelectSource;
+use Soluble\FlexStore\Source\Zend\SqlSource;
+use Soluble\FlexStore\Store;
 
 
 class Akilia2Customers implements ServiceLocatorAwareInterface, AdapterAwareInterface {
@@ -100,12 +101,21 @@ class Akilia2Customers implements ServiceLocatorAwareInterface, AdapterAwareInte
 			$select->limit($limit);
 		}
 		
-		$store = new SelectSource(['select'  => $select,
-									  'adapter' => $this->getDbAdapter()]);
+         
+                $store = $this->getStore($select);
 		
 		$data = $store->getData()->toArray();
 		return $data;		
 	}
+        /**
+         * 
+         * @param Select $select
+         * @return Store
+         */
+        protected function getStore(Select $select=null)
+        {
+            return new Store(new SqlSource($this->getDbAdapter(), $select));
+        }        
 	
 	
 	/**
