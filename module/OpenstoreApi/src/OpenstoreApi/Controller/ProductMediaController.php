@@ -34,6 +34,16 @@ class ProductMediaController extends AbstractRestfulController {
 
         $params = $this->params()->fromQuery();
         $store = $this->mediaService->getList($params);
+        if (array_key_exists('columns', $params)) {
+            $columns = str_replace(' ', '', $params['columns']);
+            if ($columns != '') {
+                //$store->getSource()->setColumns(explode(',', $columns));
+                $limited_columns = explode(',', $columns);
+                $cm = $store->getSource()->getColumnModel();
+                $cm->includeOnly($limited_columns);
+            }
+        }
+        
         return $store;
 
         //return new JsonModel($data);

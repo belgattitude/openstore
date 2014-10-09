@@ -49,6 +49,14 @@ class ProductBrandService extends AbstractService {
         //$select->order(array('p.product_id' => $select::ORDER_ASCENDING));        
 
         $store = $this->getStore($select);
+        if (array_key_exists('limit', $params)) {
+            $store->getSource()->getOptions()->setLimit($params['limit']);
+        }
+        if (array_key_exists('offset', $params)) {
+            $store->getSource()->getOptions()->setOffset($params['offset']);
+        }
+        
+        
         $this->initListStoreColumnModel($store, $params);
         return $store;
     }
