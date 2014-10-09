@@ -8,9 +8,9 @@ use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Soluble\FlexStore\FlexStoreInterface;
-use Soluble\FlexStore\Writer\Zend\Json as JsonWriter;
-use Soluble\FlexStore\Writer\CSV as CSVWriter;
+use Soluble\FlexStore\StoreInterface;
+use Soluble\FlexStore\Writer\Zend\JsonWriter;
+use Soluble\FlexStore\Writer\CSVWriter;
 use Soluble\FlexStore\Writer\Excel\LibXLWriter;
 use Soluble\FlexStore\Writer\SimpleXmlWriter;
 use OpenstoreApi\Authorize\Exception\AuthorizationException;
@@ -72,43 +72,44 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
 
                 case 'json' :
                     header("Access-Control-Allow-Origin: *");
-                    if ($vars instanceof FlexStoreInterface) {
-                        $jsonWriter = new JsonWriter($vars->getSource());
+                    if ($vars instanceof StoreInterface) {
+                        $jsonWriter = new JsonWriter($vars);
                         $jsonWriter->setDebug($debug = false);
                         $jsonWriter->send();
                         die();
                     } else {
-                        throw new \Exception('Writer does not support FlexStoreInterface');
+                        throw new \Exception('Response must include a valid StoreInterface object');
                     }
                     break;
                 case 'xml' :
 
-                    if ($vars instanceof FlexStoreInterface) {
-                        $xmlWriter = new SimpleXmlWriter($vars->getSource());
+                    if ($vars instanceof StoreInterface) {
+                        $xmlWriter = new SimpleXmlWriter($vars);
                         $xmlWriter->send();
 
                         die();
                     } else {
-                        throw new \Exception('Writer does not support FlexStoreInterface');
+                        throw new \Exception('Response must include a valid StoreInterface object');
                     }
 
                     break;
                 case 'xlsx' :
                     
-                    
-                    //$sm = new \Zend\ServiceManager\ServiceManager;
-                    //$sm->get
-                    $lm = $e->getApplication()->getServiceManager()->get('LicenseManager');
-                    $lic = $lm->get('libxl');
+                    if ($vars instanceof StoreInterface) {
+                        $lm = $e->getApplication()->getServiceManager()->get('LicenseManager');
+                        $lic = $lm->get('libxl');
 
-                    LibXL::setDefaultLicense(array('name' => $lic['license_name'], 'key' => $lic['license_key']));
-                    //LibXLWriter::setDefaultLicense($lic['license_name'], $lic['license_key']);
-                    $csvWriter = new LibXLWriter($vars->getSource());
-                    $csvWriter->send();
-                    die();
+                        LibXL::setDefaultLicense(array('name' => $lic['license_name'], 'key' => $lic['license_key']));
+                        //LibXLWriter::setDefaultLicense($lic['license_name'], $lic['license_key']);
+                        $libxlWriter = new LibXLWriter($vars);
+                        $libxlWriter->send();
+                    } else {
+                        throw new \Exception('Response must include a valid StoreInterface object');
+                    }
+                    
 
                 case 'csv' :
-                    if ($vars instanceof FlexStoreInterface) {
+                    if ($vars instanceof StoreInterface) {
 
                         if (array_key_exists('csv-enclosure', $_GET)) {
                             switch ($_GET['csv-enclosure']) {
@@ -136,12 +137,12 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
                             $options['charset'] = $charset;
                         }
 
-                        $csvWriter = new CSVWriter($vars->getSource());
+                        $csvWriter = new CSVWriter($vars);
                         $csvWriter->setOptions($options);
                         $csvWriter->send();
-                        die();
+                        
                     } else {
-                        throw new \Exception('Writer does not support FlexStoreInterface');
+                        throw new \Exception('Response must include a valid StoreInterface object');
                     }
 
 

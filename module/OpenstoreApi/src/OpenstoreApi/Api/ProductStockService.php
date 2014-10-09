@@ -4,7 +4,7 @@ namespace OpenstoreApi\Api;
 
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
-use Soluble\FlexStore\FlexStore;
+use Soluble\FlexStore\Store;
 
 class ProductStockService extends AbstractService {
 
@@ -29,7 +29,7 @@ class ProductStockService extends AbstractService {
 
     /**
      * @param array $params [brands,pricelists] 
-     * @return \Soluble\FlexStore\FlexStore
+     * @return \Soluble\FlexStore\Store
      */
     function getList(array $params = array()) {
         $this->checkListParams($params);
@@ -104,9 +104,8 @@ class ProductStockService extends AbstractService {
         $store = $this->getStore($select);
 
        
+        $this->initListStoreColumnModel($store, $params);        
 
-        //var_dump($store->getSource()->getData()->toArray());
-        //die();
         return $store;
     }
 

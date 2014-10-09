@@ -10,7 +10,7 @@ class ProductBrandService extends AbstractService {
 
     /**
      * @param array $params [brands,pricelists] 
-     * @return \Soluble\FlexStore\FlexStore
+     * @return \Soluble\FlexStore\Store
      */
     function getList(array $params = array()) {
 
@@ -49,6 +49,7 @@ class ProductBrandService extends AbstractService {
         //$select->order(array('p.product_id' => $select::ORDER_ASCENDING));        
 
         $store = $this->getStore($select);
+        $this->initListStoreColumnModel($store, $params);
         return $store;
     }
 

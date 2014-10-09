@@ -4,7 +4,9 @@ namespace OpenstoreApi\Api;
 
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
-use Soluble\FlexStore\FlexStore;
+use Soluble\FlexStore\Store;
+use Soluble\FlexStore\Formatter;
+
 
 class ProductCatalogService extends AbstractService {
 
@@ -29,10 +31,12 @@ class ProductCatalogService extends AbstractService {
 
     /**
      * @param array $params [brands,pricelists] 
-     * @return \Soluble\FlexStore\FlexStore
+     * @return \Soluble\FlexStore\Store
      */
     function getList(array $params = array()) {
         $this->checkListParams($params);
+        
+        
         $select = new Select();
         $lang = $params['language'];
 
@@ -295,13 +299,13 @@ class ProductCatalogService extends AbstractService {
             $store->getSource()->getOptions()->setOffset($params['offset']);
         }
 
-        
-        
-        //$store->getSource()->getData();
-        //var_dump($store->getSource()->getData()->toArray());
-        //die();
+        // Initialize column model
+        $this->initListStoreColumnModel($store, $params);
+            
         return $store;
     }
+    
+          
 
     /**
      * Return quoted searchable reference from a keyword

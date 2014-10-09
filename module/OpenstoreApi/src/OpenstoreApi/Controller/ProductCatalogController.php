@@ -29,6 +29,7 @@ class ProductCatalogController extends AbstractRestfulController {
         $api_key = $this->params()->fromQuery('api_key');
         $this->apiKeyAccess = new ApiKeyAccess($api_key, $this->getServiceLocator());
         parent::onDispatch($e);
+        
     }
 
     public function get($id) {

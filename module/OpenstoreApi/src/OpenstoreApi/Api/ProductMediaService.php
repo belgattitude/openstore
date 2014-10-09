@@ -4,13 +4,13 @@ namespace OpenstoreApi\Api;
 
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
-use Soluble\FlexStore\FlexStore;
+use Soluble\FlexStore\Store;
 
 class ProductMediaService extends AbstractService {
 
     /**
      * @param array $params [types,brands,pricelists] 
-     * @return \Soluble\FlexStore\FlexStore
+     * @return \Soluble\FlexStore\Store
      */
     function getList(array $params = array()) {
 
@@ -77,6 +77,9 @@ class ProductMediaService extends AbstractService {
         $select->order(array('p.product_id' => $select::ORDER_ASCENDING));
 
         $store = $this->getStore($select);
+        
+        // Initialize column model
+        $this->initListStoreColumnModel($store, $params);        
 
         return $store;
     }
