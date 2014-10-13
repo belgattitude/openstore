@@ -183,6 +183,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
                 'Model\User' => 'Openstore\Model\User',
                 'Model\Pricelist' => 'Openstore\Model\Pricelist',
                 'Model\Customer' => 'Openstore\Model\Customer',
+                'Model\DiscountCondition' => 'Openstore\Model\DiscountCondition',
             ),
             'factories' => array(
                 //'MyCustomAuthenticationIdentityProvider' => 'Openstore\Authentication\Factory\ZfcRbacAuthenticationIdentityFactory',                
@@ -193,7 +194,6 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
                 },
                 'Soluble\Media\Converter' => 'Soluble\Media\Converter\Service\MediaConverterFactory',
                 'License\LicenceManager' => 'License\Service\LicenseManagerFactory',
-                        
                 'MMan\Storage' => 'MMan\Service\StorageFactory',
                 'MMan\MediaManager' => 'MMan\Service\MediaManagerFactory',
                 'Openstore\Configuration' => 'Openstore\ConfigurationFactory',
@@ -202,176 +202,177 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
                 'Openstore\StockManager' => 'Openstore\Catalog\StockManagerFactory',
                 'Openstore\UserCapabilities' => 'Openstore\Permission\UserCapabilitiesFactory',
                 'Openstore\UserContext' => function ($sm) {
-            $userContainer = new Container('Openstore\UserContext');
-            $userContext = new \Openstore\UserContext($userContainer);
-            $userContext->setServiceLocator($sm);
-            $userContext->initialize();
-            return $userContext;
-        },
+                    $userContainer = new Container('Openstore\UserContext');
+                    $userContext = new \Openstore\UserContext($userContainer);
+                    $userContext->setServiceLocator($sm);
+                    $userContext->initialize();
+                    return $userContext;
+                },
                 'Zend\Session\SessionManager' => function ($sm) {
-            $config = $sm->get('config');
-            if (isset($config['session'])) {
+                    $config = $sm->get('config');
+                    if (isset($config['session'])) {
 
-                $session = $config['session'];
-                $sessionConfig = null;
-                if (isset($session['config'])) {
-                    $class = isset($session['config']['class']) ? $session['config']['class'] : 'Zend\Session\Config\SessionConfig';
-                    $options = isset($session['config']['options']) ? $session['config']['options'] : array();
-                    $sessionConfig = new $class();
-                    $sessionConfig->setOptions($options);
-                }
+                        $session = $config['session'];
+                        $sessionConfig = null;
+                        if (isset($session['config'])) {
+                            $class = isset($session['config']['class']) ? $session['config']['class'] : 'Zend\Session\Config\SessionConfig';
+                            $options = isset($session['config']['options']) ? $session['config']['options'] : array();
+                            $sessionConfig = new $class();
+                            $sessionConfig->setOptions($options);
+                        }
 
-                $sessionStorage = null;
-                if (isset($session['storage'])) {
-                    $class = $session['storage'];
-                    $sessionStorage = new $class();
-                }
+                        $sessionStorage = null;
+                        if (isset($session['storage'])) {
+                            $class = $session['storage'];
+                            $sessionStorage = new $class();
+                        }
 
-                $sessionSaveHandler = null;
-                if (isset($session['save_handler'])) {
-                    // class should be fetched from service manager since it will require constructor arguments
-                    $sessionSaveHandler = $sm->get($session['save_handler']);
-                }
+                        $sessionSaveHandler = null;
+                        if (isset($session['save_handler'])) {
+                            // class should be fetched from service manager since it will require constructor arguments
+                            $sessionSaveHandler = $sm->get($session['save_handler']);
+                        }
 
-                $sessionManager = new SessionManager($sessionConfig, $sessionStorage, $sessionSaveHandler);
+                        $sessionManager = new SessionManager($sessionConfig, $sessionStorage, $sessionSaveHandler);
 
-                if (isset($session['validator'])) {
-                    $chain = $sessionManager->getValidatorChain();
-                    foreach ($session['validator'] as $validator) {
-                        $validator = new $validator();
-                        $chain->attach('session.validate', array($validator, 'isValid'));
+                        if (isset($session['validator'])) {
+                            $chain = $sessionManager->getValidatorChain();
+                            foreach ($session['validator'] as $validator) {
+                                $validator = new $validator();
+                                $chain->attach('session.validate', array($validator, 'isValid'));
+                            }
+                        }
+                    } else {
+                        $sessionManager = new SessionManager();
                     }
-                }
-            } else {
-                $sessionManager = new SessionManager();
+                    Container::setDefaultManager($sessionManager);
+                    return $sessionManager;
+                },
+                    )
+                );
             }
-            Container::setDefaultManager($sessionManager);
-            return $sessionManager;
-        },
-            )
-        );
-    }
 
-    /*
-      public function on2DispatchError(MvcEvent $event){
-      $response = $event->getResponse();
-      if ($response->getStatusCode() == 403) {
-      $event->getViewModel();
-      }
-      parent::onDispatchError($event);
-      }
-     */
+            /*
+              public function on2DispatchError(MvcEvent $event){
+              $response = $event->getResponse();
+              if ($response->getStatusCode() == 403) {
+              $event->getViewModel();
+              }
+              parent::onDispatchError($event);
+              }
+             */
 
-    public function onFinish(MvcEvent $e) {
+            public function onFinish(MvcEvent $e) {
 
 
-        $purify_method = 'htmlpurifier';
-        $purify_method = 'domdocument';
-        $purify_method = '';
-        switch ($purify_method) {
-            case 'htmlpurifier' :
-                $response = $e->getResponse();
-                $content = $response->getBody();
+                $purify_method = 'htmlpurifier';
+                $purify_method = 'domdocument';
+                $purify_method = '';
+                switch ($purify_method) {
+                    case 'htmlpurifier' :
+                        $response = $e->getResponse();
+                        $content = $response->getBody();
 
-                $config = \HTMLPurifier_Config::createDefault();
-                $config->set('Cache.SerializerPath', dirname(__FILE__) . '/../../data/cache');
-                $purifier = new \HTMLPurifier($config);
-                $clean_html = $purifier->purify($content);
-                if ($clean_html !== false) {
-                    $response->setContent($clean_html);
+                        $config = \HTMLPurifier_Config::createDefault();
+                        $config->set('Cache.SerializerPath', dirname(__FILE__) . '/../../data/cache');
+                        $purifier = new \HTMLPurifier($config);
+                        $clean_html = $purifier->purify($content);
+                        if ($clean_html !== false) {
+                            $response->setContent($clean_html);
+                        }
+
+                        break;
+
+                    case 'domdocument' :
+
+                        $response = $e->getResponse();
+                        $content = $response->getBody();
+
+                        $dom = new \DOMDocument();
+                        $dom->preserveWhiteSpace = false;
+                        $dom->formatOutput = false;
+                        $dom->recover = false;
+                        $dom->strictErrorChecking = false;
+                        $dom->formatOutput = true;
+
+                        $dom->loadHTML($content, LIBXML_NOBLANKS);
+
+                        // do stuff here
+                        $clean_html = $dom->saveHTML();
+
+                        if ($clean_html !== false) {
+                            $response->setContent($clean_html);
+                        }
+
+                        break;
                 }
+            }
 
-                break;
+            /**
+             * 
+             * @return array
+             */
+            public function getConfig() {
 
-            case 'domdocument' :
+                $config = array_merge(
+                        include __DIR__ . '/config/module.config.php', include __DIR__ . '/config/routes.config.php', include __DIR__ . '/config/openstore.config.php', include __DIR__ . '/config/assetic.config.php'
+                );
+                return $config;
+            }
 
-                $response = $e->getResponse();
-                $content = $response->getBody();
+            /**
+             * 
+             * @return array
+             */
+            public function getAutoloaderConfig() {
+                return array(
+                    'Zend\Loader\ClassMapAutoloader' => array(
+                        __DIR__ . '/autoload_classmap.php',
+                    ),
+                    'Zend\Loader\StandardAutoloader' => array(
+                        'namespaces' => array(
+                            __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
+                            'MMan' => __DIR__ . '/src/MMan',
+                            //'Soluble' => '/web/www/solublecomponents/src/Soluble'
+                            'License' => __DIR__ . '/src/License',
+                        ),
+                    ),
+                );
+            }
 
-                $dom = new \DOMDocument();
-                $dom->preserveWhiteSpace = false;
-                $dom->formatOutput = false;
-                $dom->recover = false;
-                $dom->strictErrorChecking = false;
-                $dom->formatOutput = true;
+            /**
+             * Returns an array or a string containing usage information for this module's Console commands.
+             * The method is called with active Zend\Console\Adapter\AdapterInterface that can be used to directly access
+             * Console and send output.
+             *
+             * If the result is a string it will be shown directly in the console window.
+             * If the result is an array, its contents will be formatted to console window width. The array must
+             * have the following format:
+             *
+             *     return array(
+             *                'Usage information line that should be shown as-is',
+             *                'Another line of usage info',
+             *
+             *                '--parameter'        =>   'A short description of that parameter',
+             *                '-another-parameter' =>   'A short description of another parameter',
+             *                ...
+             *            )
+             *
+             * @param AdapterInterface $console
+             * @return array|string|null
+             */
+            public function getConsoleUsage(AdapterInterface $console) {
 
-                $dom->loadHTML($content, LIBXML_NOBLANKS);
+                return array(
+                    'openstore recreatedb' => 'Recreate database schema.',
+                    'openstore build-all-reload' => 'Recreate database schema and load initial fixtures.',
+                    'openstore updatedb' => 'Update database schema and reload initial fixtures.',
+                    'openstore recreatedbextra' => 'Recreate database extra features (trigger, procedures, functions...).',
+                    'openstore relocategroupcateg' => 'Replace product categories by product groups',
+                    'openstore clearcache' => 'Clear all system caches.',
+                    'openstore clearmediacache' => 'Clear media cache.',
+                );
+            }
 
-                // do stuff here
-                $clean_html = $dom->saveHTML();
-
-                if ($clean_html !== false) {
-                    $response->setContent($clean_html);
-                }
-
-                break;
         }
-    }
-
-    /**
-     * 
-     * @return array
-     */
-    public function getConfig() {
-
-        $config = array_merge(
-                include __DIR__ . '/config/module.config.php', include __DIR__ . '/config/routes.config.php', include __DIR__ . '/config/openstore.config.php', include __DIR__ . '/config/assetic.config.php'
-        );
-        return $config;
-    }
-
-    /**
-     * 
-     * @return array
-     */
-    public function getAutoloaderConfig() {
-        return array(
-            'Zend\Loader\ClassMapAutoloader' => array(
-                __DIR__ . '/autoload_classmap.php',
-            ),
-            'Zend\Loader\StandardAutoloader' => array(
-                'namespaces' => array(
-                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-                    'MMan' => __DIR__ . '/src/MMan',
-                    //'Soluble' => '/web/www/solublecomponents/src/Soluble'
-                    'License' => __DIR__ . '/src/License',
-                ),
-            ),
-        );
-    }
-
-    /**
-     * Returns an array or a string containing usage information for this module's Console commands.
-     * The method is called with active Zend\Console\Adapter\AdapterInterface that can be used to directly access
-     * Console and send output.
-     *
-     * If the result is a string it will be shown directly in the console window.
-     * If the result is an array, its contents will be formatted to console window width. The array must
-     * have the following format:
-     *
-     *     return array(
-     *                'Usage information line that should be shown as-is',
-     *                'Another line of usage info',
-     *
-     *                '--parameter'        =>   'A short description of that parameter',
-     *                '-another-parameter' =>   'A short description of another parameter',
-     *                ...
-     *            )
-     *
-     * @param AdapterInterface $console
-     * @return array|string|null
-     */
-    public function getConsoleUsage(AdapterInterface $console) {
-
-        return array(
-            'openstore recreatedb' => 'Recreate database schema.',
-            'openstore build-all-reload' => 'Recreate database schema and load initial fixtures.',
-            'openstore updatedb' => 'Update database schema and reload initial fixtures.',
-            'openstore recreatedbextra' => 'Recreate database extra features (trigger, procedures, functions...).',
-            'openstore relocategroupcateg' => 'Replace product categories by product groups',
-            'openstore clearcache' => 'Clear all system caches.',
-            'openstore clearmediacache' => 'Clear media cache.',
-        );
-    }
-
-}
+        

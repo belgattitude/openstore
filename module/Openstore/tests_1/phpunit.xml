@@ -10,8 +10,8 @@
          stopOnFailure="false"
          syntaxCheck="false">
     <testsuites>
-        <testsuite name="openstoreApi">
-            <directory>./OpenstoreApiTest</directory>
+        <testsuite name="openstore">
+            <directory>./OpenstoreTest</directory>
         </testsuite>
     </testsuites>
 </phpunit>

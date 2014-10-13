@@ -44,6 +44,7 @@ class OrderTest extends AbstractConsoleControllerTestCase
 	}
 	public function testDoctrine()
 	{
+            /*
 		$em = $this->getEntityManager();
 		$hydrator = new DoctrineEntity($em);
 		
@@ -143,6 +144,8 @@ class OrderTest extends AbstractConsoleControllerTestCase
 		die('hello');
 		//$sm = $this->getApplication()->getServiceManager();
 		//$sm->
+             */ 
+             
 	}
 /*
 	public function testCreateOrderThrowsInvalidCustomerException()

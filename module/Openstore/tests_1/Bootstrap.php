@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenstoreApiTest;
+namespace OpenstoreTest;
 
 use Zend\Loader\AutoloaderFactory;
 use Zend\Mvc\Service\ServiceManagerConfig;
@@ -37,7 +37,7 @@ class Bootstrap
                 'module_paths' => $zf2ModulePaths,
             ),
             'modules' => array(
-                'OpenstoreApi',
+                'Openstore',
 				
             )
         );

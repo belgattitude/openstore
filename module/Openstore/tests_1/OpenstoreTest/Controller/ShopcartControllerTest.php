@@ -19,7 +19,7 @@ class ShopcartControllerControllerTest extends AbstractHttpControllerTestCase
         parent::setUp();
     }
 	
-	/*
+    /*
     protected function mockLogin()
     {
         $userSessionModel = new UserSessionModel();

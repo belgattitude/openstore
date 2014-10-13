@@ -46,7 +46,7 @@ class ProductMediaController extends AbstractRestfulController {
         
         return $store;
 
-        //return new JsonModel($data);
+
     }
 
 }

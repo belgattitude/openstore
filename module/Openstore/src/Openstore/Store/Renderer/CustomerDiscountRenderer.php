@@ -1,60 +1,43 @@
 <?php
-namespace OpenstoreApi\Store\Renderer;
+namespace Openstore\Store\Renderer;
 
 use Soluble\FlexStore\Renderer\RowRendererInterface;
 use ArrayObject;
 
-class RowPictureRenderer implements RowRendererInterface
+class CustomDiscountRenderer implements RowRendererInterface
 {
+    
     /**
      *
      * @var string
      */
-    protected $resolution;
+    protected $customer_id;
     
     
     /**
      *
      * @var string
      */
-    protected $source_column;
-    
-    /**
-     *
-     * @var string
-     */
-    protected $target_column;
-    
-    /**
-     *
-     * @var string
-     */
-    protected $base_url;
-    
-    /**
-     *
-     * @var string
-     */
-    protected $url;
+    protected $pricelist_reference;
     
     
     /**
      * 
-     * @param string $source_column column containing the media_id
-     * @param string $target_column column to store the URL
-     * @param string $resolution
+     * @param int $customer_id customer_id
+     * @param string $pricelist_reference pricelist reference
      */
-    function __construct($source_column, $target_column, $resolution='1024x768', $quality="90", $base_url=null)
+    function __construct($customer_id, $pricelist_reference)
     {
-        $this->source_column = $source_column;
-        $this->target_column = $target_column;
-        if ($base_url === null) {
-            $base_url = 'http://api.emdmusic.com/media/preview/picture';
-        }
-        $this->base_url = $base_url;
+        $this->customer_id = $customer_id;
+        $this->pricelist_reference = $pricelist_reference;
         
-        $this->url = $base_url . '/' . $resolution . "-" . $quality . "/"; 
-               
+        $this->loadCustomerDiscounts();
+        
+    }
+    
+    protected function loadCustomerDiscounts()
+    {
+        
     }
     
     /**

@@ -136,6 +136,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->synchronizeProductStock();
         $this->synchronizeProductPackaging();
         $this->synchronizeDiscountCondition();
+
+        
         
         $this->rebuildCategoryBreadcrumbs();
         $this->rebuildProductSearch();

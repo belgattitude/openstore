@@ -10,7 +10,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Soluble\FlexStore\Store;
 use Soluble\FlexStore\Source\Zend\SqlSource;
-use OpenstoreApi\Store\Renderer\RowPictureRenderer;
+use Openstore\Store\Renderer\RowPictureRenderer;
 use Soluble\FlexStore\Formatter;
 
 
