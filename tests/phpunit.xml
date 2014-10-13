@@ -9,7 +9,6 @@
     processIsolation="false"
     stopOnFailure="false"
     syntaxCheck="false"
- 
     bootstrap="Bootstrap.php">
     <testsuites>
         <testsuite name="global">

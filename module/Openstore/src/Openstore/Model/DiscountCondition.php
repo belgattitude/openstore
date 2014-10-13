@@ -21,8 +21,9 @@ class DiscountCondition implements AdapterAwareInterface {
 
     /**
      * 
+     * @param array $params
      */
-    public function getDiscountStore() {
+    public function getDiscountStore(array $params = array()) {
 
         $select = new Select();
         $select->from(array('dc' => 'discount_condition'), array())
@@ -52,8 +53,19 @@ class DiscountCondition implements AdapterAwareInterface {
             'valid_till' => new Expression('dc.valid_till'),
         ), true);
 
-        $sqlSource = new SqlSource($this->adapter, $select);
+        if (isset($params['customer_id'])) {
+            $select->where(array('dc.customer_id' => $params['customer_id']));
+        }
 
+        if (isset($params['pricelist_id'])) {
+            $select->where(array('dc.pricelist_id' => $params['pricelist_id']));
+        }
+
+        if (isset($params['pricelist_reference'])) {
+            $select->where(array('dc.pricelist_reference' => $params['pricelist_reference']));
+        }
+
+        $sqlSource = new SqlSource($this->adapter, $select);
         $store = new Store($sqlSource);
         return $store;
     }
