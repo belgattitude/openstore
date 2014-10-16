@@ -9,7 +9,7 @@ use Zend\Db\Sql\Expression;
 
 use Openstore\Catalog\Helper\SearchParams;
 
-use Soluble\FlexStore\Writer\Zend\Json as JsonWriter;
+use Soluble\FlexStore\Writer\JsonWriter;
 
 use Openstore\Model\Product;
 
