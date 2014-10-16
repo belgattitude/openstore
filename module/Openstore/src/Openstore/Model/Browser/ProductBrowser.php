@@ -50,6 +50,8 @@ class ProductBrowser extends AbstractBrowser {
                 ->join(array('pu' => 'product_unit'), new Expression('pu.unit_id = p.unit_id'), array(), $select::JOIN_LEFT)
                 ->join(array('ps' => 'product_stock'), new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'), array())
                 ->join(array('pb' => 'product_brand'), new Expression('pb.brand_id = p.brand_id'), array())
+                ->join(array('pg' => 'product_group'), new Expression('pg.group_id = p.group_id'), array(), $select::JOIN_LEFT)
+                ->join(array('pst' => 'product_status'), new Expression('pst.status_id = pst.status_id'), array(), $select::JOIN_LEFT)
                 ->join(array('pc' => 'product_category'), new Expression('pc.category_id = p.category_id'), array())
                 ->join(array('pc18' => 'product_category_translation'), new Expression("pc.category_id = pc18.category_id and pc18.lang = '$lang'"), array(), $select::JOIN_LEFT)
                 ->join(array('pm' => 'product_media'), new Expression("pm.product_id = p.product_id and pm.flag_primary=1"), array(), $select::JOIN_LEFT)
@@ -63,7 +65,12 @@ class ProductBrowser extends AbstractBrowser {
 
 
 
+        $now = new \DateTime();
+        $flag_new_min_date = $now->sub(new \DateInterval('P180D'))->format('Y-m-d'); // 180 days
+        
+        
 
+        //$flag_new_min_date = date('2013-11')
         //$flag_new_min_date = ProductFilter::getParam('flag_new_minimum_date');
 
         if ($this->columns !== null && is_array($this->columns)) {
@@ -72,11 +79,20 @@ class ProductBrowser extends AbstractBrowser {
 
             $select->columns(array(
                 'product_id' => new Expression('p.product_id'),
+                
+                'status_id' => new Expression('pst.status_id'),
+                'status_reference' => new Expression('pst.reference'),
+                'pricelist_reference' => new Expression('pl.reference'),
+                'type_id'       => new Expression('p.type_id'),
+                
                 'reference' => new Expression('p.reference'),
                 'display_reference' => new Expression('COALESCE(p.display_reference, p.reference)'),
                 'brand_id' => new Expression('p.brand_id'),
                 'brand_reference' => new Expression('pb.reference'),
                 'brand_title' => new Expression('pb.title'),
+                'group_id' => new Expression('pg.group_id'),                
+                'group_reference' => new Expression('pg.reference'),                
+                'category_id' => new Expression('pc.category_id'),
                 'category_reference' => new Expression('pc.reference'),
                 'category_title' => new Expression('COALESCE(pc18.title, pc.title)'),
                 'title' => new Expression('COALESCE(p18.title, p.title)'),

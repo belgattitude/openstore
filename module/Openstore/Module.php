@@ -184,6 +184,9 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
                 'Model\Pricelist' => 'Openstore\Model\Pricelist',
                 'Model\Customer' => 'Openstore\Model\Customer',
                 'Model\DiscountCondition' => 'Openstore\Model\DiscountCondition',
+                
+                // Various renderers
+                'Store\Renderer\CustomerDiscount' => 'Openstore\Store\Renderer\CustomerDiscountRenderer',
             ),
             'factories' => array(
                 //'MyCustomAuthenticationIdentityProvider' => 'Openstore\Authentication\Factory\ZfcRbacAuthenticationIdentityFactory',                

@@ -88,7 +88,8 @@ class ProductMediaService extends AbstractService {
         
         
         // Initialize column model
-        $this->initListStoreColumnModel($store, $params);        
+        $this->addStorePictureRenderer($store, 'media_id');
+        $this->initStoreFormatters($store, $params);        
 
         return $store;
     }

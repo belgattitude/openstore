@@ -57,7 +57,7 @@ class DiscountConditionTest extends \PHPUnit_Framework_TestCase
         
         $data = $store->getData();
         $this->assertInstanceOf('Soluble\FlexStore\ResultSet\ResultSet', $data);
-        var_dump($data->toArray());
+       // var_dump($data->toArray());
     }
 
 }

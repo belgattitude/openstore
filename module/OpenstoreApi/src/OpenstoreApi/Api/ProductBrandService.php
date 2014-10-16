@@ -57,7 +57,7 @@ class ProductBrandService extends AbstractService {
         }
         
         
-        $this->initListStoreColumnModel($store, $params);
+        $this->initStoreFormatters($store, $params);        
         return $store;
     }
 

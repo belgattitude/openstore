@@ -48,6 +48,13 @@ class Pricelist {
     private $currency_id;
 
     /**
+     * When dealing with pricelist condition, use this pricelist_id instead of pricelist
+     * @ORM\ManyToOne(targetEntity="Pricelist")
+     * @ORM\JoinColumn(name="discount_condition_pricelist_id", referencedColumnName="pricelist_id", onDelete="CASCADE", nullable=true)
+     */
+    private $discount_condition_pricelist_id;         
+    
+    /**
      * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
      */
     private $reference;
@@ -62,6 +69,14 @@ class Pricelist {
      */
     private $description;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether this pricelist must honour special discount conditions"})
+     */
+    private $flag_enable_discount_condition; 
+
+
+
+    
     /**
      * @ORM\Column(type="boolean", nullable=true, options={"default"=null, "comment"="Whether this pricelist is default"})
      */
@@ -272,6 +287,24 @@ class Pricelist {
         return (boolean) $this->flag_public;
     }
 
+    
+    /**
+     * @return Pricelist
+     */
+    public function setFlagEnableDiscountCondition($flag_enable_discount_condition) {
+        $this->flag_enable_discount_condition = $flag_enable_discount_condition;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return boolean
+     */
+    public function getFlagEnableDiscountCondition() {
+        return (boolean) $this->flag_enable_discount_condition;
+    }
+    
+    
     /**
      * @return Pricelist
      */

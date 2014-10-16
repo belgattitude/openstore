@@ -44,6 +44,11 @@ class ProductType {
      * @ORM\Column(type="string", length=15000, nullable=true)
      */
     private $description;
+    
+    /**
+     * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the product type must honour special discount conditions"})
+     */
+    private $flag_enable_discount_condition;     
 
     /**
      * @ORM\Column(type="boolean", nullable=true, options={"default"=false, "comment"="Tells whether the type should be excluded from product catalog"})
@@ -180,6 +185,23 @@ class ProductType {
         return $this->description;
     }
 
+    
+    /**
+     * @return ProductType
+     */
+    public function setFlagEnableDiscountCondition($flag_enable_discount_condition) {
+        $this->flag_enable_discount_condition = $flag_enable_discount_condition;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return boolean
+     */
+    public function getFlagEnableDiscountCondition() {
+        return (boolean) $this->flag_enable_discount_condition;
+    }    
+    
     /**
      * 
      * @return boolean

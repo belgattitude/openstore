@@ -6,6 +6,8 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
 use Soluble\FlexStore\Store;
 use Soluble\FlexStore\Formatter;
+use Soluble\FlexStore\Column\Column;
+use Soluble\FlexStore\Column\Type as ColumnType;
 
 
 class ProductCatalogService extends AbstractService {
@@ -194,6 +196,7 @@ class ProductCatalogService extends AbstractService {
             'flag_till_end_of_stock' => new Expression('pst.flag_till_end_of_stock'),
             'flag_end_of_lifecycle' => new Expression('pst.flag_end_of_lifecycle'),
             'available_at' => new Expression('COALESCE(ppl.available_at, p.available_at)'),
+            'status_reference' => new Expression('pst.reference')
         );
 
         $select->columns($columns, true);
@@ -299,10 +302,33 @@ class ProductCatalogService extends AbstractService {
             $store->getSource()->getOptions()->setOffset($params['offset']);
         }
 
+
         // Initialize column model
-        $this->initListStoreColumnModel($store, $params);
-            
+        $this->addStorePictureRenderer($store, 'picture_media_id');
+        
+        $customer_id = 3521;
+        
+        $this->addStorePriceRenderer($store, $customer_id, $pricelist_reference);
+        $this->initStoreFormatters($store, $params);        
+        
         return $store;
+    }
+    
+    protected function addStorePriceRenderer(Store $store, $customer_id, $pricelist_reference)
+    {
+        $cm = $store->getColumnModel();
+        
+        $cdr = $this->serviceLocator->get('Store\Renderer\CustomerDiscount');
+        $cdr->setParams($customer_id, $pricelist_reference);        
+        
+        $cm->add(new Column('my_price', array('type' => ColumnType::TYPE_DECIMAL)));
+        $cm->add(new Column('my_discount_1', array('type' => ColumnType::TYPE_DECIMAL)));
+        $cm->add(new Column('my_discount_2', array('type' => ColumnType::TYPE_DECIMAL)));
+        $cm->add(new Column('my_discount_3', array('type' => ColumnType::TYPE_DECIMAL)));
+        $cm->add(new Column('my_discount_4', array('type' => ColumnType::TYPE_DECIMAL)));        
+        $cm->addRowRenderer($cdr);
+
+        
     }
     
           

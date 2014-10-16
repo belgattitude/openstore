@@ -172,11 +172,11 @@ class LoadUserData implements FixtureInterface {
     function importProductType(ObjectManager $manager) {
 
         $product_types = array(
-            1 => array('reference' => 'REGULAR', 'title' => 'Regular product', 'description' => 'Regular product', 'flag_active' => 1),
-            2 => array('reference' => 'SPAREPART', 'title' => 'Spare part', 'description' => 'Spare part', 'flag_active' => null),
-            3 => array('reference' => 'VIRTUAL', 'title' => 'Virtual product', 'description' => 'Virtual/digital asset product/license, generally with no stock', 'flag_active' => null),
-            4 => array('reference' => 'COMPOSED', 'title' => 'Composed product', 'description' => 'Composed product', 'flag_active' => null),
-            5 => array('reference' => 'OFFER', 'title' => 'Offer', 'description' => 'Generated product from a combination of products, having a special price', 'flag_active' => null),
+            1 => array('reference' => 'REGULAR', 'title' => 'Regular product', 'description' => 'Regular product', 'flag_active' => 1, 'fedc' => 1),
+            2 => array('reference' => 'SPAREPART', 'title' => 'Spare part', 'description' => 'Spare part', 'flag_active' => null, 'fedc' => 1),
+            3 => array('reference' => 'VIRTUAL', 'title' => 'Virtual product', 'description' => 'Virtual/digital asset product/license, generally with no stock', 'flag_active' => null, 'fedc' => 0),
+            4 => array('reference' => 'COMPOSED', 'title' => 'Composed product', 'description' => 'Composed product', 'flag_active' => null, 'fedc' => 0),
+            5 => array('reference' => 'OFFER', 'title' => 'Offer', 'description' => 'Generated product from a combination of products, having a special price', 'flag_active' => null, 'fedc' => 0),
         );
 
 
@@ -189,6 +189,7 @@ class LoadUserData implements FixtureInterface {
             $type->setDescription($infos['description']);
             $type->setFlagActive($infos['flag_active']);
             $type->setLegacyMapping($infos['reference']);
+            $type->setFlagEnableDiscountCondition($infos['fedc']);
             $manager->persist($type);
         }
 
@@ -301,6 +302,7 @@ class LoadUserData implements FixtureInterface {
             $pricelist->setLegacyMapping($infos['reference']);
             $pricelist->setTitle($infos['title']);
             $pricelist->setFlagPublic(true);
+            $pricelist->setFlagEnableDiscountCondition(1);
             $manager->persist($pricelist);
         }
 

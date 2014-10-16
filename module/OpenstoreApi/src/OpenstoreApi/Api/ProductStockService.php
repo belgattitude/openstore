@@ -110,7 +110,7 @@ class ProductStockService extends AbstractService {
             $store->getSource()->getOptions()->setOffset($params['offset']);
         }
         
-        $this->initListStoreColumnModel($store, $params);        
+        $this->initStoreFormatters($store, $params);             
 
         return $store;
     }

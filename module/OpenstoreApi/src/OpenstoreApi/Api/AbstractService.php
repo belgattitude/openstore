@@ -12,6 +12,8 @@ use Soluble\FlexStore\Store;
 use Soluble\FlexStore\Source\Zend\SqlSource;
 use Openstore\Store\Renderer\RowPictureRenderer;
 use Soluble\FlexStore\Formatter;
+use Soluble\FlexStore\Column\Column;
+use Soluble\FlexStore\Column\Type as ColumnType;
 
 
 abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorAwareInterface {
@@ -98,6 +100,36 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
     {
         return new Store(new SqlSource($this->getDbAdapter(), $select));
     }
+
+
+    /**
+     * 
+     * @param Store $store
+     * @param string $media_colum column name containing the media_id
+     */
+    protected function addStorePictureRenderer(Store $store, $media_column)
+    {
+        $cm = $store->getColumnModel();
+
+        // Adding picture urls
+        
+        if ($cm->exists($media_column)) {
+
+            $column = new Column('picture_url');
+            $column->setType(ColumnType::TYPE_STRING);
+            $cm->add($column);
+
+            $pictureRenderer = new RowPictureRenderer($media_column, 'picture_url', '1024x768', 90);
+            $cm->addRowRenderer($pictureRenderer);
+
+            $column = new Column('picture_thumbnail_url');
+            $column->setType(ColumnType::TYPE_STRING);
+            $cm->add($column);
+
+            $thumbRenderer = new RowPictureRenderer($media_column, 'picture_thumbnail_url', '170x200', 90);
+            $cm->addRowRenderer($thumbRenderer);
+        }
+    }
     
     
     /**
@@ -106,9 +138,10 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
      * @param array $params
      * @return void
      */
-    protected function initListStoreColumnModel(Store $store, array $params)
+    protected function initStoreFormatters(Store $store, array $params)
     {
         $pricelist_reference = $params['pricelist'];
+        $customer_id = isset($params['customer_id']) ? $params['customer_id'] : null;
 
         //$currency
         $localeMap = array(
@@ -128,6 +161,17 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
         }
 
         $cm = $store->getColumnModel();
+
+
+        // Adding customer
+        if ($customer_id !== null && $cm->exists('price')) {
+            
+            
+            
+        }
+        
+        
+        // Common formatters
         
         if ($pricelist_reference != '') {
             $currency = $this->getPricelistCurrency($pricelist_reference);
@@ -146,6 +190,7 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
                         );
         
         $cm->search()->regexp('/^discount\_/')->setFormatter($discF);
+        $cm->search()->regexp('/my_discount\_/')->setFormatter($discF);
 
         $intF = Formatter::create(
                             Formatter::FORMATTER_NUMBER, 
@@ -157,39 +202,7 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
         $cm->search()->regexp('/^pack\_qty/')->setFormatter($intF);
         
         $cm->search()->regexp('/(length|width|height)$/')->setFormatter($intF);
-        if ($cm->exists('picture_media_id')) {
-
-            $column = new \Soluble\FlexStore\Column\Column('picture_url');
-            $column->setType('string');
-            $cm->add($column);
-
-            $pictureRenderer = new RowPictureRenderer('picture_media_id', 'picture_url', '1024x768', 90);
-            $cm->addRowRenderer($pictureRenderer);
-
-            $column = new \Soluble\FlexStore\Column\Column('picture_thumbnail_url');
-            $column->setType('string');
-            $cm->add($column);
-
-            $thumbRenderer = new RowPictureRenderer('picture_media_id', 'picture_thumbnail_url', '170x200', 90);
-            $cm->addRowRenderer($thumbRenderer);
-            
-        } elseif ($cm->exists('media_id')) {
-            
-            $column = new \Soluble\FlexStore\Column\Column('picture_url');
-            $column->setType('string');
-            $cm->add($column);
-
-            $pictureRenderer = new RowPictureRenderer('media_id', 'picture_url', '1024x768', 90);
-            $cm->addRowRenderer($pictureRenderer);
-
-            $column = new \Soluble\FlexStore\Column\Column('picture_thumbnail_url');
-            $column->setType('string');
-            $cm->add($column);
-
-            $thumbRenderer = new RowPictureRenderer('media_id', 'picture_thumbnail_url', '170x200', 90);
-            $cm->addRowRenderer($thumbRenderer);
-            
-        }
+        
         
         
     }

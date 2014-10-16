@@ -26,9 +26,7 @@ function convertMemorySize($size)
         'pb'
     );
     return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
-}
-
-;
+};
 
 class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterface
 {
@@ -1455,6 +1453,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             left outer join $db.product p on p.legacy_mapping = r.id_article
             left outer join $db.pricelist pl on pl.legacy_mapping = r.code_tarif
             left outer join $db.customer_group cg on cg.legacy_mapping = r.id_groupe_client
+            where (pl.flag_enable_discount_condition = 1 or pl.flag_enable_discount_condition is null)
             order by cg.group_id, c.customer_id, pl.pricelist_id, pb.brand_id, pg.group_id, p.product_id
             on duplicate key update
                 discount_1 = r.remise1,
