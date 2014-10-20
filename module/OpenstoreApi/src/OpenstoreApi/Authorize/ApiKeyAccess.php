@@ -44,7 +44,7 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface {
     protected $tm;
 
     /**
-     * @param string $pai_key 
+     * @param string $api_key 
      * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
 
      */
@@ -145,7 +145,6 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface {
         $acTable = $tm->table('api_key_customer');
         $customers = $acTable->select('api_key_customer')->where(array('api_id' => $api_id))->execute();
         $customers = array_column($customers->toArray(), 'customer_id');
-
         return $customers;
     }
 

@@ -7,7 +7,8 @@ use Zend\Db\Sql\Expression;
 use Soluble\FlexStore\Store;
 use Soluble\FlexStore\Formatter;
 use Soluble\FlexStore\Column\Column;
-use Soluble\FlexStore\Column\Type as ColumnType;
+use Soluble\FlexStore\Column\ColumnModel;
+use Soluble\FlexStore\Column\ColumnType;
 
 
 class ProductCatalogService extends AbstractService {
@@ -303,31 +304,51 @@ class ProductCatalogService extends AbstractService {
         }
 
 
+        // Remove unwanted columns, that are included just because
+        // required for row renderers
+        $store->getColumnModel()->exclude(array('status_reference'));
+        
+        if (isset($params['customer_id'])) {
+            $customer_id = $params['customer_id'];
+        } else {
+            $customer_id = null;
+        }
+        
         // Initialize column model
-        $this->addStorePictureRenderer($store, 'picture_media_id');
-        
-        $customer_id = 3521;
-        
-        $this->addStorePriceRenderer($store, $customer_id, $pricelist_reference);
+        $this->addStorePictureRenderer($store, 'picture_media_id', 'available_at');
+        $this->addStorePriceRenderer($store, $customer_id, $pricelist_reference, 'picture_thumbnail_url');
         $this->initStoreFormatters($store, $params);        
         
         return $store;
     }
-    
-    protected function addStorePriceRenderer(Store $store, $customer_id, $pricelist_reference)
+    /**
+     * 
+     * @param Store $store
+     * @param integer|null $customer_id
+     * @param string $pricelist_reference
+     * @param string $insert_after
+     */
+    protected function addStorePriceRenderer(Store $store, $customer_id, $pricelist_reference, $insert_after)
     {
         $cm = $store->getColumnModel();
         
         $cdr = $this->serviceLocator->get('Store\Renderer\CustomerDiscount');
         $cdr->setParams($customer_id, $pricelist_reference);        
         
-        $cm->add(new Column('my_price', array('type' => ColumnType::TYPE_DECIMAL)));
-        $cm->add(new Column('my_discount_1', array('type' => ColumnType::TYPE_DECIMAL)));
-        $cm->add(new Column('my_discount_2', array('type' => ColumnType::TYPE_DECIMAL)));
-        $cm->add(new Column('my_discount_3', array('type' => ColumnType::TYPE_DECIMAL)));
-        $cm->add(new Column('my_discount_4', array('type' => ColumnType::TYPE_DECIMAL)));        
-        $cm->addRowRenderer($cdr);
+        $my_price = new Column('my_price', array('type' => ColumnType::TYPE_DECIMAL, 'virtual' => true));
+        $my_discount_1 = new Column('my_discount_1', array('type' => ColumnType::TYPE_DECIMAL, 'virtual' => true));
+        $my_discount_2 = new Column('my_discount_2', array('type' => ColumnType::TYPE_DECIMAL, 'virtual' => true));
+        $my_discount_3 = new Column('my_discount_3', array('type' => ColumnType::TYPE_DECIMAL, 'virtual' => true));
+        $my_discount_4 = new Column('my_discount_4', array('type' => ColumnType::TYPE_DECIMAL, 'virtual' => true));
+        
 
+        $cm->add($my_price, $insert_after, ColumnModel::ADD_COLUMN_AFTER);
+        $cm->add($my_discount_1, 'my_price', ColumnModel::ADD_COLUMN_AFTER);
+        $cm->add($my_discount_2, 'my_discount_1', ColumnModel::ADD_COLUMN_AFTER);
+        $cm->add($my_discount_3, 'my_discount_2', ColumnModel::ADD_COLUMN_AFTER);
+        $cm->add($my_discount_4, 'my_discount_3', ColumnModel::ADD_COLUMN_AFTER);
+
+        $cm->addRowRenderer($cdr);
         
     }
     

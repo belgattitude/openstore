@@ -78,4 +78,14 @@ class RowPictureRenderer implements RowRendererInterface
         } 
     }
     
+    
+    /**
+     * Return the list of columns required in order to use this renderer
+     * @return array
+     */
+    function getRequiredColumns()
+    {
+        return array($this->source_column, $this->target_column);
+    }
+
 }

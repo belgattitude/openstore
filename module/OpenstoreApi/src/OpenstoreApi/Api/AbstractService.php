@@ -13,7 +13,8 @@ use Soluble\FlexStore\Source\Zend\SqlSource;
 use Openstore\Store\Renderer\RowPictureRenderer;
 use Soluble\FlexStore\Formatter;
 use Soluble\FlexStore\Column\Column;
-use Soluble\FlexStore\Column\Type as ColumnType;
+use Soluble\FlexStore\Column\ColumnModel;
+use Soluble\FlexStore\Column\ColumnType;
 
 
 abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorAwareInterface {
@@ -105,9 +106,10 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
     /**
      * 
      * @param Store $store
-     * @param string $media_colum column name containing the media_id
+     * @param string $media_column column name containing the media_id
+     * @param string $insert_after insert after column name
      */
-    protected function addStorePictureRenderer(Store $store, $media_column)
+    protected function addStorePictureRenderer(Store $store, $media_column, $insert_after)
     {
         $cm = $store->getColumnModel();
 
@@ -117,14 +119,14 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
 
             $column = new Column('picture_url');
             $column->setType(ColumnType::TYPE_STRING);
-            $cm->add($column);
+            $cm->add($column, $insert_after, ColumnModel::ADD_COLUMN_AFTER);
 
             $pictureRenderer = new RowPictureRenderer($media_column, 'picture_url', '1024x768', 90);
             $cm->addRowRenderer($pictureRenderer);
 
             $column = new Column('picture_thumbnail_url');
             $column->setType(ColumnType::TYPE_STRING);
-            $cm->add($column);
+            $cm->add($column, 'picture_url', ColumnModel::ADD_COLUMN_AFTER);
 
             $thumbRenderer = new RowPictureRenderer($media_column, 'picture_thumbnail_url', '170x200', 90);
             $cm->addRowRenderer($thumbRenderer);
@@ -162,17 +164,7 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
 
         $cm = $store->getColumnModel();
 
-
-        // Adding customer
-        if ($customer_id !== null && $cm->exists('price')) {
-            
-            
-            
-        }
-        
-        
         // Common formatters
-        
         if ($pricelist_reference != '') {
             $currency = $this->getPricelistCurrency($pricelist_reference);
 
@@ -182,6 +174,7 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
                             );
 
             $cm->search()->in(['price', 'list_price', 'public_price', 'my_price'])->setFormatter($currF);
+            
         }
         
         $discF = Formatter::create(
@@ -202,8 +195,6 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
         $cm->search()->regexp('/^pack\_qty/')->setFormatter($intF);
         
         $cm->search()->regexp('/(length|width|height)$/')->setFormatter($intF);
-        
-        
         
     }
     

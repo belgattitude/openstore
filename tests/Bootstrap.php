@@ -21,4 +21,21 @@ $loader->add("Akilia\\", $cwd . '/../module/Akilia/src');
 $loader->register();
  
 ServiceManagerGrabber::setServiceConfig(require_once './config/application.config.php');
+
+// Remove db adapter profiling messages
+$smg = new ServiceManagerGrabber();
+$adapter = $smg->getServiceManager()->get('Zend\Db\Adapter\Adapter');
+
+if ($adapter instanceof \BjyProfiler\Db\Adapter\ProfilingAdapter) {
+    $profiler = $adapter->getProfiler();
+    if ($profiler instanceof \BjyProfiler\Db\Profiler\LoggingProfiler) {
+        $adapter->setProfiler(new \BjyProfiler\Db\Profiler\Profiler($enabled = false));
+        $adapter->getProfiler()->disable();
+        $profiler->setPriority(\Zend\Log\Logger::DEBUG);
+    }
+}
+
+
+
+
 ob_start();

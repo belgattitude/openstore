@@ -6,7 +6,7 @@ use ModulesTests\ServiceManagerGrabber;
 use Zend\ServiceManager\ServiceManager;
 use Soluble\FlexStore\Store;
 use Soluble\FlexStore\Column\Column;
-use Soluble\FlexStore\Column\Type as ColumnType;
+use Soluble\FlexStore\Column\ColumnType;
 
 
 /**
@@ -69,21 +69,26 @@ class CustomDiscountRendererTest extends \PHPUnit_Framework_TestCase {
     
     public function testRendering()
     {
-        $customer_id = 99;
+        $customer_id = 3521;
         $pricelist   = 'FR';
         
         $cdr = $this->serviceManager->get('Store\Renderer\CustomerDiscount');
         $cdr->setParams($customer_id, $pricelist);
         $store = $this->getCatalogStore($pricelist, $customer_id, 'en', 30);
         
+        $store->getSource()->getSelect()->where->in('p.product_id', array(17436, 16978));
+        var_dump($store->getSource()->__toString());
+        die();
+        
         $cm = $store->getColumnModel();
-        $cm->addRowRenderer($cdr);
+        
         $cm->add(new Column('my_price', array('type' => ColumnType::TYPE_DECIMAL)));
         $cm->add(new Column('my_discount_1', array('type' => ColumnType::TYPE_DECIMAL)));
         $cm->add(new Column('my_discount_2', array('type' => ColumnType::TYPE_DECIMAL)));
         $cm->add(new Column('my_discount_3', array('type' => ColumnType::TYPE_DECIMAL)));
         $cm->add(new Column('my_discount_4', array('type' => ColumnType::TYPE_DECIMAL)));
         
+        $cm->addRowRenderer($cdr);
         
         $data = $store->getData()->toArray();
         foreach($data as $row) {
@@ -102,7 +107,7 @@ class CustomDiscountRendererTest extends \PHPUnit_Framework_TestCase {
         }
         
         
-        //die();
+        die();
             
         
         

@@ -43,6 +43,15 @@ class ProductCatalogController extends AbstractRestfulController {
         $this->apiKeyAccess->checkServiceAccess("2000-ProductCatalog");
         $this->apiKeyAccess->checkPricelistAccess($params['pricelist']);
 
+        // Find customer
+        $customers = $this->apiKeyAccess->getCustomers();
+        if (count($customers) > 1) {
+            throw new \Exception("API key is linked to multiple customers, not yet supported. Contact us.");
+        }
+        
+        $customer_id = $customers[0];
+        $params['customer_id'] = $customer_id;
+        
 
         $api_key_log = $this->apiKeyAccess->addLog("2000-ProductCatalog");
         $store = $this->catalogService->getList($params);

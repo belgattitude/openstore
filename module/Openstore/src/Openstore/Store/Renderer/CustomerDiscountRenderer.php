@@ -10,7 +10,7 @@ use Soluble\FlexStore\Renderer\RowRendererInterface;
 use Openstore\Model\DiscountCondition;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Expression;
+//use Zend\Db\Sql\Expression;
 use ArrayObject;
 
 class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAwareInterface, AdapterAwareInterface {
@@ -26,11 +26,6 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
      */
     protected $adapter;
     
-    /**
-     *
-     * @var boolean
-     */
-    protected $columns_checked = false;
 
     /**
      *
@@ -142,10 +137,6 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
      */
     function apply(ArrayObject $row) {
         
-        if (!$this->columns_checked) {
-            $this->checkColumns($row);
-        }
-        
         if (!$this->loaded_discounts) {
             $this->loadCustomerDiscounts();
         }
@@ -210,16 +201,21 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
             }
             
             // Calculate new price from list_price
-            $row[$this->columns['target_discount_1']] = max($sd['discount_1'], $discount_1);
-            $row[$this->columns['target_discount_2']] = max($sd['discount_2'], $discount_2);
-            $row[$this->columns['target_discount_3']] = max($sd['discount_3'], $discount_3);
-            $row[$this->columns['target_discount_4']] = max($sd['discount_4'], $discount_4);
             
+            $d1 = max($sd['discount_1'], $discount_1);
+            $d2 = max($sd['discount_2'], $discount_2);
+            $d3 = max($sd['discount_3'], $discount_3);
+            $d4 = max($sd['discount_4'], $discount_4);
             
-            $target_price = $list_price * (1-($sd['discount_1']/100))
-                                        * (1-($sd['discount_2']/100))
-                                        * (1-($sd['discount_3']/100))
-                                        * (1-($sd['discount_4']/100));
+            $target_price = $list_price * (1-($d1/100))
+                                        * (1-($d2/100))
+                                        * (1-($d3/100))
+                                        * (1-($d4/100));
+
+            $row[$this->columns['target_discount_1']] = $d1;
+            $row[$this->columns['target_discount_2']] = $d2;
+            $row[$this->columns['target_discount_3']] = $d3;
+            $row[$this->columns['target_discount_4']] = $d4;
             
             $row[$this->columns['target_price']] = $target_price;
             
@@ -227,18 +223,6 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
         
     }
 
-    /**
-     * 
-     * @param ArrayObject $row
-     * @throws \Exception
-     */
-    protected function checkColumns(ArrayObject $row) {
-        foreach($this->columns as $key => $column) {
-            if (!$row->offsetExists($column)) {
-                throw new \Exception(__METHOD__ . " Cannot apply CustomerDiscountRenderer, column $key => '$column' does not exists in row");
-            }
-        }
-    }
 
     /**
      * Set service locator
@@ -280,4 +264,14 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
         return $this->adapter;
     }
 
+    /**
+     * Return the list of columns required in order to use this renderer
+     * @return array
+     */
+    function getRequiredColumns()
+    {
+        return array_values($this->columns);
+    }
+    
+    
 }
