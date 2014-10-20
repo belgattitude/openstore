@@ -1,6 +1,7 @@
 <?php 
 namespace OpenstoreApi\Custom\Namm2007;
 
+use Soluble\FlexStore\Options;
 use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
 use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 use \DateTime;
@@ -87,8 +88,13 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
   <Id>38A6C25A-2344-4343-B53D-B8706E1A37DA</Id>
   
   <SupplierId>123121654654654</SupplierId>  
+  <?php
+    $options = new Options();
+    $options->getHydrationOptions()->disableFormatters();
+    $data = $this->store->getData($options);
+  ?>  
   <Items>
-    <?php foreach($this->data as $idx => $line) : ?>
+    <?php foreach($data as $idx => $line) : ?>
     <?php if ($idx > 0) Fcts::$enablePrintXMLComments = false; ?>  
     <Item>
         <!-- EMD internal id : <?= $line->product_id ?> -->

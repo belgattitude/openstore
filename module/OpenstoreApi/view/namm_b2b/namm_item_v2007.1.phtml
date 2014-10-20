@@ -1,5 +1,6 @@
 <?php 
 namespace OpenstoreApi\Custom\Namm2007;
+use Soluble\FlexStore\Options;
 
 use \DateTime;
 use \Zend\Escaper\Escaper;
@@ -124,8 +125,13 @@ Fcts::setEscaper($escaper);
      [2014/09/12] Initial implementation
   -->
   <SupplierId></SupplierId>    
+  <?php
+    $options = new Options();
+    $options->getHydrationOptions()->disableFormatters();
+    $data = $this->store->getData($options);
+  ?>
   <Items>
-    <?php foreach($this->data as $idx => $line) : ?>
+    <?php foreach($data as $idx => $line) : ?>
     <?php if ($idx > 0) Fcts::$enablePrintXMLComments = false; ?>  
     <Item>
         

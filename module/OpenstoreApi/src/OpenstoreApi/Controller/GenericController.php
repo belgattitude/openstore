@@ -5,6 +5,7 @@ namespace OpenstoreApi\Controller;
 use OpenstoreApi\Mvc\Controller\AbstractRestfulController;
 use OpenstoreApi\Authorize\ApiKeyAccess;
 use Zend\View\Model\ViewModel;
+use Soluble\FlexStore\Options;
 
 class GenericController extends AbstractRestfulController {
 
@@ -98,7 +99,8 @@ class GenericController extends AbstractRestfulController {
 
 
         $view = new ViewModel(array(
-            'data' => $store->getSource()->getData(),
+            //'data' => $store->getSource()->getData(),
+            'store' => $store,
         ));
 
         $view->setTemplate($view_template);
