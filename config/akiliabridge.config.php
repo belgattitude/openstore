@@ -2,8 +2,7 @@
 
 use Zend\Console\Console;
 
-$root = dirname(__DIR__);
-
+$root = dirname(__FILE__);
 
 $config = array(
     'service_manager' => [
@@ -13,34 +12,14 @@ $config = array(
     ],
     // This should be an array of module namespaces used in the application.
     'modules' => array(
-        //'Application',
-
-        'ZfcBase',
-        'ZfcUser',
-        'ZfcRbac',
-        // Apigility
-        'ZF\Apigility',
-        'ZF\Apigility\Provider',
         'AssetManager',
-        'ZF\ApiProblem',
-        'ZF\MvcAuth',
-        'ZF\OAuth2',
-        'ZF\Hal',
-        'ZF\ContentNegotiation',
-        'ZF\ContentValidation',
-        'ZF\Rest',
-        'ZF\Rpc',
-        'ZF\Versioning',
-        'ZF\DevelopmentMode',
         //'AsseticBundle',
         'SolubleNormalist',
         'Openstore',
         'OpenstoreApi',
-        'Akilia',
         'DoctrineModule',
         'DoctrineORMModule',
-        'BjyProfiler',
-        'DoctrineDataFixtureModule',
+
     ),
     // These are various options for the listeners attached to the ModuleManager
     'module_listener_options' => array(
@@ -71,7 +50,7 @@ $config = array(
         // The key used to create the class map cache file name.
         'module_map_cache_key' => 'openstore-module-map-cache',
         // The path in which to cache merged configuration.
-        'cache_dir' => __DIR__ . '/../data/cache',
+        'cache_dir' => $root . '/data/cache',
     // Whether or not to enable modules dependency checking.
     // Enabled by default, prevents usage of modules that depend on other modules
     // that weren't loaded.
@@ -91,10 +70,5 @@ $config = array(
         // 'service_manager' => array(),
 );
 
-if (Console::isConsole()) {
-    $key = array_search('ZfcRbac', $config['modules']);
-    if ($key !== false)
-        unset($config['modules'][$key]);
-}
 
 return $config;
