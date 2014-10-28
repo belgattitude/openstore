@@ -30,6 +30,7 @@ module.exports = function(grunt) {
 				},
 				files: {
 					'dist/css/global.css': 'css/global.scss',
+                                        'dist/css/catalog.css': 'css/catalog.scss',
 					'dist/css/typeahead-bootstrap.css': 'css/typeahead-bootstrap.scss'
 				}				
 			} 
@@ -39,6 +40,7 @@ module.exports = function(grunt) {
                     dist: {
                         files: {
                             'dist/css/global.prefixed.css': 'dist/css/global.css',
+                            'dist/css/catalog.prefixed.css': 'dist/css/catalog.css',
                             'dist/css/typeahead-bootstrap.prefixed.css': 'dist/css/typeahead-bootstrap.css'
                         }
                     }
@@ -66,6 +68,7 @@ module.exports = function(grunt) {
                                         'vendor/select2/select2.css',
                                         'vendor/select2/select2-bootstrap.css',
 					'dist/css/global.prefixed.css',
+                                        'dist/css/catalog.prefixed.css',
 					'dist/css/typeahead-bootstrap.prefixed.css'
 				  ]
 			  }
