@@ -121,14 +121,14 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
             $column->setType(ColumnType::TYPE_STRING);
             $cm->add($column, $insert_after, ColumnModel::ADD_COLUMN_AFTER);
 
-            $pictureRenderer = new RowPictureRenderer($media_column, 'picture_url', '1024x768', 90);
+            $pictureRenderer = new RowPictureRenderer($media_column, 'picture_url', '1024x768', 95);
             $cm->addRowRenderer($pictureRenderer);
 
             $column = new Column('picture_thumbnail_url');
             $column->setType(ColumnType::TYPE_STRING);
             $cm->add($column, 'picture_url', ColumnModel::ADD_COLUMN_AFTER);
 
-            $thumbRenderer = new RowPictureRenderer($media_column, 'picture_thumbnail_url', '170x200', 90);
+            $thumbRenderer = new RowPictureRenderer($media_column, 'picture_thumbnail_url', '170x200', 95);
             $cm->addRowRenderer($thumbRenderer);
         }
     }
