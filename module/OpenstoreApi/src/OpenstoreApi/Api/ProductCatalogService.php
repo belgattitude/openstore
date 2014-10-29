@@ -197,7 +197,8 @@ class ProductCatalogService extends AbstractService {
             'flag_till_end_of_stock' => new Expression('pst.flag_till_end_of_stock'),
             'flag_end_of_lifecycle' => new Expression('pst.flag_end_of_lifecycle'),
             'available_at' => new Expression('COALESCE(ppl.available_at, p.available_at)'),
-            'status_reference' => new Expression('pst.reference')
+            'status_reference' => new Expression('pst.reference'),
+            'currency_symbol' => new Expression('c.symbol')
         );
 
         $select->columns($columns, true);
@@ -252,7 +253,7 @@ class ProductCatalogService extends AbstractService {
                 //die();
                 if (strlen($query) > 3) {
                     $matches[1000000] = 'p18.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
-                    $matches[100000] = 'p.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
+                    $matches[100000] = '(p18.title is null and p.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%') . ')';
                 }
                 if (strlen($query) > 5) {
                     $matches[10000] = 'psi.keywords like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
@@ -306,7 +307,7 @@ class ProductCatalogService extends AbstractService {
 
         // Remove unwanted columns, that are included just because
         // required for row renderers
-        $store->getColumnModel()->exclude(array('status_reference'));
+        $store->getColumnModel()->exclude(array('status_reference', 'currency_symbol'));
         
         if (isset($params['customer_id'])) {
             $customer_id = $params['customer_id'];

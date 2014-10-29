@@ -194,7 +194,7 @@ class ProductBrowser extends AbstractBrowser {
             //die();
             if (strlen($query) > 3) {
                 $matches[1000000] = 'p18.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
-                $matches[100000] = 'p.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
+                $matches[100000] = '(p18.title is null and p.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%') . ")";
             }
             if (strlen($query) > 5) {
                 $matches[10000] = 'psi.keywords like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
