@@ -19,6 +19,7 @@
     "font-awesome": "~4.1.0",
     "bootstrap-sass-official": "~3.2.0",
     "select2": "~3.5.1",
-    "colorbox": "~1.5.13"
+    "colorbox": "~1.5.13",
+    "angular-markdown-directive": "0.3.0"
   }
 }
