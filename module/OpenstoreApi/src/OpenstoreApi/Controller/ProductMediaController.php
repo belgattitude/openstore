@@ -2,10 +2,8 @@
 
 namespace OpenstoreApi\Controller;
 
-//use OpenstoreApi\Api\MediaService;
+
 use OpenstoreApi\Mvc\Controller\AbstractRestfulController;
-use Zend\EventManager\EventManagerInterface;
-use Zend\View\Model\JsonModel;
 use Zend\Mvc\MvcEvent;
 
 class ProductMediaController extends AbstractRestfulController {
@@ -16,11 +14,12 @@ class ProductMediaController extends AbstractRestfulController {
 
     /**
      *
+     * @param MvcEvent $event
      * @var \Openstore\Api\Api\ProductMediaService
      */
     protected $mediaService;
 
-    public function onDispatch(\Zend\Mvc\MvcEvent $e) {
+    public function onDispatch(MvcEvent $e) {
         $this->mediaService = $this->getServiceLocator()->get('Api\ProductMediaService');
         parent::onDispatch($e);
     }
@@ -43,10 +42,8 @@ class ProductMediaController extends AbstractRestfulController {
                 $cm->includeOnly($limited_columns);
             }
         }
-        
+
         return $store;
-
-
     }
 
 }

@@ -45,43 +45,48 @@ class ProductCatalogService extends AbstractService {
 
         $pricelist_reference = $params['pricelist'];
 
-
-        // Step 1: Inner select packaging selection
-        $packSelect = new Select();
-        $packSelect->from(array('pp' => 'product_packaging'), array())
-                ->join(array('pt' => 'packaging_type'), new Expression("pp.type_id = pt.type_id"), array());
-        $packSelect->columns(
-                array(
-            'product_id' => new Expression('pp.product_id'),
-            'pack_unit_qty' => new Expression("MAX(if (pt.reference = 'UNIT', pp.quantity, null))"),
-            'pack_unit_barcode_ean' => new Expression("MAX(if (pt.reference = 'UNIT', pp.barcode_ean, null))"),
-            'pack_unit_barcode_upc' => new Expression("MAX(if (pt.reference = 'UNIT', pp.barcode_upc, null))"),
-            'pack_unit_volume' => new Expression("MAX(if (pt.reference = 'UNIT', pp.volume, null))"),
-            'pack_unit_weight' => new Expression("MAX(if (pt.reference = 'UNIT', pp.weight, null))"),
-            'pack_unit_length' => new Expression("MAX(if (pt.reference = 'UNIT', pp.length, null))"),
-            'pack_unit_width' => new Expression("MAX(if (pt.reference = 'UNIT', pp.width, null))"),
-            'pack_unit_height' => new Expression("MAX(if (pt.reference = 'UNIT', pp.height, null))"),
-            'pack_carton_qty' => new Expression("MAX(if (pt.reference = 'CARTON', pp.quantity, null))"),
-            'pack_carton_barcode_ean' => new Expression("MAX(if (pt.reference = 'CARTON', pp.barcode_ean, null))"),
-            'pack_carton_barcode_upc' => new Expression("MAX(if (pt.reference = 'CARTON', pp.barcode_upc, null))"),
-            'pack_carton_volume' => new Expression("MAX(if (pt.reference = 'CARTON', pp.volume, null))"),
-            'pack_carton_weight' => new Expression("MAX(if (pt.reference = 'CARTON', pp.weight, null))"),
-            'pack_carton_length' => new Expression("MAX(if (pt.reference = 'CARTON', pp.length, null))"),
-            'pack_carton_width' => new Expression("MAX(if (pt.reference = 'CARTON', pp.width, null))"),
-            'pack_carton_height' => new Expression("MAX(if (pt.reference = 'CARTON', pp.height, null))"),
-            'pack_mastercarton_qty' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.quantity, null))"),
-            'pack_mastercarton_barcode_ean' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.barcode_ean, null))"),
-            'pack_mastercarton_barcode_upc' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.barcode_upc, null))"),
-            'pack_mastercarton_volume' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.volume, null))"),
-            'pack_mastercarton_weight' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.weight, null))"),
-            'pack_mastercarton_length' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.length, null))"),
-            'pack_mastercarton_width' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.width, null))"),
-            'pack_mastercarton_height' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.height, null))"),
-                )
-                , true);
-        $packSelect->group(array('product_id'));
-        //echo $packSelect->getSqlString($this->adapter->getPlatform());
-        //die();
+        $disable_packaging = (isset($params['disable_packaging']) && $params['disable_packaging'] == true);
+        
+        if (!$disable_packaging) {
+        
+        
+            // Step 1: Inner select packaging selection
+            $packSelect = new Select();
+            $packSelect->from(array('pp' => 'product_packaging'), array())
+                    ->join(array('pt' => 'packaging_type'), new Expression("pp.type_id = pt.type_id"), array());
+            $packSelect->columns(
+                    array(
+                'product_id' => new Expression('pp.product_id'),
+                'pack_unit_qty' => new Expression("MAX(if (pt.reference = 'UNIT', pp.quantity, null))"),
+                'pack_unit_barcode_ean' => new Expression("MAX(if (pt.reference = 'UNIT', pp.barcode_ean, null))"),
+                'pack_unit_barcode_upc' => new Expression("MAX(if (pt.reference = 'UNIT', pp.barcode_upc, null))"),
+                'pack_unit_volume' => new Expression("MAX(if (pt.reference = 'UNIT', pp.volume, null))"),
+                'pack_unit_weight' => new Expression("MAX(if (pt.reference = 'UNIT', pp.weight, null))"),
+                'pack_unit_length' => new Expression("MAX(if (pt.reference = 'UNIT', pp.length, null))"),
+                'pack_unit_width' => new Expression("MAX(if (pt.reference = 'UNIT', pp.width, null))"),
+                'pack_unit_height' => new Expression("MAX(if (pt.reference = 'UNIT', pp.height, null))"),
+                'pack_carton_qty' => new Expression("MAX(if (pt.reference = 'CARTON', pp.quantity, null))"),
+                'pack_carton_barcode_ean' => new Expression("MAX(if (pt.reference = 'CARTON', pp.barcode_ean, null))"),
+                'pack_carton_barcode_upc' => new Expression("MAX(if (pt.reference = 'CARTON', pp.barcode_upc, null))"),
+                'pack_carton_volume' => new Expression("MAX(if (pt.reference = 'CARTON', pp.volume, null))"),
+                'pack_carton_weight' => new Expression("MAX(if (pt.reference = 'CARTON', pp.weight, null))"),
+                'pack_carton_length' => new Expression("MAX(if (pt.reference = 'CARTON', pp.length, null))"),
+                'pack_carton_width' => new Expression("MAX(if (pt.reference = 'CARTON', pp.width, null))"),
+                'pack_carton_height' => new Expression("MAX(if (pt.reference = 'CARTON', pp.height, null))"),
+                'pack_mastercarton_qty' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.quantity, null))"),
+                'pack_mastercarton_barcode_ean' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.barcode_ean, null))"),
+                'pack_mastercarton_barcode_upc' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.barcode_upc, null))"),
+                'pack_mastercarton_volume' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.volume, null))"),
+                'pack_mastercarton_weight' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.weight, null))"),
+                'pack_mastercarton_length' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.length, null))"),
+                'pack_mastercarton_width' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.width, null))"),
+                'pack_mastercarton_height' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.height, null))"),
+                    )
+                    , true);
+            $packSelect->group(array('product_id'));
+            //echo $packSelect->getSqlString($this->adapter->getPlatform());
+            //die();
+        }
 
 
         $select->from(array('p' => 'product'), array())
@@ -103,9 +108,12 @@ class ProductCatalogService extends AbstractService {
                 ->join(array('ps' => 'product_stock'), new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'), array(), $select::JOIN_INNER)
                 ->join(array('pst' => 'product_status'), new Expression('pst.status_id = ppl.status_id'), array(), $select::JOIN_LEFT)
                 ->join(array('pmed' => 'product_media'), new Expression("pmed.product_id = p.product_id and pmed.flag_primary=1"), array(), $select::JOIN_LEFT)
-                ->join(array('pmt' => 'product_media_type'), new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), array(), $select::JOIN_LEFT)
-                ->join(array('packs' => $packSelect), new Expression("packs.product_id = p.product_id"), array(), $select::JOIN_LEFT);
-
+                ->join(array('pmt' => 'product_media_type'), new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), array(), $select::JOIN_LEFT);
+        
+        if (!$disable_packaging) {
+            $select->join(array('packs' => $packSelect), new Expression("packs.product_id = p.product_id"), array(), $select::JOIN_LEFT);
+        }
+                
         $max_stock = 30;
 
         /*
@@ -171,35 +179,41 @@ class ProductCatalogService extends AbstractService {
             'pack_qty_carton' => new Expression('p.pack_qty_carton'),
             'pack_qty_master_carton' => new Expression('p.pack_qty_master_carton'),
             'picture_media_id' => new Expression('pmed.media_id'),
-            // 
-            'pack_unit_volume' => new Expression("packs.pack_unit_volume"),
-            'pack_unit_weight' => new Expression("packs.pack_unit_weight"),
-            'pack_unit_length' => new Expression("packs.pack_unit_length"),
-            'pack_unit_width' => new Expression("packs.pack_unit_width"),
-            'pack_unit_height' => new Expression("packs.pack_unit_height"),
-            //'pack_box_qty'           => new Expression("packs.pack_box_qty"),
-            'pack_carton_barcode_ean' => new Expression("packs.pack_carton_barcode_ean"),
-            'pack_carton_barcode_upc' => new Expression("packs.pack_carton_barcode_upc"),
-            'pack_carton_volume' => new Expression("packs.pack_carton_volume"),
-            'pack_carton_weight' => new Expression("packs.pack_carton_weight"),
-            'pack_carton_length' => new Expression("packs.pack_carton_length"),
-            'pack_carton_width' => new Expression("packs.pack_carton_width"),
-            'pack_carton_height' => new Expression("packs.pack_carton_height"),
-            //'pack_mastercarton_qty'  => new Expression("packs.pack_mastercarton_qty"),
-            'pack_mastercarton_barcode_ean' => new Expression("packs.pack_mastercarton_barcode_ean"),
-            'pack_mastercarton_barcode_upc' => new Expression("packs.pack_mastercarton_barcode_upc"),
-            'pack_mastercarton_volume' => new Expression("packs.pack_mastercarton_volume"),
-            'pack_mastercarton_weight' => new Expression("packs.pack_mastercarton_weight"),
-            'pack_mastercarton_length' => new Expression("packs.pack_mastercarton_length"),
-            'pack_mastercarton_width' => new Expression("packs.pack_mastercarton_width"),
-            'pack_mastercarton_height' => new Expression("packs.pack_mastercarton_height"),
+        );
+        if (!$disable_packaging) {
+            $columns = array_merge($columns, array(
+                'pack_unit_volume' => new Expression("packs.pack_unit_volume"),
+                'pack_unit_weight' => new Expression("packs.pack_unit_weight"),
+                'pack_unit_length' => new Expression("packs.pack_unit_length"),
+                'pack_unit_width' => new Expression("packs.pack_unit_width"),
+                'pack_unit_height' => new Expression("packs.pack_unit_height"),
+                //'pack_box_qty'           => new Expression("packs.pack_box_qty"),
+                'pack_carton_barcode_ean' => new Expression("packs.pack_carton_barcode_ean"),
+                'pack_carton_barcode_upc' => new Expression("packs.pack_carton_barcode_upc"),
+                'pack_carton_volume' => new Expression("packs.pack_carton_volume"),
+                'pack_carton_weight' => new Expression("packs.pack_carton_weight"),
+                'pack_carton_length' => new Expression("packs.pack_carton_length"),
+                'pack_carton_width' => new Expression("packs.pack_carton_width"),
+                'pack_carton_height' => new Expression("packs.pack_carton_height"),
+                //'pack_mastercarton_qty'  => new Expression("packs.pack_mastercarton_qty"),
+                'pack_mastercarton_barcode_ean' => new Expression("packs.pack_mastercarton_barcode_ean"),
+                'pack_mastercarton_barcode_upc' => new Expression("packs.pack_mastercarton_barcode_upc"),
+                'pack_mastercarton_volume' => new Expression("packs.pack_mastercarton_volume"),
+                'pack_mastercarton_weight' => new Expression("packs.pack_mastercarton_weight"),
+                'pack_mastercarton_length' => new Expression("packs.pack_mastercarton_length"),
+                'pack_mastercarton_width' => new Expression("packs.pack_mastercarton_width"),
+                'pack_mastercarton_height' => new Expression("packs.pack_mastercarton_height")
+            ));
+        }
+        
+        $columns = array_merge($columns, array(
             'category_breadcrumb' => new Expression('if (pc18.breadcrumb is null, pc.breadcrumb, pc18.breadcrumb)'),
             'flag_till_end_of_stock' => new Expression('pst.flag_till_end_of_stock'),
             'flag_end_of_lifecycle' => new Expression('pst.flag_end_of_lifecycle'),
             'available_at' => new Expression('COALESCE(ppl.available_at, p.available_at)'),
             'status_reference' => new Expression('pst.reference'),
             'currency_symbol' => new Expression('c.symbol')
-        );
+        ));
 
         $select->columns($columns, true);
         /*

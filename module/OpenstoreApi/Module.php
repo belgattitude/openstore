@@ -68,6 +68,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
                 $vars = $e->getResult();
             }
 
+            
             switch ($format) {
 
                 case 'json' :
@@ -101,8 +102,10 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
 
                         LibXL::setDefaultLicense(array('name' => $lic['license_name'], 'key' => $lic['license_key']));
                         //LibXLWriter::setDefaultLicense($lic['license_name'], $lic['license_key']);
+
                         $libxlWriter = new LibXLWriter($vars);
                         $libxlWriter->send();
+                        
                     } else {
                         throw new \Exception('Response must include a valid StoreInterface object');
                     }
@@ -147,7 +150,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
 
 
                 default:
-                    throw new \Exception('error format not supported');
+                    
+                    throw new \Exception("Error '$format' format not supported");
             }
         }
     }

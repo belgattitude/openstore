@@ -78,6 +78,33 @@ module.exports = function(grunt) {
 				 'dist/css/bootstrap-default.min.css': [ 'vendor/bootstrap/dist/css/bootstrap.min.css' ]
 			  }
 			},
+			"bootstrap-amelia": {
+			  files: {
+				 'dist/css/bootstrap-amelia.min.css': [ 'vendor/bootswatch/amelia/bootstrap.min.css' ]
+			  }
+			},
+			"bootstrap-cosmo": {
+			  files: {
+				 'dist/css/bootstrap-cosmo.min.css': [ 'vendor/bootswatch/cosmo/bootstrap.min.css' ]
+			  }
+			},
+			"bootstrap-spacelab": {
+			  files: {
+				 'dist/css/bootstrap-spacelab.min.css': [ 'vendor/bootswatch/spacelab/bootstrap.min.css' ]
+			  }
+			},
+			"bootstrap-sandstone": {
+			  files: {
+				 'dist/css/bootstrap-sandstone.min.css': [ 'vendor/bootswatch/sandstone/bootstrap.min.css' ]
+			  }
+			},
+			"bootstrap-lumen": {
+			  files: {
+				 'dist/css/bootstrap-lumen.min.css': [ 'vendor/bootswatch/lumen/bootstrap.min.css' ]
+			  }
+			},
+
+
 			"bootstrap-united": {
 			  files: {
 				 'dist/css/bootstrap-united.min.css': [ 'vendor/bootswatch/united/bootstrap.min.css' ]
