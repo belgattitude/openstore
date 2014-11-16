@@ -1426,10 +1426,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
              null as model_id,
              p.product_id,
              null as fixed_price,
-             r.remise1 as discount_1,
-             r.remise2 as discount_2,
-             r.remise3 as discount_3,
-             r.remise4 as discount_4,
+             COALESCE(r.remise1, 0) as discount_1,
+             COALESCE(r.remise2, 0) as discount_2,
+             COALESCE(r.remise3, 0) as discount_3,
+             COALESCE(r.remise4, 0) as discount_4,
              null as valid_from,
              null as valid_till,
              CONCAT_WS('&',
@@ -1456,10 +1456,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             where (pl.flag_enable_discount_condition = 1 or pl.flag_enable_discount_condition is null)
             order by cg.group_id, c.customer_id, pl.pricelist_id, pb.brand_id, pg.group_id, p.product_id
             on duplicate key update
-                discount_1 = r.remise1,
-                discount_2 = r.remise2,
-                discount_3 = r.remise3,
-                discount_4 = r.remise4,
+                discount_1 = COALESCE(r.remise1, 0),
+                discount_2 = COALESCE(r.remise2, 0),
+                discount_3 = COALESCE(r.remise3, 0),
+                discount_4 = COALESCE(r.remise4, 0),
                 fixed_price = null, -- not supported yet
                 legacy_synchro_at = '{$this->legacy_synchro_at}'
         ";
