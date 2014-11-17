@@ -85,6 +85,11 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
     protected $legacy_synchro_at;
 
+    protected $replace_dash_by_newline = true;
+    
+    protected $default_language;
+    protected $default_language_sfx;
+    
     /**
      *
      * @param \Doctrine\ORM\EntityManager $em            
@@ -112,6 +117,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->akilia2Db = $config['db_akilia2'];
         $this->akilia1Db = $config['db_akilia1'];
         $this->akilia1lang = $config['akilia1_language_map'];
+        $this->default_language = $config['default_language'];
+        $this->default_language_sfx = $this->akilia1lang[$this->default_language];
         $this->configuration = $config;
         return $this;
     }
@@ -811,15 +818,19 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $db = $this->openstoreDb;
         $root_reference = 'ROOT';
         
+        $default_lsfx = $this->default_language_sfx;        
+        
         $select = "
             select upper(c.id_categorie) as id_categorie, 
                 substring( upper(c.id_categorie), 1, (length( c.id_categorie ) -2 )) AS parent_categorie, 
                 c.sort_index, 
-                CONVERT(c.libelle_1 USING utf8) as libelle_1,
-                CONVERT(c.libelle_2 USING utf8) as libelle_2,
-                CONVERT(c.libelle_3 USING utf8) as libelle_3,
-                CONVERT(c.libelle_4 USING utf8) as libelle_4,
-                CONVERT(c.libelle_5 USING utf8) as libelle_5,
+                CONVERT(IF(c.libelle_1 is null OR c.libelle_1 = '', c.libelle$default_lsfx, c.libelle_1) USING utf8) as libelle_1,
+                CONVERT(IF(c.libelle_2 is null OR c.libelle_2 = '', c.libelle$default_lsfx, c.libelle_2) USING utf8) as libelle_2,
+                CONVERT(IF(c.libelle_3 is null OR c.libelle_3 = '', c.libelle$default_lsfx, c.libelle_3) USING utf8) as libelle_3,
+                CONVERT(IF(c.libelle_4 is null OR c.libelle_4 = '', c.libelle$default_lsfx, c.libelle_4) USING utf8) as libelle_4,
+                CONVERT(IF(c.libelle_5 is null OR c.libelle_5 = '', c.libelle$default_lsfx, c.libelle_5) USING utf8) as libelle_5,
+                CONVERT(IF(c.libelle_6 is null OR c.libelle_6 = '', c.libelle$default_lsfx, c.libelle_6) USING utf8) as libelle_6,
+                CONVERT(IF(c.libelle_7 is null OR c.libelle_7 = '', c.libelle$default_lsfx, c.libelle_7) USING utf8) as libelle_7, 
                 c.date_synchro,
                 category.category_id as category_id,
                                 c.alt_mapping_id,
@@ -847,6 +858,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             $this->em->flush();
         }
         
+        
+        
         foreach ($rows as $row) {
             
             if ($row['category_id'] === null) {
@@ -861,7 +874,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 $pc->setParent($rootCategory);
             }
             
-            $pc->setTitle($row['libelle_1']);
+            $pc->setTitle($row["libelle$default_lsfx"]);
             
             $pc->setReference($row['id_categorie']);
             $pc->setSortIndex($row['sort_index']);
@@ -896,12 +909,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                   select
                     pc.category_id as category_id, 
                     '$lang' as lang,
-                    c.libelle$sfx as title,
+                    IF(c.libelle$sfx = '' OR c.libelle$sfx is null, c.libelle$default_lsfx, c.libelle$sfx) as title,
                     '{$this->legacy_synchro_at}'    
                   from $akilia1db.categories c
                   inner join $db.product_category pc on pc.legacy_mapping = c.id_categorie     
                  on duplicate key update
-                  title = c.libelle$sfx,
+                  title = IF(c.libelle$sfx = '' OR c.libelle$sfx is null, c.libelle$default_lsfx, c.libelle$sfx),
                   legacy_synchro_at = '{$this->legacy_synchro_at}'      
             ";
             
@@ -976,6 +989,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $akilia1Db = $this->akilia1Db;
         $db = $this->openstoreDb;
         
+        $default_lsfx = $this->default_language_sfx;
+        
         $use_upper = false;
         if ($use_upper) {
             $group_ref_clause = "UPPER(TRIM(f.id_famille))";
@@ -987,13 +1002,13 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 (group_id, reference, title, legacy_mapping, legacy_synchro_at)
                 select null, 
                        $group_ref_clause, 
-                       f.libelle_1 as title, 
+                       f.libelle$default_lsfx as title, 
                        $group_ref_clause as legacy_mapping, 
                        '{$this->legacy_synchro_at}'
             from $akilia1Db.famille f
             on duplicate key update
                 reference = $group_ref_clause,
-                title = f.libelle_1, 
+                title = f.libelle$default_lsfx, 
                 legacy_synchro_at = '{$this->legacy_synchro_at}'";
         $this->executeSQL("Replace product groups", $replace);
         
@@ -1150,6 +1165,18 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $akilia2db = $this->akilia2Db;
         $db = $this->openstoreDb;
         
+        $default_lsfx = $this->default_language_sfx;
+
+        $description = "if(trim(i.desc$default_lsfx) = '', null, trim(i.desc$default_lsfx))";
+        
+        $description = "REPLACE($description, ' –', '\n-')";
+        $description = "REPLACE($description, '–', '-')";
+            
+            
+        if ($this->replace_dash_by_newline) {
+            $description = "REPLACE($description, ' - ', '\n- ')";
+        }        
+        
         $replace = " insert
                      into $db.product
                     (product_id,
@@ -1159,7 +1186,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     category_id,
                     unit_id,
                     type_id,
-                                        status_id,
+                    
+                    status_id,
                     parent_id,
                     reference, 
                     display_reference,
@@ -1209,10 +1237,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                                         upper(TRIM(a.reference)) as display_reference,
                                         get_searchable_reference(a.reference) as search_reference,                                        
                     null as slug,
-                    if(trim(i.libelle_1) = '', null, trim(i.libelle_1)) as title,
-                    if(trim(a.libelle_1) = '', null, trim(a.libelle_1)) as invoice_title,
-                    if(trim(i.desc_1) = '', null, trim(i.desc_1)) as description,
-                    if(trim(i.couleur_1) = '', null, trim(i.couleur_1)) as characteristic,
+                    if(trim(i.libelle$default_lsfx) = '', null, trim(i.libelle$default_lsfx)) as title,
+                    if(trim(a.libelle$default_lsfx) = '', null, trim(a.libelle$default_lsfx)) as invoice_title,
+                    $description as description,
+                    if(trim(i.couleur$default_lsfx) = '', null, trim(i.couleur$default_lsfx)) as characteristic,
                     
                     if(a.flag_archive = 1, 0, 1) as flag_active,
                     null as icon_class,
@@ -1263,10 +1291,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         slug = null,
                         sort_index = a.code_tri_marque_famille,
                         type_id = COALESCE(pt.type_id, {$this->default_product_type_id}),
-                        title = if(trim(i.libelle_1) = '', null, trim(i.libelle_1)),
-                        invoice_title = if(trim(a.libelle_1) = '', null, trim(a.libelle_1)),
-                        description = if(trim(i.desc_1) = '', null, trim(i.desc_1)),
-                        characteristic = if(trim(i.couleur_1) = '', null, trim(i.couleur_1)),
+                        title = if(trim(i.libelle$default_lsfx) = '', null, trim(i.libelle$default_lsfx)),
+                        invoice_title = if(trim(a.libelle$default_lsfx) = '', null, trim(a.libelle$default_lsfx)),
+                        description = $description,
+                        characteristic = if(trim(i.couleur$default_lsfx) = '', null, trim(i.couleur$default_lsfx)),
                         flag_active = if(a.flag_archive = 1, 0, 1),
                         icon_class = null,
                         volume = a.volume,
@@ -1339,6 +1367,15 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 ";
                 $characteristic = "if (trim(i.couleur$sfx) = '', null, trim(i.couleur$sfx))";
             }
+            
+            $description = "REPLACE($description, ' –', '\n-')";
+            $description = "REPLACE($description, '–', '-')";
+            
+            
+            if ($this->replace_dash_by_newline) {
+                $description = "REPLACE($description, ' - ', '\n- ')";
+            }
+            
             
             $replace = "insert into product_translation 
                  ( product_id,

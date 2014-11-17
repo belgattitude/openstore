@@ -34,6 +34,13 @@ return array(
                 'de' => '_4',
                 'en' => '_3',
             ),
+            /**
+             * Default language of substitution
+             * when a description or title does
+             * not have a translation
+             */
+            'default_language' => 'en',
+            
             'options' => array(
                     /*
                     'product_stock' =>

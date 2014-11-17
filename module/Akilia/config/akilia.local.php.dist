@@ -1,68 +1,76 @@
 <?php
+
 return array(
-	/**
-	 * Configuration for Akilia
-	 */
-	'akilia' => array(
-		
-		/**
-		 * Synchronizer settings
-		 */
-		'synchronizer' => array(
-			/**
-			 * Akilia2 database name
-			 */
-			'db_akilia2' => '',
-			
-			/**
-			 * Akilia1 database name
-			 */
-			'db_akilia1' => '',
-			
-			/**
-			 * Intelaccess database name
-			 */
-			'db_intelaccess' => '',
-			
-			/**
-			 * Map of languages between lang code and akilia1 column suffixes
-			 */
-			'akilia1_language_map' => 	array(
-				'fr' => '_1',
-				'nl' => '_2',
-				'de' => '_4',
-				'en' => '_3',
-			),
-			'options' => array(
-					/*
-					'product_stock' =>
-				
-						array('stocks' =>
-								array(
-									'BELGIUM' => array('akilia1db' => 'emd00', 'pricelist' => 'BE'),
-									//'USA'	  => array('akilia1db' => 'emd01', 'pricelist' => 'US'),
-									//'FOSHAN'  => array('akilia1db' => 'emd04', 'pricelist' => '1F'),
-								)
-							),
-					'product_price' => array(
+    /**
+     * Configuration for Akilia
+     */
+    'akilia' => array(
+        
+        /**
+         * Synchronizer settings
+         */
+        'synchronizer' => array(
+            /**
+             * Akilia2 database name
+             */
+            'db_akilia2' => '',
+            
+            /**
+             * Akilia1 database name
+             */
+            'db_akilia1' => '',
+            
+            /**
+             * Intelaccess database name
+             */
+            'db_intelaccess' => '',
+            
+            /**
+             * Map of languages between lang code and akilia1 column suffixes
+             */
+            'akilia1_language_map' =>     array(
+                'fr' => '_1',
+                'nl' => '_2',
+                'de' => '_4',
+                'en' => '_3',
+            ),
+            /**
+             * Default language of substitution
+             * when a description or title does
+             * not have a translation
+             */
+            'default_language' => 'en',
+            
+            'options' => array(
+                    /*
+                    'product_stock' =>
+                
+                        array('stocks' =>
+                                array(
+                                    'BELGIUM' => array('akilia1db' => 'emd00', 'pricelist' => 'BE'),
+                                    //'USA'      => array('akilia1db' => 'emd01', 'pricelist' => 'US'),
+                                    //'FOSHAN'  => array('akilia1db' => 'emd04', 'pricelist' => '1F'),
+                                )
+                            ),
+                    'product_price' => array(
 
-					)
-					 
-					 */
+                    )
+                     
+                     */
 
-			),
-			
-			
-		),
-		'product_picture_path' => '/tmp/product/picture/directory',
-		'archive_product_picture_path' => '/rmp/product/picture/archive',
-		'checker' => array(
-			'pricelists' => array(
-				'BE' => array('database' => 'emd00'), 
-				//'GB' => array('database' => 'emd02'),
-			)	
-		)		
-		
-		
-	),
+            ),
+            
+            
+        ),
+        'product_picture_path' => '/tmp/product/picture/directory',
+        'archive_product_picture_path' => '/rmp/product/picture/archive',
+        'checker' => array(
+            'pricelists' => array(
+                'BE' => array('database' => 'emd00'), 
+                //'GB' => array('database' => 'emd02'),
+            )    
+        )        
+        
+        
+    ),
 );

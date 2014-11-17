@@ -140,6 +140,7 @@ Fcts::setEscaper($escaper);
         <ItemDesc><?= Fcts::escapeXMLText(trim($line->product_title)); ?></ItemDesc>
         <ItemDescLong><![CDATA[<?php
                 $desc = trim($line->product_title . ' ' . $line->product_description . ' ' . $line->product_characteristic);
+                $desc = str_replace("\n", ' ', $desc);
                 echo preg_replace('/(\ ){2,}/', ' ', $desc); ?>]]>
         </ItemDescLong>      
         <?php Fcts::printXMLComment('MSRP/Retail Price'); ?>
