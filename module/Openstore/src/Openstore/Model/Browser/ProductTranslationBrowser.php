@@ -10,7 +10,7 @@ use Soluble\Db\Sql\Select;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
 
-class ProductBrowser extends AbstractBrowser {
+class ProductTranslationBrowser extends AbstractBrowser {
 
     /**
      * @return array
@@ -18,7 +18,7 @@ class ProductBrowser extends AbstractBrowser {
     function getSearchableParams() {
         return array(
             'language' => array('required' => true),
-            'pricelist' => array('required' => true),
+            'pricelists' => array('required' => true),
             'query' => array('required' => false),
             'brands' => array('required' => false),
             'categories' => array('required' => false),
@@ -31,6 +31,7 @@ class ProductBrowser extends AbstractBrowser {
      * @return Select
      */
     function getSelect() {
+        
         $params = $this->getSearchParams();
 
         $lang = $params->get('language');
@@ -40,85 +41,81 @@ class ProductBrowser extends AbstractBrowser {
         $select = new Select();
         $select->setDbAdapter($this->adapter);
 
+        
+        $lang = "en";
+        $languages  = ['en', 'fr', 'nl', 'de', 'it', 'es', 'zh'];
+        $pricelists = ['BE', 'FR']; 
+
+        
+        $lang_clause = '(' . join(',', array_map(function($lang) { return "'" . $lang . "'"; }, $languages)) . ")";
+        
+        foreach($languages as $lang) {
+            $inner_columns["invoice_title_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.invoice_title, null))");
+            $inner_columns["title_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.title, null))");
+            $inner_columns["description_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.description, null))");
+            $inner_columns["characteristic_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.characteristic, null))");
+            $inner_columns["created_at_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.created_at, null))");
+            $inner_columns["updated_at_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.updated_at, null))");
+        }
+        
         $select->from(array('p' => 'product'), array())
-                ->join(array('p18' => 'product_translation'), new Expression("p18.product_id = p.product_id and p18.lang = '$lang'"), array(), $select::JOIN_LEFT)
-                ->join(array('psi' => 'product_search'), new Expression("psi.product_id = p.product_id and psi.lang = '$lang'"), array(), $select::JOIN_LEFT)
-                ->join(array('ppl' => 'product_pricelist'), new Expression('ppl.product_id = p.product_id'), array())
-                ->join(array('pl' => 'pricelist'), new Expression('pl.pricelist_id = ppl.pricelist_id'), array())
-                ->join(array('pt' => 'product_type'), new Expression('p.type_id = pt.type_id'), array(), $select::JOIN_LEFT)
-                ->join(array('c' => 'currency'), new Expression('c.currency_id = pl.currency_id'), array(), $select::JOIN_LEFT)
-                ->join(array('pu' => 'product_unit'), new Expression('pu.unit_id = p.unit_id'), array(), $select::JOIN_LEFT)
-                ->join(array('ps' => 'product_stock'), new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'), array())
+                //->join(['tr' => $innerSelect], 'tr.product_id = p.product_id')
+                ->join(['p18' => 'product_translation'], 
+                        new Expression("p18.product_id = p.product_id and p18.lang in $lang_clause"),
+                        array(), $select::JOIN_LEFT)
+                ->join(['p2' => 'product'], 
+                        new Expression('p2.product_id = p.parent_id'),
+                        array(), $select::JOIN_LEFT)
                 ->join(array('pb' => 'product_brand'), new Expression('pb.brand_id = p.brand_id'), array())
                 ->join(array('pg' => 'product_group'), new Expression('pg.group_id = p.group_id'), array(), $select::JOIN_LEFT)
-                ->join(array('pst' => 'product_status'), new Expression('p.status_id = pst.status_id'), array(), $select::JOIN_LEFT)
                 ->join(array('pc' => 'product_category'), new Expression('pc.category_id = p.category_id'), array())
-                ->join(array('pc18' => 'product_category_translation'), new Expression("pc.category_id = pc18.category_id and pc18.lang = '$lang'"), array(), $select::JOIN_LEFT)
+                ->join(array('pc18' => 'product_category_translation'), new Expression("pc.category_id = pc18.category_id and pc18.lang = '$lang'"), array(), $select::JOIN_LEFT)                
+                ->join(array('psi' => 'product_search'), 
+                        new Expression("psi.product_id = p.product_id and psi.lang = '$lang'"), 
+                        array(), 
+                        $select::JOIN_LEFT)
+                
+                ->join(array('pt' => 'product_type'), new Expression('p.type_id = pt.type_id'), array(), $select::JOIN_LEFT)
+                //->join(array('c' => 'currency'), new Expression('c.currency_id = pl.currency_id'), array(), $select::JOIN_LEFT)
+                //->join(array('pu' => 'product_unit'), new Expression('pu.unit_id = p.unit_id'), array(), $select::JOIN_LEFT)
+                //->join(array('ps' => 'product_stock'), new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'), array())
+                ->join(array('pst' => 'product_status'), new Expression('pst.status_id = p.status_id'), array(), $select::JOIN_LEFT)
                 ->join(array('pm' => 'product_media'), new Expression("pm.product_id = p.product_id and pm.flag_primary=1"), array(), $select::JOIN_LEFT)
-                ->join(array('pmt' => 'product_media_type'), new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), array(), $select::JOIN_LEFT)
-                ->where('p.flag_active = 1')
-                ->where('ppl.flag_active = 1')
-                ->where("pl.reference = '$pricelist'");
-
-        $this->assignFilters($select);
-
-
-
-
-        $now = new \DateTime();
-        $flag_new_min_date = $now->sub(new \DateInterval('P180D'))->format('Y-m-d'); // 180 days
+                ->join(array('pmt' => 'product_media_type'), new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), array(), $select::JOIN_LEFT);
         
         
-
-        //$flag_new_min_date = date('2013-11')
-        //$flag_new_min_date = ProductFilter::getParam('flag_new_minimum_date');
-
-        if ($this->columns !== null && is_array($this->columns)) {
-            $select->columns($this->columns);
-        } else {
-
-            $select->columns(array(
-                'product_id' => new Expression('p.product_id'),
+        
+        $select->where('p.flag_active = 1');
                 
-                'status_id' => new Expression('pst.status_id'),
-                'status_reference' => new Expression('pst.reference'),
-                'pricelist_reference' => new Expression('pl.reference'),
-                'type_id'       => new Expression('p.type_id'),
-                
-                'reference' => new Expression('p.reference'),
-                'display_reference' => new Expression('COALESCE(p.display_reference, p.reference)'),
-                'brand_id' => new Expression('p.brand_id'),
-                'brand_reference' => new Expression('pb.reference'),
-                'brand_title' => new Expression('pb.title'),
-                'group_id' => new Expression('pg.group_id'),                
-                'group_reference' => new Expression('pg.reference'),                
-                'category_id' => new Expression('pc.category_id'),
-                'category_reference' => new Expression('pc.reference'),
-                'category_title' => new Expression('COALESCE(pc18.title, pc.title)'),
-                'title' => new Expression('COALESCE(p18.title, p.title)'),
-                'invoice_title' => new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
-                'description' => new Expression('COALESCE(p18.description, p.description)'),
-                'characteristic' => new Expression('COALESCE(p18.characteristic, p.characteristic)'),
-                'price' => new Expression('ppl.price'),
-                'list_price' => new Expression('ppl.list_price'),
-                'flag_new' => new Expression("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.available_at, p.available_at))"),
-                'discount_1' => new Expression('ppl.discount_1'),
-                'discount_2' => new Expression('ppl.discount_2'),
-                'discount_3' => new Expression('ppl.discount_3'),
-                'discount_4' => new Expression('ppl.discount_4'),
-                'is_promotional' => new Expression('ppl.is_promotional'),
-                'is_bestseller' => new Expression('ppl.is_bestseller'),
-                'is_bestvalue' => new Expression('ppl.is_bestvalue'),
-                'is_hot' => new Expression('ppl.is_hot'),
-                'available_stock' => new Expression('ps.available_stock'),
-                'theoretical_stock' => new Expression('ps.theoretical_stock'),
-                'currency_reference' => new Expression('c.reference'),
-                'unit_reference' => new Expression('pu.reference'),
-                'type_reference' => new Expression('pt.reference'),
-                'picture_media_id' => new Expression('pm.media_id'),
-                    ), true);
+        // Adding languages and pricelists selections
+        if (count($pricelists) > 0) {
+            $select->join(array('ppl' => 'product_pricelist'), new Expression('ppl.product_id = p.product_id'), array())
+                   ->join(array('pl' => 'pricelist'), new Expression('pl.pricelist_id = ppl.pricelist_id'), array());
+            $select->where(array('pl.reference' => $pricelists));
+            $select->where('ppl.flag_active = 1');
         }
 
+
+        $columns = [
+                'product_id' => new Expression('p.product_id'),
+                'reference' => new Expression('p.reference'),
+                'parent_reference' => new Expression('p2.reference'),
+                'display_reference' => new Expression('COALESCE(p.display_reference, p.reference)'),
+                'brand_reference' => new Expression('pb.reference'),
+                'brand_title' => new Expression('pb.title'),
+                'group_reference' => new Expression('pg.reference'),
+                'category_reference' => new Expression('pc.reference'),
+                'category_title' => new Expression('COALESCE(pc18.title, pc.title)'),
+                'category_breadcrumb' => new Expression('COALESCE(pc18.breadcrumb, pc.breadcrumb)'),
+                'status_reference' => new Expression('pst.reference'),
+                'flag_end_of_lifecycle' => new Expression('pst.flag_end_of_lifecycle'),
+                'flag_till_end_of_stock' => new Expression('pst.flag_till_end_of_stock'),
+                'picture_media_id' => new Expression('pm.media_id')
+        ];
+        
+        $select->columns(array_merge($columns, $inner_columns), true);
+        $select->group(array_keys($columns));
+        
         $product_id = $params->get('id');
         if ($product_id != '') {
             $select->where("p.product_id = $product_id");
@@ -126,26 +123,19 @@ class ProductBrowser extends AbstractBrowser {
 
         $brands = $params->get('brands');
         if (count($brands) > 0) {
-            $brand_clauses = array();
-            foreach ($brands as $brand_reference) {
-                $brand_clauses[] = "pb.reference = '$brand_reference'";
-            }
-            $select->where('(' . join(' OR ', $brand_clauses) . ')');
+            $select->where(['pb.reference' => $brands]);
         }
 
         $categories = $params->get('categories');
         if ($categories !== null && count($categories) > 0) {
-
             $sql = new Sql($this->adapter);
             $category_clauses = array();
-
             foreach ($categories as $category_reference) {
                 $spb = new Select();
                 $spb->from('product_category')
                         ->columns(array('category_id', 'lft', 'rgt'))
                         ->where(array('reference' => $category_reference))
                         ->limit(1);
-
                 $sql_string = $sql->getSqlStringForSqlObject($spb);
                 $results = $this->adapter->query($sql_string, Adapter::QUERY_MODE_EXECUTE)->toArray();
                 if (count($results) > 0) {
@@ -160,7 +150,6 @@ class ProductBrowser extends AbstractBrowser {
         if (($query = trim($params->get('query'))) != "") {
 
             $platform = $this->adapter->getPlatform();
-
 
             $quoted = $platform->quoteValue($query);
 

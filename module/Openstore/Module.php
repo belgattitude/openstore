@@ -184,6 +184,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
                 'Model\Pricelist' => 'Openstore\Model\Pricelist',
                 'Model\Customer' => 'Openstore\Model\Customer',
                 'Model\DiscountCondition' => 'Openstore\Model\DiscountCondition',
+                'Model\ProductTranslation' => 'Openstore\Model\ProductTranslation',
                 
                 // Various renderers
                 'Store\Renderer\CustomerDiscount' => 'Openstore\Store\Renderer\CustomerDiscountRenderer',
