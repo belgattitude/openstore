@@ -67,6 +67,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
      *
      * @var string
      */
+    protected $intelaccessDb;    
+    
+    /**
+     *
+     * @var string
+     */
     protected $akilia1Db;
 
     /**
@@ -116,6 +122,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     {
         $this->akilia2Db = $config['db_akilia2'];
         $this->akilia1Db = $config['db_akilia1'];
+        $this->intelaccessDb = $config['db_intelaccess'];
         $this->akilia1lang = $config['akilia1_language_map'];
         $this->default_language = $config['default_language'];
         $this->default_language_sfx = $this->akilia1lang[$this->default_language];
@@ -1348,10 +1355,13 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     {
         $akilia1db = $this->akilia1Db;
         $db = $this->openstoreDb;
+        $intelaccessDb = $this->intelaccessDb;
         
         $langs = $this->akilia1lang;
         
         foreach ($langs as $lang => $sfx) {
+            
+            $lang = strtolower($lang);
             
             if ($lang == 'zh') {
                 // Handle a double encoding bug in chinese only
@@ -1384,6 +1394,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 $description = "REPLACE($description, ' - ', '\n- ')";
             }
             
+            // hack for missing lang _7 date info
+            if ($sfx == "_7") {
+                $user_sfx = "_6";
+            } else {
+                $user_sfx = $sfx;
+            }
             
             $replace = "insert into product_translation 
                  ( product_id,
@@ -1392,6 +1408,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                    invoice_title,
                    description,
                    characteristic,
+                   created_at,
+                   updated_at,
+                   created_by,
+                   updated_by,                
                    legacy_synchro_at
                    )
                   select
@@ -1400,13 +1420,20 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     $title as title,
                     $invoice_title as invoice_title,    
                     $description as description,
-                    $characteristic as characteristic,        
+                    $characteristic as characteristic,  
+                    i.date_maj$user_sfx,
+                    i.date_maj$user_sfx,
+                    u.login,
+                    u.login,
                     '{$this->legacy_synchro_at}'    
                   from $akilia1db.article a
                   inner join $db.product p on p.legacy_mapping = a.id_article     
                   left outer join $akilia1db.cst_art_infos i on i.id_article = a.id_article
                   left outer join $akilia1db.cst_art_infos i2 on 
                       (i.id_art_tete = i2.id_article and i.id_art_tete <> 0 and i.id_art_tete <> '')
+                  left outer join $intelaccessDb.users u
+                        on u.id_user = i.id_user$user_sfx
+
                  where 
                                         a.flag_archive = 0
                                         and
@@ -1416,10 +1443,16 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     CHAR_LENGTH(coalesce(trim(i2.desc$sfx), '')) > 0
                                         
                  on duplicate key update
+                  lang = '$lang',
                   title = $title,
                   invoice_title = $invoice_title,
                   description = $description,
                   characteristic = $characteristic,
+                  created_at = if (i.date_maj$user_sfx = '0000-00-00 00:00:00', null, i.date_maj$user_sfx),
+                  updated_at = if (i.date_maj$user_sfx = '0000-00-00 00:00:00', null, i.date_maj$user_sfx),
+                  created_by = u.login,
+                  updated_by = u.login,
+                      
                   legacy_synchro_at = '{$this->legacy_synchro_at}'      
             ";
             
