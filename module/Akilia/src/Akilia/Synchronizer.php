@@ -961,17 +961,25 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
     function synchronizeProductBrand()
     {
-        $akilia2db = $this->akilia2Db;
+        $akilia1Db = $this->akilia1Db;
         $db = $this->openstoreDb;
         
-        $replace = "insert into $db.product_brand
-                (brand_id, reference, title, url, legacy_mapping, legacy_synchro_at)
-                select bpb.id, TRIM(bpb.reference), bpb.name, bpb.url, bpb.legacy_mapping, '{$this->legacy_synchro_at}'
-            from $akilia2db.base_product_brand bpb
+        $replace = "
+                insert into $db.product_brand
+                    (reference, title, url, 
+                    flag_active,
+                    legacy_mapping, legacy_synchro_at)
+                select TRIM(m.id_marque), 
+                if(m.libelle = '', m.id_marque, m.libelle), 
+                m.url, 
+                if (m.flag_public_hidden = 1, 0, 1),
+                m.id_marque, '{$this->legacy_synchro_at}'
+            from $akilia1Db.marque m
             on duplicate key update
-                reference = trim(bpb.reference),
-                title = bpb.name, 
-                url = bpb.url,
+                reference = trim(m.id_marque),
+                title = if(m.libelle = '', m.id_marque, m.libelle), 
+                url = m.url,
+                flag_active = if (m.flag_public_hidden = 1, 0, 1),
                 legacy_synchro_at = '{$this->legacy_synchro_at}'";
         
         $this->executeSQL("Replace product brands", $replace);

@@ -35,6 +35,7 @@ class BrandBrowser extends AbstractBrowser {
 
         $lang = $params->get('language');
         $pricelist = $params->get('pricelist');
+        
 
         $select = new Select();
         $select->from(array('pb' => 'product_brand'), array())
