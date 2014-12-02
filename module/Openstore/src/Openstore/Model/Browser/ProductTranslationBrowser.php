@@ -10,6 +10,7 @@ use Soluble\Db\Sql\Select;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
 
+
 class ProductTranslationBrowser extends AbstractBrowser {
 
     /**
@@ -17,8 +18,9 @@ class ProductTranslationBrowser extends AbstractBrowser {
      */
     function getSearchableParams() {
         return array(
-            'language' => array('required' => true),
-            'pricelists' => array('required' => true),
+            'primary_language' => array('required' => true),
+            'languages' => array('required' => true),
+            'pricelists' => array('required' => false),
             'query' => array('required' => false),
             'brands' => array('required' => false),
             'categories' => array('required' => false),
@@ -34,17 +36,25 @@ class ProductTranslationBrowser extends AbstractBrowser {
         
         $params = $this->getSearchParams();
 
-        $lang = $params->get('language');
-
         $pricelist = $params->get('pricelist');
 
         $select = new Select();
         $select->setDbAdapter($this->adapter);
 
+
+        $lang = $params['primary_language'];
+        if (isset($params['languages']) && $params['languages'] != '') {
+            $languages  = $params['languages'];
+        } else {
+            $languages = array();
+        }
         
-        $lang = "en";
-        $languages  = ['en', 'fr', 'nl', 'de', 'it', 'es', 'zh'];
-        $pricelists = ['BE', 'FR']; 
+        if (isset($params['pricelists']) && $params['pricelists'] != '') {
+            $pricelists = $params['pricelists'];
+        } else {
+            $pricelists = array();
+        } 
+        
 
         
         $lang_clause = '(' . join(',', array_map(function($lang) { return "'" . $lang . "'"; }, $languages)) . ")";
