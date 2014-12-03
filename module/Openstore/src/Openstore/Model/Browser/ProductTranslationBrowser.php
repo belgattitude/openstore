@@ -54,7 +54,19 @@ class ProductTranslationBrowser extends AbstractBrowser {
         } else {
             $pricelists = array();
         } 
+
+        if (isset($params['brands']) && $params['brands'] != '') {
+            $brands = $params['brands'];
+        } else {
+            $brands = array();
+        } 
         
+        
+        if (isset($params['types']) && $params['types'] != '') {
+            $types = $params['types'];
+        } else {
+            $types = array();
+        }         
 
         
         $lang_clause = '(' . join(',', array_map(function($lang) { return "'" . $lang . "'"; }, $languages)) . ")";
@@ -130,8 +142,11 @@ class ProductTranslationBrowser extends AbstractBrowser {
         if ($product_id != '') {
             $select->where("p.product_id = $product_id");
         }
-
-        $brands = $params->get('brands');
+        
+        if (count($types) > 0) {
+            $select->where(['p.type_id' => $types]);
+        }        
+        
         if (count($brands) > 0) {
             $select->where(['pb.reference' => $brands]);
         }

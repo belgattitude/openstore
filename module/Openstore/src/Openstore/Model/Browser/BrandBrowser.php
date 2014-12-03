@@ -51,8 +51,6 @@ class BrandBrowser extends AbstractBrowser {
 
         $this->assignFilters($select);
 
-
-
         $columns = array(
             'brand_id' => new Expression('pb.brand_id'),
             'reference' => new Expression('pb.reference'),
