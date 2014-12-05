@@ -143,7 +143,7 @@ class StoreController extends AbstractActionController
 		$productBrowser = $product->getBrowser()->setSearchParams(
 							[
 								'query'		 => $searchParams->getQuery(),
-								'language'	 => $language,
+								'language'   => $language,
 								'pricelist'  => $pricelist,
 								'brands'	 => $searchParams->getBrands(),
 								'categories' => $searchParams->getCategories()

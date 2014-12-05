@@ -178,7 +178,6 @@ class ProductTranslationBrowser extends AbstractBrowser {
 
             $quoted = $platform->quoteValue($query);
 
-
             $searchable_ref = $this->getSearchableReference($query);
 
 
