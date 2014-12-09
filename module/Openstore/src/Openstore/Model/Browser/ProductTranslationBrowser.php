@@ -76,8 +76,12 @@ class ProductTranslationBrowser extends AbstractBrowser {
             $inner_columns["title_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.title, null))");
             $inner_columns["description_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.description, null))");
             $inner_columns["characteristic_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.characteristic, null))");
-            $inner_columns["created_at_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.created_at, null))");
-            $inner_columns["updated_at_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.updated_at, null))");
+            
+            $inner_columns["created_at_$lang"] = new Expression("DATE_FORMAT(MAX(if(p18.lang = '$lang', p18.created_at, null)), '%Y-%m-%dT%TZ')");
+            $inner_columns["updated_at_$lang"] = new Expression("DATE_FORMAT(MAX(if(p18.lang = '$lang', p18.updated_at, null)), '%Y-%m-%dT%TZ')");
+            $inner_columns["created_by_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.created_by, null))");
+            $inner_columns["updated_by_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.updated_by, null))");
+            $inner_columns["revision_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.revision, null))");
         }
         
         $select->from(array('p' => 'product'), array())
@@ -135,7 +139,11 @@ class ProductTranslationBrowser extends AbstractBrowser {
                 'picture_media_id' => new Expression('pm.media_id')
         ];
         
-        $select->columns(array_merge($columns, $inner_columns), true);
+        $select->columns(array_merge(
+                $columns, 
+                ['revision' => new Expression('MAX(p18.revision)')],
+                $inner_columns
+                ), true);
         $select->group(array_keys($columns));
         
         $product_id = $params->get('id');

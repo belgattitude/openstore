@@ -20,6 +20,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *     @ORM\Index(name="title_idx", columns={"title"}),
  *     @ORM\Index(name="description_idx", columns={"description"}),
  *     @ORM\Index(name="slug_idx", columns={"slug"}),
+ *     @ORM\Index(name="revision_idx", columns={"revision"})
  *   },
  *   options={"comment" = "Product model table"}
  * )
@@ -67,10 +68,20 @@ class ProductModel {
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=15000, nullable=true)
+     * @ORM\Column(type="string", length=10000, nullable=true)
      */
     private $description;
+    
+   /**
+     * @ORM\Column(type="string", length=10000, nullable=true, options={"comment" = "Specifications"})
+     */
+    private $specs;    
 
+    /**
+     * @ORM\Column(type="integer", nullable=true, options={"default"=1, "unsigned"=true, "comment" = "Translation revision number"})
+     */
+    private $revision;    
+    
     /**
      * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the model is active in public website"})
      */
@@ -203,6 +214,41 @@ class ProductModel {
     public function getDescription() {
         return $this->description;
     }
+    
+    /**
+     * 
+     * @param string $specs
+     */
+    public function setSpecs($specs) {
+        $this->specs = $specs;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getSpecs() {
+        return $this->specs;
+    }
+    
+    /**
+     * 
+     * @param integer $revision
+     */
+    public function setRevision($revision) {
+        $this->revision = $revision;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return integer
+     */
+    public function getRevision() {
+        return $this->revision;
+    }
+    
 
     /**
      * 

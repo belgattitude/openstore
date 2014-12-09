@@ -1408,19 +1408,30 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                    invoice_title,
                    description,
                    characteristic,
+                   revision,
                    created_at,
                    updated_at,
                    created_by,
                    updated_by,                
                    legacy_synchro_at
-                   )
+                  )
                   select
                     p.product_id as product_id, 
                     '$lang' as lang,
                     $title as title,
-                    $invoice_title as invoice_title,    
+                    REPLACE($invoice_title, '–', '-') as invoice_title,    
                     $description as description,
                     $characteristic as characteristic,  
+                    if (
+                        (
+                            CHAR_LENGTH(coalesce(trim(i.libelle$sfx), '')) +
+                            CHAR_LENGTH(coalesce(trim(i.desc$sfx), '')) + 
+                            CHAR_LENGTH(coalesce(trim(i.couleur$sfx), ''))
+                        ) > 0,
+                            1,
+                            0
+                        )
+                      as revision,    
                     i.date_maj$user_sfx,
                     i.date_maj$user_sfx,
                     u.login,
@@ -1434,27 +1445,31 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                   left outer join $intelaccessDb.users u
                         on u.id_user = i.id_user$user_sfx
 
-                 where 
-                                        a.flag_archive = 0
-                                        and
-
-                    CHAR_LENGTH(coalesce(trim(a.libelle$sfx), '')) + CHAR_LENGTH(coalesce(trim(i.libelle$sfx), '')) +
-                    CHAR_LENGTH(coalesce(trim(i.desc$sfx), '')) + CHAR_LENGTH(coalesce(trim(i.couleur$sfx), '')) +
-                    CHAR_LENGTH(coalesce(trim(i2.desc$sfx), '')) > 0
+                 where a.flag_archive = 0
                                         
                  on duplicate key update
                   lang = '$lang',
                   title = $title,
-                  invoice_title = $invoice_title,
+                  invoice_title = REPLACE($invoice_title, '–', '-'),
                   description = $description,
-                  characteristic = $characteristic,
-                  created_at = if (i.date_maj$user_sfx = '0000-00-00 00:00:00', null, i.date_maj$user_sfx),
-                  updated_at = if (i.date_maj$user_sfx = '0000-00-00 00:00:00', null, i.date_maj$user_sfx),
+                  characteristic = REPLACE($characteristic, '–', '-'),
+                  revision = if (
+                        (
+                            CHAR_LENGTH(coalesce(trim(i.libelle$sfx), '')) +
+                            CHAR_LENGTH(coalesce(trim(i.desc$sfx), '')) + 
+                            CHAR_LENGTH(coalesce(trim(i.couleur$sfx), ''))
+                        ) > 0,
+                            1,
+                            0
+                        ),    
+                  created_at = if (i.date_maj$user_sfx = 0, null, i.date_maj$user_sfx),
+                  updated_at = if (i.date_maj$user_sfx = 0, null, i.date_maj$user_sfx),
                   created_by = u.login,
                   updated_by = u.login,
                       
                   legacy_synchro_at = '{$this->legacy_synchro_at}'      
             ";
+                  
             
             $this->executeSQL("Replace product translations", $replace);
         }

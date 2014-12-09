@@ -7,7 +7,7 @@ $stmts = array();
 ####################################################################
 
 // For fulltext index on MyISAM
-//$stmts['alter/product_search/add-fulltext'] = "ALTER TABLE `product_search` ADD FULLTEXT(`keywords`)";
+// $stmts['alter/product_search/add-fulltext'] = "ALTER TABLE `product_search` ADD FULLTEXT(`keywords`)";
 
 
 ####################################################################
@@ -178,7 +178,7 @@ BEGIN
              SET @default_lang = 'en'; 
         END IF;
         INSERT INTO product_search (product_id, lang, keywords, updated_at)
-        SELECT 
+        SELECT DISTINCT
             p.product_id,
             if (p18.lang is null, @default_lang, p18.lang) as lang,
             UPPER(
@@ -226,9 +226,14 @@ BEGIN
                 left outer join
             product_category_translation pc18 on pc18.category_id = p.category_id
                 and pc18.lang = p18.lang
+                left outer join
+            product_pricelist ppl on (p.product_id = ppl.product_id and ppl.flag_active=1)
+                    left outer join 
+            pricelist pl on (pl.pricelist_id = ppl.pricelist_id and pl.flag_active=1)
         where
             1=1
             and p.flag_active = 1
+            and pl.flag_active = 1
         order by if (p18.lang is null, @default_lang, p18.lang), p.product_id 
     on duplicate key update
             keywords = UPPER(

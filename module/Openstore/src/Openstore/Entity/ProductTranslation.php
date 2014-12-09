@@ -21,6 +21,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *     @ORM\Index(name="characteristic_idx", columns={"characteristic"}),
  *     @ORM\Index(name="keywords_idx", columns={"keywords"}),
  *     @ORM\Index(name="slug_idx", columns={"slug"}),
+ *     @ORM\Index(name="revision_idx", columns={"revision"}),
  *   },
  *   options={"comment" = "Product translation table"}
  * )
@@ -69,19 +70,32 @@ class ProductTranslation {
     private $invoice_title;
 
     /**
-     * @ORM\Column(type="string", length=15000, nullable=true)
+     * @ORM\Column(type="string", length=10000, nullable=true)
      */
     private $description;
 
+    
     /**
      * @ORM\Column(type="string", length=150, nullable=true)
      */
     private $characteristic;
 
     /**
+     * @ORM\Column(type="string", length=10000, nullable=true, options={"comment" = "Specifications"})
+     */
+    private $specs;
+    
+    
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $keywords;
+    
+    /**
+     * @ORM\Column(type="integer", nullable=true, options={"default"=1, "unsigned"=true, "comment" = "Translation revision number"})
+     */
+    private $revision;
+    
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -188,6 +202,25 @@ class ProductTranslation {
         return $this->description;
     }
 
+    
+    /**
+     * 
+     * @param string $specs
+     */
+    public function setSpecs($specs) {
+        $this->specs = $specs;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getSpecs() {
+        return $this->specs;
+    }
+    
+    
     /**
      * 
      * @param integer $product_id
@@ -205,6 +238,25 @@ class ProductTranslation {
         return $this->product_id;
     }
 
+    
+    /**
+     * 
+     * @param integer $revision
+     */
+    public function setRevision($revision) {
+        $this->revision = $revision;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return integer
+     */
+    public function getRevision() {
+        return $this->revision;
+    }
+    
+    
     /**
      * 
      * @param integer $lang_id
