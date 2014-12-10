@@ -753,6 +753,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         (
                         reference,
                         currency_id,
+                        
                         stock_id,
                         legacy_mapping, 
                         legacy_synchro_at
@@ -762,6 +763,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     
                         bp.reference,
                         {$this->default_currency_id} as currency_id,
+                        
                         $stock_id as stock_id,
                         bp.legacy_mapping as legacy_mapping,
                         '{$this->legacy_synchro_at}' as legacy_synchro_at
@@ -771,7 +773,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     on duplicate key update
                             stock_id = if(pricelist.stock_id is null, $stock_id, pricelist.stock_id),
                             currency_id = if(pricelist.currency_id is null, {$this->default_currency_id}, pricelist.currency_id),
-
+                            title = if(pricelist.title is null, bp.reference, pricelist.title),
                             legacy_synchro_at = '{$this->legacy_synchro_at}'
                          ";
             
