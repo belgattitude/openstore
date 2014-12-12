@@ -592,8 +592,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     $db.pricelist pl ON pl.legacy_mapping = bp.legacy_mapping
                         inner join
                     $db.product p on p.product_id = bpp.product_id
-                                                left outer join
-                                        $db.product_status ps on ps.legacy_mapping = bpp.status_code
+                        left outer join
+                    $db.product_status ps on ps.legacy_mapping = bpp.status_code
+                        
                     where bpp.price_sale > 0
                     on duplicate key update
                             price = (bpp.price_sale * (1-(bpp.discount_1/100)) * (1-(bpp.discount_2/100)) * (1-(bpp.discount_3/100)) * (1-(bpp.discount_4/100))),
@@ -1234,6 +1235,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     sort_index,    
 
                     available_at,
+                    created_at,
+                    updated_at,
 
                     legacy_mapping, 
                     legacy_synchro_at
@@ -1276,7 +1279,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     a.barcode_ean13 as barcode_ean13,
                     a.barcode_upca as barcode_upca,
                                         a.code_tri_marque_famille as sort_index,
-                    a.date_creation,
+                    a.date_creation as updated_at,
+                    a.date_creation as created_at,
+                    null as updated_at,
                     a.id_article as legacy_mapping,
                     '{$this->legacy_synchro_at}' as legacy_synchro_at
                         
@@ -1330,6 +1335,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         barcode_ean13 = a.barcode_ean13,
                         barcode_upca = a.barcode_upca,
                         available_at = a.date_creation,
+                        created_at = a.date_creation,
+                        updated_at = null,                        
                         legacy_mapping = a.id_article,
                         legacy_synchro_at = '{$this->legacy_synchro_at}'
                      ";

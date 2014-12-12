@@ -18,13 +18,14 @@ class ProductTranslationBrowser extends AbstractBrowser {
      */
     function getSearchableParams() {
         return array(
-            'primary_language' => array('required' => true),
+            'primary_language' => array('required' => false),
             'languages' => array('required' => true),
             'pricelists' => array('required' => false),
             'query' => array('required' => false),
             'brands' => array('required' => false),
             'categories' => array('required' => false),
-            'id' => array('required' => false)
+            'id' => array('required' => false),
+            'product_id' => array('required' => false)
         );
     }
 
@@ -72,11 +73,10 @@ class ProductTranslationBrowser extends AbstractBrowser {
         $lang_clause = '(' . join(',', array_map(function($lang) { return "'" . $lang . "'"; }, $languages)) . ")";
         
         foreach($languages as $lang) {
-            $inner_columns["invoice_title_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.invoice_title, null))");
-            $inner_columns["title_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.title, null))");
-            $inner_columns["description_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.description, null))");
-            $inner_columns["characteristic_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.characteristic, null))");
-            
+            $inner_columns["invoice_title_$lang"] = new Expression("COALESCE(MAX(if(p18.lang = '$lang', p18.invoice_title, null)), '')");
+            $inner_columns["title_$lang"] = new Expression("COALESCE(MAX(if(p18.lang = '$lang', p18.title, null)), '')");
+            $inner_columns["description_$lang"] = new Expression("COALESCE(MAX(if(p18.lang = '$lang', p18.description, null)), '')");
+            $inner_columns["characteristic_$lang"] = new Expression("COALESCE(MAX(if(p18.lang = '$lang', p18.characteristic, null)), '')");
             $inner_columns["created_at_$lang"] = new Expression("DATE_FORMAT(MAX(if(p18.lang = '$lang', p18.created_at, null)), '%Y-%m-%dT%TZ')");
             $inner_columns["updated_at_$lang"] = new Expression("DATE_FORMAT(MAX(if(p18.lang = '$lang', p18.updated_at, null)), '%Y-%m-%dT%TZ')");
             $inner_columns["created_by_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.created_by, null))");
@@ -136,17 +136,20 @@ class ProductTranslationBrowser extends AbstractBrowser {
                 'status_reference' => new Expression('pst.reference'),
                 'flag_end_of_lifecycle' => new Expression('pst.flag_end_of_lifecycle'),
                 'flag_till_end_of_stock' => new Expression('pst.flag_till_end_of_stock'),
-                'picture_media_id' => new Expression('pm.media_id')
+                'picture_media_id' => new Expression('pm.media_id'),
+                'created_at' => new Expression("DATE_FORMAT(p.created_at, '%Y-%m-%dT%TZ')"),
+                'available_at' => new Expression("DATE_FORMAT(p.available_at, '%Y-%m-%dT%TZ')"),
+            
         ];
         
         $select->columns(array_merge(
                 $columns, 
-                ['revision' => new Expression('MAX(p18.revision)')],
+                ['max_revision' => new Expression('MAX(p18.revision)')],
                 $inner_columns
                 ), true);
         $select->group(array_keys($columns));
         
-        $product_id = $params->get('id');
+        $product_id = $params->get('product_id');
         if ($product_id != '') {
             $select->where("p.product_id = $product_id");
         }
