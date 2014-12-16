@@ -14,7 +14,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *     @ORM\UniqueConstraint(name="unique_flag_default_idx",columns={"flag_default"})
+ *     @ORM\UniqueConstraint(name="unique_flag_default_idx",columns={"flag_default"}),
+ *     @ORM\UniqueConstraint(name="sort_index_idx",columns={"sort_index"})
  *   }, 
  *   options={"comment" = "Pricelist table"}
  * )
@@ -97,6 +98,11 @@ class Pricelist {
      */
     private $new_product_min_date;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true, options={"unsigned"=true, "comment"="Relative sort index"})
+     */
+    private $sort_index;    
+    
     /**
      * @ORM\Column(type="string", length=40, nullable=true)
      */
@@ -254,6 +260,26 @@ class Pricelist {
         $this->icon_class = $icon_class;
         return $this;
     }
+    
+    
+    /**
+     * 
+     * @param integer $sort_index
+     * @return Pricelist
+     */
+    public function setSortIndex($sort_index) {
+        $this->sort_index = $sort_index;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return integer
+     */
+    public function getSortIndex() {
+        return $this->sort_index;
+    }
+    
 
     /**
      * 

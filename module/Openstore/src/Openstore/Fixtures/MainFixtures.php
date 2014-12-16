@@ -172,7 +172,7 @@ class LoadUserData implements FixtureInterface {
     function importProductType(ObjectManager $manager) {
 
         $product_types = array(
-            1 => array('reference' => 'REGULAR', 'title' => 'Regular product', 'description' => 'Regular product', 'flag_active' => 1, 'fedc' => 1),
+            1 => array('reference' => 'REGULAR', 'title' => 'Regular product', 'description' => 'Regular product', 'flag_active' => 1, 'fedc' => 1, 'flag_default' => 1),
             2 => array('reference' => 'SPAREPART', 'title' => 'Spare part', 'description' => 'Spare part', 'flag_active' => null, 'fedc' => 1),
             3 => array('reference' => 'VIRTUAL', 'title' => 'Virtual product', 'description' => 'Virtual/digital asset product/license, generally with no stock', 'flag_active' => null, 'fedc' => 0),
             4 => array('reference' => 'COMPOSED', 'title' => 'Composed product', 'description' => 'Composed product', 'flag_active' => null, 'fedc' => 0),
@@ -188,6 +188,9 @@ class LoadUserData implements FixtureInterface {
             $type->setTitle($infos['title']);
             $type->setDescription($infos['description']);
             $type->setFlagActive($infos['flag_active']);
+            if (isset($infos['flag_default'])) {
+                $type->setFlagDefault($infos['flag_default']);
+            }
             $type->setLegacyMapping($infos['reference']);
             $type->setFlagEnableDiscountCondition($infos['fedc']);
             $manager->persist($type);

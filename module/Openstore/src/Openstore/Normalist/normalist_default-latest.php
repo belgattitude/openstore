@@ -520,13 +520,13 @@ return array(
             'name' => 'country',
             'columns' => array(
                 'country_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => true,
                     'nullable' => false,
                     'default' => null,
                     'autoincrement' => true,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'reference' => array(
                     'type' => 'varchar',
@@ -662,6 +662,14 @@ return array(
                     'octet_length' => '12',
                     'length' => '4',
                 ),
+                'display_decimals' => array(
+                    'type' => 'smallint',
+                    'primary' => false,
+                    'nullable' => true,
+                    'default' => '2',
+                    'unsigned' => true,
+                    'precision' => '5',
+                ),
                 'icon_class' => array(
                     'type' => 'varchar',
                     'primary' => false,
@@ -749,20 +757,20 @@ return array(
                     'precision' => '10',
                 ),
                 'group_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'country_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'reference' => array(
                     'type' => 'varchar',
@@ -1009,13 +1017,13 @@ return array(
             'name' => 'customer_group',
             'columns' => array(
                 'group_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => true,
                     'nullable' => false,
                     'default' => null,
                     'autoincrement' => true,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'reference' => array(
                     'type' => 'varchar',
@@ -1141,12 +1149,12 @@ return array(
                     'precision' => '20',
                 ),
                 'pricelist_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'customer_id' => array(
                     'type' => 'int',
@@ -1253,20 +1261,20 @@ return array(
                     'precision' => '20',
                 ),
                 'pricelist_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'customer_group_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'customer_id' => array(
                     'type' => 'int',
@@ -1351,7 +1359,7 @@ return array(
                 'fixed_price' => array(
                     'type' => 'decimal',
                     'primary' => false,
-                    'nullable' => false,
+                    'nullable' => true,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
@@ -1401,8 +1409,8 @@ return array(
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                    'octet_length' => '120',
-                    'length' => '40',
+                    'octet_length' => '240',
+                    'length' => '80',
                 ),
                 'legacy_synchro_at' => array(
                     'type' => 'datetime',
@@ -1415,18 +1423,6 @@ return array(
                 0 => 'id',
             ),
             'unique_keys' => array(
-                'unique_condition' => array(
-                    0 => 'pricelist_id',
-                    1 => 'customer_group_id',
-                    2 => 'customer_id',
-                    3 => 'brand_id',
-                    4 => 'product_group_id',
-                    5 => 'model_id',
-                    6 => 'category_id',
-                    7 => 'product_id',
-                    8 => 'valid_from',
-                    9 => 'valid_till',
-                ),
                 'unique_legacy_mapping_idx' => array(
                     0 => 'legacy_mapping',
                 ),
@@ -1480,13 +1476,13 @@ return array(
             'name' => 'language',
             'columns' => array(
                 'id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => true,
                     'nullable' => false,
                     'default' => null,
                     'autoincrement' => true,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'lang' => array(
                     'type' => 'varchar',
@@ -1916,13 +1912,13 @@ return array(
             'name' => 'packaging_type',
             'columns' => array(
                 'type_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => true,
                     'nullable' => false,
                     'default' => null,
                     'autoincrement' => true,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'reference' => array(
                     'type' => 'varchar',
@@ -2075,21 +2071,21 @@ return array(
             'name' => 'pricelist',
             'columns' => array(
                 'pricelist_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => true,
                     'nullable' => false,
                     'default' => null,
                     'autoincrement' => true,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'stock_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'currency_id' => array(
                     'type' => 'int',
@@ -2098,6 +2094,14 @@ return array(
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
+                ),
+                'discount_condition_pricelist_id' => array(
+                    'type' => 'smallint',
+                    'primary' => false,
+                    'nullable' => true,
+                    'default' => null,
+                    'unsigned' => true,
+                    'precision' => '5',
                 ),
                 'reference' => array(
                     'type' => 'varchar',
@@ -2122,6 +2126,14 @@ return array(
                     'default' => null,
                     'octet_length' => '45000',
                     'length' => '15000',
+                ),
+                'flag_enable_discount_condition' => array(
+                    'type' => 'tinyint',
+                    'primary' => false,
+                    'nullable' => false,
+                    'default' => '1',
+                    'unsigned' => false,
+                    'precision' => '3',
                 ),
                 'flag_default' => array(
                     'type' => 'tinyint',
@@ -2229,6 +2241,11 @@ return array(
                     'referenced_column' => 'currency_id',
                     'constraint_name' => 'FK_5CCFEA6D38248176',
                 ),
+                'discount_condition_pricelist_id' => array(
+                    'referenced_table' => 'pricelist',
+                    'referenced_column' => 'pricelist_id',
+                    'constraint_name' => 'FK_5CCFEA6D2E5F6947',
+                ),
             ),
             'references' => array(
                 'pricelist' => array(
@@ -2243,16 +2260,21 @@ return array(
                         'constraint_name' => 'FK_DD0C00BE89045958',
                     ),
                     2 => array(
-                        'column' => 'pricelist_id',
+                        'column' => 'discount_condition_pricelist_id',
                         'referenced_column' => 'pricelist_id',
-                        'constraint_name' => 'FK_326F5CE089045958',
+                        'constraint_name' => 'FK_5CCFEA6D2E5F6947',
                     ),
                     3 => array(
                         'column' => 'pricelist_id',
                         'referenced_column' => 'pricelist_id',
-                        'constraint_name' => 'FK_25F5CB1B89045958',
+                        'constraint_name' => 'FK_326F5CE089045958',
                     ),
                     4 => array(
+                        'column' => 'pricelist_id',
+                        'referenced_column' => 'pricelist_id',
+                        'constraint_name' => 'FK_25F5CB1B89045958',
+                    ),
+                    5 => array(
                         'column' => 'pricelist_id',
                         'referenced_column' => 'pricelist_id',
                         'constraint_name' => 'FK_5C2F678989045958',
@@ -2314,20 +2336,20 @@ return array(
                     'precision' => '10',
                 ),
                 'type_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'status_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'unit_id' => array(
                     'type' => 'int',
@@ -2513,7 +2535,13 @@ return array(
                     'unsigned' => false,
                     'precision' => '10',
                 ),
-                'activated_at' => array(
+                'available_at' => array(
+                    'type' => 'date',
+                    'primary' => false,
+                    'nullable' => true,
+                    'default' => null,
+                ),
+                'unavailable_at' => array(
                     'type' => 'date',
                     'primary' => false,
                     'nullable' => true,
@@ -3851,8 +3879,24 @@ return array(
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                    'octet_length' => '45000',
-                    'length' => '15000',
+                    'octet_length' => '30000',
+                    'length' => '10000',
+                ),
+                'specs' => array(
+                    'type' => 'varchar',
+                    'primary' => false,
+                    'nullable' => true,
+                    'default' => null,
+                    'octet_length' => '30000',
+                    'length' => '10000',
+                ),
+                'revision' => array(
+                    'type' => 'int',
+                    'primary' => false,
+                    'nullable' => true,
+                    'default' => '1',
+                    'unsigned' => true,
+                    'precision' => '10',
                 ),
                 'flag_active' => array(
                     'type' => 'tinyint',
@@ -4083,12 +4127,12 @@ return array(
                     'precision' => '20',
                 ),
                 'type_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'product_id' => array(
                     'type' => 'bigint',
@@ -4217,12 +4261,12 @@ return array(
                     'precision' => '20',
                 ),
                 'pricelist_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'product_id' => array(
                     'type' => 'bigint',
@@ -4233,12 +4277,12 @@ return array(
                     'precision' => '20',
                 ),
                 'status_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'flag_active' => array(
                     'type' => 'tinyint',
@@ -4380,7 +4424,13 @@ return array(
                     'nullable' => true,
                     'default' => null,
                 ),
-                'activated_at' => array(
+                'available_at' => array(
+                    'type' => 'date',
+                    'primary' => false,
+                    'nullable' => true,
+                    'default' => null,
+                ),
+                'unavailable_at' => array(
                     'type' => 'date',
                     'primary' => false,
                     'nullable' => true,
@@ -4535,13 +4585,13 @@ return array(
             'name' => 'product_status',
             'columns' => array(
                 'status_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => true,
                     'nullable' => false,
                     'default' => null,
                     'autoincrement' => true,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'reference' => array(
                     'type' => 'varchar',
@@ -4702,12 +4752,12 @@ return array(
                     'precision' => '20',
                 ),
                 'stock_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'product_id' => array(
                     'type' => 'bigint',
@@ -4852,8 +4902,8 @@ return array(
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                    'octet_length' => '45000',
-                    'length' => '15000',
+                    'octet_length' => '30000',
+                    'length' => '10000',
                 ),
                 'characteristic' => array(
                     'type' => 'varchar',
@@ -4863,6 +4913,14 @@ return array(
                     'octet_length' => '450',
                     'length' => '150',
                 ),
+                'specs' => array(
+                    'type' => 'varchar',
+                    'primary' => false,
+                    'nullable' => true,
+                    'default' => null,
+                    'octet_length' => '30000',
+                    'length' => '10000',
+                ),
                 'keywords' => array(
                     'type' => 'varchar',
                     'primary' => false,
@@ -4870,6 +4928,14 @@ return array(
                     'default' => null,
                     'octet_length' => '765',
                     'length' => '255',
+                ),
+                'revision' => array(
+                    'type' => 'int',
+                    'primary' => false,
+                    'nullable' => true,
+                    'default' => '1',
+                    'unsigned' => true,
+                    'precision' => '10',
                 ),
                 'created_at' => array(
                     'type' => 'datetime',
@@ -4945,13 +5011,13 @@ return array(
             'name' => 'product_type',
             'columns' => array(
                 'type_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => true,
                     'nullable' => false,
                     'default' => null,
                     'autoincrement' => true,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'reference' => array(
                     'type' => 'varchar',
@@ -4976,6 +5042,30 @@ return array(
                     'default' => null,
                     'octet_length' => '45000',
                     'length' => '15000',
+                ),
+                'flag_enable_discount_condition' => array(
+                    'type' => 'tinyint',
+                    'primary' => false,
+                    'nullable' => false,
+                    'default' => '1',
+                    'unsigned' => false,
+                    'precision' => '3',
+                ),
+                'flag_excluded_catalog' => array(
+                    'type' => 'tinyint',
+                    'primary' => false,
+                    'nullable' => true,
+                    'default' => '0',
+                    'unsigned' => false,
+                    'precision' => '3',
+                ),
+                'flag_excluded_export' => array(
+                    'type' => 'tinyint',
+                    'primary' => false,
+                    'nullable' => true,
+                    'default' => '0',
+                    'unsigned' => false,
+                    'precision' => '3',
                 ),
                 'flag_default' => array(
                     'type' => 'tinyint',
@@ -5097,6 +5187,22 @@ return array(
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
+                ),
+                'symbol' => array(
+                    'type' => 'varchar',
+                    'primary' => false,
+                    'nullable' => true,
+                    'default' => null,
+                    'octet_length' => '12',
+                    'length' => '4',
+                ),
+                'display_decimals' => array(
+                    'type' => 'smallint',
+                    'primary' => false,
+                    'nullable' => true,
+                    'default' => '2',
+                    'unsigned' => true,
+                    'precision' => '5',
                 ),
                 'description' => array(
                     'type' => 'varchar',
@@ -5497,12 +5603,12 @@ return array(
                     'precision' => '10',
                 ),
                 'pricelist_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'reference' => array(
                     'type' => 'varchar',
@@ -6507,13 +6613,13 @@ return array(
             'name' => 'stock',
             'columns' => array(
                 'stock_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => true,
                     'nullable' => false,
                     'default' => null,
                     'autoincrement' => true,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'reference' => array(
                     'type' => 'varchar',
@@ -6736,12 +6842,12 @@ return array(
                     'precision' => '20',
                 ),
                 'pricelist_id' => array(
-                    'type' => 'int',
+                    'type' => 'smallint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
-                    'precision' => '10',
+                    'precision' => '5',
                 ),
                 'user_id' => array(
                     'type' => 'int',
