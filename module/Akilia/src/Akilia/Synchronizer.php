@@ -1270,15 +1270,17 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     null as length,
                     null as height,
                     null as width,
-                        -- Qty box has been deprecated, use pack_qty_carton
-                    bp.pack_qty_box,
-                                        
-                    bp.pack_qty_box as pack_qty_carton,
-                    bp.pack_qty_master_carton,
+                    
+                    
+                    COALESCE(if(a.qty_emballage=0, null, a.qty_emballage), a.qty_carton) as pack_qty_box,
+                    COALESCE(if(a.qty_carton=0, null, a.qty_carton), qty_master_carton) as pack_qty_carton,
+                    if(a.qty_master_carton=0, null, a.qty_master_carton) as pack_qty_master_carton,
                     
                     a.barcode_ean13 as barcode_ean13,
                     a.barcode_upca as barcode_upca,
-                                        a.code_tri_marque_famille as sort_index,
+                    if (a.code_tri_marque_famille REGEXP '^[0-9]+$', a.code_tri_marque_famille, 
+                              CAST(CONV(hex(a.code_tri_marque_famille), 16, 10) as unsigned)
+                            ) as sort_index ,
                     a.date_creation as updated_at,
                     a.date_creation as created_at,
                     null as updated_at,
@@ -1287,7 +1289,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         
                     
                 from $akilia1db.article as a
-                left outer join $akilia2db.base_product bp on bp.legacy_mapping = a.id_article    
                 left outer join $akilia1db.cst_art_infos i on i.id_article = a.id_article    
                 left outer join $db.product_brand as brand on brand.legacy_mapping = a.id_marque
                 left outer join $db.product_group as product_group on product_group.legacy_mapping = a.id_famille
@@ -1297,7 +1298,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 left outer join $db.product_type pt on pt.legacy_mapping = a.product_type COLLATE 'utf8_general_ci'
                 
                 where a.flag_archive = 0
-
+                order by i.id_art_tete desc, a.id_article
+                
                 on duplicate key update
                         model_id = pm.model_id,
                         brand_id = brand.brand_id,
@@ -1311,7 +1313,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         display_reference = upper(TRIM(a.reference)),
                         search_reference = get_searchable_reference(a.reference),                                                                                        
                         slug = null,
-                        sort_index = a.code_tri_marque_famille,
+                        sort_index = if (a.code_tri_marque_famille REGEXP '^[0-9]+$', a.code_tri_marque_famille, 
+                              CAST(CONV(hex(a.code_tri_marque_famille), 16, 10) as unsigned)
+                            ) ,
                         type_id = COALESCE(pt.type_id, {$this->default_product_type_id}),
                         title = if(trim(i.libelle$default_lsfx) = '', null, trim(i.libelle$default_lsfx)),
                         invoice_title = if(trim(a.libelle$default_lsfx) = '', null, trim(a.libelle$default_lsfx)),
@@ -1327,10 +1331,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         width = null,
                         
                         -- Qty carton has been deprecated, use pack_qty_carton
-                        pack_qty_box = bp.pack_qty_box,
-                        
-                        pack_qty_carton = bp.pack_qty_box,
-                        pack_qty_master_carton = bp.pack_qty_master_carton,
+                        pack_qty_box = COALESCE(if(a.qty_emballage=0, null, a.qty_emballage), a.qty_carton),
+                        pack_qty_carton = COALESCE(if(a.qty_carton=0, null, a.qty_carton), qty_master_carton),
+                        pack_qty_master_carton = if(a.qty_master_carton=0, null, a.qty_master_carton),
                         
                         barcode_ean13 = a.barcode_ean13,
                         barcode_upca = a.barcode_upca,
