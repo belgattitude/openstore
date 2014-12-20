@@ -41,7 +41,9 @@
     "require-dev": {
         "phpunit/phpunit": "~4.0",
         "zfcampus/zf-apigility-admin": "~1.0",
-        "zfcampus/zf-development-mode": "~2.0"
+        "zfcampus/zf-development-mode": "~2.0",
+        "symfony/var-dumper": "@stable"
+
     }
 }
 
