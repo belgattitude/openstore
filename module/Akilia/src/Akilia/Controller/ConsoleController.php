@@ -1,347 +1,321 @@
 <?php
+
 namespace Akilia\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-
 use Zend\Console\Request as ConsoleRequest;
 use Zend\Console\Console;
 use Zend\Console\ColorInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
-
 use Akilia\Utils\Akilia1Products;
 use Akilia\Utils\Akilia2Customers;
 use Akilia;
 
-class ConsoleController extends AbstractActionController
-{
+class ConsoleController extends AbstractActionController {
 
-    public function syncdbAction()
-	{
-		$configuration = $this->getAkiliaConfiguration();
-		if (!is_array($configuration['synchronizer'])) {
-			throw new \Exception("Cannot find akilia synchronize configuration, please see you global config files");
-		}
+    public function syncdbAction() {
+        $configuration = $this->getAkiliaConfiguration();
+        if (!is_array($configuration['synchronizer'])) {
+            throw new \Exception("Cannot find akilia synchronize configuration, please see you global config files");
+        }
 
-		$em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-		$zendDb      = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-		$synchronizer = new Akilia\Synchronizer($em, $zendDb);
-		$synchronizer->setServiceLocator($this->getServiceLocator());
-		$synchronizer->setConfiguration($configuration['synchronizer']);
-		$synchronizer->synchronizeAll();	
-    }
-	
-
-    public function syncstockAction()
-	{
-		$configuration = $this->getAkiliaConfiguration();
-		if (!is_array($configuration['synchronizer'])) {
-			throw new \Exception("Cannot find akilia synchronize configuration, please see you global config files");
-		}
-
-		$em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-		$zendDb      = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-		$synchronizer = new Akilia\Synchronizer($em, $zendDb);
-		$synchronizer->setServiceLocator($this->getServiceLocator());
-		$synchronizer->setConfiguration($configuration['synchronizer']);
-		$synchronizer->synchronizeProductStock();
-    }
-	
-	
-    public function syncapiAction()
-	{
-		$configuration = $this->getAkiliaConfiguration();
-		if (!is_array($configuration['synchronizer'])) {
-			throw new \Exception("Cannot find akilia synchronize configuration, please see you global config files");
-		}
-
-		$em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-		$zendDb      = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-		$synchronizer = new Akilia\Synchronizer($em, $zendDb);
-		$synchronizer->setServiceLocator($this->getServiceLocator());
-		$synchronizer->setConfiguration($configuration['synchronizer']);
-		$synchronizer->synchronizeApi();	
-    }	
-	
-    public function syncmediaAction()
-	{
-		$configuration = $this->getAkiliaConfiguration();
-		if (!is_array($configuration['synchronizer'])) {
-			throw new \Exception("Cannot find akilia synchronize configuration, please see you global config files");
-		}
-
-		$em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-		$zendDb      = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-		$synchronizer = new Akilia\Synchronizer($em, $zendDb);
-		$synchronizer->setServiceLocator($this->getServiceLocator());
-		$synchronizer->setConfiguration($configuration['synchronizer']);
-		$synchronizer->synchronizeProductMedia();	
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+        $zendDb = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $synchronizer = new Akilia\Synchronizer($em, $zendDb);
+        $synchronizer->setServiceLocator($this->getServiceLocator());
+        $synchronizer->setConfiguration($configuration['synchronizer']);
+        $synchronizer->synchronizeAll();
     }
 
-	public function checkSynchroAction() 
-	{
-		
-		$configuration = $this->getAkiliaConfiguration();
-		if (!is_array($configuration['synchronizer'])) {
-			throw new \Exception("Cannot find akilia synchronizer configuration, please see you global config files");
-		}
-		
-		if (!is_array($configuration['checker'])) {
-			throw new \Exception("Cannot find akilia checker configuration, please see you global config files");
-		}
-		
-		$pricelists = $configuration['checker']['pricelists'];
-		
-		$db = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager')->getConnection()->getDatabase();
-		$adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-		
-		
-		foreach ($pricelists as $pricelist => $options) {
-			echo "[+] Checking pricelist '$pricelist'\n";
-			
-			$query = $this->getSQLPricelistChecker($pricelist, $db, $options['database']);
-			$result = $adapter->query($query, Adapter::QUERY_MODE_EXECUTE)->toArray();
-			$nb_errors = count($result);
-			if ($nb_errors > 0) {
-				echo " -> [Error] $nb_errors returned :\n";
-				echo "\t" . join("\t", array_keys($result[0])) . "\n";
-				foreach($result as $row) {
-					echo "\t" . join("\t", $row) . "\n";
-				}
-				echo " Check with query : " . preg_replace("/(\n)(\t)/", ' ', $query) . "\n";
-			} else {
-				echo " -> Success !!!\n";
-			}
-		}
-	}
-	
-	public function geocodecustomersAction() 
-	{
-		$configuration = $this->getAkiliaConfiguration();
+    public function syncstockAction() {
+        $configuration = $this->getAkiliaConfiguration();
+        if (!is_array($configuration['synchronizer'])) {
+            throw new \Exception("Cannot find akilia synchronize configuration, please see you global config files");
+        }
 
-		$ak2Customers = new Akilia2Customers($configuration);
-		$ak2Customers->setServiceLocator($this->getServiceLocator());
-		$adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-		$ak2Customers->setDbAdapter($adapter);
-		
-		$geo = $ak2Customers->getCustomerGeo($days_threshold=300, $turnover_min=1000, $min_accuracy=6, $limit=0);
-		
-		
-		$geocoder = new \Geocoder\Geocoder();
-		$geoadapter  = new \Geocoder\HttpAdapter\CurlHttpAdapter();
-		$chain    = new \Geocoder\Provider\ChainProvider(array(
-			new \Geocoder\Provider\GoogleMapsProvider($geoadapter, 'fr_FR', 'Belgium', true),
-			new \Geocoder\Provider\FreeGeoIpProvider($geoadapter),
-			new \Geocoder\Provider\HostIpProvider($geoadapter),
-			
-		));
-		$geocoder->registerProvider($chain);
-		$total_geocoded = 0;
-		foreach($geo as $r) {
-			$city = preg_replace('[0-9]', '', $r['city']);
-			$city = str_replace('CEDEX', '', $city);
-			$city = str_replace('"', ' ', $city);
-			$city = str_replace('(', ' ', $city);
-			$city = str_replace(')', ' ', $city);
-			$street = $r['street'];
-			$street = str_replace('STR.', "", $street);
-			$street = str_replace('"', " ", $street);
-			$street = str_replace('(', " ", $street);
-			$street = str_replace(')', " ", $street);
-			$street = str_replace('STRASSE', 'Straße', $street);
-			$address = $street .  ", " . $r['zipcode'] . " " . $city . ", " . $r['state'] . ', ' . $r['country'];
-			$address = str_replace(", ,", ",", $address);		
- 			/**
-			 Accuracy codes
-			 * 0 Unknown location.
-			 * 1 Country level accuracy.
-			 * 2 Region (state, province, prefecture, etc.) level accuracy.
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+        $zendDb = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $synchronizer = new Akilia\Synchronizer($em, $zendDb);
+        $synchronizer->setServiceLocator($this->getServiceLocator());
+        $synchronizer->setConfiguration($configuration['synchronizer']);
+        $synchronizer->synchronizeProductStock();
+    }
+
+    public function syncapiAction() {
+        $configuration = $this->getAkiliaConfiguration();
+        if (!is_array($configuration['synchronizer'])) {
+            throw new \Exception("Cannot find akilia synchronize configuration, please see you global config files");
+        }
+
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+        $zendDb = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $synchronizer = new Akilia\Synchronizer($em, $zendDb);
+        $synchronizer->setServiceLocator($this->getServiceLocator());
+        $synchronizer->setConfiguration($configuration['synchronizer']);
+        $synchronizer->synchronizeApi();
+    }
+
+    public function syncmediaAction() {
+        $configuration = $this->getAkiliaConfiguration();
+        if (!is_array($configuration['synchronizer'])) {
+            throw new \Exception("Cannot find akilia synchronize configuration, please see you global config files");
+        }
+
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+        $zendDb = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $synchronizer = new Akilia\Synchronizer($em, $zendDb);
+        $synchronizer->setServiceLocator($this->getServiceLocator());
+        $synchronizer->setConfiguration($configuration['synchronizer']);
+        $synchronizer->synchronizeProductMedia();
+    }
+
+    public function checkSynchroAction() {
+
+        $configuration = $this->getAkiliaConfiguration();
+        if (!is_array($configuration['synchronizer'])) {
+            throw new \Exception("Cannot find akilia synchronizer configuration, please see you global config files");
+        }
+
+        if (!is_array($configuration['checker'])) {
+            throw new \Exception("Cannot find akilia checker configuration, please see you global config files");
+        }
+
+        $pricelists = $configuration['checker']['pricelists'];
+
+        $db = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager')->getConnection()->getDatabase();
+        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+
+
+        foreach ($pricelists as $pricelist => $options) {
+            echo "[+] Checking pricelist '$pricelist'\n";
+
+            $query = $this->getSQLPricelistChecker($pricelist, $db, $options['database']);
+            $result = $adapter->query($query, Adapter::QUERY_MODE_EXECUTE)->toArray();
+            $nb_errors = count($result);
+            if ($nb_errors > 0) {
+                echo " -> [Error] $nb_errors returned :\n";
+                echo "\t" . join("\t", array_keys($result[0])) . "\n";
+                foreach ($result as $row) {
+                    echo "\t" . join("\t", $row) . "\n";
+                }
+                echo " Check with query : " . preg_replace("/(\n)(\t)/", ' ', $query) . "\n";
+            } else {
+                echo " -> Success !!!\n";
+            }
+        }
+    }
+
+    public function geocodecustomersAction() {
+        $configuration = $this->getAkiliaConfiguration();
+
+        $ak2Customers = new Akilia2Customers($configuration);
+        $ak2Customers->setServiceLocator($this->getServiceLocator());
+        $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $ak2Customers->setDbAdapter($adapter);
+
+        $geo = $ak2Customers->getCustomerGeo($days_threshold = 300, $turnover_min = 1000, $min_accuracy = 6, $limit = 0);
+
+
+        $geocoder = new \Geocoder\Geocoder();
+        $geoadapter = new \Geocoder\HttpAdapter\CurlHttpAdapter();
+        $chain = new \Geocoder\Provider\ChainProvider(array(
+            new \Geocoder\Provider\GoogleMapsProvider($geoadapter, 'fr_FR', 'Belgium', true),
+            new \Geocoder\Provider\FreeGeoIpProvider($geoadapter),
+            new \Geocoder\Provider\HostIpProvider($geoadapter),
+        ));
+        $geocoder->registerProvider($chain);
+        $total_geocoded = 0;
+        foreach ($geo as $r) {
+            $city = preg_replace('[0-9]', '', $r['city']);
+            $city = str_replace('CEDEX', '', $city);
+            $city = str_replace('"', ' ', $city);
+            $city = str_replace('(', ' ', $city);
+            $city = str_replace(')', ' ', $city);
+            $street = $r['street'];
+            $street = str_replace('STR.', "", $street);
+            $street = str_replace('"', " ", $street);
+            $street = str_replace('(', " ", $street);
+            $street = str_replace(')', " ", $street);
+            $street = str_replace('STRASSE', 'Straße', $street);
+            $address = $street . ", " . $r['zipcode'] . " " . $city . ", " . $r['state'] . ', ' . $r['country'];
+            $address = str_replace(", ,", ",", $address);
+            /**
+              Accuracy codes
+             * 0 Unknown location.
+             * 1 Country level accuracy.
+             * 2 Region (state, province, prefecture, etc.) level accuracy.
              * 3 Sub-region (county, municipality, etc.) level accuracy.
-			 * 4 Town (city, village) level accuracy.
+             * 4 Town (city, village) level accuracy.
              * 5 Post code (zip code) level accuracy.
              * 6 Street level accuracy.
-			 * 7 Intersection level accuracy.
-			 * 8 Address level accuracy.
-			 * 9 Premise (building name, property name, shopping center, etc.) level accuracy.  
-			 */
-			
-			try {
-				
-				$geocode = $geocoder->geocode($address);
-				$latitude = $geocode->getLatitude();
-				$longitude = $geocode->getLongitude();
-				$country   = $geocode->getCountry();
-				$city	   = $geocode->getCity();
-				$zipcode   = $geocode->getZipcode();
-				$street_number = $geocode->getStreetNumber();
-				$street_name   = $geocode->getStreetName();
-				if ($street_number != '') {
-					$accuracy = 8;
-				} elseif ($street_name != '') {
-					$accuracy = 6;
-				} elseif ($zipcode != '') {
-					$accuracy = 5;
-					
-				} elseif ($city != '') {
-					$accuracy = 4;
-				} else {
-					$accuracy = 1;
-				}
-				echo "[Success] Geocoded: " . $address . "\n";
-				$adrs = "$street_number, $street_name, $zipcode $city, $country";
-				echo "      [$accuracy] $adrs\n";
-				
-				if ($r['accuracy'] <= $accuracy) {
-					$total_geocoded++;
-					// update in database
-					$sql = new Sql($adapter);
-					$akilia2db  = $configuration['synchronizer']['db_akilia2'];
-		
-					$bcg = new \Zend\Db\Sql\TableIdentifier('base_customer_geo', $akilia2db);
-					
-					$insert = $sql->insert($bcg);
-					$now = date('Y-m-d H:i:s');
-					$newData = array(
-						'customer_id'=> $r['customer_id'],
-						'longitude'=> $longitude,
-						'latitude'=> $latitude,
-						'accuracy'=> $accuracy,
-						'address'=> $adrs,
-						'geocoded_at' => $now,
-						'created_at' => $now,
-						'updated_at' => $now,
-					);
-					$insert->values($newData);
-					$selectString = $sql->getSqlStringForSqlObject($insert);
-					$selectString = str_replace('INSERT INTO', 'REPLACE INTO', $selectString);
-					
-					$results = $adapter->query($selectString, Adapter::QUERY_MODE_EXECUTE);					
-					
-				}
-				
-				
-			} catch (\Exception $e) {
-				echo "[Error] Cannot find: " . $address . "\n";
-			}
-		}
-		echo "#####################################################\n";
-		echo "Total tested address: " . count($geo) . "\n";
-		echo "Geocoded: " . $total_geocoded . "\n";
-		echo "#####################################################\n";
-	}
-	
-	public function listproductpicturesAction() {
-		$sl = $this->getServiceLocator();
-		$configuration = $this->getAkiliaConfiguration();
-		
-		$products = new Akilia1Products($configuration);
-		$products->setServiceLocator($this->getServiceLocator());
-		$products->setDbAdapter($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
-		
-		$list = $products->getProductPictures();
-		
-		foreach($list as $infos) {
-			echo str_pad($infos['product_id'], 10) . "\t" .  
-				($infos['alternate_index'] === null ? "0" : $infos['alternate_index']) . "\t" . 
-				($infos['product_active'] ? "        " : "ARCHIVED") . "\t" . 
-				$infos['filename'] . "\n"; 
-		}
-	}
-	
-	
-	public function archiveproductpicturesAction() {
-		
-		
-		$configuration = $this->getAkiliaConfiguration();
-		$products = new Akilia1Products($configuration);
-		$products->setServiceLocator($this->getServiceLocator());
-		$products->setDbAdapter($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
-		
-		$list = $products->getProductPictures();
+             * 7 Intersection level accuracy.
+             * 8 Address level accuracy.
+             * 9 Premise (building name, property name, shopping center, etc.) level accuracy.  
+             */
+            try {
 
-		$archive_picture_path = $configuration['archive_product_picture_path'];
-		if (!is_dir($archive_picture_path)) {
-			throw new \Exception("archive_product_picture_path '$archive_picture_path' is not a valid directory, correct your config");
-		} elseif (!is_writable($archive_picture_path)) {
-			throw new \Exception("archive_product_picture_path '$archive_picture_path' is not writable");
-		}
+                $geocode = $geocoder->geocode($address);
+                $latitude = $geocode->getLatitude();
+                $longitude = $geocode->getLongitude();
+                $country = $geocode->getCountry();
+                $city = $geocode->getCity();
+                $zipcode = $geocode->getZipcode();
+                $street_number = $geocode->getStreetNumber();
+                $street_name = $geocode->getStreetName();
+                if ($street_number != '') {
+                    $accuracy = 8;
+                } elseif ($street_name != '') {
+                    $accuracy = 6;
+                } elseif ($zipcode != '') {
+                    $accuracy = 5;
+                } elseif ($city != '') {
+                    $accuracy = 4;
+                } else {
+                    $accuracy = 1;
+                }
+                echo "[Success] Geocoded: " . $address . "\n";
+                $adrs = "$street_number, $street_name, $zipcode $city, $country";
+                echo "      [$accuracy] $adrs\n";
 
-		
-		$archivable = array();
-		foreach($list as $basename => $infos) {
-			if (!$infos['product_active']) {
-				$archivable[] = $infos['filename'];
-			}
-		}
-		
-		$console = Console::getInstance();
-		
-		if (count($archivable) == 0) {
-			$console->writeLine("Nothing to do (no archivable product picture found)", ColorInterface::GREEN);
-			exit(0);
-		} else {
-			foreach($archivable as $file) {
-				echo "$file\n";
-			}
-			$count = count($archivable);
-			$console->writeLine('---------------------------------------------------');
-			$console->writeLine("Will move $count file(s) into new directory :");
-			$console->writeLine(" - $archive_picture_path");
-			$console->writeLine('---------------------------------------------------');
-			$console->writeLine("Are you okay ? (CTRL-C to abort)");
-			$console->readLine();
-			try {
-				foreach($archivable as $file) {
-					$dest_file = $archive_picture_path . "/" . basename($file);
-					$ret = copy($file, $dest_file);
-					if (!$ret) {
-						throw new \Exception("Cannot copy '$file' to '$dest_file'");
-					}
-					$ret = unlink($file);
-					if (!$ret) {
-						throw new \Exception("Cannot remove '$file'");
-					}
-					
-				}
-			} catch (\Exception $e) {
-				$console->writeLine("Error: {$e->getMessage()}", ColorInterface::RED);
-			}
-			$console->writeLine("Success, $count files moved to $archive_picture_path", ColorInterface::GREEN);
-			
-		}
+                if ($r['accuracy'] <= $accuracy) {
+                    $total_geocoded++;
+                    // update in database
+                    $sql = new Sql($adapter);
+                    $akilia2db = $configuration['synchronizer']['db_akilia2'];
 
-		
-		
-	}
-	
+                    $bcg = new \Zend\Db\Sql\TableIdentifier('base_customer_geo', $akilia2db);
 
-	/**
-	 * 
-	 * @return array
-	 * @throws Exception
-	 */
-	protected function getAkiliaConfiguration() {
-		$sl = $this->getServiceLocator();
-		$configuration = $sl->get('Configuration');
-		if (!is_array($configuration['akilia'])) {
-			throw new \Exception("Cannot find akilia configuration, please see you global config files");
-		}
-		return $configuration['akilia'];
-		
-	}
-	
-	
-	/**
-	 * 
-	 * @param string $pricelist
-	 * @param string $db openstore db name
-	 * @param string $akilia1_db
-	 * @return string
-	 */
-	protected function getSQLPricelistChecker($pricelist, $db, $akilia1_db, $limit=10)
-	{
-		
-		$sql = "select 
+                    $insert = $sql->insert($bcg);
+                    $now = date('Y-m-d H:i:s');
+                    $newData = array(
+                        'customer_id' => $r['customer_id'],
+                        'longitude' => $longitude,
+                        'latitude' => $latitude,
+                        'accuracy' => $accuracy,
+                        'address' => $adrs,
+                        'geocoded_at' => $now,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    );
+                    $insert->values($newData);
+                    $selectString = $sql->getSqlStringForSqlObject($insert);
+                    $selectString = str_replace('INSERT INTO', 'REPLACE INTO', $selectString);
+
+                    $results = $adapter->query($selectString, Adapter::QUERY_MODE_EXECUTE);
+                }
+            } catch (\Exception $e) {
+                echo "[Error] Cannot find: " . $address . "\n";
+            }
+        }
+        echo "#####################################################\n";
+        echo "Total tested address: " . count($geo) . "\n";
+        echo "Geocoded: " . $total_geocoded . "\n";
+        echo "#####################################################\n";
+    }
+
+    public function listproductpicturesAction() {
+        $sl = $this->getServiceLocator();
+        $configuration = $this->getAkiliaConfiguration();
+
+        $products = new Akilia1Products($configuration);
+        $products->setServiceLocator($this->getServiceLocator());
+        $products->setDbAdapter($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
+
+        $list = $products->getProductPictures();
+
+        foreach ($list as $infos) {
+            echo str_pad($infos['product_id'], 10) . "\t" .
+            ($infos['alternate_index'] === null ? "0" : $infos['alternate_index']) . "\t" .
+            ($infos['product_active'] ? "        " : "ARCHIVED") . "\t" .
+            $infos['filename'] . "\n";
+        }
+    }
+
+    public function archiveproductpicturesAction() {
+
+
+        $configuration = $this->getAkiliaConfiguration();
+        $products = new Akilia1Products($configuration);
+        $products->setServiceLocator($this->getServiceLocator());
+        $products->setDbAdapter($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
+
+        $list = $products->getProductPictures();
+
+        $archive_picture_path = $configuration['archive_product_picture_path'];
+        if (!is_dir($archive_picture_path)) {
+            throw new \Exception("archive_product_picture_path '$archive_picture_path' is not a valid directory, correct your config");
+        } elseif (!is_writable($archive_picture_path)) {
+            throw new \Exception("archive_product_picture_path '$archive_picture_path' is not writable");
+        }
+
+
+        $archivable = array();
+        foreach ($list as $basename => $infos) {
+            if (!$infos['product_active']) {
+                $archivable[] = $infos['filename'];
+            }
+        }
+
+        $console = Console::getInstance();
+
+        if (count($archivable) == 0) {
+            $console->writeLine("Nothing to do (no archivable product picture found)", ColorInterface::GREEN);
+            exit(0);
+        } else {
+            foreach ($archivable as $file) {
+                echo "$file\n";
+            }
+            $count = count($archivable);
+            $console->writeLine('---------------------------------------------------');
+            $console->writeLine("Will move $count file(s) into new directory :");
+            $console->writeLine(" - $archive_picture_path");
+            $console->writeLine('---------------------------------------------------');
+            $console->writeLine("Are you okay ? (CTRL-C to abort)");
+            $console->readLine();
+            try {
+                foreach ($archivable as $file) {
+                    $dest_file = $archive_picture_path . "/" . basename($file);
+                    $ret = copy($file, $dest_file);
+                    if (!$ret) {
+                        throw new \Exception("Cannot copy '$file' to '$dest_file'");
+                    }
+                    $ret = unlink($file);
+                    if (!$ret) {
+                        throw new \Exception("Cannot remove '$file'");
+                    }
+                }
+            } catch (\Exception $e) {
+                $console->writeLine("Error: {$e->getMessage()}", ColorInterface::RED);
+            }
+            $console->writeLine("Success, $count files moved to $archive_picture_path", ColorInterface::GREEN);
+        }
+    }
+
+    /**
+     * 
+     * @return array
+     * @throws Exception
+     */
+    protected function getAkiliaConfiguration() {
+        $sl = $this->getServiceLocator();
+        $configuration = $sl->get('Configuration');
+        if (!is_array($configuration['akilia'])) {
+            throw new \Exception("Cannot find akilia configuration, please see you global config files");
+        }
+        return $configuration['akilia'];
+    }
+
+    /**
+     * 
+     * @param string $pricelist
+     * @param string $db openstore db name
+     * @param string $akilia1_db
+     * @return string
+     */
+    protected function getSQLPricelistChecker($pricelist, $db, $akilia1_db, $limit = 10) {
+
+        $sql = "select 
 			a.id_article,
 			a.reference,
 			m.id_marque, pb.reference as brand_ref,
@@ -398,6 +372,7 @@ class ConsoleController extends AbstractActionController
 		or t.flag_promo <> ppl.is_promotional
 		)
 		LIMIT $limit";
-		return $sql;
-	}
+        return $sql;
+    }
+
 }

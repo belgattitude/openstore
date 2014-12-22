@@ -154,6 +154,7 @@ class ProductTranslationBrowser extends AbstractBrowser {
                     'nb_distinct_revision' => new Expression('COUNT(distinct COALESCE(p18.revision, 9999999))')
                 ]
                 ), true);
+        
         $select->group(array_keys($columns));
         
         $product_id = $params->get('product_id');
