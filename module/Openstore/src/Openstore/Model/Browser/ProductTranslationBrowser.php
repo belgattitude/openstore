@@ -144,8 +144,11 @@ class ProductTranslationBrowser extends AbstractBrowser {
         
         $select->columns(array_merge(
                 $columns, 
-                ['max_revision' => new Expression('MAX(p18.revision)')],
-                $inner_columns
+                $inner_columns,
+                [   
+                    'max_revision' => new Expression('MAX(p18.revision)'),
+                    'nb_distinct_revision' => new Expression('COUNT(distinct p18.revision)')
+                ]
                 ), true);
         $select->group(array_keys($columns));
         
@@ -247,6 +250,31 @@ class ProductTranslationBrowser extends AbstractBrowser {
         $select->columns($columns);
 
         $select->order(array('relevance desc', 'pc.global_sort_index', 'p.sort_index', 'p.display_reference'));
+        
+        
+        $filters = $params['filters'];
+        if (is_array($filters) && count($filters) > 0) {
+            
+
+            foreach($filters as $filter) {
+                
+                switch($filter) {
+                    case 'untranslated' :
+                        $select->where('COALESCE(p18.revision, 0) = 0');
+                        break;
+
+                    case 'revised' :
+                        //foreach()
+                        $select->having('nb_distinct_revision > 1');
+                        break;
+                    
+                }
+                
+                
+            }
+            
+        }
+        
         /*
           echo '<pre>';
 
