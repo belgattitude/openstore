@@ -149,6 +149,7 @@ class ProductTranslationBrowser extends AbstractBrowser {
                 $inner_columns,
                 [   
                     'min_revision' => new Expression('MIN(COALESCE(p18.revision, 0))'),
+                    'max_updated_at' => new Expression('MAX(p18.updated_at)'),
                     'max_revision' => new Expression('MAX(COALESCE(p18.revision, 0))'),
                     'nb_distinct_revision' => new Expression('COUNT(distinct COALESCE(p18.revision, 9999999))')
                 ]
@@ -253,8 +254,6 @@ class ProductTranslationBrowser extends AbstractBrowser {
         $columns = array_merge($select->getRawState(Select::COLUMNS), array('relevance' => new Expression($relevance)));
         $select->columns($columns);
 
-        $select->order(array('relevance desc', 'pc.global_sort_index', 'p.sort_index', 'p.display_reference'));
-        
         
         $filters = $params['filters'];
         if (is_array($filters) && count($filters) > 0) {
@@ -273,6 +272,18 @@ class ProductTranslationBrowser extends AbstractBrowser {
                 $select->having(join(' or ', $having_clauses));
             }
         }
+
+        
+        $order_columns = ['relevance desc'];
+        if ($params['order']) {
+            
+            $order_columns = array_merge($order_columns, $params['order']);
+            
+        }
+
+        $select->order($order_columns);
+        
+        
         
         /*
           echo '<pre>';
