@@ -132,6 +132,12 @@ module.exports = function(grunt) {
 				 'dist/css/bootstrap-yeti.min.css': [ 'vendor/bootswatch/yeti/bootstrap.min.css' ]
 			  }
 			},
+			'bootstrap-paper': {
+			  files: {
+				 'dist/css/bootstrap-paper.min.css': [ 'vendor/bootswatch/paper/bootstrap.min.css' ]
+			  }
+			},
+                        
 			'bootstrap-cyborg': {
 			  files: {
 				 'dist/css/bootstrap-cyborg.min.css': [ 'vendor/bootswatch/cyborg/bootstrap.min.css' ]

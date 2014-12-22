@@ -10,6 +10,8 @@ use Soluble\Db\Sql\Select;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
 
+use Patchwork\Utf8 as u;
+
 
 class ProductTranslationBrowser extends AbstractBrowser {
 
@@ -146,8 +148,9 @@ class ProductTranslationBrowser extends AbstractBrowser {
                 $columns, 
                 $inner_columns,
                 [   
-                    'max_revision' => new Expression('MAX(p18.revision)'),
-                    'nb_distinct_revision' => new Expression('COUNT(distinct p18.revision)')
+                    'min_revision' => new Expression('MIN(COALESCE(p18.revision, 0))'),
+                    'max_revision' => new Expression('MAX(COALESCE(p18.revision, 0))'),
+                    'nb_distinct_revision' => new Expression('COUNT(distinct COALESCE(p18.revision, 9999999))')
                 ]
                 ), true);
         $select->group(array_keys($columns));
@@ -200,12 +203,12 @@ class ProductTranslationBrowser extends AbstractBrowser {
             // BARCODE, SEARCH_REFERENCE, PRODUCT_ID,
 
             $matches = array();
-            if (is_numeric($query) && strlen($query) < 20) {
+            if (is_numeric($query) && u::strlen($query) < 20) {
 
                 // Can be a barcode or a product_id, 
                 $matches[1000000000] = "p.product_id = $query";
 
-                if (strlen($query) > 10) {
+                if (u::strlen($query) > 10) {
                     $matches[1000000000] = "p.barcode_ean13 = '$query'";
                     $matches[100000000] = "p.barcode_upca = '$query'";
                 }
@@ -214,16 +217,17 @@ class ProductTranslationBrowser extends AbstractBrowser {
             $splitted = explode(' ', preg_replace('!\s+!', ' ', $query));
 
             // test title in order
-
-            $matches[10000000] = "p.search_reference like " . $platform->quoteValue($searchable_ref . '%');
-            $matches[1000000] = "p.search_reference like " . $platform->quoteValue('%' . $searchable_ref . '%');
+            if ($searchable_ref != "") {
+                $matches[10000000] = "p.search_reference like " . $platform->quoteValue($searchable_ref . '%');
+                $matches[1000000] = "p.search_reference like " . $platform->quoteValue('%' . $searchable_ref . '%');
+            }
             //echo "p.search_reference like CONCAT('%', get_searchable_reference($quoted), '%')";
             //die();
-            if (strlen($query) > 3) {
+            if (u::strlen($query) > 3) {
                 $matches[1000000] = 'p18.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
                 $matches[100000] = '(p18.title is null and p.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%') . ")";
             }
-            if (strlen($query) > 5) {
+            if (u::strlen($query) > 3) {
                 $matches[10000] = 'psi.keywords like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
             }
 
@@ -254,25 +258,20 @@ class ProductTranslationBrowser extends AbstractBrowser {
         
         $filters = $params['filters'];
         if (is_array($filters) && count($filters) > 0) {
-            
-
+            $having_clauses = [];
             foreach($filters as $filter) {
-                
                 switch($filter) {
                     case 'untranslated' :
-                        $select->where('COALESCE(p18.revision, 0) = 0');
+                        $having_clauses[] = 'min_revision = 0';
                         break;
-
                     case 'revised' :
-                        //foreach()
-                        $select->having('nb_distinct_revision > 1');
+                        $having_clauses[] = 'nb_distinct_revision > 1';
                         break;
-                    
                 }
-                
-                
             }
-            
+            if (count($having_clauses) > 0) {
+                $select->having(join(' or ', $having_clauses));
+            }
         }
         
         /*
@@ -282,7 +281,6 @@ class ProductTranslationBrowser extends AbstractBrowser {
           die();
          * 
          */
-        //$select->order($relevance);
 
 
 
