@@ -46,8 +46,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     /**
      * mysqli connection
      * 
-     * @param
-     *            Mysqli
+     * @param Mysqli
      */
     protected $mysqli;
 
@@ -98,7 +97,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     
     /**
      *
-     * @param \Doctrine\ORM\EntityManager $em            
+     * @param \Doctrine\ORM\EntityManager $em   
      * @param Adapter $zendDb            
      */
     function __construct(\Doctrine\ORM\EntityManager $em, Adapter $zendDb)
@@ -130,6 +129,26 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         return $this;
     }
 
+    function synchronizeAkilia1ProductDescription()
+    {
+        /*
+        SELECT p.product_id AS `product_id`, 
+               p.reference AS `reference`, 
+               p2.reference AS `parent_reference`, 
+               COALESCE(p.display_reference, p.reference) AS `display_reference`, 
+               pb.reference AS `brand_reference`, pb.title AS `brand_title`, 
+               pg.reference AS `group_reference`, 
+               pc.reference AS `category_reference`, 
+               COALESCE(pc18.title, pc.title) AS `category_title`, 
+               COALESCE(pc18.breadcrumb, pc.breadcrumb) AS `category_breadcrumb`, 
+               pst.reference AS `status_reference`, 
+               pst.flag_end_of_lifecycle AS `flag_end_of_lifecycle`, 
+               pst.flag_till_end_of_stock AS `flag_till_end_of_stock`, 
+               pm.media_id AS `picture_media_id`, 
+               DATE_FORMAT(p.created_at, '%Y-%m-%dT%TZ') AS `created_at`, DATE_FORMAT(p.available_at, '%Y-%m-%dT%TZ') AS `available_at`, COALESCE(MAX(if(p18.lang = 'en', p18.invoice_title, null)), '') AS `invoice_title_en`, COALESCE(MAX(if(p18.lang = 'en', p18.title, null)), '') AS `title_en`, COALESCE(MAX(if(p18.lang = 'en', p18.description, null)), '') AS `description_en`, COALESCE(MAX(if(p18.lang = 'en', p18.characteristic, null)), '') AS `characteristic_en`, DATE_FORMAT(MAX(if(p18.lang = 'en', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_en`, DATE_FORMAT(MAX(if(p18.lang = 'en', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_en`, MAX(if(p18.lang = 'en', p18.created_by, null)) AS `created_by_en`, MAX(if(p18.lang = 'en', p18.updated_by, null)) AS `updated_by_en`, MAX(if(p18.lang = 'en', p18.revision, null)) AS `revision_en`, COALESCE(MAX(if(p18.lang = 'fr', p18.invoice_title, null)), '') AS `invoice_title_fr`, COALESCE(MAX(if(p18.lang = 'fr', p18.title, null)), '') AS `title_fr`, COALESCE(MAX(if(p18.lang = 'fr', p18.description, null)), '') AS `description_fr`, COALESCE(MAX(if(p18.lang = 'fr', p18.characteristic, null)), '') AS `characteristic_fr`, DATE_FORMAT(MAX(if(p18.lang = 'fr', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_fr`, DATE_FORMAT(MAX(if(p18.lang = 'fr', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_fr`, MAX(if(p18.lang = 'fr', p18.created_by, null)) AS `created_by_fr`, MAX(if(p18.lang = 'fr', p18.updated_by, null)) AS `updated_by_fr`, MAX(if(p18.lang = 'fr', p18.revision, null)) AS `revision_fr`, COALESCE(MAX(if(p18.lang = 'zh', p18.invoice_title, null)), '') AS `invoice_title_zh`, COALESCE(MAX(if(p18.lang = 'zh', p18.title, null)), '') AS `title_zh`, COALESCE(MAX(if(p18.lang = 'zh', p18.description, null)), '') AS `description_zh`, COALESCE(MAX(if(p18.lang = 'zh', p18.characteristic, null)), '') AS `characteristic_zh`, DATE_FORMAT(MAX(if(p18.lang = 'zh', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_zh`, DATE_FORMAT(MAX(if(p18.lang = 'zh', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_zh`, MAX(if(p18.lang = 'zh', p18.created_by, null)) AS `created_by_zh`, MAX(if(p18.lang = 'zh', p18.updated_by, null)) AS `updated_by_zh`, MAX(if(p18.lang = 'zh', p18.revision, null)) AS `revision_zh`, COALESCE(MAX(if(p18.lang = 'de', p18.invoice_title, null)), '') AS `invoice_title_de`, COALESCE(MAX(if(p18.lang = 'de', p18.title, null)), '') AS `title_de`, COALESCE(MAX(if(p18.lang = 'de', p18.description, null)), '') AS `description_de`, COALESCE(MAX(if(p18.lang = 'de', p18.characteristic, null)), '') AS `characteristic_de`, DATE_FORMAT(MAX(if(p18.lang = 'de', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_de`, DATE_FORMAT(MAX(if(p18.lang = 'de', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_de`, MAX(if(p18.lang = 'de', p18.created_by, null)) AS `created_by_de`, MAX(if(p18.lang = 'de', p18.updated_by, null)) AS `updated_by_de`, MAX(if(p18.lang = 'de', p18.revision, null)) AS `revision_de`, COALESCE(MAX(if(p18.lang = 'it', p18.invoice_title, null)), '') AS `invoice_title_it`, COALESCE(MAX(if(p18.lang = 'it', p18.title, null)), '') AS `title_it`, COALESCE(MAX(if(p18.lang = 'it', p18.description, null)), '') AS `description_it`, COALESCE(MAX(if(p18.lang = 'it', p18.characteristic, null)), '') AS `characteristic_it`, DATE_FORMAT(MAX(if(p18.lang = 'it', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_it`, DATE_FORMAT(MAX(if(p18.lang = 'it', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_it`, MAX(if(p18.lang = 'it', p18.created_by, null)) AS `created_by_it`, MAX(if(p18.lang = 'it', p18.updated_by, null)) AS `updated_by_it`, MAX(if(p18.lang = 'it', p18.revision, null)) AS `revision_it`, COALESCE(MAX(if(p18.lang = 'nl', p18.invoice_title, null)), '') AS `invoice_title_nl`, COALESCE(MAX(if(p18.lang = 'nl', p18.title, null)), '') AS `title_nl`, COALESCE(MAX(if(p18.lang = 'nl', p18.description, null)), '') AS `description_nl`, COALESCE(MAX(if(p18.lang = 'nl', p18.characteristic, null)), '') AS `characteristic_nl`, DATE_FORMAT(MAX(if(p18.lang = 'nl', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_nl`, DATE_FORMAT(MAX(if(p18.lang = 'nl', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_nl`, MAX(if(p18.lang = 'nl', p18.created_by, null)) AS `created_by_nl`, MAX(if(p18.lang = 'nl', p18.updated_by, null)) AS `updated_by_nl`, MAX(if(p18.lang = 'nl', p18.revision, null)) AS `revision_nl`, COALESCE(MAX(if(p18.lang = 'es', p18.invoice_title, null)), '') AS `invoice_title_es`, COALESCE(MAX(if(p18.lang = 'es', p18.title, null)), '') AS `title_es`, COALESCE(MAX(if(p18.lang = 'es', p18.description, null)), '') AS `description_es`, COALESCE(MAX(if(p18.lang = 'es', p18.characteristic, null)), '') AS `characteristic_es`, DATE_FORMAT(MAX(if(p18.lang = 'es', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_es`, DATE_FORMAT(MAX(if(p18.lang = 'es', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_es`, MAX(if(p18.lang = 'es', p18.created_by, null)) AS `created_by_es`, MAX(if(p18.lang = 'es', p18.updated_by, null)) AS `updated_by_es`, MAX(if(p18.lang = 'es', p18.revision, null)) AS `revision_es`, MIN(COALESCE(p18.revision, 0)) AS `min_revision`, MAX(p18.updated_at) AS `max_updated_at`, MAX(COALESCE(p18.revision, 0)) AS `max_revision`, COUNT(distinct COALESCE(p18.revision, 9999999)) AS `nb_distinct_revision`, 'A' AS `relevance` FROM `product` AS `p` LEFT JOIN `product_translation` AS `p18` ON p18.product_id = p.product_id and p18.lang in ('en','fr','zh','de','it','nl','es') LEFT JOIN `product` AS `p2` ON p2.product_id = p.parent_id INNER JOIN `product_brand` AS `pb` ON pb.brand_id = p.brand_id LEFT JOIN `product_group` AS `pg` ON pg.group_id = p.group_id INNER JOIN `product_category` AS `pc` ON pc.category_id = p.category_id LEFT JOIN `product_category_translation` AS `pc18` ON pc.category_id = pc18.category_id and pc18.lang = 'es' LEFT JOIN `product_search` AS `psi` ON psi.product_id = p.product_id and psi.lang = 'es' LEFT JOIN `product_type` AS `pt` ON p.type_id = pt.type_id LEFT JOIN `product_status` AS `pst` ON pst.status_id = p.status_id LEFT JOIN `product_media` AS `pm` ON pm.product_id = p.product_id and pm.flag_primary=1 LEFT JOIN `product_media_type` AS `pmt` ON pmt.type_id = p.type_id and pmt.reference = 'PICTURE' INNER JOIN `product_pricelist` AS `ppl` ON ppl.product_id = p.product_id INNER JOIN `pricelist` AS `pl` ON pl.pricelist_id = ppl.pricelist_id WHERE p.flag_active = 1 AND `pl`.`reference` IN ('BE') AND ppl.flag_active = 1 AND `p`.`type_id` IN ('1') GROUP BY `product_id`, `reference`, `parent_reference`, `display_reference`, `brand_reference`, `brand_title`, `group_reference`, `category_reference`, `category_title`, `category_breadcrumb`, `status_reference`, `flag_end_of_lifecycle`, `flag_till_end_of_stock`, `picture_media_id`, `created_at`, `available_at` ORDER BY `relevance` DESC, `p`.`created_at`       
+        */
+    }
+    
     function synchronizeAll()
     {
         $this->synchronizeCountry();
@@ -148,29 +167,27 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->synchronizeProductStock();
         $this->synchronizeProductPackaging();
         $this->synchronizeDiscountCondition();
-
-        
         
         $this->rebuildCategoryBreadcrumbs();
         $this->rebuildProductSearch();
     
-    /**
-     * INSERT INTO `nuvolia`.`user_scope` (
-     * `id` ,
-     * `user_id` ,
-     * `customer_id` ,
-     * `flag_active` ,
-     * `created_at` ,
-     * `updated_at` ,
-     * `created_by` ,
-     * `updated_by` ,
-     * `legacy_mapping` ,
-     * `legacy_synchro_at`
-     * )
-     * VALUES (
-     * NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
-     * );
-     */
+        /**
+         * INSERT INTO `nuvolia`.`user_scope` (
+         * `id` ,
+         * `user_id` ,
+         * `customer_id` ,
+         * `flag_active` ,
+         * `created_at` ,
+         * `updated_at` ,
+         * `created_by` ,
+         * `updated_by` ,
+         * `legacy_mapping` ,
+         * `legacy_synchro_at`
+         * )
+         * VALUES (
+         * NULL , '2', '3521', '1', NULL , NULL , NULL , NULL , NULL , NULL
+         * );
+         */
     }
 
     /**
