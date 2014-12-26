@@ -2,18 +2,16 @@
 
 namespace Openstore;
 
-use Zend\Stdlib\AbstractOptions;
 
-class Configuration extends AbstractOptions {
+
+class Configuration  {
 
     /**
+     *
      * @var array
      */
-    protected $profiler = array(
-        'enabled' => 'hh',
-        'cool' => 'o'
-    );
-
+    protected $options;
+    
     /**
      * Overloading Constructor.
      *
@@ -21,22 +19,35 @@ class Configuration extends AbstractOptions {
      * @throws \Zend\Stdlib\Exception\InvalidArgumentException
      */
     public function __construct($options = null) {
-
-        parent::__construct($options);
+       $this->options = $options;
     }
-
+    
     /**
-     * Sets Profiler options.
-     *
-     * @param array $options
+     * 
+     * @param string $key
+     * @return mixed
      */
-    public function setProfiler(array $options) {
-        if (isset($options['enabled'])) {
-            $this->profiler['enabled'] = (bool) $options['enabled'];
+    public function getConfigKey($key)
+    {
+        $parts = explode('.', $key);
+        
+        $ref = $this->options;
+        foreach ($parts as $part) {
+            if (!isset($ref[$part])) {
+                throw new \Exception(__METHOD__ . " Cannot locate configuration key '$key', failed at part '$part'");
+            }
+            $ref = $ref[$part];
+            
         }
-        if (isset($options['cool'])) {
-            $this->profiler['cool'] = $options['cool'];
-        }
+        return $ref;
+        
     }
+    
+    
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
 
 }

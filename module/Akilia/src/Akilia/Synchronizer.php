@@ -1202,15 +1202,19 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         
         $default_lsfx = $this->default_language_sfx;
 
-        $description = "if(trim(i.desc$default_lsfx) = '', null, trim(i.desc$default_lsfx))";
-        
-        $description = "REPLACE($description, ' –', '\n-')";
-        $description = "REPLACE($description, '–', '-')";
-            
-            
+        $rep = "REPLACE(REPLACE(i.desc$default_lsfx, '–', '-'), '\\n ', '\\n')";
+        $rep = "REPLACE($rep, '\\n\\n', '\\n')";
+        $rep = "REPLACE($rep, '  ', ' ')";
+        $rep = "REPLACE($rep, '\\n ', '\\n')";
         if ($this->replace_dash_by_newline) {
-            $description = "REPLACE($description, ' - ', '\n- ')";
+            $rep = "REPLACE($rep, ' - ', '\\n- ')";
         }        
+        
+        
+        $description = "if(trim(COALESCE(i.desc$default_lsfx, '')) = '', null, $rep)";
+        
+            
+            
         
         $replace = " insert
                      into $db.product
@@ -1397,7 +1401,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 $title = "if (trim(i.libelle$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i.libelle$sfx") . "))";
                 $invoice_title = "if (trim(a.libelle$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("a.libelle$sfx") . "))";
                 $description = "if (i2.id_article is not null, 
-                                    -- if (trim(i2.desc$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i2.desc$sfx") . ")),        
                                     null,            
                                     if (trim(i.desc$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i.desc$sfx") . "))
                                 )
@@ -1407,7 +1410,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 $title = "if (trim(i.libelle$sfx) = '', null, trim(i.libelle$sfx))";
                 $invoice_title = "if (trim(a.libelle$sfx) = '', null, trim(a.libelle$sfx))";
                 $description = "if (i2.id_article is not null, 
-                                    -- if (trim(i2.desc$sfx) = '', null, trim(i2.desc$sfx)),        
                                     null,    
                                     if (trim(i.desc$sfx) = '', null, trim(i.desc$sfx))
                                 )
@@ -1415,13 +1417,17 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 $characteristic = "if (trim(i.couleur$sfx) = '', null, trim(i.couleur$sfx))";
             }
             
-            $description = "REPLACE($description, ' –', '\n-')";
-            $description = "REPLACE($description, '–', '-')";
-            
-            
+            $rep = "REPLACE($description, '–', '-')";
+            $rep = "REPLACE($rep, '\\t', ' ')";
+            $rep = "REPLACE($rep, '\\r', '')";
+            $rep = "REPLACE($rep, '\\n\\n', '\\n')";
+            $rep = "REPLACE($rep, '  ', ' ')";
+            $rep = "REPLACE($rep, '\\n ', '\\n')";
             if ($this->replace_dash_by_newline) {
-                $description = "REPLACE($description, ' - ', '\n- ')";
-            }
+                $rep = "REPLACE($rep, ' - ', '\\n- ')";
+            }        
+            
+            $description = $rep;
             
             // hack for missing lang _7 date info
             if ($sfx == "_7") {
@@ -1500,8 +1506,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             ";
                   
             
-            $this->executeSQL("Replace product translations", $replace);
+            $this->executeSQL("Replace product translations for lang: $lang", $replace);
         }
+        die();
         // 2. Deleting - old links in case it changes
         $delete = "
             delete from $db.product_translation 

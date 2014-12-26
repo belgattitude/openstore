@@ -115,20 +115,27 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
 
         // Adding picture urls
         
+        
         if ($cm->exists($media_column)) {
 
             $column = new Column('picture_url');
             $column->setType(ColumnType::TYPE_STRING);
             $cm->add($column, $insert_after, ColumnModel::ADD_COLUMN_AFTER);
 
-            $pictureRenderer = new RowPictureRenderer($media_column, 'picture_url', '1024x768', 95);
+            
+            $configuration = $this->getServiceLocator()->get('Openstore\Configuration');
+            $base_url = $configuration->getConfigKey('media_library.preview.base_url');
+            
+            
+            
+            $pictureRenderer = new RowPictureRenderer($media_column, 'picture_url', '1024x768', 95, $base_url);
             $cm->addRowRenderer($pictureRenderer);
 
             $column = new Column('picture_thumbnail_url');
             $column->setType(ColumnType::TYPE_STRING);
             $cm->add($column, 'picture_url', ColumnModel::ADD_COLUMN_AFTER);
 
-            $thumbRenderer = new RowPictureRenderer($media_column, 'picture_thumbnail_url', '170x200', 95);
+            $thumbRenderer = new RowPictureRenderer($media_column, 'picture_thumbnail_url', '170x200', 95, $base_url);
             $cm->addRowRenderer($thumbRenderer);
         }
     }

@@ -9,7 +9,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class ConfigurationFactory implements FactoryInterface {
 
     /**
-     * @param ServiceLocatorInterface $locator
+     * @param ServiceLocatorInterface $sl
      * @return \Openstore\Service
      */
     public function createService(ServiceLocatorInterface $sl) {

@@ -20,14 +20,15 @@ class ProductTranslationBrowser extends AbstractBrowser {
      */
     function getSearchableParams() {
         return array(
-            'primary_language' => array('required' => false),
-            'languages' => array('required' => true),
+            'master_language' => array('required' => true),
+            'target_languages' => array('required' => true),
             'pricelists' => array('required' => false),
             'query' => array('required' => false),
             'brands' => array('required' => false),
             'categories' => array('required' => false),
             'id' => array('required' => false),
-            'product_id' => array('required' => false)
+            'product_id' => array('required' => false),
+            'exclusions' => array('required' => false)
         );
     }
 
@@ -45,9 +46,9 @@ class ProductTranslationBrowser extends AbstractBrowser {
         $select->setDbAdapter($this->adapter);
 
 
-        $lang = $params['primary_language'];
-        if (isset($params['languages']) && $params['languages'] != '') {
-            $languages  = $params['languages'];
+        $master_language = $params['master_language'];
+        if (isset($params['target_languages']) && $params['target_languages'] != '') {
+            $languages  = $params['target_languages'];
         } else {
             $languages = array();
         }
@@ -84,6 +85,7 @@ class ProductTranslationBrowser extends AbstractBrowser {
             $inner_columns["created_by_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.created_by, null))");
             $inner_columns["updated_by_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.updated_by, null))");
             $inner_columns["revision_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.revision, null))");
+            $inner_columns["count_chars_$lang"] = new Expression("MAX(if(p18.lang = '$lang', CHAR_LENGTH(CONCAT(COALESCE(p18.title, ''), COALESCE(p18.description, ''), COALESCE(p18.characteristic, ''))), null))");
         }
         
         $select->from(array('p' => 'product'), array())
@@ -114,6 +116,8 @@ class ProductTranslationBrowser extends AbstractBrowser {
         
         
         $select->where('p.flag_active = 1');
+        
+        
                 
         // Adding languages and pricelists selections
         if (count($pricelists) > 0) {
@@ -255,6 +259,20 @@ class ProductTranslationBrowser extends AbstractBrowser {
         $columns = array_merge($select->getRawState(Select::COLUMNS), array('relevance' => new Expression($relevance)));
         $select->columns($columns);
 
+        $exclusions = $params['exclusions'];
+        if (is_array($exclusions) && count($exclusions) > 0) {
+            foreach($exclusions as $exclusion) {
+                switch ($exclusion) {
+                    case 'till_end_of_stock' :
+                        $select->where('COALESCE(pst.flag_till_end_of_stock, 0) <> 1');
+                        break;
+                    case 'end_of_lifecycle' :                        
+                        $select->where('COALESCE(pst.flag_end_of_lifecycle, 0) <> 1');
+                        break;
+                }
+            }
+        }        
+        
         
         $filters = $params['filters'];
         if (is_array($filters) && count($filters) > 0) {
@@ -262,10 +280,21 @@ class ProductTranslationBrowser extends AbstractBrowser {
             foreach($filters as $filter) {
                 switch($filter) {
                     case 'untranslated' :
-                        $having_clauses[] = 'min_revision = 0';
+                        if (count($languages) > 1) {
+                            $clauses = array();
+                            foreach($languages as $lang) {
+                                if ($lang != $master_language)
+                                $clauses[] = "count_chars_$lang = 0";
+                            }
+                            $having_clauses[] = "(count_chars_$master_language > 0 and (" . join(' or ', $clauses) . '))';
+                        } else {
+                            $having_clauses[] = "count_chars_$master_language = 0";
+                        }
                         break;
                     case 'revised' :
-                        $having_clauses[] = 'nb_distinct_revision > 1';
+                        if (count($languages) > 1) {
+                            $having_clauses[] = 'nb_distinct_revision > 1';
+                        }
                         break;
                 }
             }

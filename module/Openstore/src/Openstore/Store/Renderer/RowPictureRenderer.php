@@ -48,6 +48,7 @@ class RowPictureRenderer implements RowRendererInterface
     {
         $this->source_column = $source_column;
         $this->target_column = $target_column;
+        
         if ($base_url === null) {
             $base_url = 'http://api.emdmusic.com/media/preview/picture';
         }
@@ -56,6 +57,8 @@ class RowPictureRenderer implements RowRendererInterface
         $this->url = $base_url . '/' . $resolution . "-" . $quality . "/"; 
                
     }
+    
+    
     
     /**
      * 
