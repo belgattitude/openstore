@@ -331,6 +331,7 @@ class ProductCatalogService extends AbstractService {
         
         // Initialize column model
         $this->addStorePictureRenderer($store, 'picture_media_id', 'available_at');
+        $this->addNextAvailableStockAtRenderer($store, 'next_available_stock_at');
         $this->addStorePriceRenderer($store, $customer_id, $pricelist_reference, 'picture_thumbnail_url');
         $this->initStoreFormatters($store, $params);        
         

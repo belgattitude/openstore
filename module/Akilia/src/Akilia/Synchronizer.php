@@ -1508,7 +1508,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             
             $this->executeSQL("Replace product translations for lang: $lang", $replace);
         }
-        die();
+        //die();
         // 2. Deleting - old links in case it changes
         $delete = "
             delete from $db.product_translation 

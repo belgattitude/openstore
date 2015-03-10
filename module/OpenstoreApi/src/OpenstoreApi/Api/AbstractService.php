@@ -11,6 +11,7 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Soluble\FlexStore\Store;
 use Soluble\FlexStore\Source\Zend\SqlSource;
 use Openstore\Store\Renderer\RowPictureRenderer;
+use Openstore\Store\Renderer\DateMinRenderer;
 use Soluble\FlexStore\Formatter;
 use Soluble\FlexStore\Column\Column;
 use Soluble\FlexStore\Column\ColumnModel;
@@ -102,6 +103,26 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
         return new Store(new SqlSource($this->getDbAdapter(), $select));
     }
 
+    
+    /**
+     * Prevent next_available_stock_at to be in the past
+     * 
+     * @param Store $store
+     */
+    protected function addNextAvailableStockAtRenderer(Store $store, $date_column='next_available_stock_at')
+    {
+        $cm = $store->getColumnModel();
+        
+        if ($cm->exists($date_column)) {
+            
+            //$col = $cm->get($date_column);
+            $dateMinRenderer = new DateMinRenderer($date_column);
+            
+            $cm->addRowRenderer($dateMinRenderer);
+        }
+        
+        
+    }
 
     /**
      * 
