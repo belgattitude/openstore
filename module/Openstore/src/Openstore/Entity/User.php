@@ -32,13 +32,13 @@ class User implements UserInterface, IdentityInterface {
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255, unique=true, nullable=true)
+     * @ORM\Column(type="string", length=80, unique=true, nullable=true)
      */
     protected $username;
 
     /**
      * @var string
-     * @ORM\Column(type="string", unique=true, length=255)
+     * @ORM\Column(type="string", length=130)
      */
     protected $email;
 

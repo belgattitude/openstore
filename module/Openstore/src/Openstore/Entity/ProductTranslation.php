@@ -23,15 +23,18 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *     @ORM\Index(name="slug_idx", columns={"slug"}),
  *     @ORM\Index(name="revision_idx", columns={"revision"}),
  *   },
- *   options={"comment" = "Product translation table"}
+ *   options={
+ *      "comment" = "Product translation table"
+ *   }
  * )
+ * 
+ * "charset"="utf8mb4",
+ * "collate"="utf8mb4_unicode_ci", 
+ *
+ * 
  */
 class ProductTranslation {
 
-    /**
-     * @var \Zend\InputFilter\InputFilterInterface $inputFilter
-     */
-    protected $inputFilter;
 
     /**
      * @ORM\Id
@@ -50,12 +53,13 @@ class ProductTranslation {
     /**
      * @ORM\ManyToOne(targetEntity="Language", inversedBy="product_translations", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="lang", referencedColumnName="lang", onDelete="RESTRICT", nullable=false)
+     * //options={"customSchemaOptions"={ "charset"="utf8" }})
      */
     private $lang;
 
     /**
      * @Gedmo\Slug(fields={"title"})
-     * @ORM\Column(length=255, nullable=true, options={"comment" = "Unique slug for this record"})
+     * @ORM\Column(length=150, nullable=true, options={"comment" = "Unique slug for this record"})
      */
     private $slug;
 
@@ -70,7 +74,7 @@ class ProductTranslation {
     private $invoice_title;
 
     /**
-     * @ORM\Column(type="string", length=10000, nullable=true)
+     * @ORM\Column(type="string", length=5000, nullable=true)
      */
     private $description;
 
@@ -81,13 +85,13 @@ class ProductTranslation {
     private $characteristic;
 
     /**
-     * @ORM\Column(type="string", length=10000, nullable=true, options={"comment" = "Specifications"})
+     * @ORM\Column(type="string", length=5000, nullable=true, options={"comment" = "Specifications"})
      */
     private $specs;
     
     
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=200, nullable=true)
      */
     private $keywords;
     

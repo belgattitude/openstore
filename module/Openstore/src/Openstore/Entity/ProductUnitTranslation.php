@@ -18,7 +18,9 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   indexes={
  *     @ORM\Index(name="description_idx", columns={"description"}),
  *   },
- *   options={"comment" = "Product brand translation table"}
+ *   options={
+ *      "comment" = "Product unit translation"
+ *   }
  * )
  */
 class ProductUnitTranslation {
