@@ -110,7 +110,9 @@ class ProductStockService extends AbstractService {
             $store->getSource()->getOptions()->setOffset($params['offset']);
         }
         
-        $this->initStoreFormatters($store, $params);             
+        $this->initStoreFormatters($store, $params);   
+        
+        $this->addNextAvailableStockAtRenderer($store, 'next_available_stock_at');        
 
         return $store;
     }
