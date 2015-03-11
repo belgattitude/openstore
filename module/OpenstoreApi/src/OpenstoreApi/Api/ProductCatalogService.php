@@ -101,11 +101,19 @@ class ProductCatalogService extends AbstractService {
                 ->join(array('pc18' => 'product_category_translation'), new Expression("pc.category_id = pc18.category_id and pc18.lang='$lang'"), array(), $select::JOIN_LEFT)
                 ->join(array('pg' => 'product_group'), new Expression('pg.group_id = p.group_id'), array(), $select::JOIN_LEFT)
                 ->join(array('pg18' => 'product_group_translation'), new Expression("pg18.group_id = pg.group_id and pg18.lang='$lang'"), array(), $select::JOIN_LEFT)
-                ->join(array('ppl' => 'product_pricelist'), new Expression("ppl.product_id = p.product_id"), array(), $select::JOIN_LEFT)
-                ->join(array('pl' => 'pricelist'), new Expression("ppl.pricelist_id = pl.pricelist_id and pl.reference = '$pricelist_reference'"), array(), $select::JOIN_LEFT)
+                ->join(array('ppl' => 'product_pricelist'), new Expression("ppl.product_id = p.product_id"), 
+                        array(), 
+                        //$select::JOIN_LEFT)
+                        $select::JOIN_INNER)
+                ->join(array('pl' => 'pricelist'), new Expression("ppl.pricelist_id = pl.pricelist_id and pl.reference = '$pricelist_reference'"), 
+                        array(), 
+                        //$select::JOIN_LEFT)
+                        $select::JOIN_INNER)
                 ->join(array('pt' => 'product_type'), new Expression('p.type_id = pt.type_id'), array(), $select::JOIN_LEFT)
                 ->join(array('c' => 'currency'), new Expression('c.currency_id = pl.currency_id'), array(), $select::JOIN_LEFT)
-                ->join(array('ps' => 'product_stock'), new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'), array(), $select::JOIN_INNER)
+                ->join(array('ps' => 'product_stock'), new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'), 
+                        array(), 
+                        $select::JOIN_LEFT)
                 ->join(array('pst' => 'product_status'), new Expression('pst.status_id = ppl.status_id'), array(), $select::JOIN_LEFT)
                 ->join(array('pmed' => 'product_media'), new Expression("pmed.product_id = p.product_id and pmed.flag_primary=1"), array(), $select::JOIN_LEFT)
                 ->join(array('pmt' => 'product_media_type'), new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), array(), $select::JOIN_LEFT);
