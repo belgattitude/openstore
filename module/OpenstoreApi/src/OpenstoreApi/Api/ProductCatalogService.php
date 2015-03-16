@@ -39,7 +39,6 @@ class ProductCatalogService extends AbstractService {
     function getList(array $params = array()) {
         $this->checkListParams($params);
         
-        
         $select = new Select();
         $lang = $params['language'];
 
