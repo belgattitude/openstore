@@ -88,7 +88,7 @@ class ProductMediaService extends AbstractService {
         
         
         // Initialize column model
-        $this->addStorePictureRenderer($store, 'media_id', 'filemtime');
+        $this->addStorePictureRenderer($store, 'media_id', 'filemtime', 'filemtime');
         $this->initStoreFormatters($store, $params);        
 
         return $store;

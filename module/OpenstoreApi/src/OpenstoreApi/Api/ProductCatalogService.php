@@ -115,7 +115,8 @@ class ProductCatalogService extends AbstractService {
                         $select::JOIN_LEFT)
                 ->join(array('pst' => 'product_status'), new Expression('pst.status_id = ppl.status_id'), array(), $select::JOIN_LEFT)
                 ->join(array('pmed' => 'product_media'), new Expression("pmed.product_id = p.product_id and pmed.flag_primary=1"), array(), $select::JOIN_LEFT)
-                ->join(array('pmt' => 'product_media_type'), new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), array(), $select::JOIN_LEFT);
+                ->join(array('pmt' => 'product_media_type'), new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), array(), $select::JOIN_LEFT)
+                ->join(array('m' => 'media'), new Expression('pmed.media_id = m.media_id'), array(), $select::JOIN_LEFT);
         
         if (!$disable_packaging) {
             $select->join(array('packs' => $packSelect), new Expression("packs.product_id = p.product_id"), array(), $select::JOIN_LEFT);
@@ -186,6 +187,7 @@ class ProductCatalogService extends AbstractService {
             'pack_qty_carton' => new Expression('p.pack_qty_carton'),
             'pack_qty_master_carton' => new Expression('p.pack_qty_master_carton'),
             'picture_media_id' => new Expression('pmed.media_id'),
+            'picture_media_filemtime' => new Expression('m.filemtime')
         );
         if (!$disable_packaging) {
             $columns = array_merge($columns, array(
@@ -328,7 +330,7 @@ class ProductCatalogService extends AbstractService {
 
         // Remove unwanted columns, that are included just because
         // required for row renderers
-        $store->getColumnModel()->exclude(array('status_reference', 'currency_symbol'));
+        $store->getColumnModel()->exclude(array('status_reference', 'currency_symbol', 'picture_media_filemtime'));
         
         if (isset($params['customer_id'])) {
             $customer_id = $params['customer_id'];
@@ -337,7 +339,7 @@ class ProductCatalogService extends AbstractService {
         }
         
         // Initialize column model
-        $this->addStorePictureRenderer($store, 'picture_media_id', 'available_at');
+        $this->addStorePictureRenderer($store, 'picture_media_id', 'available_at', 'picture_media_filemtime');
         $this->addNextAvailableStockAtRenderer($store, 'next_available_stock_at');
         $this->addStorePriceRenderer($store, $customer_id, $pricelist_reference, 'picture_thumbnail_url');
         $this->initStoreFormatters($store, $params);        

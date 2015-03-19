@@ -129,13 +129,18 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
      * @param Store $store
      * @param string $media_column column name containing the media_id
      * @param string $insert_after insert after column name
+     * @param string $filemtime_column column containing the file modification time of the picture
      */
-    protected function addStorePictureRenderer(Store $store, $media_column, $insert_after)
+    protected function addStorePictureRenderer(Store $store, $media_column, $insert_after, $filemtime_column=null)
     {
         $cm = $store->getColumnModel();
 
         // Adding picture urls
-        
+        if ($filemtime_column !== null) {
+            if (!$cm->exists($filemtime_column)) {
+                throw new \Exception(__METHOD__ . ": Filemtime column '$filemtime_column' does not exists in column model");
+            }
+        }
         
         if ($cm->exists($media_column)) {
 
@@ -147,16 +152,16 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
             $configuration = $this->getServiceLocator()->get('Openstore\Configuration');
             $base_url = $configuration->getConfigKey('media_library.preview.base_url');
             
+            //'picture_media_filemtime' => new Expression('m.filemtime')
             
-            
-            $pictureRenderer = new RowPictureRenderer($media_column, 'picture_url', '1024x768', 95, $base_url);
+            $pictureRenderer = new RowPictureRenderer($media_column, 'picture_url', '1024x768', 95, $base_url, $filemtime_column);
             $cm->addRowRenderer($pictureRenderer);
 
             $column = new Column('picture_thumbnail_url');
             $column->setType(ColumnType::TYPE_STRING);
             $cm->add($column, 'picture_url', ColumnModel::ADD_COLUMN_AFTER);
 
-            $thumbRenderer = new RowPictureRenderer($media_column, 'picture_thumbnail_url', '170x200', 95, $base_url);
+            $thumbRenderer = new RowPictureRenderer($media_column, 'picture_thumbnail_url', '170x200', 95, $base_url, $filemtime_column);
             $cm->addRowRenderer($thumbRenderer);
         }
     }
