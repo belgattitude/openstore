@@ -1,0 +1,26 @@
+<?php
+
+return array(
+    'service_manager' => array(
+        'abstract_factories' => array(
+            'Zend\Log\LoggerAbstractServiceFactory',
+            'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
+        )
+    ),
+
+    'log' => array(
+        'Application\Log' => array(
+            'writers' => array(
+                array(
+                    'name' => 'stream',
+                    'priority' => 1000,
+                    'options' => array(
+                        //'stream' => 'data/logs/app.log'
+                        'stream' => dirname(__FILE__) . '/../../data/application.log'
+                    )
+                )
+            )
+        )
+    )
+        
+);

@@ -31,6 +31,7 @@
         "ghislainf/zf2-whoops": "dev-master",
         "knplabs/gaufrette": "0.1.*",
         "imagine/imagine": "0.6.*",
+        "symfony/finder": "@stable",
         "willdurand/geocoder": "@stable",
         "zfcampus/zf-apigility": "~1.0",
         "zf-commons/zfc-rbac": "~2.4",

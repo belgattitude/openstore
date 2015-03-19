@@ -11,6 +11,8 @@ use Soluble\Normalist\Synthetic\TableManager;
 use Intervention\Image\Image;
 use Intervention\Image\ImageManager;
 
+use Symfony\Component\Finder\Finder;
+
 
 class MediaController extends AbstractActionController
 {
@@ -37,6 +39,8 @@ class MediaController extends AbstractActionController
          */
         protected function parsePictureOptions($options)
         {
+            
+
             $regexp = '/^(([0-9]{1,4})x([0-9]{1,4}))\-([0-9]{2})$/';
             if (!preg_match($regexp, $options)) {
                 throw new \Exception("Preview options '$options' are invalid.");
@@ -58,7 +62,8 @@ class MediaController extends AbstractActionController
             $type       = $p->fromRoute('type');
             $prefix     = $p->fromRoute('prefix');
             $media_id   = $p->fromRoute('media_id');            
-            $options    = $p->fromRoute('options');            
+            $options    = $p->fromRoute('options');  
+            $mtime      = $p->fromRoute('filemtime');
             $format     = $p->fromRoute('format');   
 
             $mediaManager = $this->getServiceLocator()->get('MMan\MediaManager');            
@@ -73,20 +78,21 @@ class MediaController extends AbstractActionController
                 $id = null;
                 switch ($type) {
                     case 'productpicture' :
+                        // In this case the media_id contains the product picture id
                         $id = $this->getProductPictureMediaId($media_id);
-                    
+                        // no break;
                     case 'picture' :
-                        
+
                         if ($id === null) {
                             $id = $media_id;
                         }
-                        
+
                         // parse options;
                         if ($display_filename === null) {
                             $display_filename = "$media_id.$format";
                         }
+                        
                         $params = $this->parsePictureOptions($options);       
-
 
                         // test params;
                         $resolutions = $this->getAcceptedResolutions();
@@ -106,8 +112,10 @@ class MediaController extends AbstractActionController
                         $imageManager = new ImageManager(array('driver' => 'imagick'));                    
                         //var_dump($params); die();
                         $media = $mediaManager->get($id);
-                        
                         $filename = $media->getPath();
+                        $latest_media_filemtime = $media->getFilemtime();
+                        
+                        
                         $image = $imageManager->make($filename);
                         $image->resize($params['width'], $params['height'], function ($constraint) {
                              $constraint->aspectRatio();
@@ -128,6 +136,33 @@ class MediaController extends AbstractActionController
                                         DIRECTORY_SEPARATOR . $prefix;
 
                         
+
+                        // Check if there's already some previews in the directory
+                        $obsolete_previews = array();
+                        $links_to_create = array();
+                        $finder = new Finder();
+                        $finder->files()->in($cache_path)->name("/^$media_id(\_[0-9]+){0,1}\.jpg$/");
+                        foreach ($finder as $file) {
+                            $obsolete_previews[] = $file->getRealpath();
+                        }
+                        
+                        $latest_preview_file = $cache_path . DIRECTORY_SEPARATOR . $media_id . '_' . $latest_media_filemtime .  '.' . $format;
+                        
+                        if ($mtime === null) {
+                            $links_to_create[] = $cache_path . DIRECTORY_SEPARATOR . $media_id .  '.' . $format;
+                        } elseif ($mtime != $latest_media_filemtime) {
+                            $links_to_create[] = $cache_path . DIRECTORY_SEPARATOR . $media_id . '_' . $mtime .  '.' . $format;
+                        }
+
+
+                        $links_to_create = array_unique(array_merge($links_to_create, $obsolete_previews));
+                        
+                        if(($key = array_search($latest_preview_file, $links_to_create)) !== false) {
+                            
+                            unset($links_to_create[$key]);
+                        }                        
+                        
+                        
                         $old_umask = umask(0);                        
                         
                         try {
@@ -139,15 +174,47 @@ class MediaController extends AbstractActionController
                                 }
                             }
                             
-                            // Try to save resized picture for later use
-                            $cache_file = $cache_path . DIRECTORY_SEPARATOR . $media_id . '.' . $format;
-                                   
-                            $ret = @file_put_contents($cache_file, $response, LOCK_EX);
-                            if ($ret === false) {
-                                throw new \Exception("Cannto save resized picture in $cache_file");
+                            if (!is_dir($cache_path)) {
+                                 throw new \Exception("Invalid cache path, it's not a directory: $cache_path");
                             }
+                            
+
+                            // Save preview on disk for future use
+                            $ret = @file_put_contents($latest_preview_file, $response, LOCK_EX);
+                            if ($ret === false) {
+                                throw new \Exception("Cannot save resized picture in $latest_preview_file");
+                            }
+                            
+                            // Remove and update old links
+                            foreach($links_to_create as $link) {
+                                
+                                try {
+                                    if (file_exists($link)) {
+                                        if (!unlink($link)) {
+                                            throw new \Exception("Cannot remove obsolete preview '$link'");
+                                        }
+                                    }
+                                    if (!symlink($latest_preview_file, $link)) {
+                                        // todo log
+                                        throw new \Exception("Cannot create preview link '$link' towards '$latest_preview_file'");
+                                    }
+                                    
+                                } catch (\Exception $e) {
+                                    
+                                    if ($this->serviceLocator->has('Application\Log')) {
+                                        $msg = "Media preview links failed: " . $e->getMessage() . "see: " . __METHOD__;
+                                        $this->serviceLocator->get('Application\Log')->warn($msg);
+                                    };
+                                }
+                            }
+                            
                         } catch (\Exception $e) {
                            // Do nothing     
+                            if ($this->serviceLocator->has('Application\Log')) {
+                                $msg = "Media preview failed: " . $e->getMessage() . "see: " . __METHOD__;
+                                $this->serviceLocator->get('Application\Log')->err($msg);
+                            };
+ 
                         }
                         
                         umask($old_umask);
@@ -226,6 +293,8 @@ class MediaController extends AbstractActionController
             
         }
 
+        
+        
 	function pictureAction() 
 	{
             

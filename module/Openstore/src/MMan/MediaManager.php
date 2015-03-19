@@ -10,231 +10,217 @@ use Zend\Db\Sql\Sql;
 use Zend\Stdlib;
 use Soluble\Normalist\Synthetic\TableManager;
 
+class MediaManager {
+
+    /**
+     * @var \MMan\Service\Storage
+     */
+    protected $storage;
+
+    /**
+     *
+     * @var TableManager
+     */
+    protected $tm;
+
+    function __construct() {
+        
+    }
+
+    /**
+     * 
+     * @param integer $media_id
+     * @return Media
+     */
+    function get($media_id) {
+        $tm = $this->getTableManager();
+        $select = $tm->select();
+        $select->from(array('m' => 'media'))
+                ->join(array('mc' => 'media_container'), 'm.container_id = mc.container_id', array(
+                    'folder'
+                ))
+                ->columns(array(
+                    'filename', 'filesize', 'mimetype', 'location',
+                    'title', 'description', 'filemtime', 'created_at',
+                    'updated_at', 'container_id'
+                ))
+                ->where(array('media_id' => $media_id));
+        $resultset = $select->execute();
+        if ($resultset->count() != 1) {
+            throw new \Exception("Cannot locate media '$media_id'");
+        }
+
+        $media = new Media($this);
+        $media->setProperties($resultset->current());
+
+        return $media;
+    }
+
+    /**
+     * 
+     * @param ImportElement $element
+     * @param int $container_id
+     * @param boolean $overwrite
+     */
+    function import(ImportElement $element, $container_id, $overwrite = true) {
 
 
-class MediaManager
-{
+        $fs = $this->storage->getFilesystem();
 
-	/**
-	 * @var \MMan\Service\Storage
-	 */
-	protected $storage;
+        // STEP 1 : Adding into database
 
-	
-	/**
-	 *
-	 * @var TableManager
-	 */
-	protected $tm;
+        $tm = $this->getTableManager();
+        $mediaTable = $tm->table('media');
 
-	function __construct() {
-		
-	}
-	
-	
-	/**
-	 * 
-	 * @param integer $media_id
-	 * @return Media
-	 */
-	function get($media_id) 
-	{
-		$tm = $this->getTableManager();
-		$select = $tm->select();
-		$select->from(array('m' => 'media'))
-				->join(array('mc' => 'media_container'), 'm.container_id = mc.container_id', array(
-					'folder'
-				))
-				->columns(array(
-					'filename', 'filesize', 'mimetype', 'location', 
-					'title', 'description', 'created_at',
-					'updated_at', 'container_id'
-				))
-				->where(array('media_id' => $media_id));
-		$resultset = $select->execute();
-		if ($resultset->count() != 1)  {
-			throw new \Exception("Cannot locate media '$media_id'");
-		}
-		
-		$media = new Media($this);
-		$media->setProperties($resultset->current());
-		
-		return $media;
-		
-	}
-	
+        $media = $mediaTable->findOneBy(array('legacy_mapping' => $element->getLegacyMapping()));
 
-	/**
-	 * 
-	 * @param ImportElement $element
-	 * @param int $container_id
-	 * @param boolean $overwrite
-	 */
-	function import(ImportElement $element, $container_id, $overwrite=true) 
-	{
+        $unchanged = false;
+        if ($media !== false) {
+            // test if media has changed
+            if ($media['filemtime'] == $element->getFilemtime() &&
+                    $media['filesize'] == $element->getFilesize()) {
+                $unchanged = true;
+            }
+        }
 
-		
-		$fs = $this->storage->getFilesystem();
+        if (!$unchanged) {
+            
+            // File have changed
+            
+            $tm->transaction()->start();
 
-		// STEP 1 : Adding into database
-		
-		$tm = $this->getTableManager();
-		$mediaTable = $tm->table('media');
-		
-		$media = $mediaTable->findOneBy(array('legacy_mapping' => $element->getLegacyMapping()));
-		
-		$unchanged = false;
-		if ($media !== false) {
-			// test if media has changed
-			if ($media['filemtime'] == $element->getFilemtime() &&
-				$media['filesize'] == $element->getFilesize()) {
-				$unchanged = true;
-			}
-		}
-		
-		if (!$unchanged) {
-			$tm->transaction()->start();
-			
-			
-			$filename = $element->getFilename();
-			$data  = array(
-				'filename'  => basename($filename),
-				'filemtime' => $element->getFilemtime(),
-				'filesize'  => $element->getFilesize(),
-				'container_id' => $container_id,
-				'legacy_mapping' => $element->getLegacyMapping()
-			);
-			
-			
-			$media = $mediaTable->insertOnDuplicateKey($data, $duplicate_exclude=array('legacy_mapping'));
-			$media_id = $media['media_id'];
-			
-			// Step 3 : Generate media manager filename
-			
-			$mediaLocation = $this->getMediaLocation($container_id, $media_id, $filename);
-			
-			// Step 2 : Adding into filesystem
-			try {
-				//echo 'Writing file';
-				$fs->write($mediaLocation['filename'], file_get_contents($filename), $overwrite);
-				
-			} catch (\Exception $e) {
-				// If something goes wrong throw an exception
-				$tm->transaction()->rollback();
-				throw $e;
-			}
 
-			// @todo make a super try catch ;)
-			/*
-			 * Relative location of file
-			 */
-			$media['location'] = $mediaLocation['location'];
-			$media->save();
-			
-			$tm->transaction()->commit();
-			
-			
-		}
-		
-		return $media['media_id'];
-	}
-	
+            $filename = $element->getFilename();
+            $data = array(
+                'filename' => basename($filename),
+                'filemtime' => $element->getFilemtime(),
+                'filesize' => $element->getFilesize(),
+                'container_id' => $container_id,
+                'legacy_mapping' => $element->getLegacyMapping()
+            );
 
-	/**
-	 * @param int $container_id
-	 * @param int $media_id
-	 * @param string $filename
-	 * @return array
-	 */
-	function getMediaLocation($container_id, $media_id, $filename) {
 
-		$tm = $this->getTableManager();
-		
-		$mcTable = $tm->table('media_container');
-		$container = $mcTable->find($container_id);
-		if ($container ===  false) {
-			throw new \Exception("Cannot locate container '$container_id'");
-		}
-		$container_folder = $container['folder'];
-		
-		if ($media_id == '') {
-			throw new \Exception("Cannot create media location, media_id '$media_id' is required");
-		}
-		$pathinfo = pathinfo($filename);
-		
-		if ($pathinfo['extension'] == '') {
-			$ext = '';
-		} else {
-			$ext = '.' . $pathinfo['extension'];
-		}
-		
-		// Should better be handled by iconv with translate but need a dependency
-		$qf = preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $pathinfo['filename']);
-		
-		$media_directory = $this->getMediaDirectory($media_id);
-		$media_location = $media_directory . '/' . "$media_id-" . substr($qf, 0, 40) . $ext;
-		$media_filename = $container_folder . '/' . $media_location;
-		
-		$location = array(
-			'filename' => $media_filename,
-			'location' => $media_location
-		);
-		
-		return $location;
-	}
-	
-	/**
-	 * 
-	 * @param int $media_id
-	 * @return string
-	 */
-	protected function getMediaDirectory($media_id) {
-		
-		$dirs = array();
-		$dirs[] = str_pad(substr($media_id, 0, 2), 2, 0, STR_PAD_LEFT);
-		$dirs[] = str_pad(substr($media_id, 2, 4), 2, 0, STR_PAD_LEFT);
-		$dir = join('/', $dirs);
-		return $dir;
-	}
-	
-	
-	
+            $media = $mediaTable->insertOnDuplicateKey($data, $duplicate_exclude = array('legacy_mapping'));
+            $media_id = $media['media_id'];
 
-	/**
-	 * \MMan\Service\Storage $storage
-	 * @return 
-	 */
-	function getStorage()
-	{
-		return $this->storage;
-	}
-	
-	/**
-	 * 
-	 * @param \MMan\Service\Storage $storage
-	 * @return \MMan\MediaManager
-	 */
-	function setStorage(Storage $storage) {
-		$this->storage = $storage;
-		return $this;
-	}
+            // Step 3 : Generate media manager filename
 
-	
-	/**
-	 * @param TableManager $tm
-	 * @return MediaManager
-	 */
-	function setTableManager(TableManager $tm) {
-		$this->tm = $tm;
-		return $this;
-	}
-	
-	function getTableManager()
-	{
-		if ($this->tm === null) {
-			throw new \Exception(__METHOD__ . " No table manager instance set");
-		}
-		return $this->tm;
-	}
+            $mediaLocation = $this->getMediaLocation($container_id, $media_id, $filename);
+
+            // Step 2 : Adding into filesystem
+            try {
+                //echo 'Writing file';
+                $fs->write($mediaLocation['filename'], file_get_contents($filename), $overwrite);
+                
+                
+            } catch (\Exception $e) {
+                // If something goes wrong throw an exception
+                $tm->transaction()->rollback();
+                throw $e;
+            }
+
+            // @todo make a super try catch ;)
+            /*
+             * Relative location of file
+             */
+            $media['location'] = $mediaLocation['location'];
+            $media->save();
+
+            $tm->transaction()->commit();
+        }
+
+        return $media['media_id'];
+    }
+
+    /**
+     * @param int $container_id
+     * @param int $media_id
+     * @param string $filename
+     * @return array
+     */
+    function getMediaLocation($container_id, $media_id, $filename) {
+
+        $tm = $this->getTableManager();
+
+        $mcTable = $tm->table('media_container');
+        $container = $mcTable->find($container_id);
+        if ($container === false) {
+            throw new \Exception("Cannot locate container '$container_id'");
+        }
+        $container_folder = $container['folder'];
+
+        if ($media_id == '') {
+            throw new \Exception("Cannot create media location, media_id '$media_id' is required");
+        }
+        $pathinfo = pathinfo($filename);
+
+        if ($pathinfo['extension'] == '') {
+            $ext = '';
+        } else {
+            $ext = '.' . $pathinfo['extension'];
+        }
+
+        // Should better be handled by iconv with translate but need a dependency
+        $qf = preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $pathinfo['filename']);
+
+        $media_directory = $this->getMediaDirectory($media_id);
+        $media_location = $media_directory . '/' . "$media_id-" . substr($qf, 0, 40) . $ext;
+        $media_filename = $container_folder . '/' . $media_location;
+
+        $location = array(
+            'filename' => $media_filename,
+            'location' => $media_location
+        );
+
+        return $location;
+    }
+
+    /**
+     * 
+     * @param int $media_id
+     * @return string
+     */
+    protected function getMediaDirectory($media_id) {
+
+        $dirs = array();
+        $dirs[] = str_pad(substr($media_id, 0, 2), 2, 0, STR_PAD_LEFT);
+        $dirs[] = str_pad(substr($media_id, 2, 4), 2, 0, STR_PAD_LEFT);
+        $dir = join('/', $dirs);
+        return $dir;
+    }
+
+    /**
+     * \MMan\Service\Storage $storage
+     * @return 
+     */
+    function getStorage() {
+        return $this->storage;
+    }
+
+    /**
+     * 
+     * @param \MMan\Service\Storage $storage
+     * @return \MMan\MediaManager
+     */
+    function setStorage(Storage $storage) {
+        $this->storage = $storage;
+        return $this;
+    }
+
+    /**
+     * @param TableManager $tm
+     * @return MediaManager
+     */
+    function setTableManager(TableManager $tm) {
+        $this->tm = $tm;
+        return $this;
+    }
+
+    function getTableManager() {
+        if ($this->tm === null) {
+            throw new \Exception(__METHOD__ . " No table manager instance set");
+        }
+        return $this->tm;
+    }
 
 }
