@@ -111,6 +111,7 @@ class ProductTranslationBrowser extends AbstractBrowser {
                 //->join(array('ps' => 'product_stock'), new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'), array())
                 ->join(array('pst' => 'product_status'), new Expression('pst.status_id = p.status_id'), array(), $select::JOIN_LEFT)
                 ->join(array('pm' => 'product_media'), new Expression("pm.product_id = p.product_id and pm.flag_primary=1"), array(), $select::JOIN_LEFT)
+                ->join(array('m' => 'media'), new Expression('pm.media_id = m.media_id'), array(), $select::JOIN_LEFT)
                 ->join(array('pmt' => 'product_media_type'), new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), array(), $select::JOIN_LEFT);
         
         
@@ -145,6 +146,7 @@ class ProductTranslationBrowser extends AbstractBrowser {
                 'picture_media_id' => new Expression('pm.media_id'),
                 'created_at' => new Expression("DATE_FORMAT(p.created_at, '%Y-%m-%dT%TZ')"),
                 'available_at' => new Expression("DATE_FORMAT(p.available_at, '%Y-%m-%dT%TZ')"),
+                'picture_media_filemtime' => new Expression('m.filemtime')
             
         ];
         
