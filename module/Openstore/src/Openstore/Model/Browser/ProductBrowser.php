@@ -55,6 +55,7 @@ class ProductBrowser extends AbstractBrowser {
                 ->join(array('pc' => 'product_category'), new Expression('pc.category_id = p.category_id'), array())
                 ->join(array('pc18' => 'product_category_translation'), new Expression("pc.category_id = pc18.category_id and pc18.lang = '$lang'"), array(), $select::JOIN_LEFT)
                 ->join(array('pm' => 'product_media'), new Expression("pm.product_id = p.product_id and pm.flag_primary=1"), array(), $select::JOIN_LEFT)
+                ->join(array('m' => 'media'), new Expression('pm.media_id = m.media_id'), array(), $select::JOIN_LEFT)
                 ->join(array('pmt' => 'product_media_type'), new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), array(), $select::JOIN_LEFT)
                 ->where('p.flag_active = 1')
                 ->where('ppl.flag_active = 1')
@@ -116,6 +117,7 @@ class ProductBrowser extends AbstractBrowser {
                 'unit_reference' => new Expression('pu.reference'),
                 'type_reference' => new Expression('pt.reference'),
                 'picture_media_id' => new Expression('pm.media_id'),
+                'picture_media_filemtime' => new Expression('m.filemtime')
                     ), true);
         }
 

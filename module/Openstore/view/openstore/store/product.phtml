@@ -69,6 +69,7 @@
 											'type' => 'picture',
 											'media_id' => $product->picture_media_id,
 											'options' => '800x800-95',
+                                                                                        'filemtime' => '_' . $product->picture_media_filemtime,
                                                                                         'prefix' => str_pad(substr($product->picture_media_id, -2), 2, "0", STR_PAD_LEFT)
 											), array(), $reuseMatchedParams = false);
 										?>" alt="" />

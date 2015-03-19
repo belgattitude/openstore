@@ -126,6 +126,7 @@ class MediaController extends AbstractActionController
 
                         //$cache_path = realpath(dirname(__FILE__) . '/../../../../../public/media/preview/');
                         $base_cache_path = dirname(__FILE__) . '/../../../../../data/media';
+
                         if (realpath($base_cache_path) == '') {
                             throw new \Exception("Base cache path does not exists: $base_cache_path");
                         }
@@ -140,21 +141,24 @@ class MediaController extends AbstractActionController
                         // Check if there's already some previews in the directory
                         $obsolete_previews = array();
                         $links_to_create = array();
-                        $finder = new Finder();
-                        $finder->files()->in($cache_path)->name("/^$media_id(\_[0-9]+){0,1}\.jpg$/");
-                        foreach ($finder as $file) {
-                            $obsolete_previews[] = $file->getRealpath();
+                        
+                        if (is_dir($cache_path)) {
+                            $finder = new Finder();
+                            $finder->files()->in($cache_path)->name("/^$media_id(\_[0-9]+){0,1}\.jpg$/");
+                            foreach ($finder as $file) {
+                                $obsolete_previews[] = $file->getRealpath();
+                            }
                         }
-                        
+
                         $latest_preview_file = $cache_path . DIRECTORY_SEPARATOR . $media_id . '_' . $latest_media_filemtime .  '.' . $format;
-                        
+
                         if ($mtime === null) {
                             $links_to_create[] = $cache_path . DIRECTORY_SEPARATOR . $media_id .  '.' . $format;
                         } elseif ($mtime != $latest_media_filemtime) {
                             $links_to_create[] = $cache_path . DIRECTORY_SEPARATOR . $media_id . '_' . $mtime .  '.' . $format;
                         }
-
-
+                        
+                        
                         $links_to_create = array_unique(array_merge($links_to_create, $obsolete_previews));
                         
                         if(($key = array_search($latest_preview_file, $links_to_create)) !== false) {
@@ -226,10 +230,8 @@ class MediaController extends AbstractActionController
                 }
                 
             } catch (\Exception $e) {
-                var_dump(get_class($e));
-                var_dump($e->getMessage());
-                die();
-                throw $e;
+                $this->notFoundAction();
+                return array('message' => $e->getMessage());
             }            
             
         }
