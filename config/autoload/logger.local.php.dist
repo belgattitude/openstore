@@ -16,7 +16,7 @@ return array(
                     'priority' => 1000,
                     'options' => array(
                         //'stream' => 'data/logs/app.log'
-                        'stream' => dirname(__FILE__) . '/../../data/application.log'
+                        'stream' => dirname(__FILE__) . '/../../data/logs/application.log'
                     )
                 )
             )

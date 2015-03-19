@@ -202,7 +202,7 @@ class MediaController extends AbstractActionController
                                 } catch (\Exception $e) {
                                     
                                     if ($this->serviceLocator->has('Application\Log')) {
-                                        $msg = "Media preview links failed: " . $e->getMessage() . "see: " . __METHOD__;
+                                        $msg = "Media preview links failed: " . $e->getMessage() . ", see: " . __METHOD__;
                                         $this->serviceLocator->get('Application\Log')->warn($msg);
                                     };
                                 }
@@ -211,7 +211,7 @@ class MediaController extends AbstractActionController
                         } catch (\Exception $e) {
                            // Do nothing     
                             if ($this->serviceLocator->has('Application\Log')) {
-                                $msg = "Media preview failed: " . $e->getMessage() . "see: " . __METHOD__;
+                                $msg = "Media preview failed: " . $e->getMessage() . ", see: " . __METHOD__;
                                 $this->serviceLocator->get('Application\Log')->err($msg);
                             };
  
