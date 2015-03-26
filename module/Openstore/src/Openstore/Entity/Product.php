@@ -225,6 +225,18 @@ class Product {
      * @ORM\Column(type="string", length=40, nullable=true)
      */
     private $icon_class;
+    
+    
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true, options={"comment"="European intrastat customs code"})
+     */    
+    private $trade_code_intrastat;
+    
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true, options={"comment"="International Harmonized Trade System common nomenclature code"})
+     */        
+    private $trade_code_hts;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -530,6 +542,42 @@ class Product {
         return $this->icon_class;
     }
 
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getTradeCodeHts() {
+        return $this->trade_code_hts;
+    }
+
+    /**
+     * 
+     * @param string $code
+     */
+    public function setTradeCodeHts($code)
+    {
+        $this->trade_code_hts = $code;
+    }
+    
+    
+    /**
+     * 
+     * @param string $code
+     */
+    public function setTradeCodeIntrastat($code)
+    {
+        $this->trade_code_intrastat = $code;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getTradeCodeIntrastat() {
+        return $this->trade_code_intrastat;
+    }    
+    
     /**
      * 
      * @return boolean

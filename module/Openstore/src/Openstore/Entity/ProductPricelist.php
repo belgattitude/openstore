@@ -74,6 +74,12 @@ class ProductPricelist  {
      */
     private $public_price;
 
+    
+    /**
+     * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Minimum advertised price, only where regulation applies"})
+     */
+    private $map_price;    
+    
     /**
      * @ORM\Column(type="decimal", precision=16, scale=6, nullable=true, options={"comment"="Sales minimum quantity"})
      */
@@ -335,6 +341,23 @@ class ProductPricelist  {
         return $this->public_price;
     }
 
+    
+    /**
+     * @param float $map_price
+     */
+    public function setMapPrice($map_price) {
+        $this->map_price = $map_price;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMapPrice() {
+        return $this->map_price;
+    }
+    
+    
+    
     /**
      * @param string $promo_start_at date Y-m-d H:i:s
      */
