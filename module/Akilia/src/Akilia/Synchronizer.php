@@ -1258,7 +1258,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     available_at,
                     created_at,
                     updated_at,
-
+                    trade_code_intrastat,
+                    trade_code_hts,
                     legacy_mapping, 
                     legacy_synchro_at
                 )
@@ -1305,6 +1306,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     a.date_creation as updated_at,
                     a.date_creation as created_at,
                     null as updated_at,
+                    a.intrastat_trade_code,
+                    a.hts_trade_code,
                     a.id_article as legacy_mapping,
                     '{$this->legacy_synchro_at}' as legacy_synchro_at
                         
@@ -1361,6 +1364,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         available_at = a.date_creation,
                         created_at = a.date_creation,
                         updated_at = null,                        
+                        trade_code_intrastat = a.intrastat_trade_code,
+                        trade_code_hts = a.hts_trade_code,
                         legacy_mapping = a.id_article,
                         legacy_synchro_at = '{$this->legacy_synchro_at}'
                      ";
