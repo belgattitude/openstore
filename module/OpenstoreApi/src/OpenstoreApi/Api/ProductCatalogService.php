@@ -221,7 +221,9 @@ class ProductCatalogService extends AbstractService {
             'flag_end_of_lifecycle' => new Expression('pst.flag_end_of_lifecycle'),
             'available_at' => new Expression('COALESCE(ppl.available_at, p.available_at)'),
             'status_reference' => new Expression('pst.reference'),
-            'currency_symbol' => new Expression('c.symbol')
+            'currency_symbol' => new Expression('c.symbol'),
+            'trade_code_intrastat' => new Expression('p.trade_code_intrastat'),
+            'trade_code_hts' => new Expression('p.trade_code_hts')            
         ));
 
         $select->columns($columns, true);
@@ -351,11 +353,22 @@ class ProductCatalogService extends AbstractService {
      * @param Store $store
      * @param integer|null $customer_id
      * @param string $pricelist_reference
-     * @param string $insert_after
+     * @param string $insert_reference_column column name reference from which to insert.
+     * @param string $insert_mode default ColumnModel::ADD_COLUMN_AFTER
+     * @return void
      */
-    protected function addStorePriceRenderer(Store $store, $customer_id, $pricelist_reference, $insert_after)
+    protected function addStorePriceRenderer(Store $store, $customer_id, $pricelist_reference, $insert_reference_column, $insert_mode=null)
     {
         $cm = $store->getColumnModel();
+
+        if (!$insert_mode) {
+            $insert_mode = ColumnModel::ADD_COLUMN_AFTER;
+        }
+        
+        if (!in_array($insert_mode, array(ColumnModel::ADD_COLUMN_AFTER, 
+                                          ColumnModel::ADD_COLUMN_BEFORE))) {
+            throw new \InvalidArgumentException(__METHOD__ . " unsupported insert_mode parameter ($insert_mode)");
+        }
         
         $cdr = $this->serviceLocator->get('Store\Renderer\CustomerDiscount');
         $cdr->setParams($customer_id, $pricelist_reference);        
@@ -366,15 +379,22 @@ class ProductCatalogService extends AbstractService {
         $my_discount_3 = new Column('my_discount_3', array('type' => ColumnType::TYPE_DECIMAL, 'virtual' => true));
         $my_discount_4 = new Column('my_discount_4', array('type' => ColumnType::TYPE_DECIMAL, 'virtual' => true));
         
-
-        $cm->add($my_price, $insert_after, ColumnModel::ADD_COLUMN_AFTER);
-        $cm->add($my_discount_1, 'my_price', ColumnModel::ADD_COLUMN_AFTER);
-        $cm->add($my_discount_2, 'my_discount_1', ColumnModel::ADD_COLUMN_AFTER);
-        $cm->add($my_discount_3, 'my_discount_2', ColumnModel::ADD_COLUMN_AFTER);
-        $cm->add($my_discount_4, 'my_discount_3', ColumnModel::ADD_COLUMN_AFTER);
-
-        $cm->addRowRenderer($cdr);
         
+        switch($insert_mode) {
+            case ColumnModel::ADD_COLUMN_AFTER:
+                $cm->add($my_price, $insert_reference_column, ColumnModel::ADD_COLUMN_AFTER);
+                $cm->add($my_discount_1, 'my_price', ColumnModel::ADD_COLUMN_AFTER);
+                $cm->add($my_discount_2, 'my_discount_1', ColumnModel::ADD_COLUMN_AFTER);
+                $cm->add($my_discount_3, 'my_discount_2', ColumnModel::ADD_COLUMN_AFTER);
+                $cm->add($my_discount_4, 'my_discount_3', ColumnModel::ADD_COLUMN_AFTER);
+                break;
+            case ColumnModel::ADD_COLUMN_BEFORE:
+                throw new \Exception(__METHOD__ . " Not yet supported");
+                break;
+        
+        }
+        
+        $cm->addRowRenderer($cdr);
     }
     
           
