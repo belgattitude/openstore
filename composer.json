@@ -10,7 +10,7 @@
     "homepage": "http://nuvolia.com",
     "require": {
         "php": ">=5.4.4",
-        "zendframework/zendframework": "2.3.*",
+        "zendframework/zendframework": "2.4.*",
         "soluble/solublecomponents": "dev-master",
         "doctrine/orm": "2.4.*",
         "doctrine/dbal": "2.5.*",
@@ -18,7 +18,7 @@
         "doctrine/doctrine-module": "0.8.*",
         "doctrine/doctrine-orm-module": "0.8.*",
         "gedmo/doctrine-extensions": "2.3.*",
-        "doctrine/data-fixtures": "dev-master",
+        "doctrine/data-fixtures": "1.1.*",
         "hounddog/doctrine-data-fixture-module": "dev-master",
         "zf-commons/zfc-user": "1.*",
         "symfony/yaml": "2.6.*",

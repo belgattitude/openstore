@@ -388,10 +388,13 @@ class ProductCatalogService extends AbstractService {
                 $cm->add($my_discount_3, 'my_discount_2', ColumnModel::ADD_COLUMN_AFTER);
                 $cm->add($my_discount_4, 'my_discount_3', ColumnModel::ADD_COLUMN_AFTER);
                 break;
+            /*
             case ColumnModel::ADD_COLUMN_BEFORE:
                 throw new \Exception(__METHOD__ . " Not yet supported");
                 break;
-        
+            */
+            default:
+                throw new \Exception(__METHOD__ . " Not yet supported");
         }
         
         $cm->addRowRenderer($cdr);
