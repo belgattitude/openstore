@@ -1414,9 +1414,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         //dump($update);        
         $this->executeSQL("Update parent association...", $update);
         
-        
-        
-        
     }
     
     /**
