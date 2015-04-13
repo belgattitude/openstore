@@ -11,7 +11,8 @@ module.exports = function(grunt) {
 					'vendor/bootstrap/dist/js/bootstrap.js', 
 					'vendor/select2/select2.js', 
 					'vendor/typeahead.js/dist/typeahead.bundle.js', 
-					'js/handlebars/handlebars.js'
+					'vendor/handlebars/handlebars.js',
+                                        //'vendor/photoswipe/photoswipe.js'
 					//'js/global.js'  // This specific file
 				],
 				dest: 'dist/js/production.js',
