@@ -32,6 +32,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 {
 
     /**
+     * Whether to output logs
+     * @var boolean
+     */
+    public $output_log = true;
+    
+    /**
      *
      * @var array
      */
@@ -102,8 +108,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
      */
     function __construct(\Doctrine\ORM\EntityManager $em, Adapter $zendDb)
     {
-        $this->em = $em;
         
+        $this->em = $em;
         $this->openstoreDb = $em->getConnection()->getDatabase();
         $this->mysqli = $em->getConnection()
             ->getWrappedConnection()
@@ -1213,9 +1219,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         
         $description = "if(trim(COALESCE(i.desc$default_lsfx, '')) = '', null, $rep)";
         
-            
-            
-        
         $replace = " insert
                      into $db.product
                     (product_id,
@@ -1389,13 +1392,57 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         return "CONVERT(CONVERT(CONVERT($column_name USING latin1) using binary) USING utf8)";
     }
 
-    function synchronizeProductTranslation()
+    /**
+     * Really specific to akilia1/openstore bridge
+     */
+    function synchronizeParentAssociation()
     {
+        $akilia1db = $this->akilia1Db;
+        $db = $this->openstoreDb;
+        
+        $langs = $this->akilia1lang;
+        
+        $update = " 
+            update $db.product
+                   inner join 
+                        $akilia1db.cst_art_infos i on product.product_id = i.id_article
+                   left outer join
+                        $akilia1db.cst_art_infos i2 on i2.id_article = i.id_art_tete
+            set parent_id = if (i2.id_article <> 0 and i2.id_article <> '' and i2.id_article is not null, i2.id_article, null)
+            where 1=1
+        ";
+        //dump($update);        
+        $this->executeSQL("Update parent association...", $update);
+        
+        
+        
+        
+    }
+    
+    /**
+     * 
+     * @param array $product_ids restrict sync to the following products id's
+     */
+    function synchronizeProductTranslation(array $product_ids=null)
+    {
+        
         $akilia1db = $this->akilia1Db;
         $db = $this->openstoreDb;
         $intelaccessDb = $this->intelaccessDb;
         
         $langs = $this->akilia1lang;
+        
+        
+        if ($product_ids !== null) {
+
+            $product_clause = " and ("
+                    . "i.id_article in (" . join(',', $product_ids) . ') or '
+                    . "i.id_art_tete in (" . join(',', $product_ids) . ') or '
+                    . "i2.id_article in (" . join(',', $product_ids) . ') or '
+                    . "i2.id_art_tete in (". join(',', $product_ids) . ') )';
+        } else {
+            $product_clause = "";
+        }
         
         foreach ($langs as $lang => $sfx) {
             
@@ -1434,13 +1481,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             
             $description = $rep;
             
-            // hack for missing lang _7 date info
-            if ($sfx == "_7") {
-                $user_sfx = "_6";
-            } else {
-                $user_sfx = $sfx;
-            }
-            
             $replace = "insert into product_translation 
                  ( product_id,
                    lang,
@@ -1472,8 +1512,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                             0
                         )
                       as revision,    
-                    i.date_maj$user_sfx,
-                    i.date_maj$user_sfx,
+                    i.date_maj$sfx,
+                    i.date_maj$sfx,
                     u.login,
                     u.login,
                     '{$this->legacy_synchro_at}'    
@@ -1483,10 +1523,11 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                   left outer join $akilia1db.cst_art_infos i2 on 
                       (i.id_art_tete = i2.id_article and i.id_art_tete <> 0 and i.id_art_tete <> '')
                   left outer join $intelaccessDb.users u
-                        on u.id_user = i.id_user$user_sfx
+                        on u.id_user = i.id_user$sfx
 
                  where a.flag_archive = 0
-                                        
+                 $product_clause
+                     
                  on duplicate key update
                   lang = '$lang',
                   title = $title,
@@ -1502,14 +1543,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                             1,
                             0
                         ),    
-                  created_at = if (i.date_maj$user_sfx = 0, null, i.date_maj$user_sfx),
-                  updated_at = if (i.date_maj$user_sfx = 0, null, i.date_maj$user_sfx),
-                  created_by = u.login,
+                  created_at = if(product_translation.created_at is null, if(i.date_maj$sfx = 0, null, i.date_maj$sfx), product_translation.created_at),
+                  updated_at = if (i.date_maj$sfx = 0, null, i.date_maj$sfx),
+                  created_by = if(product_translation.created_by is null, u.login, product_translation.created_by),
                   updated_by = u.login,
-                      
                   legacy_synchro_at = '{$this->legacy_synchro_at}'      
             ";
-                  
             
             $this->executeSQL("Replace product translations for lang: $lang", $replace);
         }
@@ -1687,7 +1726,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
      */
     protected function log($message, $priority = null)
     {
-        echo "$message\n";
+        if ($this->output_log) {
+         
+            echo "$message\n";
+        }
     }
 
     /**

@@ -15,13 +15,11 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *     @ORM\UniqueConstraint(name="unique_translation_idx",columns={"product_id", "lang"})
  *   }, 
  *   indexes={
- *     @ORM\Index(name="keywords_idx", columns={"keywords"})
+ *     @ORM\Index(name="keywords_ft_idx", columns={"keywords"}, flags={"fulltext"})
  *   },
  *   options={"comment" = "Product search indexes", "engine":"MyISAM"}
  * )
  * 
- * WHEN doctrine 2.5 is ready we can use (name="keywords_ft_idx", columns={"keywords"}, flags={"fulltext"}),
- * AND REMOVE the alter in dbextra.config.php
  * NOTE THAT ON MYSQL 5.6+ / MariaDB 10+ fulltext index can be on INNODB table
  */
 class ProductSearch {

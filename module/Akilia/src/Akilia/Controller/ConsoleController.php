@@ -27,6 +27,8 @@ class ConsoleController extends AbstractActionController {
         $synchronizer->setConfiguration($configuration['synchronizer']);
         $synchronizer->synchronizeAll();
     }
+    
+    
 
     public function syncstockAction() {
         $configuration = $this->getAkiliaConfiguration();
