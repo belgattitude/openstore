@@ -329,7 +329,6 @@ class ProductTranslationBrowser extends AbstractBrowser {
             }
         }
 
-
         $havings = [];
         if (count($filter_having_clauses) > 0) {
             $havings[] = "(" . join(' or ', $filter_having_clauses)  . ")";
@@ -338,9 +337,9 @@ class ProductTranslationBrowser extends AbstractBrowser {
             $havings[] = $having_updated_clause;
         }
         
-        $select->having(join(' and ', $havings));
-        
-        
+        if (count($havings) > 0) {
+            $select->having(join(' and ', $havings));
+        }
         
         $order_columns = ['relevance desc'];
         if ($params['order']) {
