@@ -28,7 +28,8 @@ class ProductTranslationBrowser extends AbstractBrowser {
             'categories' => array('required' => false),
             'id' => array('required' => false),
             'product_id' => array('required' => false),
-            'exclusions' => array('required' => false)
+            'exclusions' => array('required' => false),
+            'updated_by' => array('required' => false)
         );
     }
 
@@ -59,6 +60,12 @@ class ProductTranslationBrowser extends AbstractBrowser {
             $pricelists = array();
         } 
 
+        $updated_by_logins = [];
+        if (isset($params['updated_by']) && $params['updated_by'] != '') {
+            $updated_by_logins = $params['updated_by'];
+        }         
+        
+        
         if (isset($params['brands']) && $params['brands'] != '') {
             $brands = $params['brands'];
         } else {
@@ -150,17 +157,33 @@ class ProductTranslationBrowser extends AbstractBrowser {
             
         ];
         
-        $select->columns(array_merge(
+        if (count($updated_by_logins) > 0) {
+            $ubls = [];
+            foreach($updated_by_logins as $login) {
+                $ubls[] = $this->adapter->getPlatform()->quoteValue($login);
+            }
+            $ubl = join(',', $ubls);
+            $filter_updated_clause = new Expression("SUM(if(p18.updated_by in ($ubl), 1, 0))");
+            $having_updated_clause = "filter_updated_by > 0";
+        } else {
+            $filter_updated_clause = new Expression("1");
+            $having_updated_clause = "";
+        }
+        
+        
+        $full_columns = array_merge(
                 $columns, 
                 $inner_columns,
                 [   
                     'min_revision' => new Expression('MIN(COALESCE(p18.revision, 0))'),
                     'max_updated_at' => new Expression('MAX(p18.updated_at)'),
                     'max_revision' => new Expression('MAX(COALESCE(p18.revision, 0))'),
-                    'nb_distinct_revision' => new Expression('COUNT(distinct COALESCE(p18.revision, 9999999))')
+                    'nb_distinct_revision' => new Expression('COUNT(distinct COALESCE(p18.revision, 9999999))'),
+                    'filter_updated_by' => $filter_updated_clause
                 ]
-                ), true);
+                );
         
+        $select->columns($full_columns, true);
         $select->group(array_keys($columns));
         
         $product_id = $params->get('product_id');
@@ -171,6 +194,8 @@ class ProductTranslationBrowser extends AbstractBrowser {
         if (count($types) > 0) {
             $select->where(['p.type_id' => $types]);
         }        
+
+        
         
         if (count($brands) > 0) {
             $select->where(['pb.reference' => $brands]);
@@ -277,8 +302,10 @@ class ProductTranslationBrowser extends AbstractBrowser {
         
         
         $filters = $params['filters'];
+        
+        $filter_having_clauses = [];
         if (is_array($filters) && count($filters) > 0) {
-            $having_clauses = [];
+            
             foreach($filters as $filter) {
                 switch($filter) {
                     case 'untranslated' :
@@ -288,33 +315,39 @@ class ProductTranslationBrowser extends AbstractBrowser {
                                 if ($lang != $master_language)
                                 $clauses[] = "count_chars_$lang = 0";
                             }
-                            $having_clauses[] = "(count_chars_$master_language > 0 and (" . join(' or ', $clauses) . '))';
+                            $filter_having_clauses[] = "(count_chars_$master_language > 0 and (" . join(' or ', $clauses) . '))';
                         } else {
-                            $having_clauses[] = "count_chars_$master_language = 0";
+                            $filter_having_clauses[] = "count_chars_$master_language = 0";
                         }
                         break;
                     case 'revised' :
                         if (count($languages) > 1) {
-                            $having_clauses[] = 'nb_distinct_revision > 1';
+                            $filter_having_clauses[] = 'nb_distinct_revision > 1';
                         }
                         break;
                 }
             }
-            if (count($having_clauses) > 0) {
-                $select->having(join(' or ', $having_clauses));
-            }
         }
 
+
+        $havings = [];
+        if (count($filter_having_clauses) > 0) {
+            $havings[] = "(" . join(' or ', $filter_having_clauses)  . ")";
+        }
+        if ($having_updated_clause != '') {
+            $havings[] = $having_updated_clause;
+        }
+        
+        $select->having(join(' and ', $havings));
+        
+        
         
         $order_columns = ['relevance desc'];
         if ($params['order']) {
-            
             $order_columns = array_merge($order_columns, $params['order']);
-            
         }
 
         $select->order($order_columns);
-        
         
         
         /*
@@ -322,9 +355,7 @@ class ProductTranslationBrowser extends AbstractBrowser {
 
           echo $select->getSql();
           die();
-         * 
-         */
-
+        */
 
 
         return $select;
