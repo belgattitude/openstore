@@ -42,6 +42,10 @@ class ProductBrowser extends AbstractBrowser {
 
         $select->from(array('p' => 'product'), array())
                 ->join(array('p18' => 'product_translation'), new Expression("p18.product_id = p.product_id and p18.lang = '$lang'"), array(), $select::JOIN_LEFT)
+                // to remove when product_model is ready
+                ->join(array('p2' => 'product'), new Expression('p2.product_id = p.parent_id'), array(), $select::JOIN_LEFT)
+                ->join(array('p2_18' => 'product_translation'), new Expression("p2.product_id = p2_18.product_id and p2_18.lang='$lang'"), array(), $select::JOIN_LEFT)
+                // end of to remove
                 ->join(array('psi' => 'product_search'), new Expression("psi.product_id = p.product_id and psi.lang = '$lang'"), array(), $select::JOIN_LEFT)
                 ->join(array('ppl' => 'product_pricelist'), new Expression('ppl.product_id = p.product_id'), array())
                 ->join(array('pl' => 'pricelist'), new Expression('pl.pricelist_id = ppl.pricelist_id'), array())
@@ -94,11 +98,13 @@ class ProductBrowser extends AbstractBrowser {
                 'group_id' => new Expression('pg.group_id'),                
                 'group_reference' => new Expression('pg.reference'),                
                 'category_id' => new Expression('pc.category_id'),
-                'category_reference' => new Expression('pc.reference'),
-                'category_title' => new Expression('COALESCE(pc18.title, pc.title)'),
-                'title' => new Expression('COALESCE(p18.title, p.title)'),
+                //'category_reference' => new Expression('pc.reference'),
+                //'category_title' => new Expression('COALESCE(pc18.title, pc.title)'),
+                'category_breadcrumb' => new Expression('COALESCE(pc18.breadcrumb, pc.breadcrumb)'),
+                'title' => new Expression('COALESCE(p18.title, p.title, p18.invoice_title, p.invoice_title)'),
                 'invoice_title' => new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
-                'description' => new Expression('COALESCE(p18.description, p.description)'),
+                //'description' => new Expression('COALESCE(p18.description, p.description)'),
+                'description' => new Expression('if(p2.product_id is null, COALESCE(p18.description, p.description), COALESCE(p2_18.description, p2.description, p.description) )'),
                 'characteristic' => new Expression('COALESCE(p18.characteristic, p.characteristic)'),
                 'price' => new Expression('ppl.price'),
                 'list_price' => new Expression('ppl.list_price'),
@@ -114,6 +120,7 @@ class ProductBrowser extends AbstractBrowser {
                 'available_stock' => new Expression('ps.available_stock'),
                 'theoretical_stock' => new Expression('ps.theoretical_stock'),
                 'currency_reference' => new Expression('c.reference'),
+                'currency_symbol' => new Expression('c.symbol'),
                 'unit_reference' => new Expression('pu.reference'),
                 'type_reference' => new Expression('pt.reference'),
                 'picture_media_id' => new Expression('pm.media_id'),

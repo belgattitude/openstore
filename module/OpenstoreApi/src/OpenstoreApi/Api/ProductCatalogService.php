@@ -133,7 +133,7 @@ class ProductCatalogService extends AbstractService {
             'product_reference' => new Expression('p.reference'),
             'product_title' => new Expression('COALESCE(p18.title, p18.invoice_title, p.title, p.invoice_title)'),
             'product_invoice_title' => new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
-            'product_description' => new Expression('if (p2.product_id is null, COALESCE(p18.description, p.description), COALESCE(p2_18.description, p.description) )'),
+            'product_description' => new Expression('if (p2.product_id is null, COALESCE(p18.description, p.description), COALESCE(p2_18.description, p2.description, p.description) )'),
             'product_characteristic' => new Expression('COALESCE(p18.characteristic, p.characteristic)'),
             'price'     => new Expression('ppl.price'),
             'list_price' => new Expression('ppl.list_price'),
