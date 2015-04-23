@@ -93,6 +93,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     protected $default_unit_id = 1;
 
     protected $default_product_type_id = 1;
+    
+    
 
     protected $legacy_synchro_at;
 
@@ -157,6 +159,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     
     function synchronizeAll()
     {
+        /*
         $this->synchronizeCountry();
         $this->synchronizeCustomer();
         $this->synchronizeApi();
@@ -169,6 +172,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->synchronizeProductModel();
         $this->synchronizeProduct();
         $this->synchronizeProductTranslation();
+         * 
+         */
         $this->synchronizeProductPricelist();
         $this->synchronizeProductStock();
         $this->synchronizeProductPackaging();
@@ -557,150 +562,19 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->executeSQL("Delete eventual removed customer pricelists", $delete);
     }
 
-    function synchronizeProductPricelist($use_akilia2 = true)
-    {
-        $db = $this->openstoreDb;
-        
-        if ($use_akilia2) {
-            
-            $akilia2db = $this->akilia2Db;
-            $replace = " insert
-                         into $db.product_pricelist
-                        (
-                        product_id,
-                        pricelist_id,
-                                                status_id,
-                        price,
-                        list_price,
-                        public_price,
-                        discount_1,
-                        discount_2,
-                        discount_3,
-                        discount_4,
-                        sale_minimum_qty,
-                        is_promotional,
-                        is_liquidation,
-                        promo_start_at,
-                        promo_end_at,
-                        flag_active,
-                        available_at,
-                        legacy_synchro_at
-                    )
-
-                select 
-                    bpp.product_id,
-                    pl.pricelist_id,
-                                        ps.status_id as status_id,
-                    (bpp.price_sale * (1-(bpp.discount_1/100)) * (1-(bpp.discount_2/100)) * (1-(bpp.discount_3/100)) * (1-(bpp.discount_4/100))) as price,
-                    bpp.price_sale as list_price,
-                    bpp.price_sale_public as public_price,
-                    bpp.discount_1 as discount_1,
-                    bpp.discount_2 as discount_2,
-                    bpp.discount_3 as discount_3,
-                    bpp.discount_4 as discount_4,
-                    if (bpp.sale_min_qty > 0, bpp.sale_min_qty, null) as sale_min_qty,
-                    bpp.is_promotionnal as is_promotional,
-                    bpp.is_liquidation as is_liquidation,
-                    null as promo_start_at,
-                    null as promo_end_at,
-                    bpp.is_active,
-                    p.created_at,
-                    '{$this->legacy_synchro_at}' as legacy_synchro_at
-
-                    from
-                    $akilia2db.base_product_price as bpp
-                        inner join
-                    $akilia2db.base_pricelist bp ON bpp.pricelist_id = bp.id
-                        inner join
-                    $db.pricelist pl ON pl.legacy_mapping = bp.legacy_mapping
-                        inner join
-                    $db.product p on p.product_id = bpp.product_id
-                        left outer join
-                    $db.product_status ps on ps.legacy_mapping = bpp.status_code
-                        
-                    where bpp.price_sale > 0
-                    on duplicate key update
-                            price = (bpp.price_sale * (1-(bpp.discount_1/100)) * (1-(bpp.discount_2/100)) * (1-(bpp.discount_3/100)) * (1-(bpp.discount_4/100))),
-                            list_price = bpp.price_sale,
-                            public_price = bpp.price_sale_public,
-                            discount_1 = bpp.discount_1,
-                                                        status_id = ps.status_id,
-                            discount_2 = bpp.discount_2,
-                            discount_3 = bpp.discount_3,
-                            discount_4 = bpp.discount_4,
-                            sale_minimum_qty = if (bpp.sale_min_qty > 0, bpp.sale_min_qty, null),
-                            is_promotional = bpp.is_promotionnal,
-                            is_liquidation = bpp.is_liquidation,
-                            promo_start_at = null,
-                            promo_end_at = null,
-
-                            flag_active = bpp.is_active,
-                            available_at = p.created_at,
-                            legacy_synchro_at = '{$this->legacy_synchro_at}'
-                         ";
-            
-            $this->executeSQL("Replace product pricelist", $replace);
-        } else {
-            $akilia1db = $this->akilia1Db;
-            $replace = " insert
-                         into $db.product_pricelist
-                        (
-                        product_id,
-                        pricelist_id,
-
-                        price,
-                        promo_discount,
-                        promo_start_at,
-                        promo_end_at,
-                        flag_active,
-                        available_at,
-                        legacy_synchro_at
-                    )
-
-                    select at.id_article,
-                           pl.pricelist_id,
-                           at.prix_unit_ht,
-                           if((at.flag_promo = 1 or at.flag_liquidation = 1) and at.remise1 > 0, at.remise1, null) as promo_discount,
-                           null as promo_start_at,
-                           null as promo_end_at,
-                           at.flag_availability,
-                           a.date_creation as available_at,
-                        '{$this->legacy_synchro_at}' as legacy_synchro_at
-
-                    from $akilia1db.art_tarif as at
-                    inner join $db.pricelist pl on at.id_pays = pl.legacy_mapping
-                    inner join $akilia1db.article a on at.id_article = a.id_article    
-                    where 
-                                                at.prix_unit_ht > 0
-                                        and a.flag_archive = 0
-                                        
-                    on duplicate key update
-                            price = at.prix_unit_ht,
-                            promo_discount = if((at.flag_promo = 1 or at.flag_liquidation = 1) and at.remise1 > 0, at.remise1, null),
-                            promo_start_at = null,
-                            promo_end_at = null,
-
-                            flag_active = at.flag_availability,
-                            available_at = a.date_creation,
-                            legacy_synchro_at = '{$this->legacy_synchro_at}'
-                         ";
-            
-            $this->executeSQL("Replace product pricelist", $replace);
-        }
-        
-        // 2. Deleting - old links in case it changes
-        $delete = "
-            delete from $db.product_pricelist 
-            where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-        
-        $this->executeSQL("Delete eventual removed product_pricelist", $delete);
-    }
 
     function synchronizeProductStock()
     {
-        if (array_key_exists('options', $this->configuration) && is_array($this->configuration['options']['product_stock']) && is_array($this->configuration['options']['product_stock']['stocks'])) {
-            
-            $elements = $this->configuration['options']['product_stock']['stocks'];
+        
+        if (!isset($this->configuration['options']['product_stock'])) {
+            throw new \Exception(__METHOD__ . " Error missing sync configuration key in akilia.local.php 'akilia/synchronizer/options/product_stock'");
+        }
+        if (!$this->configuration['options']['product_stock']['enabled']) {
+            $this->log("Skipping product stock synchro [disabled by config]");
+            return;
+        }
+        if (is_array($this->configuration['options']['product_stock']['elements'])) {
+            $elements = $this->configuration['options']['product_stock']['elements'];
         } else {
             $elements = array(
                 'DEFAULT' => array(
@@ -762,6 +636,291 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             where legacy_synchro_at < '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
         
         $this->executeSQL("Delete eventual removed product_stock", $delete);
+    }
+    
+    
+    function synchronizeProductPricelistBackup($use_akilia2 = true)
+    {
+        $db = $this->openstoreDb;
+        
+        
+        if ($use_akilia2) {
+            
+            $akilia2db = $this->akilia2Db;
+            $replace = " insert
+                         into $db.product_pricelist
+                        (
+                        product_id,
+                        pricelist_id,
+                                                status_id,
+                        price,
+                        list_price,
+                        public_price,
+                        map_price,
+                        discount_1,
+                        discount_2,
+                        discount_3,
+                        discount_4,
+                        sale_minimum_qty,
+                        is_promotional,
+                        is_liquidation,
+                        promo_start_at,
+                        promo_end_at,
+                        flag_active,
+                        available_at,
+                        legacy_synchro_at
+                    )
+
+                select 
+                    bpp.product_id,
+                    pl.pricelist_id,
+                    ps.status_id as status_id,
+                    (bpp.price_sale * (1-(bpp.discount_1/100)) * (1-(bpp.discount_2/100)) * (1-(bpp.discount_3/100)) * (1-(bpp.discount_4/100))) as price,
+                    bpp.price_sale as list_price,
+                    bpp.price_sale_public as public_price,
+                    null,
+                    bpp.discount_1 as discount_1,
+                    bpp.discount_2 as discount_2,
+                    bpp.discount_3 as discount_3,
+                    bpp.discount_4 as discount_4,
+                    if (bpp.sale_min_qty > 0, bpp.sale_min_qty, null) as sale_min_qty,
+                    bpp.is_promotionnal as is_promotional,
+                    bpp.is_liquidation as is_liquidation,
+                    null as promo_start_at,
+                    null as promo_end_at,
+                    bpp.is_active,
+                    p.created_at,
+                    '{$this->legacy_synchro_at}' as legacy_synchro_at
+
+                    from
+                    $akilia2db.base_product_price as bpp
+                        inner join
+                    $akilia2db.base_pricelist bp ON bpp.pricelist_id = bp.id
+                        inner join
+                    $db.pricelist pl ON pl.legacy_mapping = bp.legacy_mapping
+                        inner join
+                    $db.product p on p.product_id = bpp.product_id
+                        left outer join
+                    $db.product_status ps on ps.legacy_mapping = bpp.status_code
+                        
+                    where bpp.price_sale > 0
+                    on duplicate key update
+                            price = (bpp.price_sale * (1-(bpp.discount_1/100)) * (1-(bpp.discount_2/100)) * (1-(bpp.discount_3/100)) * (1-(bpp.discount_4/100))),
+                            list_price = bpp.price_sale,
+                            public_price = bpp.price_sale_public,
+                            discount_1 = bpp.discount_1,
+                                                        status_id = ps.status_id,
+                            discount_2 = bpp.discount_2,
+                            discount_3 = bpp.discount_3,
+                            discount_4 = bpp.discount_4,
+                            sale_minimum_qty = if (bpp.sale_min_qty > 0, bpp.sale_min_qty, null),
+                            is_promotional = bpp.is_promotionnal,
+                            is_liquidation = bpp.is_liquidation,
+                            promo_start_at = null,
+                            promo_end_at = null,
+
+                            flag_active = bpp.is_active,
+                            available_at = p.created_at,
+                            legacy_synchro_at = '{$this->legacy_synchro_at}'
+                         ";
+            
+            $this->executeSQL("Replace product pricelist", $replace);
+        } else {
+            $akilia1db = $this->akilia1Db;
+            $replace = " insert
+                         into $db.product_pricelist
+                        (
+                        product_id,
+                        pricelist_id,
+                        price,
+                        promo_discount,
+                        promo_start_at,
+                        promo_end_at,
+                        flag_active,
+                        available_at,
+                        legacy_synchro_at
+                    )
+
+                    select at.id_article,
+                           pl.pricelist_id,
+                           at.prix_unit_ht,
+                           if((at.flag_promo = 1 or at.flag_liquidation = 1) and at.remise1 > 0, at.remise1, null) as promo_discount,
+                           null as promo_start_at,
+                           null as promo_end_at,
+                           at.flag_availability,
+                           a.date_creation as available_at,
+                        '{$this->legacy_synchro_at}' as legacy_synchro_at
+
+                    from $akilia1db.art_tarif as at
+                    inner join $db.pricelist pl on at.id_pays = pl.legacy_mapping
+                    inner join $akilia1db.article a on at.id_article = a.id_article    
+                    where 
+                                                at.prix_unit_ht > 0
+                                        and a.flag_archive = 0
+                                        
+                    on duplicate key update
+                            price = at.prix_unit_ht,
+                            promo_discount = if((at.flag_promo = 1 or at.flag_liquidation = 1) and at.remise1 > 0, at.remise1, null),
+                            promo_start_at = null,
+                            promo_end_at = null,
+
+                            flag_active = at.flag_availability,
+                            available_at = a.date_creation,
+                            legacy_synchro_at = '{$this->legacy_synchro_at}'
+                         ";
+            
+            $this->executeSQL("Replace product pricelist", $replace);
+        }
+        
+        // 2. Deleting - old links in case it changes
+        $delete = "
+            delete from $db.product_pricelist 
+            where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+        
+        $this->executeSQL("Delete eventual removed product_pricelist", $delete);
+    }
+    
+    
+    function synchronizeProductPricelist()
+    {
+        if (!isset($this->configuration['options']['product_pricelist'])) {
+            throw new \Exception(__METHOD__ . " Error missing sync configuration key in akilia.local.php 'akilia/synchronizer/options/product_pricelist'");
+        }
+        if (!$this->configuration['options']['product_pricelist']['enabled']) {
+            $this->log("Skipping product pricelist synchro [disabled by config]");
+            return;
+        }
+        if (is_array($this->configuration['options']['product_pricelist']['elements'])) {
+            $elements = $this->configuration['options']['product_pricelist']['elements'];
+        } else {
+            $elements = array(
+                'DEFAULT' => array(
+                    'akilia1db' => $this->akilia1Db,
+                    'pricelists' => []
+                )
+            );
+        }
+        
+        $db = $this->openstoreDb;
+        
+        foreach ($elements as $key => $element) {
+
+            $akilia1Db = $element['akilia1db'];
+
+            $pricelists_clause = "";
+            if (count($element['pricelists']) > 0) {
+                $pls = array();
+                foreach($element['pricelists'] as $pricelist) {
+                    $pls[] = $this->adapter->getPlatform()->quoteValue($pricelist);
+                }
+                $pricelists_clause = "and t.id_pays in (" . join(',', $pls) . ")";                
+            } 
+            
+            $replace = " 
+                insert into $db.product_pricelist(
+                    product_id,
+                    pricelist_id,
+                    status_id,
+                    price,
+                    list_price,
+                    public_price,
+                    map_price,
+                    discount_1,
+                    discount_2,
+                    discount_3,
+                    discount_4,
+                    sale_minimum_qty,
+                    is_promotional,
+                    is_liquidation,
+                    promo_start_at,
+                    promo_end_at,
+                    flag_active,
+                    available_at,
+                    legacy_synchro_at
+                )
+                select 
+                    p.product_id as product_id,
+                    pl.pricelist_id as pricelist_id, 
+                    ps.status_id as status_id,
+                    ROUND( (t.prix_unit_ht * 
+                                (1-(COALESCE(t.remise1, 0)/100)) * 
+                                (1-(COALESCE(t.remise2, 0)/100)) * 
+                                (1-(COALESCE(t.remise3, 0)/100)) * 
+                                (1-(COALESCE(t.remise4, 0)/100))
+                            ), 4) as price,
+                    t.prix_unit_ht as list_price,
+                    t.prix_unit_public as public_price,
+                    t.map_price as map_price,
+
+                    COALESCE(t.remise1, 0) as discount_1,
+                    COALESCE(t.remise2, 0) as discount_2,
+                    COALESCE(t.remise3, 0) as discount_3,
+                    COALESCE(t.remise4, 0) as discount_4,
+
+                    if(t.sale_min_qty > 0, t.sale_min_qty, null) as sale_minimum_qty,
+                    t.flag_promo as is_promotional,
+                    t.flag_liquidation as is_liquidation,
+                    t.date_promo_start as promo_start_at,
+                    t.date_promo_end as promo_end_at,
+                    t.flag_availability as flag_active,
+                    COALESCE(t.date_in_stock, p.created_at) as available_at,
+                    '{$this->legacy_synchro_at}' as legacy_synchro_at
+                from $akilia1Db.article a
+                inner join 
+                    $akilia1Db.art_tarif t on t.id_article = a.id_article 
+                inner join 
+                    $db.pricelist pl on pl.legacy_mapping = t.id_pays
+                inner join
+                    $db.product p on p.legacy_mapping = a.id_article    
+                left outer join 
+                    $db.product_status ps on ps.legacy_mapping = a.code_suivi
+                where 
+                    t.prix_unit_ht > 0
+                    $pricelists_clause
+
+                on duplicate key update
+                    product_id = p.product_id,
+                    pricelist_id = pl.pricelist_id, 
+                    status_id = ps.status_id,
+                    price = ROUND( (t.prix_unit_ht * 
+                                (1-(COALESCE(t.remise1, 0)/100)) * 
+                                (1-(COALESCE(t.remise2, 0)/100)) * 
+                                (1-(COALESCE(t.remise3, 0)/100)) * 
+                                (1-(COALESCE(t.remise4, 0)/100))
+                            ), 4),
+
+                    list_price = t.prix_unit_ht ,
+                    public_price = t.prix_unit_public,
+                    map_price = t.map_price,
+
+                    discount_1 = COALESCE(t.remise1, 0),
+                    discount_2 = COALESCE(t.remise2, 0),
+                    discount_3 = COALESCE(t.remise3, 0),
+                    discount_4 = COALESCE(t.remise4, 0),
+
+                    sale_minimum_qty = if(t.sale_min_qty > 0, t.sale_min_qty, null),
+                    is_promotional = t.flag_promo,
+                    is_liquidation = t.flag_liquidation,
+                    promo_start_at = t.date_promo_start,
+                    promo_end_at = t.date_promo_end,
+                    flag_active = t.flag_availability,
+                    available_at = COALESCE(t.date_in_stock, p.created_at),
+                    legacy_synchro_at = '{$this->legacy_synchro_at}'
+            ";
+                    
+            $this->executeSQL("Replace product pricelist [$key] ", $replace);
+            
+        }
+        
+        
+        // 2. Deleting - old links in case it changes
+        $delete = "
+            delete from $db.product_pricelist
+            where legacy_synchro_at < '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+        
+        $this->executeSQL("Delete eventual removed product_pricelist", $delete);
+        
+        
     }
 
     function synchronizePricelist($use_akilia2 = true)

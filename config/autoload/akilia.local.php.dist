@@ -42,22 +42,32 @@ return array(
             'default_language' => 'en',
             
             'options' => array(
-                    /*
-                    'product_stock' =>
-                
-                        array('stocks' =>
-                                array(
-                                    'BELGIUM' => array('akilia1db' => 'emd00', 'pricelist' => 'BE'),
-                                    //'USA'      => array('akilia1db' => 'emd01', 'pricelist' => 'US'),
-                                    //'FOSHAN'  => array('akilia1db' => 'emd04', 'pricelist' => '1F'),
-                                )
-                            ),
-                    'product_price' => array(
-
-                    )
-                     
-                     */
-
+                'product_stock' => [
+                        'enabled' => true,
+                        /*
+                        'elements' =>  [
+                                'BELGIUM' => [ 'akilia1db' => 'emd00', 'pricelist' => 'BE'],
+                                'USA' => ['akilia1db' => 'emd01', 'pricelist' => 'US'],
+                                'FOSHAN'  => array('akilia1db' => 'emd04', 'pricelist' => '1F'),
+                        ]
+                         
+                         */
+                ],
+                'product_pricelist' => [
+                        'enabled' => true,
+                        /*
+                        'elements' =>  [
+                            // Akilia 1 database
+                            'EUROPE'    => ['akilia1db' => 'emd00', 'pricelists' => ['BE','DE','FR','NL','AT','IE','ES','GB','IT','DK']],
+                            'UK'        => ['akilia1db' => 'emd02', 'pricelists' => ['GB']],
+                            'USA'       => ['akilia1db' => 'emd01', 'pricelists' => ['US']],
+                            //'CANADA'    => ['akilia1db' => 'emd05', 'pricelists' => ['CA']],
+                            //'EXPORT'    => ['akilia1db' => 'emd04', 'pricelists' => ['1B','2B','1U','2U','1F','2F']],
+                            //'CHINA'     => ['akilia1db' => 'emd20', 'pricelists' => ['20F','20U']]
+                        ]
+                         * 
+                         */
+                ]
             ),
             
             
