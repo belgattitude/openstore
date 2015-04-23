@@ -223,7 +223,8 @@ class ProductCatalogService extends AbstractService {
             'status_reference' => new Expression('pst.reference'),
             'currency_symbol' => new Expression('c.symbol'),
             'trade_code_intrastat' => new Expression('p.trade_code_intrastat'),
-            'trade_code_hts' => new Expression('p.trade_code_hts')            
+            'trade_code_hts' => new Expression('p.trade_code_hts'),
+            'map_price' => new Expression('ppl.map_price')  
         ));
 
         $select->columns($columns, true);
