@@ -87,6 +87,7 @@ class ProductTranslationBrowser extends AbstractBrowser {
             $inner_columns["title_$lang"] = new Expression("COALESCE(MAX(if(p18.lang = '$lang', p18.title, null)), '')");
             $inner_columns["description_$lang"] = new Expression("COALESCE(MAX(if(p18.lang = '$lang', p18.description, null)), '')");
             $inner_columns["characteristic_$lang"] = new Expression("COALESCE(MAX(if(p18.lang = '$lang', p18.characteristic, null)), '')");
+            $inner_columns["keywords_$lang"] = new Expression("COALESCE(MAX(if(p18.lang = '$lang', p18.keywords, null)), '')");
             $inner_columns["created_at_$lang"] = new Expression("DATE_FORMAT(MAX(if(p18.lang = '$lang', p18.created_at, null)), '%Y-%m-%dT%H:%i:%s')");
             $inner_columns["updated_at_$lang"] = new Expression("DATE_FORMAT(MAX(if(p18.lang = '$lang', p18.updated_at, null)), '%Y-%m-%dT%H:%i:%s')");
             $inner_columns["created_by_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.created_by, null))");
@@ -258,6 +259,7 @@ class ProductTranslationBrowser extends AbstractBrowser {
             //die();
             if (u::strlen($query) > 3) {
                 $matches[1000000] = 'p18.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
+                $matches[1000001] = 'p18.keywords like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
                 $matches[100000] = '(p18.title is null and p.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%') . ")";
             }
             if (u::strlen($query) > 3) {

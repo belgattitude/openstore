@@ -10,6 +10,8 @@ use Soluble\Db\Sql\Select;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
 
+use Patchwork\Utf8 as u;
+
 class ProductBrowser extends AbstractBrowser {
 
     /**
@@ -182,7 +184,7 @@ class ProductBrowser extends AbstractBrowser {
             // BARCODE, SEARCH_REFERENCE, PRODUCT_ID,
 
             $matches = array();
-            if (is_numeric($query) && strlen($query) < 20) {
+            if (is_numeric($query) && u::strlen($query) < 20) {
 
                 // Can be a barcode or a product_id, 
                 $matches[1000000000] = "p.product_id = $query";
@@ -201,11 +203,14 @@ class ProductBrowser extends AbstractBrowser {
             $matches[1000000] = "p.search_reference like " . $platform->quoteValue('%' . $searchable_ref . '%');
             //echo "p.search_reference like CONCAT('%', get_searchable_reference($quoted), '%')";
             //die();
-            if (strlen($query) > 3) {
+            if (u::strlen($query) > 3) {
                 $matches[1000000] = 'p18.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
+                $matches[1000001] = 'p18.keywords like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
                 $matches[100000] = '(p18.title is null and p.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%') . ")";
+                
             }
-            if (strlen($query) > 5) {
+
+            if (u::strlen($query) > 5) {
                 $matches[10000] = 'psi.keywords like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
             }
 
