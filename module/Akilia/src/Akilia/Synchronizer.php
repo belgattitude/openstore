@@ -899,8 +899,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     discount_4 = COALESCE(t.remise4, 0),
 
                     sale_minimum_qty = if(t.sale_min_qty > 0, t.sale_min_qty, null),
-                    is_promotional = if(t.flag_promo = 1 and (t.remise1 > 0 or t.remise2 > 0), 1, 0)
-                    is_liquidation = if(t.flag_liquidation = 1 and (t.remise1 > 0 or t.remise2 > 0), 1, 0)
+                    is_promotional = if(t.flag_promo = 1 and (t.remise1 > 0 or t.remise2 > 0), 1, 0),
+                    is_liquidation = if(t.flag_liquidation = 1 and (t.remise1 > 0 or t.remise2 > 0), 1, 0),
                     promo_start_at = t.date_promo_start,
                     promo_end_at = t.date_promo_end,
                     flag_active = t.flag_availability,
