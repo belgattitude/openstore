@@ -36,7 +36,6 @@ class ProductBrowser extends AbstractBrowser {
         $params = $this->getSearchParams();
 
         $lang = $params->get('language');
-
         $pricelist = $params->get('pricelist');
 
         $select = new Select();

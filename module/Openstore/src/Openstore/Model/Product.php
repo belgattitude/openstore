@@ -12,7 +12,8 @@ class Product extends AbstractModel implements BrowsableInterface {
     /**
      * @return \Openstore\Model\Browser\ProductBrowser
      */
-    function getBrowser() {
+    function getBrowser() 
+    {
         return new ProductBrowser($this);
     }
 
@@ -24,7 +25,8 @@ class Product extends AbstractModel implements BrowsableInterface {
      * @param string $language
      * @return \ArrayObject|false
      */
-    function getInfo($product_id, $pricelist_id, $customer_id = null, $language = '') {
+    function getInfo($product_id, $pricelist_id, $customer_id = null, $language = '') 
+    {
         $service = $this->serviceLocator->get('Openstore\Service');
         $productModel = $service->getModel('Model\Product');
 

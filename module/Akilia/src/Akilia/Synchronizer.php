@@ -1709,12 +1709,17 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             $this->executeSQL("Replace product translations for lang: $lang", $replace);
         }
         //die();
-        // 2. Deleting - old links in case it changes
-        $delete = "
-            delete from $db.product_translation 
-            where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+        // 2. Deleting - old links in case it changes only when product id is no specified
         
-        $this->executeSQL("Delete eventual removed product translations", $delete);
+        if ($product_ids === null) {
+            $delete = "
+                delete from $db.product_translation 
+                where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+
+            $this->executeSQL("Delete eventual removed product translations", $delete);
+        } else {
+            $this->log("Skipping deleteing eventual removed product translations because product ids specified");
+        }
     }
 
     /**
