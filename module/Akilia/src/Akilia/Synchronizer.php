@@ -804,6 +804,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
             $akilia1Db = $element['akilia1db'];
 
+            
+            
             $pricelists_clause = "";
             if (count($element['pricelists']) > 0) {
                 $pls = array();
@@ -812,6 +814,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 }
                 $pricelists_clause = "and t.id_pays in (" . join(',', $pls) . ")";                
             } 
+            
+            $this->log("Product pricelist [$key] sync: taking prices " .  join(',', $pls). " from database '$akilia1Db'");            
             
             $replace = " 
                 insert into $db.product_pricelist(
