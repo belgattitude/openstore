@@ -805,7 +805,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             $akilia1Db = $element['akilia1db'];
 
             
-            
             $pricelists_clause = "";
             if (count($element['pricelists']) > 0) {
                 $pls = array();
@@ -859,8 +858,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     COALESCE(t.remise4, 0) as discount_4,
 
                     if(t.sale_min_qty > 0, t.sale_min_qty, null) as sale_minimum_qty,
-                    t.flag_promo as is_promotional,
-                    t.flag_liquidation as is_liquidation,
+                    if(t.flag_promo = 1 and (t.remise1 > 0 or t.remise2 > 0), 1, 0) as is_promotional,
+                    if(t.flag_liquidation = 1 and (t.remise1 > 0 or t.remise2 > 0 ), 1, 0) as is_liquidation,
                     t.date_promo_start as promo_start_at,
                     t.date_promo_end as promo_end_at,
                     t.flag_availability as flag_active,
@@ -900,8 +899,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     discount_4 = COALESCE(t.remise4, 0),
 
                     sale_minimum_qty = if(t.sale_min_qty > 0, t.sale_min_qty, null),
-                    is_promotional = t.flag_promo,
-                    is_liquidation = t.flag_liquidation,
+                    is_promotional = if(t.flag_promo = 1 and (t.remise1 > 0 or t.remise2 > 0), 1, 0)
+                    is_liquidation = if(t.flag_liquidation = 1 and (t.remise1 > 0 or t.remise2 > 0), 1, 0)
                     promo_start_at = t.date_promo_start,
                     promo_end_at = t.date_promo_end,
                     flag_active = t.flag_availability,
