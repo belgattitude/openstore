@@ -9,7 +9,6 @@ use Zend\Db\Sql\Sql;
 use Soluble\Db\Sql\Select;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
-
 use Patchwork\Utf8 as u;
 
 class ProductBrowser extends AbstractBrowser {
@@ -32,7 +31,8 @@ class ProductBrowser extends AbstractBrowser {
      * 
      * @return Select
      */
-    function getSelect() {
+    function getSelect() 
+    {
         $params = $this->getSearchParams();
 
         $lang = $params->get('language');
@@ -73,9 +73,6 @@ class ProductBrowser extends AbstractBrowser {
 
         $now = new \DateTime();
         $flag_new_min_date = $now->sub(new \DateInterval('P180D'))->format('Y-m-d'); // 180 days
-        
-        
-
         //$flag_new_min_date = date('2013-11')
         //$flag_new_min_date = ProductFilter::getParam('flag_new_minimum_date');
 
@@ -85,19 +82,17 @@ class ProductBrowser extends AbstractBrowser {
 
             $select->columns(array(
                 'product_id' => new Expression('p.product_id'),
-                
                 'status_id' => new Expression('pst.status_id'),
                 'status_reference' => new Expression('pst.reference'),
                 'pricelist_reference' => new Expression('pl.reference'),
-                'type_id'       => new Expression('p.type_id'),
-                
+                'type_id' => new Expression('p.type_id'),
                 'reference' => new Expression('p.reference'),
                 'display_reference' => new Expression('COALESCE(p.display_reference, p.reference)'),
                 'brand_id' => new Expression('p.brand_id'),
                 'brand_reference' => new Expression('pb.reference'),
                 'brand_title' => new Expression('pb.title'),
-                'group_id' => new Expression('pg.group_id'),                
-                'group_reference' => new Expression('pg.reference'),                
+                'group_id' => new Expression('pg.group_id'),
+                'group_reference' => new Expression('pg.reference'),
                 'category_id' => new Expression('pc.category_id'),
                 //'category_reference' => new Expression('pc.reference'),
                 //'category_title' => new Expression('COALESCE(pc18.title, pc.title)'),
@@ -119,6 +114,8 @@ class ProductBrowser extends AbstractBrowser {
                 'is_bestvalue' => new Expression('ppl.is_bestvalue'),
                 'is_hot' => new Expression('ppl.is_hot'),
                 'available_stock' => new Expression('ps.available_stock'),
+                'next_available_stock' => new Expression('ps.next_available_stock'),
+                'next_available_stock_at' => new Expression('ps.next_available_stock_at'),
                 'theoretical_stock' => new Expression('ps.theoretical_stock'),
                 'currency_reference' => new Expression('c.reference'),
                 'currency_symbol' => new Expression('c.symbol'),
@@ -206,7 +203,6 @@ class ProductBrowser extends AbstractBrowser {
                 $matches[1000000] = 'p18.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
                 $matches[1000001] = 'p18.keywords like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
                 $matches[100000] = '(p18.title is null and p.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%') . ")";
-                
             }
 
             if (u::strlen($query) > 5) {
