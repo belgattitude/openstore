@@ -171,21 +171,7 @@ class ProductTranslationBrowser extends AbstractBrowser {
             $having_updated_clause = "";
         }
         
-        
-        $full_columns = array_merge(
-                $columns, 
-                $inner_columns,
-                [   
-                    'min_revision' => new Expression('MIN(COALESCE(p18.revision, 0))'),
-                    'max_updated_at' => new Expression('MAX(p18.updated_at)'),
-                    'max_revision' => new Expression('MAX(COALESCE(p18.revision, 0))'),
-                    'nb_distinct_revision' => new Expression('COUNT(distinct COALESCE(p18.revision, 9999999))'),
-                    'filter_updated_by' => $filter_updated_clause
-                ]
-                );
-        
-        $select->columns($full_columns, true);
-        $select->group(array_keys($columns));
+        // Processing filters
         
         $product_id = $params->get('product_id');
         if ($product_id != '') {
@@ -255,6 +241,14 @@ class ProductTranslationBrowser extends AbstractBrowser {
                 $matches[10000000] = "p.search_reference like " . $platform->quoteValue($searchable_ref . '%');
                 $matches[1000000] = "p.search_reference like " . $platform->quoteValue('%' . $searchable_ref . '%');
             }
+            
+            // ALL MATCHES from product table are added to the 
+            // where clause 
+            // to avoid limiting results from left joined table
+            // product_translation
+            
+            $product_where_clauses = $matches;
+            
             //echo "p.search_reference like CONCAT('%', get_searchable_reference($quoted), '%')";
             //die();
             if (u::strlen($query) > 3) {
@@ -279,14 +273,46 @@ class ProductTranslationBrowser extends AbstractBrowser {
             }
             $relevance .= str_repeat(')', count($matches) - 1);
 
-            $select->where("(" . join(' or ', array_values($matches)) . ")");
+            //$select->where("(" . join(' or ', array_values($product_where_clauses)) . ")");
+            
+            $keyword_matches_clause = new Expression(
+                    'sum(' .
+                    'if (' . 
+                        join(' or ', array_values($matches)) . 
+                    ', 1, 0))');
+            $having_keywords_clause = 'keywords_matches > 0';
+            
         } else {
             $relevance = "'A'";  // Constant to sort on;
+            $keyword_matches_clause = new Expression('1');
+            $having_keywords_clause = false;
         }
+        
+        
+        
+        
+        //
+        $full_columns = array_merge(
+            $columns, 
+            $inner_columns,
+            [   
+                'min_revision' => new Expression('MIN(COALESCE(p18.revision, 0))'),
+                'max_updated_at' => new Expression('MAX(p18.updated_at)'),
+                'max_revision' => new Expression('MAX(COALESCE(p18.revision, 0))'),
+                'nb_distinct_revision' => new Expression('COUNT(distinct COALESCE(p18.revision, 9999999))'),
+                'filter_updated_by' => $filter_updated_clause,
+                'keywords_matches' => $keyword_matches_clause,
+                'relevance' => new Expression($relevance)
+            ]
+        );
+        
+        $select->columns($full_columns, true);
+        $select->group(array_keys($columns));
+        
 
         // Automatically add relevance column
-        $columns = array_merge($select->getRawState(Select::COLUMNS), array('relevance' => new Expression($relevance)));
-        $select->columns($columns);
+        //$columns = array_merge($select->getRawState(Select::COLUMNS), array('relevance' => new Expression($relevance)));
+        //$select->columns($columns);
 
         $exclusions = $params['exclusions'];
         if (is_array($exclusions) && count($exclusions) > 0) {
@@ -338,6 +364,11 @@ class ProductTranslationBrowser extends AbstractBrowser {
         if ($having_updated_clause != '') {
             $havings[] = $having_updated_clause;
         }
+
+        if ($having_keywords_clause != '') {
+            $havings[] = $having_keywords_clause;
+        }
+        
         
         if (count($havings) > 0) {
             $select->having(join(' and ', $havings));
@@ -350,13 +381,13 @@ class ProductTranslationBrowser extends AbstractBrowser {
 
         $select->order($order_columns);
         
-        
         /*
+        
           echo '<pre>';
 
           echo $select->getSql();
           die();
-        */
+        */ 
 
 
         return $select;
