@@ -98,7 +98,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
     protected $legacy_synchro_at;
 
-    protected $replace_dash_by_newline = true;
+    protected $replace_dash_by_newline = false;
     
     protected $default_language;
     protected $default_language_sfx;
@@ -1368,9 +1368,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $default_lsfx = $this->default_language_sfx;
 
         $rep = "REPLACE(REPLACE(i.desc$default_lsfx, '–', '-'), '\\n ', '\\n')";
-        $rep = "REPLACE($rep, '\\n\\n', '\\n')";
-        $rep = "REPLACE($rep, '  ', ' ')";
-        $rep = "REPLACE($rep, '\\n ', '\\n')";
+        //$rep = "REPLACE($rep, '\\n\\n', '\\n')";
+        //$rep = "REPLACE($rep, '  ', ' ')";
+        //$rep = "REPLACE($rep, '\\n ', '\\n')";
         if ($this->replace_dash_by_newline) {
             $rep = "REPLACE($rep, ' - ', '\\n- ')";
         }        
@@ -1626,11 +1626,11 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             }
             
             $rep = "REPLACE($description, '–', '-')";
-            $rep = "REPLACE($rep, '\\t', ' ')";
-            $rep = "REPLACE($rep, '\\r', '')";
-            $rep = "REPLACE($rep, '\\n\\n', '\\n')";
-            $rep = "REPLACE($rep, '  ', ' ')";
-            $rep = "REPLACE($rep, '\\n ', '\\n')";
+            //$rep = "REPLACE($rep, '\\t', ' ')";
+            //$rep = "REPLACE($rep, '\\r', '')";
+            //$rep = "REPLACE($rep, '\\n\\n', '\\n')";
+            //$rep = "REPLACE($rep, '  ', ' ')";
+            //$rep = "REPLACE($rep, '\\n ', '\\n')";
             if ($this->replace_dash_by_newline) {
                 $rep = "REPLACE($rep, ' - ', '\\n- ')";
             }        
