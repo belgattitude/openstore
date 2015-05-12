@@ -10,7 +10,7 @@
     "homepage": "http://nuvolia.com",
     "require": {
         "php": ">=5.4.4",
-        "zendframework/zendframework": "2.3.*",
+        "zendframework/zendframework": "2.4.*",
         "soluble/solublecomponents": "dev-master",
         "doctrine/orm": "2.5.*",
         "doctrine/dbal": "2.5.*",
@@ -34,7 +34,7 @@
         "symfony/finder": "@stable",
         "willdurand/geocoder": "~3.0",
         "zfcampus/zf-apigility": "~1.0",
-        "zf-commons/zfc-rbac": "~2.4",
+        "zf-commons/zfc-rbac": "~2.5.1",
         "intervention/image": "2.2.*",
         "patchwork/utf8": "1.2.*"
         
