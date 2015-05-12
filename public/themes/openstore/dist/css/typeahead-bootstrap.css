@@ -1,5 +1,5 @@
 .tt-suggestion > p:hover, .tt-suggestion > p:focus, .tt-suggestion.tt-cursor p {
-  color: white;
+  color: #ffffff;
   text-decoration: none;
   outline: 0;
   background-color: #428bca; }
@@ -16,7 +16,7 @@
   margin: 2px 0 0;
   list-style: none;
   font-size: 14px;
-  background-color: white;
+  background-color: #ffffff;
   border: 1px solid #cccccc;
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 4px;
@@ -31,3 +31,5 @@
   line-height: 1.428571429;
   color: #333333;
   white-space: nowrap; }
+
+/*# sourceMappingURL=typeahead-bootstrap.css.map */

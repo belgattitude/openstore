@@ -2,7 +2,8 @@ Requirements:
 
 ruby and sass
  sudo apt-get install ruby
- sudo gem install sass
+ sudo gem install sass 
+ sudo gem install compass
 
 
 
