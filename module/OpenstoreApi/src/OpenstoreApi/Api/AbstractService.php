@@ -206,7 +206,7 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
                                 ['currency_code' => $currency, 'decimals' => 2, 'locale' => $locale]
                             );
 
-            $cm->search()->in(['price', 'list_price', 'public_price', 'my_price'])->setFormatter($currF);
+            $cm->search()->in(['price', 'map_price', 'list_price', 'public_price', 'my_price'])->setFormatter($currF);
             
         }
         
