@@ -636,146 +636,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     }
     
     
-    function synchronizeProductPricelistBackup($use_akilia2 = true)
-    {
-        $db = $this->openstoreDb;
-        
-        
-        if ($use_akilia2) {
-            
-            $akilia2db = $this->akilia2Db;
-            $replace = " insert
-                         into $db.product_pricelist
-                        (
-                        product_id,
-                        pricelist_id,
-                                                status_id,
-                        price,
-                        list_price,
-                        public_price,
-                        map_price,
-                        discount_1,
-                        discount_2,
-                        discount_3,
-                        discount_4,
-                        sale_minimum_qty,
-                        is_promotional,
-                        is_liquidation,
-                        promo_start_at,
-                        promo_end_at,
-                        flag_active,
-                        available_at,
-                        legacy_synchro_at
-                    )
-
-                select 
-                    bpp.product_id,
-                    pl.pricelist_id,
-                    ps.status_id as status_id,
-                    (bpp.price_sale * (1-(bpp.discount_1/100)) * (1-(bpp.discount_2/100)) * (1-(bpp.discount_3/100)) * (1-(bpp.discount_4/100))) as price,
-                    bpp.price_sale as list_price,
-                    bpp.price_sale_public as public_price,
-                    null,
-                    bpp.discount_1 as discount_1,
-                    bpp.discount_2 as discount_2,
-                    bpp.discount_3 as discount_3,
-                    bpp.discount_4 as discount_4,
-                    if (bpp.sale_min_qty > 0, bpp.sale_min_qty, null) as sale_min_qty,
-                    bpp.is_promotionnal as is_promotional,
-                    bpp.is_liquidation as is_liquidation,
-                    null as promo_start_at,
-                    null as promo_end_at,
-                    bpp.is_active,
-                    p.created_at,
-                    '{$this->legacy_synchro_at}' as legacy_synchro_at
-
-                    from
-                    $akilia2db.base_product_price as bpp
-                        inner join
-                    $akilia2db.base_pricelist bp ON bpp.pricelist_id = bp.id
-                        inner join
-                    $db.pricelist pl ON pl.legacy_mapping = bp.legacy_mapping
-                        inner join
-                    $db.product p on p.product_id = bpp.product_id
-                        left outer join
-                    $db.product_status ps on ps.legacy_mapping = bpp.status_code
-                        
-                    where bpp.price_sale > 0
-                    on duplicate key update
-                            price = (bpp.price_sale * (1-(bpp.discount_1/100)) * (1-(bpp.discount_2/100)) * (1-(bpp.discount_3/100)) * (1-(bpp.discount_4/100))),
-                            list_price = bpp.price_sale,
-                            public_price = bpp.price_sale_public,
-                            discount_1 = bpp.discount_1,
-                                                        status_id = ps.status_id,
-                            discount_2 = bpp.discount_2,
-                            discount_3 = bpp.discount_3,
-                            discount_4 = bpp.discount_4,
-                            sale_minimum_qty = if (bpp.sale_min_qty > 0, bpp.sale_min_qty, null),
-                            is_promotional = bpp.is_promotionnal,
-                            is_liquidation = bpp.is_liquidation,
-                            promo_start_at = null,
-                            promo_end_at = null,
-
-                            flag_active = bpp.is_active,
-                            available_at = p.created_at,
-                            legacy_synchro_at = '{$this->legacy_synchro_at}'
-                         ";
-            
-            $this->executeSQL("Replace product pricelist", $replace);
-        } else {
-            $akilia1db = $this->akilia1Db;
-            $replace = " insert
-                         into $db.product_pricelist
-                        (
-                        product_id,
-                        pricelist_id,
-                        price,
-                        promo_discount,
-                        promo_start_at,
-                        promo_end_at,
-                        flag_active,
-                        available_at,
-                        legacy_synchro_at
-                    )
-
-                    select at.id_article,
-                           pl.pricelist_id,
-                           at.prix_unit_ht,
-                           if((at.flag_promo = 1 or at.flag_liquidation = 1) and at.remise1 > 0, at.remise1, null) as promo_discount,
-                           null as promo_start_at,
-                           null as promo_end_at,
-                           at.flag_availability,
-                           a.date_creation as available_at,
-                        '{$this->legacy_synchro_at}' as legacy_synchro_at
-
-                    from $akilia1db.art_tarif as at
-                    inner join $db.pricelist pl on at.id_pays = pl.legacy_mapping
-                    inner join $akilia1db.article a on at.id_article = a.id_article    
-                    where 
-                                                at.prix_unit_ht > 0
-                                        and a.flag_archive = 0
-                                        
-                    on duplicate key update
-                            price = at.prix_unit_ht,
-                            promo_discount = if((at.flag_promo = 1 or at.flag_liquidation = 1) and at.remise1 > 0, at.remise1, null),
-                            promo_start_at = null,
-                            promo_end_at = null,
-
-                            flag_active = at.flag_availability,
-                            available_at = a.date_creation,
-                            legacy_synchro_at = '{$this->legacy_synchro_at}'
-                         ";
-            
-            $this->executeSQL("Replace product pricelist", $replace);
-        }
-        
-        // 2. Deleting - old links in case it changes
-        $delete = "
-            delete from $db.product_pricelist 
-            where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-        
-        $this->executeSQL("Delete eventual removed product_pricelist", $delete);
-    }
     
     
     function synchronizeProductPricelist()
@@ -832,6 +692,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     sale_minimum_qty,
                     is_promotional,
                     is_liquidation,
+                    is_new,
                     promo_start_at,
                     promo_end_at,
                     flag_active,
@@ -860,6 +721,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     if(t.sale_min_qty > 0, t.sale_min_qty, null) as sale_minimum_qty,
                     if(t.flag_promo = 1 and (t.remise1 > 0 or t.remise2 > 0), 1, 0) as is_promotional,
                     if(t.flag_liquidation = 1 and (t.remise1 > 0 or t.remise2 > 0 ), 1, 0) as is_liquidation,
+                    if(t.flag_new = 1 || t.flag_new_soon, 1, null) as is_new,
                     t.date_promo_start as promo_start_at,
                     t.date_promo_end as promo_end_at,
                     t.flag_availability as flag_active,
@@ -901,6 +763,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     sale_minimum_qty = if(t.sale_min_qty > 0, t.sale_min_qty, null),
                     is_promotional = if(t.flag_promo = 1 and (t.remise1 > 0 or t.remise2 > 0), 1, 0),
                     is_liquidation = if(t.flag_liquidation = 1 and (t.remise1 > 0 or t.remise2 > 0), 1, 0),
+                    is_new = if(t.flag_new = 1 || t.flag_new_soon, 1, null),
                     promo_start_at = t.date_promo_start,
                     promo_end_at = t.date_promo_end,
                     flag_active = t.flag_availability,
