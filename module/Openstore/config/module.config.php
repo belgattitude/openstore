@@ -78,7 +78,7 @@ return array(
             'driver' => array(
                 'driverClass' => 'Soluble\Normalist\Driver\ZeroConfDriver',
                 'params' => array(
-                    'path' => __DIR__ . '/../src/' . __NAMESPACE__ . '/Normalist',
+                    'path' => __DIR__ . '/../../../data/cache',
                 )
             )
         )
