@@ -98,6 +98,12 @@ class SaleOrderLine {
     private $expires_at;
 
     /**
+     * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Delivery date"})
+     */
+    private $delivered_at;    
+    
+    
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record creation timestamp"})
      */

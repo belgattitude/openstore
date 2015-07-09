@@ -26,6 +26,87 @@ class ProductBrowser extends AbstractBrowser {
             'id' => array('required' => false)
         );
     }
+    
+    
+
+    /**
+     * 
+     * @return array
+     */
+    protected function getPackagingColumns()
+    {
+        
+        $columns = array(
+                'pack_unit_volume' => new Expression("packs.pack_unit_volume"),
+                'pack_unit_weight' => new Expression("packs.pack_unit_weight"),
+                'pack_unit_length' => new Expression("packs.pack_unit_length"),
+                'pack_unit_width' => new Expression("packs.pack_unit_width"),
+                'pack_unit_height' => new Expression("packs.pack_unit_height"),
+                //'pack_box_qty'           => new Expression("packs.pack_box_qty"),
+                'pack_carton_barcode_ean' => new Expression("packs.pack_carton_barcode_ean"),
+                'pack_carton_barcode_upc' => new Expression("packs.pack_carton_barcode_upc"),
+                'pack_carton_volume' => new Expression("packs.pack_carton_volume"),
+                'pack_carton_weight' => new Expression("packs.pack_carton_weight"),
+                'pack_carton_length' => new Expression("packs.pack_carton_length"),
+                'pack_carton_width' => new Expression("packs.pack_carton_width"),
+                'pack_carton_height' => new Expression("packs.pack_carton_height"),
+                //'pack_mastercarton_qty'  => new Expression("packs.pack_mastercarton_qty"),
+                'pack_mastercarton_barcode_ean' => new Expression("packs.pack_mastercarton_barcode_ean"),
+                'pack_mastercarton_barcode_upc' => new Expression("packs.pack_mastercarton_barcode_upc"),
+                'pack_mastercarton_volume' => new Expression("packs.pack_mastercarton_volume"),
+                'pack_mastercarton_weight' => new Expression("packs.pack_mastercarton_weight"),
+                'pack_mastercarton_length' => new Expression("packs.pack_mastercarton_length"),
+                'pack_mastercarton_width' => new Expression("packs.pack_mastercarton_width"),
+                'pack_mastercarton_height' => new Expression("packs.pack_mastercarton_height")
+            );
+        return $columns;
+        
+    }
+
+    /**
+     * Return inner select for getting packaging extended information
+     * 
+     * @return Select
+     */
+    protected function getPackagingInnerSelect()
+    {
+        // Step 1: Inner select packaging selection
+        $packSelect = new Select();
+        $packSelect->from(array('pp' => 'product_packaging'), array())
+                ->join(array('pt' => 'packaging_type'), new Expression("pp.type_id = pt.type_id"), array());
+        $packSelect->columns(
+                array(
+                    'product_id' => new Expression('pp.product_id'),
+                    'pack_unit_qty' => new Expression("MAX(if (pt.reference = 'UNIT', pp.quantity, null))"),
+                    'pack_unit_barcode_ean' => new Expression("MAX(if (pt.reference = 'UNIT', pp.barcode_ean, null))"),
+                    'pack_unit_barcode_upc' => new Expression("MAX(if (pt.reference = 'UNIT', pp.barcode_upc, null))"),
+                    'pack_unit_volume' => new Expression("MAX(if (pt.reference = 'UNIT', pp.volume, null))"),
+                    'pack_unit_weight' => new Expression("MAX(if (pt.reference = 'UNIT', pp.weight, null))"),
+                    'pack_unit_length' => new Expression("MAX(if (pt.reference = 'UNIT', pp.length, null))"),
+                    'pack_unit_width' => new Expression("MAX(if (pt.reference = 'UNIT', pp.width, null))"),
+                    'pack_unit_height' => new Expression("MAX(if (pt.reference = 'UNIT', pp.height, null))"),
+                    'pack_carton_qty' => new Expression("MAX(if (pt.reference = 'CARTON', pp.quantity, null))"),
+                    'pack_carton_barcode_ean' => new Expression("MAX(if (pt.reference = 'CARTON', pp.barcode_ean, null))"),
+                    'pack_carton_barcode_upc' => new Expression("MAX(if (pt.reference = 'CARTON', pp.barcode_upc, null))"),
+                    'pack_carton_volume' => new Expression("MAX(if (pt.reference = 'CARTON', pp.volume, null))"),
+                    'pack_carton_weight' => new Expression("MAX(if (pt.reference = 'CARTON', pp.weight, null))"),
+                    'pack_carton_length' => new Expression("MAX(if (pt.reference = 'CARTON', pp.length, null))"),
+                    'pack_carton_width' => new Expression("MAX(if (pt.reference = 'CARTON', pp.width, null))"),
+                    'pack_carton_height' => new Expression("MAX(if (pt.reference = 'CARTON', pp.height, null))"),
+                    'pack_mastercarton_qty' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.quantity, null))"),
+                    'pack_mastercarton_barcode_ean' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.barcode_ean, null))"),
+                    'pack_mastercarton_barcode_upc' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.barcode_upc, null))"),
+                    'pack_mastercarton_volume' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.volume, null))"),
+                    'pack_mastercarton_weight' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.weight, null))"),
+                    'pack_mastercarton_length' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.length, null))"),
+                    'pack_mastercarton_width' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.width, null))"),
+                    'pack_mastercarton_height' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.height, null))"),
+                )
+                , true);
+        $packSelect->group(array('product_id'));
+
+       return $packSelect; 
+    }
 
     /**
      * 
@@ -34,6 +115,8 @@ class ProductBrowser extends AbstractBrowser {
     function getSelect() 
     {
         $params = $this->getSearchParams();
+        
+        $enable_packaging_columns = ($params['enable_packaging_columns'] === true);
 
         $lang = $params->get('language');
         $pricelist = $params->get('pricelist');
@@ -66,9 +149,13 @@ class ProductBrowser extends AbstractBrowser {
                 ->where('ppl.flag_active = 1')
                 ->where("pl.reference = '$pricelist'");
 
+        
+        if ($enable_packaging_columns) {
+            $packSelect = $this->getPackagingInnerSelect();
+            $select->join(array('packs' => $packSelect), new Expression("packs.product_id = p.product_id"), array(), $select::JOIN_LEFT);
+        }
+        
         $this->assignFilters($select);
-
-
 
 
         $now = new \DateTime();
@@ -77,10 +164,9 @@ class ProductBrowser extends AbstractBrowser {
         //$flag_new_min_date = ProductFilter::getParam('flag_new_minimum_date');
 
         if ($this->columns !== null && is_array($this->columns)) {
-            $select->columns($this->columns);
+            $columns = $this->columns;
         } else {
-
-            $select->columns(array(
+            $columns = array(
                 'product_id' => new Expression('p.product_id'),
                 'status_id' => new Expression('pst.status_id'),
                 'status_reference' => new Expression('pst.reference'),
@@ -94,7 +180,7 @@ class ProductBrowser extends AbstractBrowser {
                 'group_id' => new Expression('pg.group_id'),
                 'group_reference' => new Expression('pg.reference'),
                 'category_id' => new Expression('pc.category_id'),
-                //'category_reference' => new Expression('pc.reference'),
+                'category_reference' => new Expression('pc.reference'),
                 //'category_title' => new Expression('COALESCE(pc18.title, pc.title)'),
                 'category_breadcrumb' => new Expression('COALESCE(pc18.breadcrumb, pc.breadcrumb)'),
                 'title' => new Expression('COALESCE(p18.title, p.title, p18.invoice_title, p.invoice_title)'),
@@ -102,6 +188,7 @@ class ProductBrowser extends AbstractBrowser {
                 //'description' => new Expression('COALESCE(p18.description, p.description)'),
                 'description' => new Expression('if(p2.product_id is null, COALESCE(p18.description, p.description), COALESCE(p2_18.description, p2.description, p.description) )'),
                 'characteristic' => new Expression('COALESCE(p18.characteristic, p.characteristic)'),
+                'keywords' => new Expression('COALESCE(p18.keywords, p.keywords)'),
                 'price' => new Expression('ppl.price'),
                 'list_price' => new Expression('ppl.list_price'),
                 'public_price' => new Expression('ppl.public_price'),
@@ -126,9 +213,18 @@ class ProductBrowser extends AbstractBrowser {
                 'type_reference' => new Expression('pt.reference'),
                 'picture_media_id' => new Expression('pm.media_id'),
                 'picture_media_filemtime' => new Expression('m.filemtime')
-                    ), true);
+            );
+            
+            if ($enable_packaging_columns) {
+                $columns = array_merge($columns, $this->getPackagingColumns());
+            }
         }
 
+        
+        
+        
+        $select->columns($columns, true);        
+        
         $product_id = $params->get('id');
         if ($product_id != '') {
             $select->where("p.product_id = $product_id");

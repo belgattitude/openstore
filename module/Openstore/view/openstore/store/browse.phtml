@@ -105,9 +105,9 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 							<div class="ribbon-green"><?= $product->brand_title ?></div>
 						</div>
 						<div>
-							<?php if ($product->promo_discount > 0) : ?>	
+							<?php if ($product->discount_1 > 0) : ?>	
 								<div class="numbercircle">
-									<strong>-<?= number_format($product->promo_discount) ?>%</strong><br />
+									<strong>-<?= number_format($product->discount_1) ?>%</strong><br />
 								</div>
 							<?php endif; ?>	
 							<div style="padding: 2px 2px;  background: rgba(54, 25, 25, .5); color: white; position: absolute">
@@ -149,7 +149,10 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 										$escaper->escapeJs((string) $product->reference) . ' &raquo; ' .
 										$escaper->escapeJs((string) $product->title) . "', href: '$href'})";
 								$onclick .= '"';
-							}
+							} else {
+                                                            $onclick = '';
+                                                            
+                                                        }
 							?>
 							<button class="btn btn-sm" <?= $onclick ?>>								
 								<span class="glyphicon glyphicon-zoom-in"></span> 

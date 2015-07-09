@@ -12,7 +12,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(
  *   name="revision",
  *   uniqueConstraints={
- *     @ORM\UniqueConstraint(name="unique_revison_log",columns={"related_table", "related_id", "revision"}),
+ *     @ORM\UniqueConstraint(name="unique_revison_log",columns={"related_table", "related_id", "created_at"}),
  *   }, 
  *   indexes={
  *     @ORM\Index(name="related_table_idx", columns={"related_table"}), 

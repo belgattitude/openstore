@@ -171,10 +171,10 @@ class SearchParams {
      * @return \Openstore\Core\Model\Browser\Filter\AbstractFilter
      */
     function getFilter() {
-        $filter_name = $this->params['filter'];
-        if ($filter_name == '')
+        $filter_name = isset($this->params['filter']) ? $this->params['filter'] : "";
+        if ($filter_name == '') {
             $filter_name = 'all';
-
+        }
         return $this->getServiceLocator()->get('Openstore\Service')->getProductFilters()->getFilter($filter_name);
     }
 

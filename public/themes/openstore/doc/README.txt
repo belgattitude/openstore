@@ -5,6 +5,7 @@ ruby and sass
  sudo gem install sass 
  sudo gem install compass
 
+(eventually remove them sudo gem uninstall sass, sudo gem uninstall compass)
 
 
 BOWER

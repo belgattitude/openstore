@@ -78,7 +78,7 @@ class LoadUserData implements FixtureInterface {
             120 => array('reference' => 'PICKED', 'title' => 'Picked, ready for delivery', 'flag_default' => null, 'flag_readonly' => false),
             200 => array('reference' => 'DELIVERED', 'title' => 'Delivered', 'flag_default' => null, 'flag_readonly' => true),
             300 => array('reference' => 'INVOICED', 'title' => 'Invoiced', 'flag_default' => null, 'flag_readonly' => true),
-            900 => array('reference' => 'Cancelled', 'title' => 'Cancelled', 'flag_default' => null, 'flag_readonly' => true)
+            900 => array('reference' => 'CANCELLED', 'title' => 'Cancelled', 'flag_default' => null, 'flag_readonly' => true)
         );
 
         foreach ($line_statuses as $id => $infos) {

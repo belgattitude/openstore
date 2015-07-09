@@ -41,7 +41,7 @@ class SaleOrder {
 
     /**
      * @ORM\ManyToOne(targetEntity="SaleOrderStatus", inversedBy="orders")
-     * @ORM\JoinColumn(name="status_id", referencedColumnName="status_id", nullable=false, onDelete="CASCADE")
+     * @ORM\JoinColumn(name="status_id", referencedColumnName="status_id", nullable=true, onDelete="CASCADE")
      */
     private $status_id;
 
@@ -81,6 +81,7 @@ class SaleOrder {
      */
     private $document_date;
 
+    
     /**
      * @ORM\Column(type="datetime", nullable=true, options={"comment" = "When in quote, make an expiry date"})
      */

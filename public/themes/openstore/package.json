@@ -14,7 +14,6 @@
     "grunt-yui-compressor": "~0.4.0",
     "grunt-cssrb": "~0.1.2",
     "grunt-check-modules": "~1.0.0",
-    "grunt-check-updates": "~1.5.1",
     "grunt-bowercopy": "~1.2.0",
     "grunt-contrib-copy": "~0.8.0"
   }
