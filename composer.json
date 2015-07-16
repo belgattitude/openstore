@@ -15,7 +15,7 @@
         "doctrine/orm": "2.5.*",
         "doctrine/dbal": "2.5.*",
         "doctrine/common": "2.5.*",
-        "doctrine/doctrine-module": "0.8.*",
+        "doctrine/doctrine-module": "0.9.*",
         "doctrine/doctrine-orm-module": "0.9.*",
         "gedmo/doctrine-extensions": "2.4.*",
         "doctrine/data-fixtures": "1.1.*",
@@ -33,17 +33,17 @@
         "imagine/imagine": "0.6.*",
         "symfony/finder": "@stable",
         "willdurand/geocoder": "~3.0",
-        "zfcampus/zf-apigility": "~1.0",
+        "zfcampus/zf-apigility": "~1.2",
         "zf-commons/zfc-rbac": "~2.5.2",
-        "intervention/image": "2.2.*",
+        "intervention/image": "~2.3",
         "patchwork/utf8": "1.2.*"
         
         
    },
     "require-dev": {
         "phpunit/phpunit": "~4.0",
-        "zfcampus/zf-apigility-admin": "~1.0",
-        "zfcampus/zf-development-mode": "~2.0",
+        "zfcampus/zf-apigility-admin": "~1.3",
+        "zfcampus/zf-development-mode": "~2.1",
         "symfony/var-dumper": "@stable",
         "psy/psysh": "@stable"
     }
