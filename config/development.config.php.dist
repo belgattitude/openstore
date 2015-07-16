@@ -3,6 +3,8 @@
 return array(
     // Development time modules
     'modules' => array(
+        'Zf2Whoops',
+        'ZendDeveloperTools',
         'ZF\Apigility\Admin',
         'ZF\Configuration',
     ),
