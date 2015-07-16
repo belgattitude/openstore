@@ -35,7 +35,8 @@
         "willdurand/geocoder": "~3.0",
         "zfcampus/zf-apigility": "~1.2",
         "zf-commons/zfc-rbac": "~2.5.2",
-        "intervention/image": "~2.3",
+        "intervention/image": "~2.2",
+        
         "patchwork/utf8": "1.2.*"
         
         
