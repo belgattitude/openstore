@@ -239,7 +239,7 @@ class ProductCatalogService extends AbstractService {
         $select->where('ppl.flag_active = 1');
         
         // only product that are not 'OFFER' (combination of products)
-        $select->where("pt.reference <> 'OFFER'");
+        $select->where("pt.flag_excluded_export = 0");
         // FOR EMD - TODO add a flag in brand or product_type to automatically
         // exclude some products
         $select->where("pb.reference <> '****'");
@@ -304,6 +304,41 @@ class ProductCatalogService extends AbstractService {
             
         }
 
+        // Price
+        if (array_key_exists('price_min', $params) && is_numeric($params['price_min'])) {
+            $price_min = $params['price_min'];
+            $select->where("ppl.price >= $price_min");
+        }
+        
+        if (array_key_exists('price_max', $params) && is_numeric($params['price_max'])) {
+            $price_max = $params['price_max'];
+            $select->where("ppl.price <= $price_max");
+        }
+        
+        
+        // List price
+        if (array_key_exists('list_price_min', $params) && is_numeric($params['list_price_min'])) {
+            $list_price_min = $params['list_price_min'];
+            $select->where("ppl.list_price >= $list_price_min");
+        }
+        
+        if (array_key_exists('list_price_max', $params) && is_numeric($params['list_price_max'])) {
+            $list_price_max = $params['list_price_max'];
+            $select->where("ppl.list_price <= $list_price_max");
+        }
+        
+        // Public price
+        if (array_key_exists('public_price_min', $params) && is_numeric($params['public_price_min'])) {
+            $public_price_min = $params['public_price_min'];
+            $select->where("ppl.public_price >= $public_price_min");
+        }
+        
+        if (array_key_exists('list_price_max', $params) && is_numeric($params['public_price_max'])) {
+            $public_price_max = $params['public_price_max'];
+            $select->where("ppl.public_price <= $public_price_max");
+        }
+        
+        
 
         if (array_key_exists('brands', $params)) {
             $select->where->in('pb.reference', explode(',', $params['brands']));

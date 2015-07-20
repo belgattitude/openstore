@@ -51,12 +51,12 @@ class ProductType {
     private $flag_enable_discount_condition;     
 
     /**
-     * @ORM\Column(type="boolean", nullable=true, options={"default"=false, "comment"="Tells whether the type should be excluded from product catalog"})
+     * @ORM\Column(type="boolean", nullable=false, options={"default"=false, "comment"="Tells whether the type should be excluded from product catalog"})
      */
     private $flag_excluded_catalog;    
 
     /**
-     * @ORM\Column(type="boolean", nullable=true, options={"default"=false, "comment"="Tells whether the type should be excluded from exported catalog"})
+     * @ORM\Column(type="boolean", nullable=false, options={"default"=false, "comment"="Tells whether the type should be excluded from exported catalog"})
      */
     private $flag_excluded_export;    
     
@@ -66,7 +66,7 @@ class ProductType {
     private $flag_default;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true, options={"default"=1, "comment"="Whether the type is active"})
+     * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the type is active"})
      */
     private $flag_active;
 
