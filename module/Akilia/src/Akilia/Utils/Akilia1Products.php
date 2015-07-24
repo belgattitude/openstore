@@ -53,7 +53,6 @@ class Akilia1Products implements ServiceLocatorAwareInterface, AdapterAwareInter
 				'id_marque'		=> new Expression('a.id_marque')
 			), true);
 		
-		
                 $store = $this->getStore($select);
 		
 		$data = $store->getData();
