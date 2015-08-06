@@ -8,25 +8,26 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Entity(repositoryClass="Openstore\Entity\Repository\SaleOrderRepository")
+ * @ORM\Entity
  * @ORM\Table(
- *   name="sale_order",
+ *   name="sale_delivery",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
  *   }, 
  *   indexes={
+ *     @ORM\Index(name="delivered_at_idx", columns={"delivered_at"}),
  *   },
- *   options={"comment" = "Sales order table"}
+ *   options={"comment" = "Sales deliveries table"}
  * )
  */
-class SaleOrder {
+class SaleDelivery {
 
     /**
      * @ORM\Id
-     * @ORM\Column(name="order_id", type="bigint", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(name="delivery_id", type="bigint", nullable=false, options={"unsigned"=true})
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $order_id;
+    private $delivery_id;
 
     /**
      * @ORM\Column(type="string", length=60, nullable=true, options={"comment" = "Reference"})
@@ -34,67 +35,19 @@ class SaleOrder {
     private $reference;
 
     /**
-     * @ORM\ManyToOne(targetEntity="SaleOrderType", inversedBy="orders")
-     * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", nullable=false, onDelete="CASCADE")
-     */
-    private $type_id;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="SaleOrderStatus", inversedBy="orders")
-     * @ORM\JoinColumn(name="status_id", referencedColumnName="status_id", nullable=true, onDelete="CASCADE")
-     */
-    private $status_id;
-
-    /**
-     * 
-     * @ORM\ManyToOne(targetEntity="Customer", inversedBy="orders", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="customer_id", referencedColumnName="customer_id", nullable=false)
-     */
-    private $customer_id;
-
-    
-    /**
-     * 
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="orders", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="user_id", nullable=true)
-     */
-    private $user_id;
-    
-    
-    /**
-     * @ORM\ManyToOne(targetEntity="SaleOrder", inversedBy="children")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="order_id", onDelete="CASCADE", nullable=true)
-     */
-    private $parent_id;
-    
-    
-    /**
-     * 
-     * @ORM\ManyToOne(targetEntity="Pricelist", inversedBy="orders", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="pricelist_id", referencedColumnName="pricelist_id", nullable=false)
-     */
-    private $pricelist_id;
-
-    /**
      * @ORM\Column(type="string", length=60, nullable=true, options={"comment" = "Customer reference"})
      */
     private $customer_reference;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true, options={"comment" = "Customer comment"})
+     * @ORM\Column(type="string", length=255, nullable=true, options={"comment" = "Comment"})
      */
-    private $customer_comment;
+    private $comment;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Order/Quote document date"})
+     * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Delivery date"})
      */
-    private $document_date;
-
-    
-    /**
-     * @ORM\Column(type="datetime", nullable=true, options={"comment" = "When in quote, make an expiry date"})
-     */
-    private $expires_at;
+    private $delivered_at;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -135,22 +88,10 @@ class SaleOrder {
      */
     protected $legacy_synchro_at;
 
-    /**
-     * 
-     * @return string
-     */
-    public function getCustomerId() {
-        return $this->customer_id;
-    }
 
-    /**
-     * 
-     * @param string $customer_id
-     */
-    public function setCustomerId($customer_id) {
-        //$customer = ->getRepository('Openstore\Entity\Customer')->find($customer_id);
-        $this->customer_id = $customer_id;
-        return $this;
+
+    public function setDeliveredAt($delivered_at) {
+        $this->delivered_at = $delivered_at;
     }
 
     /**
@@ -159,71 +100,8 @@ class SaleOrder {
     public function setCustomerReference($customer_reference) {
         $this->customer_reference = $customer_reference;
     }
-
-    public function getOrderId() {
-        return $this->order_id;
-    }
-
-    public function getReference() {
-        return $this->reference;
-    }
-
-    public function getTypeId() {
-        return $this->type_id;
-    }
-
-    public function getStatusId() {
-        return $this->status_id;
-    }
-
-    public function getUser_id() {
-        return $this->user_id;
-    }
-
-    public function getPricelistId() {
-        return $this->pricelist_id;
-    }
-
-    public function getDocumentDate() {
-        return $this->document_date;
-    }
-
-    public function getExpiresAt() {
-        return $this->expires_at;
-    }
-
-    public function setOrderId($order_id) {
-        $this->order_id = $order_id;
-    }
-
-    public function setReference($reference) {
-        $this->reference = $reference;
-    }
-
-    public function setTypeId($type_id) {
-        $this->type_id = $type_id;
-    }
-
-    public function setStatusId($status_id) {
-        $this->status_id = $status_id;
-    }
-
-    public function setUserId($user_id) {
-        $this->user_id = $user_id;
-    }
-
-    public function setPricelistId($pricelist_id) {
-        $this->pricelist_id = $pricelist_id;
-    }
-
-    public function setDocumentDate($document_date) {
-        $this->document_date = $document_date;
-    }
-
-    public function setExpiresAt($expires_at) {
-        $this->expires_at = $expires_at;
-    }
-
+    
+    
     /**
      * @return string
      */
@@ -232,17 +110,17 @@ class SaleOrder {
     }
 
     /**
-     * @param string $customer_comment
+     * @param string $comment
      */
-    public function setCustomerComment($customer_comment) {
-        $this->customer_comment = $customer_comment;
+    public function setCustomerComment($comment) {
+        $this->comment = $comment;
     }
 
     /**
      * @return string
      */
-    public function getCustomerComment() {
-        return $this->customer_comment;
+    public function getComment() {
+        return $this->comment;
     }
 
     /**
@@ -289,7 +167,7 @@ class SaleOrder {
 
     /**
      * 
-     * @param string $updated_at
+     * @param string $deleted_at
      */
     public function setDeletedAt($deleted_at) {
         $this->deleted_at = $deleted_at;

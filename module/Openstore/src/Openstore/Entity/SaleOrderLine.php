@@ -15,6 +15,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
  *   }, 
  *   indexes={
+ *     @ORM\Index(name="delivered_at_idx", columns={"delivered_at"}),
+ *     @ORM\Index(name="invoiced_at_idx", columns={"invoiced_at"}),
  *   },
  *   options={"comment" = "Order line table"}
  * )
@@ -45,6 +47,21 @@ class SaleOrderLine {
      */
     private $status_id;
 
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="SaleDelivery", inversedBy="lines")
+     * @ORM\JoinColumn(name="delivery_id", nullable=true, referencedColumnName="delivery_id", onDelete="CASCADE")
+     */
+    private $delivery_id;
+
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="SaleInvoice", inversedBy="lines")
+     * @ORM\JoinColumn(name="invoice_id", nullable=true, referencedColumnName="invoice_id", onDelete="CASCADE")
+     */
+    private $invoice_id;
+    
+    
     /**
      * 
      * @ORM\ManyToOne(targetEntity="Product", inversedBy="orders", cascade={"persist", "remove"})
@@ -92,16 +109,16 @@ class SaleOrderLine {
      */
     private $customer_comment;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true, options={"comment" = "When in quote, make an expiry date"})
-     */
-    private $expires_at;
 
     /**
      * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Delivery date"})
      */
-    private $delivered_at;    
-    
+    private $delivered_at;      
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Invoice date"})
+     */
+    private $invoiced_at;    
     
     /**
      * @Gedmo\Timestampable(on="create")
@@ -194,9 +211,6 @@ class SaleOrderLine {
         return $this->customer_comment;
     }
 
-    public function getExpiresAt() {
-        return $this->expires_at;
-    }
 
     public function setReference($reference) {
         $this->reference = $reference;
@@ -246,9 +260,6 @@ class SaleOrderLine {
         $this->customer_comment = $customer_comment;
     }
 
-    public function setExpiresAt($expires_at) {
-        $this->expires_at = $expires_at;
-    }
 
     /**
      * 
@@ -369,41 +380,5 @@ class SaleOrderLine {
         return $this->legacy_synchro_at;
     }
 
-    /**
-     * Convert the object to an array.
-     *
-     * @return array
-     */
-    public function getArrayCopy() {
-        return get_object_vars($this);
-    }
-
-    /**
-     * 
-     * @return string
-     */
-    public function __toString() {
-        return $this->getTitle();
-    }
-
-    /**
-     * Magic getter to expose protected properties.
-     *
-     * @param string $property
-     * @return mixed
-     */
-    public function __get($property) {
-        return $this->$property;
-    }
-
-    /**
-     * Magic setter to save protected properties.
-     *
-     * @param string $property
-     * @param mixed $value
-     */
-    public function __set($property, $value) {
-        $this->$property = $value;
-    }
 
 }

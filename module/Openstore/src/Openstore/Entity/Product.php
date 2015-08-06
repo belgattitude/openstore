@@ -62,7 +62,7 @@ class Product {
 
     /**
      * @ORM\ManyToOne(targetEntity="Product", inversedBy="children")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="product_id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="product_id", onDelete="CASCADE", nullable=true)
      */
     private $parent_id;
 
