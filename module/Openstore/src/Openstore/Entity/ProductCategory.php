@@ -15,7 +15,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
  *     @ORM\UniqueConstraint(name="unique_slug_idx",columns={"slug"})
- *   }, 
+ *   },
  *   indexes={
  *     @ORM\Index(name="title_idx", columns={"title"}),
  *     @ORM\Index(name="description_idx", columns={"description"}),
@@ -30,8 +30,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * )
  * @ORM\Entity(repositoryClass="Openstore\Entity\Repository\ProductCategoryRepository")
  */
-class ProductCategory {
-
+class ProductCategory
+{
     /**
      * @var \Zend\InputFilter\InputFilterInterface $inputFilter
      */
@@ -165,208 +165,237 @@ class ProductCategory {
      */
     protected $legacy_synchro_at;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->children = new ArrayCollection();
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
-     * 
+     *
      * @param string $reference
      */
-    public function setReference($reference) {
+    public function setReference($reference)
+    {
         $this->reference = $reference;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getReference() {
+    public function getReference()
+    {
         return $this->reference;
     }
 
     /**
-     * 
+     *
      * @param string $title
      */
-    public function setTitle($title) {
+    public function setTitle($title)
+    {
         $this->title = $title;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getTitle() {
+    public function getTitle()
+    {
         return $this->title;
     }
 
     /**
-     * 
+     *
      * @param string $description
      */
-    public function setDescription($description) {
+    public function setDescription($description)
+    {
         $this->description = $description;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->description;
     }
 
     /**
-     * 
+     *
      * @param string $slug
      */
-    public function setSlug($slug) {
+    public function setSlug($slug)
+    {
         $this->slug = $slug;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getSlug() {
+    public function getSlug()
+    {
         return $this->slug;
     }
 
     /**
-     * 
+     *
      * @param integer $sort_index
      * @return ProductCategory
      */
-    public function setSortIndex($sort_index) {
+    public function setSortIndex($sort_index)
+    {
         $this->sort_index = $sort_index;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getSortIndex() {
+    public function getSortIndex()
+    {
         return $this->sort_index;
     }
 
     /**
-     * 
+     *
      * @param integer $global_sort_index
      * @return ProductCategory
      */
-    public function setGlobalSortIndex($global_sort_index) {
+    public function setGlobalSortIndex($global_sort_index)
+    {
         $this->global_sort_index = $global_sort_index;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getGlobalSortIndex() {
+    public function getGlobalSortIndex()
+    {
         return $this->global_sort_index;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function setIconClass($icon_class) {
+    public function setIconClass($icon_class)
+    {
         $this->icon_class = $icon_class;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getIconClass() {
+    public function getIconClass()
+    {
         return $this->icon_class;
     }
 
-    public function setParent($parent) {
+    public function setParent($parent)
+    {
         $this->parent = $parent;
     }
 
-    public function getParent() {
+    public function getParent()
+    {
         return $this->parent;
     }
 
-    public function getRoot() {
+    public function getRoot()
+    {
         return $this->root;
     }
 
-    public function getLevel() {
+    public function getLevel()
+    {
         return $this->level;
     }
 
-    public function getChildren() {
+    public function getChildren()
+    {
         return $this->children;
     }
 
-    public function getLeft() {
+    public function getLeft()
+    {
         return $this->lft;
     }
 
-    public function getRight() {
+    public function getRight()
+    {
         return $this->rgt;
     }
 
     /**
-     * 
+     *
      * @param string|int $alt_mapping_reference
      */
-    public function setAltMappingReference($alt_mapping_reference) {
+    public function setAltMappingReference($alt_mapping_reference)
+    {
         $this->alt_mapping_reference = $alt_mapping_reference;
     }
 
     /**
-     * 
+     *
      * @return string|int
      */
-    public function getAltMappingReference() {
+    public function getAltMappingReference()
+    {
         return $this->alt_mapping_reference;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getCreatedAt() {
+    public function getCreatedAt()
+    {
         return $this->created_at;
     }
 
     /**
-     * 
+     *
      * @param string $created_at
      */
-    public function setCreatedAt($created_at) {
+    public function setCreatedAt($created_at)
+    {
         $this->created_at = $created_at;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getUpdatedAt() {
+    public function getUpdatedAt()
+    {
         return $this->updated_at;
     }
 
     /**
-     * 
+     *
      * @param string $updated_at
      */
-    public function setUpdatedAt($updated_at) {
+    public function setUpdatedAt($updated_at)
+    {
         $this->updated_at = $updated_at;
     }
 
@@ -374,7 +403,8 @@ class ProductCategory {
      * Return creator username
      * @return string
      */
-    public function getCreatedBy() {
+    public function getCreatedBy()
+    {
         return $this->created_by;
     }
 
@@ -382,7 +412,8 @@ class ProductCategory {
      * Set creator username
      * @param string $created_by
      */
-    public function setCreatedBy($created_by) {
+    public function setCreatedBy($created_by)
+    {
         $this->created_by = $created_by;
     }
 
@@ -390,7 +421,8 @@ class ProductCategory {
      * Return last updater username
      * @return string
      */
-    public function getUpdatedBy() {
+    public function getUpdatedBy()
+    {
         return $this->updated_by;
     }
 
@@ -398,15 +430,17 @@ class ProductCategory {
      * Set the last updater username
      * @param string $updated_by
      */
-    public function setUpdatedBy($updated_by) {
+    public function setUpdatedBy($updated_by)
+    {
         $this->updated_by = $updated_by;
     }
 
     /**
-     * Return legacy mapping 
+     * Return legacy mapping
      * @return string $legacy_mapping
      */
-    public function getLegacyMapping() {
+    public function getLegacyMapping()
+    {
         return $this->legacy_mapping;
     }
 
@@ -414,7 +448,8 @@ class ProductCategory {
      * Set a legacy mapping for this record
      * @param string $legacy_mapping
      */
-    public function setLegacyMapping($legacy_mapping) {
+    public function setLegacyMapping($legacy_mapping)
+    {
         $this->legacy_mapping = $legacy_mapping;
     }
 
@@ -422,23 +457,26 @@ class ProductCategory {
      * Set legacy synchro time
      * @param string $legacy_mapping
      */
-    public function setLegacySynchroAt($legacy_synchro_at) {
+    public function setLegacySynchroAt($legacy_synchro_at)
+    {
         $this->legacy_synchro_at = $legacy_synchro_at;
     }
 
     /**
-     * Return legacy synchro timestamp 
-     * @return string 
+     * Return legacy synchro timestamp
+     * @return string
      */
-    public function getLegacySynchroAt() {
+    public function getLegacySynchroAt()
+    {
         return $this->legacy_synchro_at;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->getTitle();
     }
 
@@ -447,7 +485,8 @@ class ProductCategory {
      *
      * @return array
      */
-    public function getArrayCopy() {
+    public function getArrayCopy()
+    {
         return get_object_vars($this);
     }
 
@@ -457,7 +496,8 @@ class ProductCategory {
      * @param string $property
      * @return mixed
      */
-    public function __get($property) {
+    public function __get($property)
+    {
         return $this->$property;
     }
 
@@ -467,8 +507,8 @@ class ProductCategory {
      * @param string $property
      * @param mixed $value
      */
-    public function __set($property, $value) {
+    public function __set($property, $value)
+    {
         $this->$property = $value;
     }
-
 }

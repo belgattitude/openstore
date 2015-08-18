@@ -5,15 +5,15 @@ namespace Openstore\Catalog;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class StockManagerFactory implements FactoryInterface {
-
+class StockManagerFactory implements FactoryInterface
+{
     /**
-     * 
+     *
      * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
      * @return \Openstore\Catalog\StockManager
      */
-    public function createService(ServiceLocatorInterface $serviceLocator) {
-
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
         $configuration = $serviceLocator->get('Openstore\Configuration');
         $adapter = $serviceLocator->get('Zend\Db\Adapter\Adapter');
 
@@ -21,5 +21,4 @@ class StockManagerFactory implements FactoryInterface {
         $service->setServiceLocator($sl);
         return $service;
     }
-
 }

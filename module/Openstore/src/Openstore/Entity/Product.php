@@ -15,15 +15,15 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference", "brand_id", "flag_active"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
  *     @ORM\UniqueConstraint(name="unique_slug_idx",columns={"slug"})
- *   }, 
+ *   },
  *   indexes={
  *     @ORM\Index(name="title_idx", columns={"title"}),
  *     @ORM\Index(name="reference_idx", columns={"reference"}),
  *     @ORM\Index(name="search_reference_idx", columns={"search_reference"}),
  *     @ORM\Index(name="description_idx", columns={"description"}),
  *     @ORM\Index(name="characteristic_idx", columns={"characteristic"}),
- *     @ORM\Index(name="barcode_ean13_idx", columns={"barcode_ean13"}), 
- *     @ORM\Index(name="barcode_upca_idx", columns={"barcode_upca"}),  
+ *     @ORM\Index(name="barcode_ean13_idx", columns={"barcode_ean13"}),
+ *     @ORM\Index(name="barcode_upca_idx", columns={"barcode_upca"}),
  *     @ORM\Index(name="keywords_idx", columns={"keywords"}),
  *     @ORM\Index(name="slug_idx", columns={"slug"}),
  *   },
@@ -31,8 +31,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * )
  * @Gedmo\SoftDeleteable(fieldName="deleted_at")
  */
-class Product {
-
+class Product
+{
     /**
      * @ORM\OneToMany(targetEntity="ProductTranslation", mappedBy="product_id")
      * */
@@ -67,28 +67,28 @@ class Product {
     private $parent_id;
 
     /**
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="ProductBrand", inversedBy="products", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="brand_id", referencedColumnName="brand_id", onDelete="CASCADE", nullable=true)
      */
     private $brand_id;
 
     /**
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="ProductGroup", inversedBy="products", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="group_id", referencedColumnName="group_id", onDelete="CASCADE", nullable=true)
      */
     private $group_id;
 
     /**
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="ProductModel", inversedBy="products", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="model_id", referencedColumnName="model_id", onDelete="CASCADE", nullable=true)
      */
     private $model_id;
 
     /**
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="ProductCategory", inversedBy="products", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="category_id", referencedColumnName="category_id", onDelete="CASCADE", nullable=true)
      */
@@ -229,13 +229,13 @@ class Product {
     
     /**
      * @ORM\Column(type="string", length=20, nullable=true, options={"comment"="European intrastat customs code"})
-     */    
+     */
     private $trade_code_intrastat;
     
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true, options={"comment"="International Harmonized Trade System common nomenclature code"})
-     */        
+     */
     private $trade_code_hts;
 
     /**
@@ -277,8 +277,8 @@ class Product {
      */
     protected $legacy_synchro_at;
 
-    public function __construct() {
-
+    public function __construct()
+    {
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
 
         /**
@@ -288,19 +288,21 @@ class Product {
     }
 
     /**
-     * 
+     *
      * @param integer $product_id
      */
-    public function setProductId($product_id) {
+    public function setProductId($product_id)
+    {
         $this->product_id = $product_id;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getProductId() {
+    public function getProductId()
+    {
         return $this->product_id;
     }
 
@@ -308,75 +310,84 @@ class Product {
      * Set reference
      * @param string $reference
      */
-    public function setReference($reference) {
+    public function setReference($reference)
+    {
         $this->reference = $reference;
         return $this;
     }
 
     /**
-     * Return reference 
+     * Return reference
      * @return string
      */
-    public function getReference() {
+    public function getReference()
+    {
         return $this->reference;
     }
 
     /**
      * @param string $slug
      */
-    public function setSlug($slug) {
+    public function setSlug($slug)
+    {
         $this->slug = $slug;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getSlug() {
+    public function getSlug()
+    {
         return $this->slug;
     }
 
     /**
-     * 
+     *
      * @param string $title
      */
-    public function setTitle($title) {
+    public function setTitle($title)
+    {
         $this->title = $title;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getTitle() {
+    public function getTitle()
+    {
         return $this->title;
     }
 
     /**
-     * 
+     *
      * @param string $description
      */
-    public function setDescription($description) {
+    public function setDescription($description)
+    {
         $this->description = $description;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->description;
     }
 
     /**
-     * 
+     *
      * @param int $type_id
      * @return Product
      */
-    function setTypeId($type_id) {
+    public function setTypeId($type_id)
+    {
         $this->type_id = $type_id;
         return $this;
     }
@@ -384,16 +395,18 @@ class Product {
     /**
      * @return integer
      */
-    function getTypeId() {
+    public function getTypeId()
+    {
         return $this->type_id;
     }
 
     /**
-     * 
+     *
      * @param int $status_id
      * @return Product
      */
-    function setStatusId($status_id) {
+    public function setStatusId($status_id)
+    {
         $this->status_id = $status_id;
         return $this;
     }
@@ -401,16 +414,18 @@ class Product {
     /**
      * @return integer|null
      */
-    function getStatusId() {
+    public function getStatusId()
+    {
         return $this->status_id;
     }
 
     /**
-     * 
+     *
      * @param float $unit_id
      * @return \Openstore\Entity\Product
      */
-    function setUnitId($unit_id) {
+    public function setUnitId($unit_id)
+    {
         $this->unit_id = $unit_id;
         return $this;
     }
@@ -418,7 +433,8 @@ class Product {
     /**
      * @return integer
      */
-    function getUnitId() {
+    public function getUnitId()
+    {
         return $this->unit_id;
     }
 
@@ -426,16 +442,18 @@ class Product {
      * Set volume
      * @return Product
      */
-    function setVolume($volume) {
+    public function setVolume($volume)
+    {
         $this->volume = $volume;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return float
      */
-    function getVolume() {
+    public function getVolume()
+    {
         return $this->volume;
     }
 
@@ -443,16 +461,18 @@ class Product {
      * Set weight
      * @return Product
      */
-    function setWeight($weight) {
+    public function setWeight($weight)
+    {
         $this->weight = $weight;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return float
      */
-    function getWeight() {
+    public function getWeight()
+    {
         return $this->weight;
     }
 
@@ -460,16 +480,18 @@ class Product {
      * Set length
      * @return Product
      */
-    function setLength($length) {
+    public function setLength($length)
+    {
         $this->length = $length;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return float
      */
-    function getLength() {
+    public function getLength()
+    {
         return $this->length;
     }
 
@@ -477,16 +499,18 @@ class Product {
      * Set height
      * @return Product
      */
-    function setHeight($height) {
+    public function setHeight($height)
+    {
         $this->height = $height;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return decimal
      */
-    function getHeight() {
+    public function getHeight()
+    {
         return $this->height;
     }
 
@@ -494,16 +518,18 @@ class Product {
      * Set width
      * @return Product
      */
-    function setWidth($width) {
+    public function setWidth($width)
+    {
         $this->width = $with;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return decimal
      */
-    function getWidth() {
+    public function getWidth()
+    {
         return $this->width;
     }
 
@@ -512,47 +538,52 @@ class Product {
      * @param string $barcode_ean13
      * @return Product
      */
-    function setBarcodeEan13($barcode_ean13) {
+    public function setBarcodeEan13($barcode_ean13)
+    {
         $this->barcode_ean13 = $barcode_ean13;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    function getBarcodeEan13() {
+    public function getBarcodeEan13()
+    {
         return $this->barcode_ean13;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function setIconClass($icon_class) {
+    public function setIconClass($icon_class)
+    {
         $this->icon_class = $icon_class;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getIconClass() {
+    public function getIconClass()
+    {
         return $this->icon_class;
     }
 
     
     /**
-     * 
+     *
      * @return string
      */
-    public function getTradeCodeHts() {
+    public function getTradeCodeHts()
+    {
         return $this->trade_code_hts;
     }
 
     /**
-     * 
+     *
      * @param string $code
      */
     public function setTradeCodeHts($code)
@@ -562,7 +593,7 @@ class Product {
     
     
     /**
-     * 
+     *
      * @param string $code
      */
     public function setTradeCodeIntrastat($code)
@@ -571,92 +602,103 @@ class Product {
     }
     
     /**
-     * 
+     *
      * @return string
      */
-    public function getTradeCodeIntrastat() {
+    public function getTradeCodeIntrastat()
+    {
         return $this->trade_code_intrastat;
-    }    
+    }
     
     /**
-     * 
+     *
      * @return boolean
      */
-    public function getFlagActive() {
+    public function getFlagActive()
+    {
         return (boolean) $this->flag_active;
     }
 
     /**
-     * 
+     *
      */
-    public function setFlagActive($flag_active) {
+    public function setFlagActive($flag_active)
+    {
         $this->flag_active = $flag_active;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return date
      */
-    public function getAvailableAt() {
+    public function getAvailableAt()
+    {
         return $this->available_at;
     }
 
     /**
      * @param string $available_at date in Y-m-d H:i:s format
      */
-    public function setAvailableAt($available_at) {
+    public function setAvailableAt($available_at)
+    {
         $this->available_at = $available_at;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getCreatedAt() {
+    public function getCreatedAt()
+    {
         return $this->created_at;
     }
 
     /**
-     * 
+     *
      * @param string $created_at
      */
-    public function setCreatedAt($created_at) {
+    public function setCreatedAt($created_at)
+    {
         $this->created_at = $created_at;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getUpdatedAt() {
+    public function getUpdatedAt()
+    {
         return $this->updated_at;
     }
 
     /**
-     * 
+     *
      * @param string $updated_at
      */
-    public function setUpdatedAt($updated_at) {
+    public function setUpdatedAt($updated_at)
+    {
         $this->updated_at = $updated_at;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getDeletedAt() {
+    public function getDeletedAt()
+    {
         return $this->deleted_at;
     }
 
     /**
-     * 
+     *
      * @param string $updated_at
      */
-    public function setDeletedAt($deleted_at) {
+    public function setDeletedAt($deleted_at)
+    {
         $this->deleted_at = $deleted_at;
         return $this;
     }
@@ -665,7 +707,8 @@ class Product {
      * Return creator username
      * @return string
      */
-    public function getCreatedBy() {
+    public function getCreatedBy()
+    {
         return $this->created_by;
     }
 
@@ -673,7 +716,8 @@ class Product {
      * Set creator username
      * @param string $created_by
      */
-    public function setCreatedBy($created_by) {
+    public function setCreatedBy($created_by)
+    {
         $this->created_by = $created_by;
         return $this;
     }
@@ -682,7 +726,8 @@ class Product {
      * Return last updater username
      * @return string
      */
-    public function getUpdatedBy() {
+    public function getUpdatedBy()
+    {
         return $this->updated_by;
     }
 
@@ -690,16 +735,18 @@ class Product {
      * Set the last updater username
      * @param string $updated_by
      */
-    public function setUpdatedBy($updated_by) {
+    public function setUpdatedBy($updated_by)
+    {
         $this->updated_by = $updated_by;
         return $this;
     }
 
     /**
-     * Return legacy mapping 
+     * Return legacy mapping
      * @return string $legacy_mapping
      */
-    public function getLegacyMapping() {
+    public function getLegacyMapping()
+    {
         return $this->legacy_mapping;
     }
 
@@ -707,7 +754,8 @@ class Product {
      * Set a legacy mapping for this record
      * @param string $legacy_mapping
      */
-    public function setLegacyMapping($legacy_mapping) {
+    public function setLegacyMapping($legacy_mapping)
+    {
         $this->legacy_mapping = $legacy_mapping;
         return $this;
     }
@@ -716,16 +764,18 @@ class Product {
      * Set legacy synchro time
      * @param string $legacy_mapping
      */
-    public function setLegacySynchroAt($legacy_synchro_at) {
+    public function setLegacySynchroAt($legacy_synchro_at)
+    {
         $this->legacy_synchro_at = $legacy_synchro_at;
         return $this;
     }
 
     /**
-     * Return legacy synchro timestamp 
-     * @return string 
+     * Return legacy synchro timestamp
+     * @return string
      */
-    public function getLegacySynchroAt() {
+    public function getLegacySynchroAt()
+    {
         return $this->legacy_synchro_at;
     }
 
@@ -734,15 +784,17 @@ class Product {
      *
      * @return array
      */
-    public function getArrayCopy() {
+    public function getArrayCopy()
+    {
         return get_object_vars($this);
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->getTitle();
     }
 
@@ -752,7 +804,8 @@ class Product {
      * @param string $property
      * @return mixed
      */
-    public function __get($property) {
+    public function __get($property)
+    {
         return $this->$property;
     }
 
@@ -762,8 +815,8 @@ class Product {
      * @param string $property
      * @param mixed $value
      */
-    public function __set($property, $value) {
+    public function __set($property, $value)
+    {
         $this->$property = $value;
     }
-
 }

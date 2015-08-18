@@ -13,7 +13,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   name="sale_order_line",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *   }, 
+ *   },
  *   indexes={
  *     @ORM\Index(name="delivered_at_idx", columns={"delivered_at"}),
  *     @ORM\Index(name="invoiced_at_idx", columns={"invoiced_at"}),
@@ -22,8 +22,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   options={"comment" = "Order line table"}
  * )
  */
-class SaleOrderLine {
-
+class SaleOrderLine
+{
     /**
      * @ORM\Id
      * @ORM\Column(name="line_id", type="bigint", nullable=false, options={"unsigned"=true})
@@ -67,7 +67,7 @@ class SaleOrderLine {
     private $invoice_id;
 
     /**
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="Product", inversedBy="orders", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="product_id", referencedColumnName="product_id", nullable=false)
      */
@@ -167,167 +167,200 @@ class SaleOrderLine {
      */
     protected $legacy_synchro_at;
 
-    public function getLineId() {
+    public function getLineId()
+    {
         return $this->line_id;
     }
 
-    public function getReference() {
+    public function getReference()
+    {
         return $this->reference;
     }
 
-    public function getOrderId() {
+    public function getOrderId()
+    {
         return $this->order_id;
     }
 
-    public function getStatusId() {
+    public function getStatusId()
+    {
         return $this->status_id;
     }
 
-    public function getProductId() {
+    public function getProductId()
+    {
         return $this->product_id;
     }
 
-    public function getQuantity() {
+    public function getQuantity()
+    {
         return $this->quantity;
     }
 
-    public function getPrice() {
+    public function getPrice()
+    {
         return $this->price;
     }
 
-    public function getDiscount1() {
+    public function getDiscount1()
+    {
         return $this->discount_1;
     }
 
-    public function getDiscount2() {
+    public function getDiscount2()
+    {
         return $this->discount_2;
     }
 
-    public function getDiscount3() {
+    public function getDiscount3()
+    {
         return $this->discount_3;
     }
 
-    public function getDiscount4() {
+    public function getDiscount4()
+    {
         return $this->discount_4;
     }
 
     /**
      * @param string $comment
      */
-    public function setComment($comment) {
+    public function setComment($comment)
+    {
         $this->comment = $comment;
     }
 
     /**
      * @return string
      */
-    public function getComment() {
+    public function getComment()
+    {
         return $this->comment;
     }
 
-    public function getCustomerReference() {
+    public function getCustomerReference()
+    {
         return $this->customer_reference;
     }
 
-    public function getCustomerComment() {
+    public function getCustomerComment()
+    {
         return $this->customer_comment;
     }
 
-    public function setReference($reference) {
+    public function setReference($reference)
+    {
         $this->reference = $reference;
     }
 
-    public function setOrderId($order_id) {
+    public function setOrderId($order_id)
+    {
         $this->order_id = $order_id;
     }
 
-    public function setStatusId($status_id) {
+    public function setStatusId($status_id)
+    {
         $this->status_id = $status_id;
     }
 
-    public function setProductId($product_id) {
+    public function setProductId($product_id)
+    {
         $this->product_id = $product_id;
     }
 
-    public function setQuantity($quantity) {
+    public function setQuantity($quantity)
+    {
         $this->quantity = $quantity;
     }
 
-    public function setPrice($price) {
+    public function setPrice($price)
+    {
         $this->price = $price;
     }
 
-    public function setDiscount1($discount_1) {
+    public function setDiscount1($discount_1)
+    {
         $this->discount_1 = $discount_1;
     }
 
-    public function setDiscount2($discount_2) {
+    public function setDiscount2($discount_2)
+    {
         $this->discount_2 = $discount_2;
     }
 
-    public function setDiscount3($discount_3) {
+    public function setDiscount3($discount_3)
+    {
         $this->discount_3 = $discount_3;
     }
 
-    public function setDiscount4($discount_4) {
+    public function setDiscount4($discount_4)
+    {
         $this->discount_4 = $discount_4;
     }
 
-    public function setCustomerReference($customer_reference) {
+    public function setCustomerReference($customer_reference)
+    {
         $this->customer_reference = $customer_reference;
     }
 
-    public function setCustomerComment($customer_comment) {
+    public function setCustomerComment($customer_comment)
+    {
         $this->customer_comment = $customer_comment;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getCreatedAt() {
+    public function getCreatedAt()
+    {
         return $this->created_at;
     }
 
     /**
-     * 
+     *
      * @param string $created_at
      */
-    public function setCreatedAt($created_at) {
+    public function setCreatedAt($created_at)
+    {
         $this->created_at = $created_at;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getUpdatedAt() {
+    public function getUpdatedAt()
+    {
         return $this->updated_at;
     }
 
     /**
-     * 
+     *
      * @param string $updated_at
      */
-    public function setUpdatedAt($updated_at) {
+    public function setUpdatedAt($updated_at)
+    {
         $this->updated_at = $updated_at;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getDeletedAt() {
+    public function getDeletedAt()
+    {
         return $this->deleted_at;
     }
 
     /**
-     * 
+     *
      * @param string $updated_at
      */
-    public function setDeletedAt($deleted_at) {
+    public function setDeletedAt($deleted_at)
+    {
         $this->deleted_at = $deleted_at;
         return $this;
     }
@@ -336,7 +369,8 @@ class SaleOrderLine {
      * Return creator username
      * @return string
      */
-    public function getCreatedBy() {
+    public function getCreatedBy()
+    {
         return $this->created_by;
     }
 
@@ -344,7 +378,8 @@ class SaleOrderLine {
      * Set creator username
      * @param string $created_by
      */
-    public function setCreatedBy($created_by) {
+    public function setCreatedBy($created_by)
+    {
         $this->created_by = $created_by;
         return $this;
     }
@@ -353,7 +388,8 @@ class SaleOrderLine {
      * Return last updater username
      * @return string
      */
-    public function getUpdatedBy() {
+    public function getUpdatedBy()
+    {
         return $this->updated_by;
     }
 
@@ -361,16 +397,18 @@ class SaleOrderLine {
      * Set the last updater username
      * @param string $updated_by
      */
-    public function setUpdatedBy($updated_by) {
+    public function setUpdatedBy($updated_by)
+    {
         $this->updated_by = $updated_by;
         return $this;
     }
 
     /**
-     * Return legacy mapping 
+     * Return legacy mapping
      * @return string $legacy_mapping
      */
-    public function getLegacyMapping() {
+    public function getLegacyMapping()
+    {
         return $this->legacy_mapping;
     }
 
@@ -378,7 +416,8 @@ class SaleOrderLine {
      * Set a legacy mapping for this record
      * @param string $legacy_mapping
      */
-    public function setLegacyMapping($legacy_mapping) {
+    public function setLegacyMapping($legacy_mapping)
+    {
         $this->legacy_mapping = $legacy_mapping;
         return $this;
     }
@@ -387,17 +426,18 @@ class SaleOrderLine {
      * Set legacy synchro time
      * @param string $legacy_mapping
      */
-    public function setLegacySynchroAt($legacy_synchro_at) {
+    public function setLegacySynchroAt($legacy_synchro_at)
+    {
         $this->legacy_synchro_at = $legacy_synchro_at;
         return $this;
     }
 
     /**
-     * Return legacy synchro timestamp 
-     * @return string 
+     * Return legacy synchro timestamp
+     * @return string
      */
-    public function getLegacySynchroAt() {
+    public function getLegacySynchroAt()
+    {
         return $this->legacy_synchro_at;
     }
-
 }

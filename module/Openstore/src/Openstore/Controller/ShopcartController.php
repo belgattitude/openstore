@@ -10,30 +10,32 @@ use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
 use Openstore\Order\Model\Exception as OrderException;
 
-class ShopcartController extends AbstractActionController {
-
+class ShopcartController extends AbstractActionController
+{
     /**
      *
      * @var Openstore\Order\Model\Order
      */
     protected $shopcart;
 
-    public function onDispatch(\Zend\Mvc\MvcEvent $e) {
+    public function onDispatch(\Zend\Mvc\MvcEvent $e)
+    {
         $this->shopcart = $this->getServiceLocator()->get('Model\Order');
         parent::onDispatch($e);
     }
 
-    public function indexAction() {
-
+    public function indexAction()
+    {
         $view = new ViewModel();
         return $view;
     }
 
     /**
      * Create a shopcart
-     * 
+     *
      */
-    public function createAction() {
+    public function createAction()
+    {
         $product_id = $this->params()->fromPost('product_id');
 
         $view = new ViewModel();
@@ -41,19 +43,21 @@ class ShopcartController extends AbstractActionController {
         return $view;
     }
 
-    public function newAction() {
-        
+    public function newAction()
+    {
     }
 
     /**
-     * 
+     *
      * @return \Doctrine\ORM\EntityManager
      */
-    protected function getEntityManager() {
+    protected function getEntityManager()
+    {
         return $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
     }
 
-    public function addProductAction() {
+    public function addProductAction()
+    {
 
         // Get shopcart type
         //$st = new SyntheticTable($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
@@ -111,5 +115,4 @@ class ShopcartController extends AbstractActionController {
 
         die('Only by XMLHttpRequest');
     }
-
 }

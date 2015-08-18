@@ -2,38 +2,43 @@
 
 namespace MMan\Import;
 
-class Element {
-
+class Element
+{
     protected $filename;
 
-    function __construct() {
-        
+    public function __construct()
+    {
     }
 
-    function setFilename($filename) {
+    public function setFilename($filename)
+    {
         $this->filename = $filename;
         return $this;
     }
 
-    function getFilename() {
+    public function getFilename()
+    {
         return $this->filename;
     }
 
-    function getFilesize() {
+    public function getFilesize()
+    {
         return filesize($this->filename);
     }
 
-    function getFilemtime() {
+    public function getFilemtime()
+    {
         return filemtime($this->filename);
     }
 
-    function getLegacyMapping() {
+    public function getLegacyMapping()
+    {
         return $this->legacy_mapping;
     }
 
-    function setLegacyMapping($legacy_mapping) {
+    public function setLegacyMapping($legacy_mapping)
+    {
         $this->legacy_mapping = $legacy_mapping;
         return $this;
     }
-
 }

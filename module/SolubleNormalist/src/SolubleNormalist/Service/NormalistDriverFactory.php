@@ -42,7 +42,7 @@ class NormalistDriverFactory implements FactoryInterface
             $adapterLocator = $nConfig['adapter']['adapterLocator'];
         }
         if (!$serviceLocator->has($adapterLocator)) {
-            throw new Exception\RuntimeException(__METHOD__ . " adapterLocator '$adapterLocator' is not available through serviceLocator"); 
+            throw new Exception\RuntimeException(__METHOD__ . " adapterLocator '$adapterLocator' is not available through serviceLocator");
         }
         $adapter = $serviceLocator->get($adapterLocator);
         
@@ -72,8 +72,7 @@ class NormalistDriverFactory implements FactoryInterface
             $params['alias'] = $default_connection;
         }
     
-        $driver = new $driverClass($adapter, $params);        
+        $driver = new $driverClass($adapter, $params);
         return $driver;
-        
     }
 }

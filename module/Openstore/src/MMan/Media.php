@@ -5,8 +5,8 @@ namespace MMan;
 use MMan\MediaManager;
 use ArrayObject;
 
-class Media {
-
+class Media
+{
     /**
      * @var \ArrayObject
      */
@@ -17,16 +17,18 @@ class Media {
      */
     protected $mediaManager;
 
-    function __construct(MediaManager $mediaManager) {
+    public function __construct(MediaManager $mediaManager)
+    {
         $this->mediaManager = $mediaManager;
     }
 
     /**
-     * 
+     *
      * @param array|ArrayObject $properties
      * @return \MMan\Media
      */
-    function setProperties($properties) {
+    public function setProperties($properties)
+    {
         if (is_array($properties)) {
             $properties = new ArrayObject($properties);
         }
@@ -38,25 +40,28 @@ class Media {
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    function getFilename() {
+    public function getFilename()
+    {
         return $this->properties->offsetGet('filename');
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    function getFilemtime() {
+    public function getFilemtime()
+    {
         return $this->properties->offsetGet('filemtime');
     }
 
     /**
-     * @return string 
+     * @return string
      */
-    function getPath() {
+    public function getPath()
+    {
         $basePath = $this->mediaManager->getStorage()->getAdapterOptions()['basePath'];
         $file = str_replace('//', '/', $basePath . '/' . $this->properties['folder'] . '/' . $this->properties['location']);
         if (!file_exists($file)) {
@@ -71,5 +76,4 @@ class Media {
         $path = realpath($file);
         return $path;
     }
-
 }

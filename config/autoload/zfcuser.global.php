@@ -180,21 +180,21 @@ $settings = array(
 
     /**
      * Enable user state usage
-     * 
+     *
      * Should user's state be used in the registration/login process?
      */
     // TODO SEB, put it again as false
     'enable_user_state' => false,
     /**
      * Default user state upon registration
-     * 
+     *
      * What state user should have upon registration?
      * Allowed value type: integer
      */
     'default_user_state' => 1,
     /**
      * States which are allowing user to login
-     * 
+     *
      * When user tries to login, is his/her state one of the following?
      * Include null if you want user's with no state to login as well.
      * Allowed value types: null and integer

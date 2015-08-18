@@ -10,15 +10,15 @@ use Soluble\FlexStore\Column\Column;
 use Soluble\FlexStore\Column\ColumnModel;
 use Soluble\FlexStore\Column\ColumnType;
 
-
-class ProductCatalogService extends AbstractService {
-
+class ProductCatalogService extends AbstractService
+{
     /**
-     * 
+     *
      * @param array $params
      * @throws \Exception
      */
-    protected function checkListParams(array $params) {
+    protected function checkListParams(array $params)
+    {
         $required_params = array(
             'pricelist',
             'language');
@@ -33,10 +33,11 @@ class ProductCatalogService extends AbstractService {
     }
 
     /**
-     * @param array $params [brands,pricelists] 
+     * @param array $params [brands,pricelists]
      * @return \Soluble\FlexStore\Store
      */
-    function getList(array $params = array()) {
+    public function getList(array $params = array())
+    {
         $this->checkListParams($params);
         
         $select = new Select();
@@ -47,14 +48,12 @@ class ProductCatalogService extends AbstractService {
         $disable_packaging = (isset($params['disable_packaging']) && $params['disable_packaging'] == true);
         
         if (!$disable_packaging) {
-        
-        
             // Step 1: Inner select packaging selection
             $packSelect = new Select();
             $packSelect->from(array('pp' => 'product_packaging'), array())
                     ->join(array('pt' => 'packaging_type'), new Expression("pp.type_id = pt.type_id"), array());
             $packSelect->columns(
-                    array(
+                array(
                 'product_id' => new Expression('pp.product_id'),
                 'pack_unit_qty' => new Expression("MAX(if (pt.reference = 'UNIT', pp.quantity, null))"),
                 'pack_unit_barcode_ean' => new Expression("MAX(if (pt.reference = 'UNIT', pp.barcode_ean, null))"),
@@ -80,9 +79,10 @@ class ProductCatalogService extends AbstractService {
                 'pack_mastercarton_length' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.length, null))"),
                 'pack_mastercarton_width' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.width, null))"),
                 'pack_mastercarton_height' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.height, null))"),
-                    )
-                    , true);
-            $packSelect->group(array('product_id'));
+                    ),
+                true
+            );
+                    $packSelect->group(array('product_id'));
             //echo $packSelect->getSqlString($this->adapter->getPlatform());
             //die();
         }
@@ -100,19 +100,28 @@ class ProductCatalogService extends AbstractService {
                 ->join(array('pc18' => 'product_category_translation'), new Expression("pc.category_id = pc18.category_id and pc18.lang='$lang'"), array(), $select::JOIN_LEFT)
                 ->join(array('pg' => 'product_group'), new Expression('pg.group_id = p.group_id'), array(), $select::JOIN_LEFT)
                 ->join(array('pg18' => 'product_group_translation'), new Expression("pg18.group_id = pg.group_id and pg18.lang='$lang'"), array(), $select::JOIN_LEFT)
-                ->join(array('ppl' => 'product_pricelist'), new Expression("ppl.product_id = p.product_id"), 
-                        array(), 
-                        //$select::JOIN_LEFT)
-                        $select::JOIN_INNER)
-                ->join(array('pl' => 'pricelist'), new Expression("ppl.pricelist_id = pl.pricelist_id and pl.reference = '$pricelist_reference'"), 
-                        array(), 
-                        //$select::JOIN_LEFT)
-                        $select::JOIN_INNER)
+                ->join(
+                    array('ppl' => 'product_pricelist'),
+                    new Expression("ppl.product_id = p.product_id"),
+                    array(),
+                    //$select::JOIN_LEFT)
+                    $select::JOIN_INNER
+                )
+                ->join(
+                    array('pl' => 'pricelist'),
+                    new Expression("ppl.pricelist_id = pl.pricelist_id and pl.reference = '$pricelist_reference'"),
+                    array(),
+                    //$select::JOIN_LEFT)
+                    $select::JOIN_INNER
+                )
                 ->join(array('pt' => 'product_type'), new Expression('p.type_id = pt.type_id'), array(), $select::JOIN_LEFT)
                 ->join(array('c' => 'currency'), new Expression('c.currency_id = pl.currency_id'), array(), $select::JOIN_LEFT)
-                ->join(array('ps' => 'product_stock'), new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'), 
-                        array(), 
-                        $select::JOIN_LEFT)
+                ->join(
+                    array('ps' => 'product_stock'),
+                    new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'),
+                    array(),
+                    $select::JOIN_LEFT
+                )
                 ->join(array('pst' => 'product_status'), new Expression('pst.status_id = ppl.status_id'), array(), $select::JOIN_LEFT)
                 ->join(array('pmed' => 'product_media'), new Expression("pmed.product_id = p.product_id and pmed.flag_primary=1"), array(), $select::JOIN_LEFT)
                 ->join(array('pmt' => 'product_media_type'), new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), array(), $select::JOIN_LEFT)
@@ -224,7 +233,7 @@ class ProductCatalogService extends AbstractService {
             'currency_symbol' => new Expression('c.symbol'),
             'trade_code_intrastat' => new Expression('p.trade_code_intrastat'),
             'trade_code_hts' => new Expression('p.trade_code_hts'),
-            'map_price' => new Expression('ppl.map_price')  
+            'map_price' => new Expression('ppl.map_price')
         ));
 
         $select->columns($columns, true);
@@ -244,23 +253,21 @@ class ProductCatalogService extends AbstractService {
         // exclude some products
         $select->where("pb.reference <> '****'");
 
-        $relevance = "'A'";  // Constant to sort on     
+        $relevance = "'A'";  // Constant to sort on
 
         if (array_key_exists('query', $params)) {
             $query = trim($params['query']);
             if ($query != "") {
-
                 $platform = $this->adapter->getPlatform();
                 $quoted = $platform->quoteValue($query);
                 $searchable_ref = $this->getSearchableReference($query);
 
-                // 1. TEST PART WITH 
+                // 1. TEST PART WITH
                 // BARCODE, SEARCH_REFERENCE, PRODUCT_ID,
 
                 $matches = array();
                 if (is_numeric($query) && strlen($query) < 20) {
-
-                    // Can be a barcode or a product_id, 
+                    // Can be a barcode or a product_id,
                     $matches[1000000000] = "p.product_id = $query";
 
                     if (strlen($query) > 10) {
@@ -299,9 +306,7 @@ class ProductCatalogService extends AbstractService {
                 $relevance .= str_repeat(')', count($matches) - 1);
 
                 $select->where("(" . join(' or ', array_values($matches)) . ")");
-            } 
-            
-            
+            }
         }
 
         // Price
@@ -354,7 +359,7 @@ class ProductCatalogService extends AbstractService {
 
         //$select->order(array('p.product_id' => $select::ORDER_ASCENDING));
 
-        $select->order(array(new Expression($relevance . ' desc'), 'pb.reference', 'pc.global_sort_index', 'p.sort_index', 'p.display_reference'));                        
+        $select->order(array(new Expression($relevance . ' desc'), 'pb.reference', 'pc.global_sort_index', 'p.sort_index', 'p.display_reference'));
 
         $store = $this->getStore($select);
         
@@ -380,12 +385,12 @@ class ProductCatalogService extends AbstractService {
         $this->addStorePictureRenderer($store, 'picture_media_id', 'available_at', 'picture_media_filemtime');
         $this->addNextAvailableStockAtRenderer($store, 'next_available_stock_at');
         $this->addStorePriceRenderer($store, $customer_id, $pricelist_reference, 'picture_thumbnail_url');
-        $this->initStoreFormatters($store, $params);        
+        $this->initStoreFormatters($store, $params);
         
         return $store;
     }
     /**
-     * 
+     *
      * @param Store $store
      * @param integer|null $customer_id
      * @param string $pricelist_reference
@@ -393,7 +398,7 @@ class ProductCatalogService extends AbstractService {
      * @param string $insert_mode default ColumnModel::ADD_COLUMN_AFTER
      * @return void
      */
-    protected function addStorePriceRenderer(Store $store, $customer_id, $pricelist_reference, $insert_reference_column, $insert_mode=null)
+    protected function addStorePriceRenderer(Store $store, $customer_id, $pricelist_reference, $insert_reference_column, $insert_mode = null)
     {
         $cm = $store->getColumnModel();
 
@@ -401,13 +406,13 @@ class ProductCatalogService extends AbstractService {
             $insert_mode = ColumnModel::ADD_COLUMN_AFTER;
         }
         
-        if (!in_array($insert_mode, array(ColumnModel::ADD_COLUMN_AFTER, 
+        if (!in_array($insert_mode, array(ColumnModel::ADD_COLUMN_AFTER,
                                           ColumnModel::ADD_COLUMN_BEFORE))) {
             throw new \InvalidArgumentException(__METHOD__ . " unsupported insert_mode parameter ($insert_mode)");
         }
         
         $cdr = $this->serviceLocator->get('Store\Renderer\CustomerDiscount');
-        $cdr->setParams($customer_id, $pricelist_reference);        
+        $cdr->setParams($customer_id, $pricelist_reference);
         
         $my_price = new Column('my_price', array('type' => ColumnType::TYPE_DECIMAL, 'virtual' => true));
         $my_discount_1 = new Column('my_discount_1', array('type' => ColumnType::TYPE_DECIMAL, 'virtual' => true));
@@ -416,7 +421,7 @@ class ProductCatalogService extends AbstractService {
         $my_discount_4 = new Column('my_discount_4', array('type' => ColumnType::TYPE_DECIMAL, 'virtual' => true));
         
         
-        switch($insert_mode) {
+        switch ($insert_mode) {
             case ColumnModel::ADD_COLUMN_AFTER:
                 $cm->add($my_price, $insert_reference_column, ColumnModel::ADD_COLUMN_AFTER);
                 $cm->add($my_discount_1, 'my_price', ColumnModel::ADD_COLUMN_AFTER);
@@ -443,7 +448,8 @@ class ProductCatalogService extends AbstractService {
      * @param string $reference
      * @return string
      */
-    protected function getSearchableReference($reference, $wildcards_starts_at_char = 4, $max_reference_length = 20) {
+    protected function getSearchableReference($reference, $wildcards_starts_at_char = 4, $max_reference_length = 20)
+    {
         $reference = substr($reference, 0, $max_reference_length);
         $quoted = $this->adapter->getPlatform()->quoteValue($reference);
         $ref = $this->adapter->query("select get_searchable_reference($quoted) as ref")->execute()->current()['ref'];
@@ -456,5 +462,4 @@ class ProductCatalogService extends AbstractService {
         }
         return $out;
     }
-
 }

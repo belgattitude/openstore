@@ -4,7 +4,6 @@ namespace Openstore\Permission;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-
 class UserCapabilitiesFactory implements FactoryInterface
 {
     /**
@@ -13,15 +12,14 @@ class UserCapabilitiesFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $sl)
     {
-		
         $userCapabilities = new UserCapabilities();
-		$userCapabilities->setServiceLocator($sl);
-		$userCapabilities->setServiceLocator($sl);
-		
-		$auth = $sl->get('zfcuser_auth_service');
-		if ($auth->hasIdentity()) {
-			$userCapabilities->setUserId($auth->getIdentity()->getUserId());
-		}
+        $userCapabilities->setServiceLocator($sl);
+        $userCapabilities->setServiceLocator($sl);
+        
+        $auth = $sl->get('zfcuser_auth_service');
+        if ($auth->hasIdentity()) {
+            $userCapabilities->setUserId($auth->getIdentity()->getUserId());
+        }
         return $userCapabilities;
     }
 }

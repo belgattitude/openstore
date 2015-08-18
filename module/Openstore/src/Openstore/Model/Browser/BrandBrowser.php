@@ -10,12 +10,13 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
 
-class BrandBrowser extends AbstractBrowser {
-
+class BrandBrowser extends AbstractBrowser
+{
     /**
      * @return array
      */
-    function getSearchableParams() {
+    public function getSearchableParams()
+    {
         return array(
             'language' => array('required' => true),
             'pricelist' => array('required' => true),
@@ -26,11 +27,11 @@ class BrandBrowser extends AbstractBrowser {
     }
 
     /**
-     * 
+     *
      * @return \Zend\Db\Sql\Select
      */
-    function getSelect() {
-
+    public function getSelect()
+    {
         $params = $this->getSearchParams();
 
         $lang = $params->get('language');
@@ -67,7 +68,6 @@ class BrandBrowser extends AbstractBrowser {
         $select->order(array('pb.title' => $select::ORDER_ASCENDING));
 
         if (($categories = $params->get('categories')) !== null) {
-
             $sql = new Sql($this->adapter);
             $category_clauses = array();
             foreach ($categories as $category_reference) {
@@ -95,5 +95,4 @@ class BrandBrowser extends AbstractBrowser {
 
         return $select;
     }
-
 }

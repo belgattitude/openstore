@@ -6,14 +6,15 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
 use Soluble\FlexStore\Store;
 
-class ProductStockService extends AbstractService {
-
+class ProductStockService extends AbstractService
+{
     /**
-     * 
+     *
      * @param array $params
      * @throws \Exception
      */
-    protected function checkListParams(array $params) {
+    protected function checkListParams(array $params)
+    {
         $required_params = array(
             'pricelist',
         );
@@ -28,10 +29,11 @@ class ProductStockService extends AbstractService {
     }
 
     /**
-     * @param array $params [brands,pricelists] 
+     * @param array $params [brands,pricelists]
      * @return \Soluble\FlexStore\Store
      */
-    function getList(array $params = array()) {
+    public function getList(array $params = array())
+    {
         $this->checkListParams($params);
         $select = new Select();
         $lang = 'en';
@@ -110,11 +112,10 @@ class ProductStockService extends AbstractService {
             $store->getSource()->getOptions()->setOffset($params['offset']);
         }
         
-        $this->initStoreFormatters($store, $params);   
+        $this->initStoreFormatters($store, $params);
         
-        $this->addNextAvailableStockAtRenderer($store, 'next_available_stock_at');        
+        $this->addNextAvailableStockAtRenderer($store, 'next_available_stock_at');
 
         return $store;
     }
-
 }

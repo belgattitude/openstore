@@ -7,4 +7,3 @@ class RoleRepository extends NestedTreeRepository
 {
     // your code here
 }
-

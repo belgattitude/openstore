@@ -13,18 +13,18 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   name="revision",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_revison_log",columns={"related_table", "related_id", "created_at"}),
- *   }, 
+ *   },
  *   indexes={
- *     @ORM\Index(name="related_table_idx", columns={"related_table"}), 
- *     @ORM\Index(name="related_id_idx", columns={"related_id"}), 
- *     @ORM\Index(name="revision_idx", columns={"revision"}), 
- *     @ORM\Index(name="created_at_idx", columns={"created_at"}), 
+ *     @ORM\Index(name="related_table_idx", columns={"related_table"}),
+ *     @ORM\Index(name="related_id_idx", columns={"related_id"}),
+ *     @ORM\Index(name="revision_idx", columns={"revision"}),
+ *     @ORM\Index(name="created_at_idx", columns={"created_at"}),
  *   },
  *   options={"comment" = "Custom table revisions history"}
  * )
  */
-class Revision {
-
+class Revision
+{
     /**
      * @ORM\Id
      * @ORM\Column(name="revision_id", type="bigint", nullable=false, options={"unsigned"=true})
@@ -82,41 +82,45 @@ class Revision {
     private $current_data;
     
 
-    public function __construct() {
-        
+    public function __construct()
+    {
     }
 
 
     /**
-     * 
+     *
      * @param string $message
      */
-    public function setMessage($message) {
+    public function setMessage($message)
+    {
         $this->message = $message;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getMessage() {
+    public function getMessage()
+    {
         return $this->message;
     }
 
     
     /**
-     * 
+     *
      * @return string
      */
-    public function getCreatedAt() {
+    public function getCreatedAt()
+    {
         return $this->created_at;
     }
 
     /**
-     * 
+     *
      * @param string $created_at
      */
-    public function setCreatedAt($created_at) {
+    public function setCreatedAt($created_at)
+    {
         $this->created_at = $created_at;
     }
 
@@ -125,7 +129,8 @@ class Revision {
      * Return creator username
      * @return string
      */
-    public function getCreatedBy() {
+    public function getCreatedBy()
+    {
         return $this->created_by;
     }
 
@@ -133,9 +138,8 @@ class Revision {
      * Set creator username
      * @param string $created_by
      */
-    public function setCreatedBy($created_by) {
+    public function setCreatedBy($created_by)
+    {
         $this->created_by = $created_by;
     }
-
-
 }

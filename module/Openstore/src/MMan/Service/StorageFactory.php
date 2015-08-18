@@ -8,14 +8,15 @@ use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Gaufrette\Adapter as GAdapter;
 
-class StorageFactory implements FactoryInterface {
-
+class StorageFactory implements FactoryInterface
+{
     /**
-     * 
+     *
      * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
      * @return \MMan\Service\Manager
      */
-    public function createService(ServiceLocatorInterface $serviceLocator) {
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
         $config = $serviceLocator->get('Config');
         $config = isset($config['mediamanager']) ? $config['mediamanager'] : array();
         if (empty($config)) {
@@ -44,5 +45,4 @@ class StorageFactory implements FactoryInterface {
 
         return $manager;
     }
-
 }

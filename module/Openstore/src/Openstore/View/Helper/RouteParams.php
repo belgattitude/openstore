@@ -2,12 +2,10 @@
 
 namespace Openstore\View\Helper;
 
-
 use Zend\Mvc\Router\RouteMatch;
 use Zend\Mvc\Router\RouteStackInterface;
 use Zend\View\Helper\AbstractHelper;
 use Zend\View\Exception;
-
 
 /**
  * Helper for retrieving route params
@@ -28,22 +26,21 @@ class RouteParams extends AbstractHelper
      */
     protected $routeMatch;
 
-	
-	/**
-	 *
-	 * @var \Zend\Mvc\MvcEvent
-	 */
-	protected $mvcEvent;
-	
-	public function __construct(\Zend\Mvc\MvcEvent $mvcEvent)
-	{
-		// injecting the mvc event, since $mvcEvent->getRouteMatch() may be null
-		$this->mvcEvent = $mvcEvent;
-		$this->setRouter($mvcEvent->getRouter());
-		$this->setRouteMatch($mvcEvent->getRouteMatch());
-		
-	}	
-	
+    
+    /**
+     *
+     * @var \Zend\Mvc\MvcEvent
+     */
+    protected $mvcEvent;
+    
+    public function __construct(\Zend\Mvc\MvcEvent $mvcEvent)
+    {
+        // injecting the mvc event, since $mvcEvent->getRouteMatch() may be null
+        $this->mvcEvent = $mvcEvent;
+        $this->setRouter($mvcEvent->getRouter());
+        $this->setRouteMatch($mvcEvent->getRouteMatch());
+    }
+    
     /**
      * Get the route parameter value
      *
@@ -53,7 +50,6 @@ class RouteParams extends AbstractHelper
      */
     public function __invoke($name = null)
     {
-		
         if (null === $this->router) {
             throw new Exception\RuntimeException('No RouteStackInterface instance provided');
         }
@@ -61,14 +57,13 @@ class RouteParams extends AbstractHelper
         if ($this->routeMatch === null) {
             throw new Exception\RuntimeException('No RouteMatch instance provided');
         }
-		
+        
 
         if ($name === null) {
-			return $this->routeMatch->getParams();
+            return $this->routeMatch->getParams();
         }
-		
-		return $this->routeMatch->getParam($name);
-
+        
+        return $this->routeMatch->getParam($name);
     }
 
     /**

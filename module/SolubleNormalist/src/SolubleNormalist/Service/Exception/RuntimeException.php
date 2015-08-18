@@ -1,6 +1,6 @@
 <?php
 namespace SolubleNormalist\Service\Exception;
 
-class RuntimeException extends \RuntimeException {
-    
+class RuntimeException extends \RuntimeException
+{
 }

@@ -6,16 +6,15 @@ use License\LicenseManager;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-
-class LicenseManagerFactory implements FactoryInterface {
-
+class LicenseManagerFactory implements FactoryInterface
+{
     /**
-     * 
+     *
      * @param ServiceLocatorInterface $serviceLocator
      * @return LicenseManager
      */
-    public function createService(ServiceLocatorInterface $serviceLocator) {
-        
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
         $config = $serviceLocator->get('Config');
 
         $config = isset($config['licenses']) ? $config['licenses'] : array();
@@ -28,5 +27,4 @@ class LicenseManagerFactory implements FactoryInterface {
 
         return $licenseManager;
     }
-
 }

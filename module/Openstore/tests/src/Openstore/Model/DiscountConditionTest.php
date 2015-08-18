@@ -19,7 +19,7 @@ class DiscountConditionTest extends \PHPUnit_Framework_TestCase
      *
      * @var ServiceManager
      */
-    protected $serviceManager;    
+    protected $serviceManager;
     
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -28,7 +28,7 @@ class DiscountConditionTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $serviceManagerGrabber   = new ServiceManagerGrabber();
-        $this->serviceManager = $serviceManagerGrabber->getServiceManager();        
+        $this->serviceManager = $serviceManagerGrabber->getServiceManager();
         $this->dc = $this->serviceManager->get('Model\DiscountCondition');
     }
 
@@ -59,5 +59,4 @@ class DiscountConditionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Soluble\FlexStore\ResultSet\ResultSet', $data);
        // var_dump($data->toArray());
     }
-
 }

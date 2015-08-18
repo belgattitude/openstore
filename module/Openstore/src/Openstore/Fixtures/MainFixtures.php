@@ -7,15 +7,15 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Zend\Crypt\Password\Bcrypt;
 
-class LoadUserData implements FixtureInterface {
-
+class LoadUserData implements FixtureInterface
+{
     protected $default_currency_id = 1;
     protected $default_stock_id = 1;
     protected $default_unit_id = 1;
     protected $default_product_type_id = 1;
 
-    public function load(ObjectManager $manager) {
-
+    public function load(ObjectManager $manager)
+    {
         $this->importMediaContainers($manager);
         $this->importProductMediaTypes($manager);
 
@@ -43,7 +43,8 @@ class LoadUserData implements FixtureInterface {
         $this->importOrderInfos($manager);
     }
 
-    function importOrderInfos($manager) {
+    public function importOrderInfos($manager)
+    {
 
         // step 1 adding order statuses
         $statuses = array(
@@ -117,8 +118,8 @@ class LoadUserData implements FixtureInterface {
         $manager->flush();
     }
 
-    function importMediaContainers(ObjectManager $manager) {
-
+    public function importMediaContainers(ObjectManager $manager)
+    {
         $containers = array(
             1 => array('reference' => 'PRODUCT_MEDIAS', 'folder' => '/product_medias', 'title' => 'Catalog product medias container'),
             2 => array('reference' => 'PRIVATE', 'folder' => '/private', 'title' => 'Private media container'),
@@ -142,8 +143,8 @@ class LoadUserData implements FixtureInterface {
         $manager->flush();
     }
 
-    function importProductMediaTypes(ObjectManager $manager) {
-
+    public function importProductMediaTypes(ObjectManager $manager)
+    {
         $product_media_types = array(
             1 => array('reference' => 'PICTURE', 'title' => 'Official picture'),
             2 => array('reference' => 'ALTERNATE_PICTURE', 'title' => 'Alternate pictures'),
@@ -169,8 +170,8 @@ class LoadUserData implements FixtureInterface {
         $manager->flush();
     }
 
-    function importProductType(ObjectManager $manager) {
-
+    public function importProductType(ObjectManager $manager)
+    {
         $product_types = array(
             1 => array('reference' => 'REGULAR', 'title' => 'Regular product', 'description' => 'Regular product', 'flag_active' => 1, 'fedc' => 1, 'flag_default' => 1),
             2 => array('reference' => 'SPAREPART', 'title' => 'Spare part', 'description' => 'Spare part', 'flag_active' => null, 'fedc' => 1),
@@ -203,8 +204,8 @@ class LoadUserData implements FixtureInterface {
         $manager->flush();
     }
 
-    function importPackagingType(ObjectManager $manager) {
-
+    public function importPackagingType(ObjectManager $manager)
+    {
         $pack_types = array(
             1 => array('reference' => 'UNIT', 'title' => 'Unit', 'description' => 'Unit'),
             2 => array('reference' => 'BOX', 'title' => 'Box', 'description' => 'Box'),
@@ -228,8 +229,8 @@ class LoadUserData implements FixtureInterface {
         $manager->flush();
     }
 
-    function importProductStatus(ObjectManager $manager) {
-
+    public function importProductStatus(ObjectManager $manager)
+    {
         $statuses = array(
             10 => array('reference' => 'IN_DEVELOPMENT', 'teos' => null, 'eol' => null, 'title' => 'In development', 'description' => 'In development', 'flag_default' => null),
             20 => array('reference' => 'NORMAL', 'teos' => null, 'eol' => null, 'title' => 'Normal', 'description' => 'Regular sellable product', 'flag_default' => 1),
@@ -263,8 +264,8 @@ class LoadUserData implements FixtureInterface {
     
     
     
-    function importStock(ObjectManager $manager) {
-
+    public function importStock(ObjectManager $manager)
+    {
         $stock = new Entity\Stock();
 
         $stock->setStockId($this->default_stock_id);
@@ -278,7 +279,8 @@ class LoadUserData implements FixtureInterface {
         $manager->flush();
     }
 
-    function importPricelists(ObjectManager $manager) {
+    public function importPricelists(ObjectManager $manager)
+    {
         $stock_id = $this->default_stock_id;
         $currency_id = $this->default_currency_id;
         $pricelists = array(
@@ -315,7 +317,8 @@ class LoadUserData implements FixtureInterface {
         $manager->flush();
     }
 
-    function importRoles(ObjectManager $manager) {
+    public function importRoles(ObjectManager $manager)
+    {
         $roles = array(
             'guest' => array('parent_id' => null),
             'member' => array('parent_id' => null),
@@ -343,7 +346,8 @@ class LoadUserData implements FixtureInterface {
         $manager->flush();
     }
 
-    function importUser(ObjectManager $manager) {
+    public function importUser(ObjectManager $manager)
+    {
         $users = array(
             1 => array('username' => 'admin', 'email' => 's.vanvelthem@gmail.com', 'password' => 'intelart',
                 'roles' => array(
@@ -352,7 +356,7 @@ class LoadUserData implements FixtureInterface {
                 'pricelists' => array(
                     'BE', 'FR', 'NL'
                 )),
-            2 => array('username' => 'testcustomer', 'email' => 'sebastien@nuvolia.com', 'password' => 'intelart',
+                2 => array('username' => 'testcustomer', 'email' => 'sebastien@nuvolia.com', 'password' => 'intelart',
                 'roles' => array(
                     'customer'
                 ),
@@ -396,7 +400,6 @@ class LoadUserData implements FixtureInterface {
 
             if (count($pricelists) > 0) {
                 foreach ($pricelists as $pricelist_ref) {
-
                     $pricelist = $manager->getRepository('Openstore\Entity\Pricelist')->findOneBy(array('reference' => $pricelist_ref));
                     if ($pricelist) {
                         //$user->addPricelist($pricelist);
@@ -417,7 +420,8 @@ class LoadUserData implements FixtureInterface {
         $manager->flush();
     }
 
-    function importCountries(ObjectManager $manager) {
+    public function importCountries(ObjectManager $manager)
+    {
         $countries = array(
             1 => array('reference' => 'BE', 'name' => 'Belgium')
         );
@@ -438,7 +442,8 @@ class LoadUserData implements FixtureInterface {
     }
 
 
-    function importCurrencies(ObjectManager $manager) {
+    public function importCurrencies(ObjectManager $manager)
+    {
         $currencies = array(
             $this->default_currency_id => array('reference' => 'EUR', 'title' => 'Euro', 'symbol' => '€'),
             2 => array('reference' => 'USD', 'title' => 'US Dollar', 'symbol' => '$', 'display_decimals' => 2),
@@ -465,7 +470,8 @@ class LoadUserData implements FixtureInterface {
         $manager->flush();
     }
 
-    function importProductUnit(ObjectManager $manager) {
+    public function importProductUnit(ObjectManager $manager)
+    {
         $units = array(
             $this->default_unit_id => array('reference' => 'PC', 'title' => 'Piece', 'display_decimals' => 0, 'symbol' => ''),
             2 => array('reference' => 'M', 'title' => 'Meter', 'display_decimals' => 2, 'symbol' => 'm'),
@@ -491,7 +497,8 @@ class LoadUserData implements FixtureInterface {
         $manager->flush();
     }
 
-    function importLanguages(ObjectManager $manager) {
+    public function importLanguages(ObjectManager $manager)
+    {
         // Languages
         $langs = array(
             'en' => array('title' => 'English'),
@@ -511,5 +518,4 @@ class LoadUserData implements FixtureInterface {
         }
         $manager->flush();
     }
-
 }

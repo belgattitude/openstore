@@ -13,17 +13,17 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   name="product_search",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_translation_idx",columns={"product_id", "lang"})
- *   }, 
+ *   },
  *   indexes={
  *     @ORM\Index(name="keywords_ft_idx", columns={"keywords"}, flags={"fulltext"})
  *   },
  *   options={"comment" = "Product search indexes", "engine":"Myisam"}
  * )
- * 
+ *
  * NOTE THAT ON MYSQL 5.6+ / MariaDB 10+ fulltext index can be on INNODB table
  */
-class ProductSearch {
-
+class ProductSearch
+{
     /**
      * @ORM\Id
      * @ORM\Column(name="id", type="bigint", nullable=false, options={"unsigned"=true, "comment" = "Primary key"})
@@ -32,7 +32,7 @@ class ProductSearch {
     private $id;
 
     /**
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="Product", inversedBy="translations", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="product_id", referencedColumnName="product_id", onDelete="CASCADE", nullable=false)
      */
@@ -61,88 +61,97 @@ class ProductSearch {
     private $updated_at;
 
     /**
-     * 
+     *
      * @param integer $id
      */
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
-     * 
+     *
      * @param string $keywords
      */
-    public function setKeywords($keywords) {
+    public function setKeywords($keywords)
+    {
         $this->keywords = $keywords;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getKeywords() {
+    public function getKeywords()
+    {
         return $this->keywords;
     }
 
     /**
-     * 
+     *
      * @param integer $product_id
      */
-    public function setProductId($product_id) {
+    public function setProductId($product_id)
+    {
         $this->product_id = $product_id;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getProductId() {
+    public function getProductId()
+    {
         return $this->product_id;
     }
 
     /**
-     * 
+     *
      * @param integer $lang_id
      */
-    public function setLangId($lang_id) {
+    public function setLangId($lang_id)
+    {
         $this->lang_id = $lang_id;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getLangId() {
+    public function getLangId()
+    {
         return $this->lang_id;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getUpdatedAt() {
+    public function getUpdatedAt()
+    {
         return $this->updated_at;
     }
 
     /**
-     * 
+     *
      * @param string $updated_at
      */
-    public function setUpdatedAt($updated_at) {
+    public function setUpdatedAt($updated_at)
+    {
         $this->updated_at = $updated_at;
         return $this;
     }
-
 }

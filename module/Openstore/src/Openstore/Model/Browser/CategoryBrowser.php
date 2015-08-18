@@ -9,15 +9,16 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
 
-class CategoryBrowser extends AbstractBrowser {
-
+class CategoryBrowser extends AbstractBrowser
+{
     /**
      *
      * @var array;
      */
     protected $options;
 
-    function getDefaultOptions() {
+    public function getDefaultOptions()
+    {
         return array(
             'expanded_category' => null,
             'depth' => 4,
@@ -26,28 +27,33 @@ class CategoryBrowser extends AbstractBrowser {
     }
 
     /**
-     * 
+     *
      * @param string $key
      * @param string $value
      * @return \Openstore\Model\Browser\CategoryBrowser
      */
-    function setOption($key, $value) {
-        if ($this->options === null)
+    public function setOption($key, $value)
+    {
+        if ($this->options === null) {
             $this->options = array();
+        }
         $this->options[$key] = $value;
         return $this;
     }
 
-    function getOptions() {
-        if ($this->options === null)
+    public function getOptions()
+    {
+        if ($this->options === null) {
             return $this->getDefaultOptions();
+        }
         return $this->options;
     }
 
     /**
      * @return array
      */
-    function getSearchableParams() {
+    public function getSearchableParams()
+    {
         return array(
             'language' => array('required' => true),
             'pricelist' => array('required' => true),
@@ -59,10 +65,11 @@ class CategoryBrowser extends AbstractBrowser {
     }
 
     /**
-     * 
+     *
      * @return \Zend\Db\Sql\Select
      */
-    function getSelect() {
+    public function getSelect()
+    {
         $params = $this->getSearchParams();
         $options = $this->getOptions();
 
@@ -101,7 +108,6 @@ class CategoryBrowser extends AbstractBrowser {
         $select = new Select();
 
         if (($expanded_category = $options['expanded_category']) !== null) {
-
             $open_categories = array();
             $ancestors = $this->model->getAncestors($expanded_category, $lang);
             foreach ($ancestors as $ancestor) {
@@ -109,7 +115,6 @@ class CategoryBrowser extends AbstractBrowser {
             }
             $open_categories = "(" . join(',', array_keys($open_categories)) . ")";
         } else {
-
             $open_categories = '(null)';
         }
 
@@ -124,8 +129,8 @@ class CategoryBrowser extends AbstractBrowser {
             'id' => new Expression('parent.category_id'),
             'reference' => new Expression('parent.reference'),
             'title' => new Expression('COALESCE(pc18.title, parent.title)'),
-            //'title' => new Expression('parent.title'), 
-            //'is_leaf' => new Expression('if(parent.rgt = (parent.lft+1), 1, 0)'), 
+            //'title' => new Expression('parent.title'),
+            //'is_leaf' => new Expression('if(parent.rgt = (parent.lft+1), 1, 0)'),
             'is_leaf' => new Expression('CASE WHEN parent.rgt = (parent.lft+1) THEN 1 ELSE 0 END'),
             'parent_id' => new Expression('parent.parent_id'),
             'lvl' => new Expression('parent.lvl'),
@@ -136,17 +141,18 @@ class CategoryBrowser extends AbstractBrowser {
         );
 
         $select->columns(
-                array_merge($columns, array(
+            array_merge($columns, array(
             'count_product' => new Expression('COUNT(p.product_id)'),
             'count_subcategs' => new Expression('GROUP_CONCAT(distinct if(node.lvl = parent.lvl+1, node.reference, null))')
-                )), true);
+                )),
+            true
+        );
 
-        $select->group($columns);
+                $select->group($columns);
 
         if (($depth = $options['depth']) != 0) {
             if ($expanded_category != '') {
-
-//echo "(parent.lvl <= $depth or parent.id in $open_categories or (parent.lft between $parent_left and $parent_right)"; die();
+        //echo "(parent.lvl <= $depth or parent.id in $open_categories or (parent.lft between $parent_left and $parent_right)"; die();
                 //$select->where("(parent.lvl <= $depth or parent.id in $open_categories");
 
                 $ancestors = $this->model->getAncestors($expanded_category, $lang)->toArray();
@@ -171,7 +177,6 @@ class CategoryBrowser extends AbstractBrowser {
 
                 //$select->where('parent.lvl <=1')
             } else {
-
                 $select->where("(parent.lvl <= $depth)");
             }
         }
@@ -183,19 +188,18 @@ class CategoryBrowser extends AbstractBrowser {
 
 
         //$select->order(array('pc.root' => $select::ORDER_ASCENDING, 'pc.lft' => $select::ORDER_ASCENDING));
-        $select->order(array('parent.lft' => $select::ORDER_ASCENDING, 'parent.sort_index' => $select::ORDER_ASCENDING));
+                $select->order(array('parent.lft' => $select::ORDER_ASCENDING, 'parent.sort_index' => $select::ORDER_ASCENDING));
 
-        $adapter = $this->adapter;
-        $sql = new Sql($adapter);
-        $sql_string = $sql->getSqlStringForSqlObject($select);
+                $adapter = $this->adapter;
+                $sql = new Sql($adapter);
+                $sql_string = $sql->getSqlStringForSqlObject($select);
 //echo $sql_string;
 //die();
-        //$results = $adapter->query($sql_string, Adapter::QUERY_MODE_EXECUTE);			
+        //$results = $adapter->query($sql_string, Adapter::QUERY_MODE_EXECUTE);
         //echo '<pre>';
         //var_dump($results->toArray());
         //die();
 
-        return $select;
+                return $select;
     }
-
 }

@@ -14,7 +14,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
  *     @ORM\UniqueConstraint(name="unique_translation_idx",columns={"unit_id", "lang"})
- *   }, 
+ *   },
  *   indexes={
  *     @ORM\Index(name="description_idx", columns={"description"}),
  *   },
@@ -23,8 +23,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   }
  * )
  */
-class ProductUnitTranslation {
-
+class ProductUnitTranslation
+{
     /**
      * @var \Zend\InputFilter\InputFilterInterface $inputFilter
      */
@@ -38,7 +38,7 @@ class ProductUnitTranslation {
     private $id;
 
     /**
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="ProductUnit", inversedBy="translations", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="unit_id", referencedColumnName="unit_id", onDelete="CASCADE", nullable=false)
      */
@@ -99,141 +99,157 @@ class ProductUnitTranslation {
      */
     protected $legacy_synchro_at;
 
-    public function __construct() {
-        
+    public function __construct()
+    {
     }
 
     /**
-     * 
+     *
      * @param integer $id
      */
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
      * @param string $slug
      */
-    public function setSlug($slug) {
+    public function setSlug($slug)
+    {
         $this->slug = $slug;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getSlug() {
+    public function getSlug()
+    {
         return $this->slug;
     }
 
     /**
-     * 
+     *
      * @param string $title
      */
-    public function setTitle($title) {
+    public function setTitle($title)
+    {
         $this->title = $title;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getTitle() {
+    public function getTitle()
+    {
         return $this->title;
     }
 
     /**
-     * 
+     *
      * @param string $description
      */
-    public function setDescription($description) {
+    public function setDescription($description)
+    {
         $this->description = $description;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->description;
     }
 
     /**
-     * 
+     *
      * @param integer $product_id
      */
-    public function setProductId($product_id) {
+    public function setProductId($product_id)
+    {
         $this->product_id = $product_id;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getProductId() {
+    public function getProductId()
+    {
         return $this->product_id;
     }
 
     /**
-     * 
+     *
      * @param integer $lang_id
      */
-    public function setLangId($lang_id) {
+    public function setLangId($lang_id)
+    {
         $this->lang_id = $lang_id;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getLangId() {
+    public function getLangId()
+    {
         return $this->lang_id;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getCreatedAt() {
+    public function getCreatedAt()
+    {
         return $this->created_at;
     }
 
     /**
-     * 
+     *
      * @param string $created_at
      */
-    public function setCreatedAt($created_at) {
+    public function setCreatedAt($created_at)
+    {
         $this->created_at = $created_at;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getUpdatedAt() {
+    public function getUpdatedAt()
+    {
         return $this->updated_at;
     }
 
     /**
-     * 
+     *
      * @param string $updated_at
      */
-    public function setUpdatedAt($updated_at) {
+    public function setUpdatedAt($updated_at)
+    {
         $this->updated_at = $updated_at;
         return $this;
     }
@@ -242,7 +258,8 @@ class ProductUnitTranslation {
      * Return creator username
      * @return string
      */
-    public function getCreatedBy() {
+    public function getCreatedBy()
+    {
         return $this->created_by;
     }
 
@@ -250,7 +267,8 @@ class ProductUnitTranslation {
      * Set creator username
      * @param string $created_by
      */
-    public function setCreatedBy($created_by) {
+    public function setCreatedBy($created_by)
+    {
         $this->created_by = $created_by;
         return $this;
     }
@@ -259,7 +277,8 @@ class ProductUnitTranslation {
      * Return last updater username
      * @return string
      */
-    public function getUpdatedBy() {
+    public function getUpdatedBy()
+    {
         return $this->updated_by;
     }
 
@@ -267,16 +286,18 @@ class ProductUnitTranslation {
      * Set the last updater username
      * @param string $updated_by
      */
-    public function setUpdatedBy($updated_by) {
+    public function setUpdatedBy($updated_by)
+    {
         $this->updated_by = $updated_by;
         return $this;
     }
 
     /**
-     * Return legacy mapping 
+     * Return legacy mapping
      * @return string $legacy_mapping
      */
-    public function getLegacyMapping() {
+    public function getLegacyMapping()
+    {
         return $this->legacy_mapping;
     }
 
@@ -284,7 +305,8 @@ class ProductUnitTranslation {
      * Set a legacy mapping for this record
      * @param string $legacy_mapping
      */
-    public function setLegacyMapping($legacy_mapping) {
+    public function setLegacyMapping($legacy_mapping)
+    {
         $this->legacy_mapping = $legacy_mapping;
         return $this;
     }
@@ -293,16 +315,18 @@ class ProductUnitTranslation {
      * Set legacy synchro time
      * @param string $legacy_mapping
      */
-    public function setLegacySynchroAt($legacy_synchro_at) {
+    public function setLegacySynchroAt($legacy_synchro_at)
+    {
         $this->legacy_synchro_at = $legacy_synchro_at;
         return $this;
     }
 
     /**
-     * Return legacy synchro timestamp 
-     * @return string 
+     * Return legacy synchro timestamp
+     * @return string
      */
-    public function getLegacySynchroAt() {
+    public function getLegacySynchroAt()
+    {
         return $this->legacy_synchro_at;
     }
 
@@ -311,15 +335,17 @@ class ProductUnitTranslation {
      *
      * @return array
      */
-    public function getArrayCopy() {
+    public function getArrayCopy()
+    {
         return get_object_vars($this);
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->getTitle();
     }
 
@@ -329,7 +355,8 @@ class ProductUnitTranslation {
      * @param string $property
      * @return mixed
      */
-    public function __get($property) {
+    public function __get($property)
+    {
         return $this->$property;
     }
 
@@ -339,8 +366,8 @@ class ProductUnitTranslation {
      * @param string $property
      * @param mixed $value
      */
-    public function __set($property, $value) {
+    public function __set($property, $value)
+    {
         $this->$property = $value;
     }
-
 }

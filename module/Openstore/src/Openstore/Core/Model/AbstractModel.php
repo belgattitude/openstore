@@ -7,10 +7,10 @@ use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
-abstract class AbstractModel implements AdapterAwareInterface, ServiceLocatorAwareInterface {
-
+abstract class AbstractModel implements AdapterAwareInterface, ServiceLocatorAwareInterface
+{
     /**
-     * @var ServiceLocatorInterface 
+     * @var ServiceLocatorInterface
      */
     protected $serviceLocator;
 
@@ -21,15 +21,18 @@ abstract class AbstractModel implements AdapterAwareInterface, ServiceLocatorAwa
     protected $adapter;
 
     /**
-     * 
+     *
      * @param ServiceLocatorInterface $serviceLocator
      * @param Adapter $adapter
      */
-    function __construct(ServiceLocatorInterface $serviceLocator = null, Adapter $adapter = null) {
-        if ($serviceLocator !== null)
+    public function __construct(ServiceLocatorInterface $serviceLocator = null, Adapter $adapter = null)
+    {
+        if ($serviceLocator !== null) {
             $this->setServiceLocator($serviceLocator);
-        if ($adapter !== null)
+        }
+        if ($adapter !== null) {
             $this->setDbAdapter($adapter);
+        }
     }
 
     /**
@@ -38,16 +41,18 @@ abstract class AbstractModel implements AdapterAwareInterface, ServiceLocatorAwa
      * @param Adapter $adapter
      * @return AbstractModel
      */
-    public function setDbAdapter(Adapter $adapter) {
+    public function setDbAdapter(Adapter $adapter)
+    {
         $this->adapter = $adapter;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return Adapter
      */
-    public function getDbAdapter() {
+    public function getDbAdapter()
+    {
         return $this->adapter;
     }
 
@@ -57,7 +62,8 @@ abstract class AbstractModel implements AdapterAwareInterface, ServiceLocatorAwa
      * @param ServiceManager $serviceManager
      * @return \Openstore\Core\Model\AbstractModel
      */
-    public function setServiceManager(ServiceManager $serviceManager) {
+    public function setServiceManager(ServiceManager $serviceManager)
+    {
         $this->serviceManager = $serviceManager;
         return $this;
     }
@@ -68,8 +74,8 @@ abstract class AbstractModel implements AdapterAwareInterface, ServiceLocatorAwa
      * @param ServiceLocatorInterface $serviceLocator
      * @return \Openstore\Core\Model\AbstractModel
      */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
-
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
         $this->serviceLocator = $serviceLocator;
         return $this;
     }
@@ -79,8 +85,8 @@ abstract class AbstractModel implements AdapterAwareInterface, ServiceLocatorAwa
      *
      * @return ServiceLocatorInterface
      */
-    public function getServiceLocator() {
+    public function getServiceLocator()
+    {
         return $this->serviceLocator;
     }
-
 }

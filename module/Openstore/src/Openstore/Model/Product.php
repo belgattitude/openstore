@@ -7,25 +7,25 @@ use Openstore\Core\Model\BrowsableInterface;
 use Openstore\Model\Browser\ProductBrowser;
 use Soluble\Normalist\SyntheticTable;
 
-class Product extends AbstractModel implements BrowsableInterface {
-
+class Product extends AbstractModel implements BrowsableInterface
+{
     /**
      * @return \Openstore\Model\Browser\ProductBrowser
      */
-    function getBrowser() 
+    public function getBrowser()
     {
         return new ProductBrowser($this);
     }
 
     /**
-     * 
-     * @param int $product_id 
+     *
+     * @param int $product_id
      * @param int $pricelist_id
      * @param int $customer_id
      * @param string $language
      * @return \ArrayObject|false
      */
-    function getInfo($product_id, $pricelist_id, $customer_id = null, $language = '') 
+    public function getInfo($product_id, $pricelist_id, $customer_id = null, $language = '')
     {
         $service = $this->serviceLocator->get('Openstore\Service');
         $productModel = $service->getModel('Model\Product');
@@ -38,13 +38,13 @@ class Product extends AbstractModel implements BrowsableInterface {
         }
 
         $product = $this->getBrowser()->setSearchParams(
-                                [
+            [
                                     'id' => $product_id,
                                     'language' => $language,
                                     'pricelist' => $pricelist['reference'],
-                        ])
-                        ->getStore()->getData()->current();
-        return $product;
+                                ]
+        )
+                                ->getStore()->getData()->current();
+                                return $product;
     }
-
 }

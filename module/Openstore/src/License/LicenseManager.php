@@ -4,7 +4,6 @@ namespace License;
 
 class LicenseManager
 {
-    
     /**
      *
      * @var array
@@ -12,25 +11,21 @@ class LicenseManager
     protected $licenses;
     
     /**
-     * 
+     *
      * @param array $licenses
      */
-    function __construct(array $licenses) {
+    public function __construct(array $licenses)
+    {
         $this->licenses = $licenses;
     }
     
     /**
-     * 
+     *
      * @param string $license
      * @return array|string|null
      */
-    function get($license)
+    public function get($license)
     {
-        
-        return $this->licenses[$license]; 
+        return $this->licenses[$license];
     }
-    
-    
 }
-
-

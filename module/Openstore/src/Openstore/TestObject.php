@@ -1,61 +1,50 @@
 <?php
 namespace Openstore;
 
-
-class TestObject 
+class TestObject
 {
-	protected $data = array(
-		'cool' => 'pasbon' 
-	);
+    protected $data = array(
+        'cool' => 'pasbon'
+    );
 
-	function __construct()
-	{
-		$this->data['cool'] = 'hello';
-	}
-	
-	
-	function getRoles()
-	{
-		
-	}
-	
-	function hasRole()
-	{
-		
-	}
-	
-	function getPricelists()
-	{
-		
-	}
-	
-	function hasAccessToPricelist()
-	{
-		
-	}
-	
-	function getCustomers()
-	{
-		return $this->data['cool'];
-	}
-	
-	
-	function hasAccessToCustomer($customer_id)
-	{
-		
-	}
-	
-	function getUserId()
-	{
-		
-	}
-	
-	function getCoolData() 
-	{
-		return $this->data['cool'];
-	}
-	
-	
-
-	
+    public function __construct()
+    {
+        $this->data['cool'] = 'hello';
+    }
+    
+    
+    public function getRoles()
+    {
+    }
+    
+    public function hasRole()
+    {
+    }
+    
+    public function getPricelists()
+    {
+    }
+    
+    public function hasAccessToPricelist()
+    {
+    }
+    
+    public function getCustomers()
+    {
+        return $this->data['cool'];
+    }
+    
+    
+    public function hasAccessToCustomer($customer_id)
+    {
+    }
+    
+    public function getUserId()
+    {
+    }
+    
+    public function getCoolData()
+    {
+        return $this->data['cool'];
+    }
 }

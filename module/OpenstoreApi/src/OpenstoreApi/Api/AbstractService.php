@@ -17,11 +17,10 @@ use Soluble\FlexStore\Column\Column;
 use Soluble\FlexStore\Column\ColumnModel;
 use Soluble\FlexStore\Column\ColumnType;
 
-
-abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorAwareInterface {
-
+abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorAwareInterface
+{
     /**
-     * @var ServiceLocatorInterface 
+     * @var ServiceLocatorInterface
      */
     protected $serviceLocator;
 
@@ -38,11 +37,12 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
     protected $sql;
 
     /**
-     * 
+     *
      * @param ServiceLocatorInterface $serviceLocator
      * @param Adapter $adapter
      */
-    function __construct(ServiceLocatorInterface $serviceLocator = null, Adapter $adapter = null) {
+    public function __construct(ServiceLocatorInterface $serviceLocator = null, Adapter $adapter = null)
+    {
         if ($serviceLocator !== null) {
             $this->setServiceLocator($serviceLocator);
         }
@@ -57,18 +57,19 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
      * @param Adapter $adapter
      * @return \OpenstoreApi\Api\AbstractService
      */
-    public function setDbAdapter(Adapter $adapter) {
-
+    public function setDbAdapter(Adapter $adapter)
+    {
         $this->adapter = $adapter;
         $this->sql = new Sql($this->adapter);
         return $this;
     }
 
     /**
-     * 
+     *
      * @return Adapter
      */
-    public function getDbAdapter() {
+    public function getDbAdapter()
+    {
         return $this->adapter;
     }
 
@@ -78,8 +79,8 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
      * @param ServiceLocatorInterface $serviceLocator
      * @return \OpenstoreApi\Api\AbstractService
      */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
-
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
         $this->serviceLocator = $serviceLocator;
         return $this;
     }
@@ -89,16 +90,17 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
      *
      * @return ServiceLocatorInterface
      */
-    public function getServiceLocator() {
+    public function getServiceLocator()
+    {
         return $this->serviceLocator;
     }
     
     /**
-     * 
+     *
      * @param Select $select
      * @return Store
      */
-    public function getStore(Select $select=null)
+    public function getStore(Select $select = null)
     {
         return new Store(new SqlSource($this->getDbAdapter(), $select));
     }
@@ -106,32 +108,29 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
     
     /**
      * Prevent next_available_stock_at to be in the past
-     * 
+     *
      * @param Store $store
      */
-    protected function addNextAvailableStockAtRenderer(Store $store, $date_column='next_available_stock_at')
+    protected function addNextAvailableStockAtRenderer(Store $store, $date_column = 'next_available_stock_at')
     {
         $cm = $store->getColumnModel();
         
         if ($cm->exists($date_column)) {
-            
             //$col = $cm->get($date_column);
             $dateMinRenderer = new DateMinRenderer($date_column);
             
             $cm->addRowRenderer($dateMinRenderer);
         }
-        
-        
     }
 
     /**
-     * 
+     *
      * @param Store $store
      * @param string $media_column column name containing the media_id
      * @param string $insert_after insert after column name
      * @param string $filemtime_column column containing the file modification time of the picture
      */
-    protected function addStorePictureRenderer(Store $store, $media_column, $insert_after, $filemtime_column=null)
+    protected function addStorePictureRenderer(Store $store, $media_column, $insert_after, $filemtime_column = null)
     {
         $cm = $store->getColumnModel();
 
@@ -143,7 +142,6 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
         }
         
         if ($cm->exists($media_column)) {
-
             $column = new Column('picture_url');
             $column->setType(ColumnType::TYPE_STRING);
             $cm->add($column, $insert_after, ColumnModel::ADD_COLUMN_AFTER);
@@ -153,7 +151,7 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
             $base_url = $configuration->getConfigKey('media_library.preview.base_url');
             
             //'picture_media_filemtime' => new Expression('m.filemtime')
-            
+
             $pictureRenderer = new RowPictureRenderer($media_column, 'picture_url', '1024x768', 95, $base_url, $filemtime_column);
             $cm->addRowRenderer($pictureRenderer);
 
@@ -202,39 +200,37 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
             $currency = $this->getPricelistCurrency($pricelist_reference);
 
             $currF = Formatter::create(
-                                Formatter::FORMATTER_CURRENCY, 
-                                ['currency_code' => $currency, 'decimals' => 2, 'locale' => $locale]
-                            );
+                Formatter::FORMATTER_CURRENCY,
+                ['currency_code' => $currency, 'decimals' => 2, 'locale' => $locale]
+            );
 
             $cm->search()->in(['price', 'map_price', 'list_price', 'public_price', 'my_price'])->setFormatter($currF);
-            
         }
         
         $discF = Formatter::create(
-                            Formatter::FORMATTER_UNIT, 
-                            ['decimals' => 2, 'unit' => '%', 'locale' => $locale]
-                        );
+            Formatter::FORMATTER_UNIT,
+            ['decimals' => 2, 'unit' => '%', 'locale' => $locale]
+        );
         
         $cm->search()->regexp('/^discount\_/')->setFormatter($discF);
         $cm->search()->regexp('/my_discount\_/')->setFormatter($discF);
 
         $intF = Formatter::create(
-                            Formatter::FORMATTER_NUMBER, 
-                            ['decimals' => 0, 'locale' => $locale]
-                        );
+            Formatter::FORMATTER_NUMBER,
+            ['decimals' => 0, 'locale' => $locale]
+        );
         
         $cm->search()->regexp('/available_stock$/')->setFormatter($intF);
         
         $cm->search()->regexp('/^pack\_qty/')->setFormatter($intF);
         
         $cm->search()->regexp('/(length|width|height)$/')->setFormatter($intF);
-        
     }
     
            
     
     /**
-     * 
+     *
      * @param string $pricelist_reference
      * @return string|false
      */
@@ -250,12 +246,11 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
         //die();
         $sql_string = $this->sql->getSqlStringForSqlObject($select);
         
-        $result = $this->adapter->query($sql_string, Adapter::QUERY_MODE_EXECUTE);        
+        $result = $this->adapter->query($sql_string, Adapter::QUERY_MODE_EXECUTE);
         if ($result->count() == 0) {
             return false;
         }
         $currency_reference =  $result->current()['reference'];
         return $currency_reference;
     }
-
 }

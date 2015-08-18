@@ -12,9 +12,10 @@ use Akilia\Utils\Akilia1Products;
 use Akilia\Utils\Akilia2Customers;
 use Akilia;
 
-class ConsoleController extends AbstractActionController {
-
-    public function syncdbAction() {
+class ConsoleController extends AbstractActionController
+{
+    public function syncdbAction()
+    {
         $configuration = $this->getAkiliaConfiguration();
         if (!is_array($configuration['synchronizer'])) {
             throw new \Exception("Cannot find akilia synchronize configuration, please see you global config files");
@@ -28,7 +29,8 @@ class ConsoleController extends AbstractActionController {
         $synchronizer->synchronizeAll();
     }
 
-    public function syncstockAction() {
+    public function syncstockAction()
+    {
         $configuration = $this->getAkiliaConfiguration();
         if (!is_array($configuration['synchronizer'])) {
             throw new \Exception("Cannot find akilia synchronize configuration, please see you global config files");
@@ -42,7 +44,8 @@ class ConsoleController extends AbstractActionController {
         $synchronizer->synchronizeProductStock();
     }
 
-    public function syncapiAction() {
+    public function syncapiAction()
+    {
         $configuration = $this->getAkiliaConfiguration();
         if (!is_array($configuration['synchronizer'])) {
             throw new \Exception("Cannot find akilia synchronize configuration, please see you global config files");
@@ -56,7 +59,8 @@ class ConsoleController extends AbstractActionController {
         $synchronizer->synchronizeApi();
     }
 
-    public function syncmediaAction() {
+    public function syncmediaAction()
+    {
         $configuration = $this->getAkiliaConfiguration();
         if (!is_array($configuration['synchronizer'])) {
             throw new \Exception("Cannot find akilia synchronize configuration, please see you global config files");
@@ -70,8 +74,8 @@ class ConsoleController extends AbstractActionController {
         $synchronizer->synchronizeProductMedia();
     }
 
-    public function checkSynchroAction() {
-
+    public function checkSynchroAction()
+    {
         $configuration = $this->getAkiliaConfiguration();
         if (!is_array($configuration['synchronizer'])) {
             throw new \Exception("Cannot find akilia synchronizer configuration, please see you global config files");
@@ -106,7 +110,8 @@ class ConsoleController extends AbstractActionController {
         }
     }
 
-    public function geocodecustomersAction() {
+    public function geocodecustomersAction()
+    {
         $configuration = $this->getAkiliaConfiguration();
 
         $ak2Customers = new Akilia2Customers($configuration);
@@ -151,10 +156,9 @@ class ConsoleController extends AbstractActionController {
              * 6 Street level accuracy.
              * 7 Intersection level accuracy.
              * 8 Address level accuracy.
-             * 9 Premise (building name, property name, shopping center, etc.) level accuracy.  
+             * 9 Premise (building name, property name, shopping center, etc.) level accuracy.
              */
             try {
-
                 $geocode = $geocoder->geocode($address);
                 $latitude = $geocode->getLatitude();
                 $longitude = $geocode->getLongitude();
@@ -214,7 +218,8 @@ class ConsoleController extends AbstractActionController {
         echo "#####################################################\n";
     }
 
-    public function listproductpicturesAction() {
+    public function listproductpicturesAction()
+    {
         $sl = $this->getServiceLocator();
         $configuration = $this->getAkiliaConfiguration();
 
@@ -232,9 +237,8 @@ class ConsoleController extends AbstractActionController {
         }
     }
 
-    public function archiveproductpicturesAction() {
-
-
+    public function archiveproductpicturesAction()
+    {
         $configuration = $this->getAkiliaConfiguration();
         $products = new Akilia1Products($configuration);
         $products->setServiceLocator($this->getServiceLocator());
@@ -293,9 +297,8 @@ class ConsoleController extends AbstractActionController {
     }
 
     
-    public function archiveproducthdpicturesAction() {
-
-
+    public function archiveproducthdpicturesAction()
+    {
         $configuration = $this->getAkiliaConfiguration();
         $products = new Akilia1Products($configuration);
         $products->setServiceLocator($this->getServiceLocator());
@@ -356,11 +359,12 @@ class ConsoleController extends AbstractActionController {
     
     
     /**
-     * 
+     *
      * @return array
      * @throws Exception
      */
-    protected function getAkiliaConfiguration() {
+    protected function getAkiliaConfiguration()
+    {
         $sl = $this->getServiceLocator();
         $configuration = $sl->get('Configuration');
         if (!is_array($configuration['akilia'])) {
@@ -370,14 +374,14 @@ class ConsoleController extends AbstractActionController {
     }
 
     /**
-     * 
+     *
      * @param string $pricelist
      * @param string $db openstore db name
      * @param string $akilia1_db
      * @return string
      */
-    protected function getSQLPricelistChecker($pricelist, $db, $akilia1_db, $limit = 10) {
-
+    protected function getSQLPricelistChecker($pricelist, $db, $akilia1_db, $limit = 10)
+    {
         $sql = "select 
 			a.id_article,
 			a.reference,
@@ -437,5 +441,4 @@ class ConsoleController extends AbstractActionController {
 		LIMIT $limit";
         return $sql;
     }
-
 }

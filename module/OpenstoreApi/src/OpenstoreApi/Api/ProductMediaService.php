@@ -6,14 +6,14 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
 use Soluble\FlexStore\Store;
 
-class ProductMediaService extends AbstractService {
-
+class ProductMediaService extends AbstractService
+{
     /**
-     * @param array $params [types,brands,pricelists] 
+     * @param array $params [types,brands,pricelists]
      * @return \Soluble\FlexStore\Store
      */
-    function getList(array $params = array()) {
-
+    public function getList(array $params = array())
+    {
         $select = new Select();
 
         $select->from(array('pm' => 'product_media'), array())
@@ -89,9 +89,8 @@ class ProductMediaService extends AbstractService {
         
         // Initialize column model
         $this->addStorePictureRenderer($store, 'media_id', 'filemtime', 'filemtime');
-        $this->initStoreFormatters($store, $params);        
+        $this->initStoreFormatters($store, $params);
 
         return $store;
     }
-
 }

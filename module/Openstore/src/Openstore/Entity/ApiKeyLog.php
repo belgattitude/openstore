@@ -12,12 +12,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(
  *   name="api_key_log",
  *   uniqueConstraints={
- *   }, 
+ *   },
  *   options={"comment" = "Api usage logs"}
  * )
  */
-class ApiKeyLog {
-
+class ApiKeyLog
+{
     /**
      * @ORM\Id
      * @ORM\Column(name="id", type="bigint", nullable=false, options={"unsigned"=true})
@@ -26,14 +26,14 @@ class ApiKeyLog {
     private $id;
 
     /**
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="ApiKey", inversedBy="services", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="api_id", referencedColumnName="api_id", onDelete="CASCADE", nullable=false)
      */
     private $api_id;
 
     /**
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="ApiService", inversedBy="keys", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="service_id", referencedColumnName="service_id", onDelete="CASCADE", nullable=true)
      */
@@ -71,69 +71,77 @@ class ApiKeyLog {
     private $usage_count;
 
     /**
-     * 
+     *
      * @param integer $id
      */
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
-     * 
+     *
      * @param integer $api_id
      */
-    public function setApiId($api_id) {
+    public function setApiId($api_id)
+    {
         $this->api_id = $api_id;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getApiId() {
+    public function getApiId()
+    {
         return $this->api_id;
     }
 
     /**
-     * 
+     *
      * @param integer $service_id
      */
-    public function setServiceId($service_id) {
+    public function setServiceId($service_id)
+    {
         $this->service_id = $service_id;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getServiceId() {
+    public function getServiceId()
+    {
         return $this->service_id;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getCreatedAt() {
+    public function getCreatedAt()
+    {
         return $this->created_at;
     }
 
     /**
-     * 
+     *
      * @param string $created_at
      */
-    public function setCreatedAt($created_at) {
+    public function setCreatedAt($created_at)
+    {
         $this->created_at = $created_at;
         return $this;
     }
@@ -143,15 +151,17 @@ class ApiKeyLog {
      *
      * @return array
      */
-    public function getArrayCopy() {
+    public function getArrayCopy()
+    {
         return get_object_vars($this);
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->getTitle();
     }
 
@@ -161,7 +171,8 @@ class ApiKeyLog {
      * @param string $property
      * @return mixed
      */
-    public function __get($property) {
+    public function __get($property)
+    {
         return $this->$property;
     }
 
@@ -171,8 +182,8 @@ class ApiKeyLog {
      * @param string $property
      * @param mixed $value
      */
-    public function __set($property, $value) {
+    public function __set($property, $value)
+    {
         $this->$property = $value;
     }
-
 }

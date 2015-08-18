@@ -14,12 +14,12 @@ class ZfcRbacAuthenticationIdentityProvider implements IdentityProviderInterface
      */
     protected $authenticationService;
 
-	
-	/**
-	 *
-	 * @var Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    
+    /**
+     *
+     * @var Doctrine\ORM\EntityManager
+     */
+    protected $em;
     /**
      * Constructor
      *
@@ -28,8 +28,7 @@ class ZfcRbacAuthenticationIdentityProvider implements IdentityProviderInterface
     public function __construct(AuthenticationService $authenticationService, EntityManager $em)
     {
         $this->authenticationService = $authenticationService;
-		$this->em = $em;
-		
+        $this->em = $em;
     }
 
     /**
@@ -37,17 +36,15 @@ class ZfcRbacAuthenticationIdentityProvider implements IdentityProviderInterface
      */
     public function getIdentity()
     {
-
         $identity = $this->authenticationService->getIdentity();
 
-		if ($identity !== null) {
-			$user_id = $identity->getId();
-			$user =  $this->em->find('Openstore\Entity\User', $user_id);			
-			
-			return $user;
-			
-		} else {
-			return null;
-		}
+        if ($identity !== null) {
+            $user_id = $identity->getId();
+            $user =  $this->em->find('Openstore\Entity\User', $user_id);
+            
+            return $user;
+        } else {
+            return null;
+        }
     }
 }

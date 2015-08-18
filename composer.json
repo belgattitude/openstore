@@ -46,7 +46,9 @@
         "zfcampus/zf-apigility-admin": "~1.3",
         "zfcampus/zf-development-mode": "~2.1",
         "symfony/var-dumper": "@stable",
-        "psy/psysh": "@stable"
+        "psy/psysh": "@stable",
+        "squizlabs/php_codesniffer": "2.*",
+        "fabpot/php-cs-fixer": "1.*"
     }
 }
 

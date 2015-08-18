@@ -15,8 +15,8 @@ use Zend\Db\Sql\Select;
 use Soluble\FlexStore\Source\Zend\SqlSource;
 use Soluble\FlexStore\Store;
 
-abstract class AbstractBrowser implements SearchableInterface, FilterableInterface, ServiceLocatorAwareInterface, AdapterAwareInterface {
-
+abstract class AbstractBrowser implements SearchableInterface, FilterableInterface, ServiceLocatorAwareInterface, AdapterAwareInterface
+{
     /**
      *
      * @var AbstractModel
@@ -24,7 +24,7 @@ abstract class AbstractBrowser implements SearchableInterface, FilterableInterfa
     protected $model;
 
     /**
-     * @var ServiceLocatorInterface 
+     * @var ServiceLocatorInterface
      */
     protected $serviceLocator;
 
@@ -36,13 +36,13 @@ abstract class AbstractBrowser implements SearchableInterface, FilterableInterfa
 
     /**
      *
-     * @var int 
+     * @var int
      */
     protected $limit;
 
     /**
      *
-     * @var int 
+     * @var int
      */
     protected $offset;
 
@@ -61,7 +61,8 @@ abstract class AbstractBrowser implements SearchableInterface, FilterableInterfa
     /**
      * @param AbstractModel $model
      */
-    function __construct(AbstractModel $model) {
+    public function __construct(AbstractModel $model)
+    {
         $this->model = $model;
         $this->setServiceLocator($model->getServiceLocator());
         $this->setDbAdapter($model->getDbAdapter());
@@ -71,10 +72,11 @@ abstract class AbstractBrowser implements SearchableInterface, FilterableInterfa
      * @param array|\Openstore\Core\Model\Browser\Search\Params $params
      * @return \Openstore\Core\Model\Browser\AbstractBrowser
      */
-    function setSearchParams($searchParams) {
+    public function setSearchParams($searchParams)
+    {
         if (is_array($searchParams)) {
             $searchParams = new Params($searchParams);
-        } else if (!$searchParams instanceof Params) {
+        } elseif (!$searchParams instanceof Params) {
             throw new \Exception('Params must be array or Core\Model\Browser\Params');
         }
 
@@ -97,7 +99,8 @@ abstract class AbstractBrowser implements SearchableInterface, FilterableInterfa
     /**
      * @return \Openstore\Core\Model\Browser\Search\Params
      */
-    function getSearchParams() {
+    public function getSearchParams()
+    {
         return $this->searchParams;
     }
 
@@ -110,7 +113,8 @@ abstract class AbstractBrowser implements SearchableInterface, FilterableInterfa
      * @param \Zend\Db\Sql\Select
      * @return \Zend\Db\Sql\Select
      */
-    protected function assignFilters(Select $select) {
+    protected function assignFilters(Select $select)
+    {
         $filters = $this->getFilters();
         foreach ($filters as $filter) {
             $filter->filter($select);
@@ -121,9 +125,11 @@ abstract class AbstractBrowser implements SearchableInterface, FilterableInterfa
     /**
      * @return array
      */
-    function getFilters() {
-        if ($this->filters === null)
+    public function getFilters()
+    {
+        if ($this->filters === null) {
             $this->filters = array();
+        }
         return $this->filters;
     }
 
@@ -131,7 +137,8 @@ abstract class AbstractBrowser implements SearchableInterface, FilterableInterfa
      * @param array $filters
      * @return \Openstore\Core\Model\Browser\AbstractBrowser
      */
-    function addFilters(array $filters) {
+    public function addFilters(array $filters)
+    {
         foreach ($filters as $filter) {
             $this->addFilter($filter);
         }
@@ -139,13 +146,15 @@ abstract class AbstractBrowser implements SearchableInterface, FilterableInterfa
     }
 
     /**
-     * 
+     *
      * @param FilterInterface $filter
      * @return AbstractBrowser
      */
-    function addFilter(FilterInterface $filter) {
-        if ($this->filters === null)
+    public function addFilter(FilterInterface $filter)
+    {
+        if ($this->filters === null) {
             $this->filters = array();
+        }
         $this->filters[] = $filter;
         return $this;
     }
@@ -154,40 +163,44 @@ abstract class AbstractBrowser implements SearchableInterface, FilterableInterfa
      * @param array $columns
      * @return \Openstore\Core\Model\Browser\AbstractBrowser
      */
-    function setColumns(array $columns) {
+    public function setColumns(array $columns)
+    {
         $this->columns = $columns;
         return $this;
     }
 
     /**
-     * 
+     *
      * @param int $limit
      * @param int $offset
      * @return \Openstore\Core\Model\Browser\AbstractBrowser
      */
-    function setLimit($limit, $offset = null) {
+    public function setLimit($limit, $offset = null)
+    {
         $this->limit = $limit;
-        if ($offset !== null)
+        if ($offset !== null) {
             $this->setOffset($offset);
+        }
         return $this;
     }
 
     /**
-     * 
+     *
      * @param int $offset
      * @return \Openstore\Core\Model\Browser\AbstractBrowser
      */
-    function setOffset($offset) {
+    public function setOffset($offset)
+    {
         $this->offset = $offset;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return Store
      */
-    function getStore() {
-
+    public function getStore()
+    {
         $select = $this->getSelect();
 
         $store = new Store(new SqlSource($this->adapter, $select));
@@ -204,16 +217,18 @@ abstract class AbstractBrowser implements SearchableInterface, FilterableInterfa
      * @param Adapter $adapter
      * @return \Openstore\Core\Model\AbstractModel
      */
-    public function setDbAdapter(Adapter $adapter) {
+    public function setDbAdapter(Adapter $adapter)
+    {
         $this->adapter = $adapter;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return \Zend\Db\Adapter\Adapter
      */
-    public function getDbAdapter() {
+    public function getDbAdapter()
+    {
         return $this->adapter;
     }
 
@@ -223,7 +238,8 @@ abstract class AbstractBrowser implements SearchableInterface, FilterableInterfa
      * @param ServiceLocatorInterface $serviceLocator
      * @return \Openstore\Core\Model\AbstractModel
      */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
         $this->serviceLocator = $serviceLocator;
         return $this;
     }
@@ -233,8 +249,8 @@ abstract class AbstractBrowser implements SearchableInterface, FilterableInterfa
      *
      * @return ServiceLocatorInterface
      */
-    public function getServiceLocator() {
+    public function getServiceLocator()
+    {
         return $this->serviceLocator;
     }
-
 }

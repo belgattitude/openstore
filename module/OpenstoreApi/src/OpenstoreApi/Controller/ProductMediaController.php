@@ -2,12 +2,11 @@
 
 namespace OpenstoreApi\Controller;
 
-
 use OpenstoreApi\Mvc\Controller\AbstractRestfulController;
 use Zend\Mvc\MvcEvent;
 
-class ProductMediaController extends AbstractRestfulController {
-
+class ProductMediaController extends AbstractRestfulController
+{
     protected $collectionOptions = array('GET');
     //protected $resourceOptions = array('GET');
     protected $resourceOptions = array();
@@ -19,18 +18,20 @@ class ProductMediaController extends AbstractRestfulController {
      */
     protected $mediaService;
 
-    public function onDispatch(MvcEvent $e) {
+    public function onDispatch(MvcEvent $e)
+    {
         $this->mediaService = $this->getServiceLocator()->get('Api\ProductMediaService');
         parent::onDispatch($e);
     }
 
-    public function get($id) {
+    public function get($id)
+    {
         die('hello');
         return $response;
     }
 
-    public function getList() {
-
+    public function getList()
+    {
         $params = $this->params()->fromQuery();
         $store = $this->mediaService->getList($params);
         if (array_key_exists('columns', $params)) {
@@ -45,5 +46,4 @@ class ProductMediaController extends AbstractRestfulController {
 
         return $store;
     }
-
 }

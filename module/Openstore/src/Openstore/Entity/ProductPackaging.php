@@ -14,14 +14,14 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_product_packaging_idx",columns={"type_id", "product_id"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *   }, 
+ *   },
  *   indexes={
  *   },
  *   options={"comment" = "Product packaging information"}
  * )
  */
-class ProductPackaging {
-
+class ProductPackaging
+{
     /**
      * @ORM\Id
      * @ORM\Column(name="id", type="bigint", nullable=false, options={"unsigned"=true})
@@ -30,14 +30,14 @@ class ProductPackaging {
     private $id;
 
     /**
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="PackagingType", inversedBy="products", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", onDelete="CASCADE", nullable=false)
      */
     private $type_id;
 
     /**
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="Product", inversedBy="products", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="product_id", referencedColumnName="product_id", onDelete="CASCADE", nullable=false)
      */
@@ -93,32 +93,35 @@ class ProductPackaging {
      */
     protected $legacy_synchro_at;
 
-    public function __construct() {
-        
+    public function __construct()
+    {
     }
 
     /**
-     * 
+     *
      * @param integer $id
      */
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
-     * 
+     *
      * @param float|int $quantity
      */
-    public function setQuantity($quantity) {
+    public function setQuantity($quantity)
+    {
         $this->quantity = $quantity;
     }
 
@@ -126,16 +129,18 @@ class ProductPackaging {
      * Set volume
      * @return Product
      */
-    function setVolume($volume) {
+    public function setVolume($volume)
+    {
         $this->volume = $volume;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return float
      */
-    function getVolume() {
+    public function getVolume()
+    {
         return $this->volume;
     }
 
@@ -143,16 +148,18 @@ class ProductPackaging {
      * Set weight
      * @return Product
      */
-    function setWeight($weight) {
+    public function setWeight($weight)
+    {
         $this->weight = $weight;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return float
      */
-    function getWeight() {
+    public function getWeight()
+    {
         return $this->weight;
     }
 
@@ -160,16 +167,18 @@ class ProductPackaging {
      * Set length
      * @return Product
      */
-    function setLength($length) {
+    public function setLength($length)
+    {
         $this->length = $length;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return float
      */
-    function getLength() {
+    public function getLength()
+    {
         return $this->length;
     }
 
@@ -177,16 +186,18 @@ class ProductPackaging {
      * Set height
      * @return Product
      */
-    function setHeight($height) {
+    public function setHeight($height)
+    {
         $this->height = $height;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return decimal
      */
-    function getHeight() {
+    public function getHeight()
+    {
         return $this->height;
     }
 
@@ -194,16 +205,18 @@ class ProductPackaging {
      * Set width
      * @return Product
      */
-    function setWidth($width) {
+    public function setWidth($width)
+    {
         $this->width = $with;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return decimal
      */
-    function getWidth() {
+    public function getWidth()
+    {
         return $this->width;
     }
 
@@ -212,16 +225,18 @@ class ProductPackaging {
      * @param string $barcode_ean
      * @return Product
      */
-    function setBarcodeEan($barcode_ean) {
+    public function setBarcodeEan($barcode_ean)
+    {
         $this->barcode_ean = $barcode_ean;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    function getBarcodeEan() {
+    public function getBarcodeEan()
+    {
         return $this->barcode_ean;
     }
 
@@ -230,24 +245,27 @@ class ProductPackaging {
      * @param string $barcode_upc
      * @return Product
      */
-    function setBarcodeUpc($barcode_upc) {
+    public function setBarcodeUpc($barcode_upc)
+    {
         $this->barcode_upc = $barcode_upc;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    function getBarcodeUpc() {
+    public function getBarcodeUpc()
+    {
         return $this->barcode_upc;
     }
 
     /**
-     * Return legacy mapping 
+     * Return legacy mapping
      * @return string $legacy_mapping
      */
-    public function getLegacyMapping() {
+    public function getLegacyMapping()
+    {
         return $this->legacy_mapping;
     }
 
@@ -255,7 +273,8 @@ class ProductPackaging {
      * Set a legacy mapping for this record
      * @param string $legacy_mapping
      */
-    public function setLegacyMapping($legacy_mapping) {
+    public function setLegacyMapping($legacy_mapping)
+    {
         $this->legacy_mapping = $legacy_mapping;
         return $this;
     }
@@ -264,16 +283,18 @@ class ProductPackaging {
      * Set legacy synchro time
      * @param string $legacy_synchro_at
      */
-    public function setLegacySynchroAt($legacy_synchro_at) {
+    public function setLegacySynchroAt($legacy_synchro_at)
+    {
         $this->legacy_synchro_at = $legacy_synchro_at;
         return $this;
     }
 
     /**
-     * Return legacy synchro timestamp 
-     * @return string 
+     * Return legacy synchro timestamp
+     * @return string
      */
-    public function getLegacySynchroAt() {
+    public function getLegacySynchroAt()
+    {
         return $this->legacy_synchro_at;
     }
 
@@ -282,15 +303,17 @@ class ProductPackaging {
      *
      * @return array
      */
-    public function getArrayCopy() {
+    public function getArrayCopy()
+    {
         return get_object_vars($this);
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->getAvailableStock();
     }
 
@@ -300,7 +323,8 @@ class ProductPackaging {
      * @param string $property
      * @return mixed
      */
-    public function __get($property) {
+    public function __get($property)
+    {
         return $this->$property;
     }
 
@@ -310,8 +334,8 @@ class ProductPackaging {
      * @param string $property
      * @param mixed $value
      */
-    public function __set($property, $value) {
+    public function __set($property, $value)
+    {
         $this->$property = $value;
     }
-
 }

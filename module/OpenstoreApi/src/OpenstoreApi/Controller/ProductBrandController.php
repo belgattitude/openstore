@@ -8,8 +8,8 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\View\Model\JsonModel;
 use Zend\Mvc\MvcEvent;
 
-class ProductBrandController extends AbstractRestfulController {
-
+class ProductBrandController extends AbstractRestfulController
+{
     protected $collectionOptions = array('GET');
     //protected $resourceOptions = array('GET');
     protected $resourceOptions = array();
@@ -20,24 +20,24 @@ class ProductBrandController extends AbstractRestfulController {
      */
     protected $brandService;
 
-    public function onDispatch(\Zend\Mvc\MvcEvent $e) {
-
+    public function onDispatch(\Zend\Mvc\MvcEvent $e)
+    {
         $this->brandService = $this->getServiceLocator()->get('Api\ProductBrandService');
         parent::onDispatch($e);
     }
 
-    public function get($id) {
+    public function get($id)
+    {
         die('hello');
         return $response;
     }
 
-    public function getList() {
-
+    public function getList()
+    {
         $params = $this->params()->fromQuery();
         $store = $this->brandService->getList($params);
         return $store;
 
         //return new JsonModel($data);
     }
-
 }

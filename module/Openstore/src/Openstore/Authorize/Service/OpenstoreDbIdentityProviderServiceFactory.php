@@ -14,14 +14,15 @@ use Openstore\Authorize\Provider\Identity\OpenstoreDb;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class OpenstoreDbIdentityProviderServiceFactory implements FactoryInterface {
-
+class OpenstoreDbIdentityProviderServiceFactory implements FactoryInterface
+{
     /**
      * {@inheritDoc}
      *
      * @return \BjyAuthorize\Provider\Identity\ZfcUserZendDb
      */
-    public function createService(ServiceLocatorInterface $serviceLocator) {
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
         /* @var $adapter \Zend\Db\Adapter\Adapter */
         $adapter = $serviceLocator->get('zfcuser_zend_db_adapter');
         /* @var $userService \ZfcUser\Service\User */
@@ -34,5 +35,4 @@ class OpenstoreDbIdentityProviderServiceFactory implements FactoryInterface {
 
         return $provider;
     }
-
 }

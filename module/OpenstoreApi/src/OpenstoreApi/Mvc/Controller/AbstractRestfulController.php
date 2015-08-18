@@ -5,9 +5,10 @@ namespace OpenstoreApi\Mvc\Controller;
 use Zend\Mvc\Controller\AbstractRestfulController as ZendAbstractRestfulController;
 use OpenstoreApi\Authorize\ApiKeyAccess;
 
-abstract class AbstractRestfulController extends ZendAbstractRestfulController {
-
-    protected function _getOptions() {
+abstract class AbstractRestfulController extends ZendAbstractRestfulController
+{
+    protected function _getOptions()
+    {
         if ($this->params()->fromRoute('id', false)) {
             // we have an id, return specific item
             return $this->resourceOptions;
@@ -17,7 +18,8 @@ abstract class AbstractRestfulController extends ZendAbstractRestfulController {
         return $this->collectionOptions;
     }
 
-    public function options() {
+    public function options()
+    {
         $response = $this->getResponse();
         $response->getHeaders()
                 ->addHeaderLine('Allow', implode(',', $this->_getOptions()));
@@ -36,7 +38,8 @@ abstract class AbstractRestfulController extends ZendAbstractRestfulController {
       }
      */
 
-    public function checkOptions(MvcEvent $e) {
+    public function checkOptions(MvcEvent $e)
+    {
         if (in_array($e->getRequest()->getMethod(), $this->_getOptions())) {
             // method allowed, nothing to do
             return $e->getResponse();
@@ -46,5 +49,4 @@ abstract class AbstractRestfulController extends ZendAbstractRestfulController {
         $response->setStatusCode(405);
         return $response;
     }
-
 }

@@ -31,7 +31,7 @@ return array(
             'options' => array(
                 'name' => 'openstore_sid', // string 	Specifies the name of the session which is used as cookie name.
                 'remember_me_seconds' => 12000,
-                'save_path' => dirname(__FILE__) . '/../../data/session', // 	string 	Defines the argument which is passed to the save handler.				
+                'save_path' => dirname(__FILE__) . '/../../data/session', //    string  Defines the argument which is passed to the save handler.
             /*
              * Usefull with StandardConfig instead of sessionConfig
               'cache_expire' => ini_get('session.cache_expire'),		// integer 	Specifies time-to-live for cached session pages in minutes.

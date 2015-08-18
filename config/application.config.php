@@ -93,8 +93,9 @@ $config = array(
 
 if (Console::isConsole()) {
     $key = array_search('ZfcRbac', $config['modules']);
-    if ($key !== false)
+    if ($key !== false) {
         unset($config['modules'][$key]);
+    }
 }
 
 return $config;

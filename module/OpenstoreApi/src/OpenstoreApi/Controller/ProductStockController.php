@@ -5,8 +5,8 @@ namespace OpenstoreApi\Controller;
 use OpenstoreApi\Mvc\Controller\AbstractRestfulController;
 use OpenstoreApi\Authorize\ApiKeyAccess;
 
-class ProductStockController extends AbstractRestfulController {
-
+class ProductStockController extends AbstractRestfulController
+{
     protected $collectionOptions = array('GET');
     //protected $resourceOptions = array('GET');
     protected $resourceOptions = array();
@@ -23,7 +23,8 @@ class ProductStockController extends AbstractRestfulController {
      */
     protected $apiKeyAccess;
 
-    public function onDispatch(\Zend\Mvc\MvcEvent $e) {
+    public function onDispatch(\Zend\Mvc\MvcEvent $e)
+    {
         $this->stockService = $this->getServiceLocator()->get('Api\ProductStockService');
 
         $api_key = $this->params()->fromQuery('api_key');
@@ -31,13 +32,14 @@ class ProductStockController extends AbstractRestfulController {
         parent::onDispatch($e);
     }
 
-    public function get($id) {
+    public function get($id)
+    {
         die('hello');
         return $response;
     }
 
-    public function getList() {
-
+    public function getList()
+    {
         $params = $this->params()->fromQuery();
         $this->apiKeyAccess->checkServiceAccess("2000-ProductCatalog");
         $this->apiKeyAccess->checkPricelistAccess($params['pricelist']);
@@ -54,9 +56,8 @@ class ProductStockController extends AbstractRestfulController {
                 $cm = $store->getSource()->getColumnModel();
                 $cm->includeOnly($limited_columns);
             }
-        }        
+        }
         
         return $store;
     }
-
 }

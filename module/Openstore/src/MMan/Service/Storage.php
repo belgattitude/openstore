@@ -7,8 +7,8 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use Gaufrette\Adapter as GaufretteAdapter;
 use Gaufrette\Filesystem;
 
-class Storage implements ServiceLocatorAwareInterface {
-
+class Storage implements ServiceLocatorAwareInterface
+{
     /**
      * @var ServiceLocatorInterface
      */
@@ -32,16 +32,17 @@ class Storage implements ServiceLocatorAwareInterface {
     protected $filesystemInstance;
 
     /**
-     * 
+     *
      */
-    function __construct() {
-        
+    public function __construct()
+    {
     }
 
     /**
      * @return \Gaufrette\Filesystem
      */
-    function getFilesystem() {
+    public function getFilesystem()
+    {
         if ($this->filesystemInstance === null) {
             $this->filesystemInstance = new Filesystem($this->getAdapter());
         }
@@ -49,57 +50,62 @@ class Storage implements ServiceLocatorAwareInterface {
     }
 
     /**
-     * 
+     *
      * @param \Gaufrette\Adapter $adapter
      * @return \MMan\Service\Manager
      */
-    function setAdapter(GaufretteAdapter $adapter) {
+    public function setAdapter(GaufretteAdapter $adapter)
+    {
         $this->adapter = $adapter;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return \Gaufrette\Adapter
      */
-    function getAdapter() {
+    public function getAdapter()
+    {
         return $this->adapter;
     }
 
     /**
-     * 
+     *
      * @param array $adapterOptions
      * @return \MMan\Service\Storage
      */
-    function setAdapterOptions(array $adapterOptions) {
+    public function setAdapterOptions(array $adapterOptions)
+    {
         $this->adapterOptions = $adapterOptions;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return array
      */
-    function getAdapterOptions() {
+    public function getAdapterOptions()
+    {
         return $this->adapterOptions;
     }
 
     /**
-     * 
+     *
      * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
      * @return \Openstore\Service
      */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
         $this->serviceLocator = $serviceLocator;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return \Zend\ServiceManager\ServiceLocatorInterface
      */
-    public function getServiceLocator() {
+    public function getServiceLocator()
+    {
         return $this->serviceLocator;
     }
-
 }

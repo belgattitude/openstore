@@ -11,20 +11,20 @@ use ZfcRbac\Permission\PermissionInterface;
  *   name="permission",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_name_idx",columns={"name"}),
- *   }, 
+ *   },
  *   indexes={
  *     @ORM\Index(name="name_idx", columns={"name"}),
  *   },
  *   options={"comment" = "Custom permissions"}
  * )
  */
-class Permission implements PermissionInterface {
-
+class Permission implements PermissionInterface
+{
     /**
      * @var int
      *
      * @ORM\Id
-     * @ORM\Column(name="permission_id", type="integer", nullable=false, options={"unsigned"=true})	 	 
+     * @ORM\Column(name="permission_id", type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $permission_id;
@@ -39,7 +39,8 @@ class Permission implements PermissionInterface {
     /**
      * Constructor
      */
-    public function __construct($name) {
+    public function __construct($name)
+    {
         $this->name = (string) $name;
     }
 
@@ -48,7 +49,8 @@ class Permission implements PermissionInterface {
      *
      * @return int
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->permission_id;
     }
 
@@ -57,15 +59,16 @@ class Permission implements PermissionInterface {
      *
      * @return int
      */
-    public function getPermissionId() {
+    public function getPermissionId()
+    {
         return $this->permission_id;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->name;
     }
-
 }

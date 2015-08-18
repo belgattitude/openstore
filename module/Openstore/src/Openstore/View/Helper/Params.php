@@ -14,15 +14,13 @@ class Params extends AbstractHelper
 
     public function __construct(RequestInterface $request, MvcEvent $event)
     {
-		
         $this->request = $request;
         $this->event = $event;
     }
 
     public function fromPost($param = null, $default = null)
     {
-        if ($param === null)
-        {
+        if ($param === null) {
             return $this->request->getPost($param, $default)->toArray();
         }
 
@@ -31,8 +29,7 @@ class Params extends AbstractHelper
 
     public function fromRoute($param = null, $default = null)
     {
-        if ($param === null)
-        {
+        if ($param === null) {
             return $this->event->getRouteMatch()->getParams();
         }
 

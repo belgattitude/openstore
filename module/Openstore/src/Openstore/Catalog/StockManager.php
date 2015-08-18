@@ -9,8 +9,8 @@ use Zend\Db\Adapter\AdapterAwareInterface;
 use Openstore\ConfigurationAwareInterface;
 use Openstore\Catalog\ProductFilters;
 
-class StockManager implements ServiceLocatorAwareInterface, AdapterAwareInterface, ConfigurationAwareInterface {
-
+class StockManager implements ServiceLocatorAwareInterface, AdapterAwareInterface, ConfigurationAwareInterface
+{
     /**
      * @var ServiceLocatorInterface
      */
@@ -29,66 +29,72 @@ class StockManager implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     protected $adapter;
 
     /**
-     * 
+     *
      * @param \Openstore\Configuration $options
      */
-    function __construct(Configuration $configuration, Adapter $adapter) {
+    public function __construct(Configuration $configuration, Adapter $adapter)
+    {
         $this->setConfiguration($configuration);
         $this->setDbAdapter($adapter);
     }
 
     /**
-     * 
+     *
      * @param \Openstore\Configuration $configuration
      * @return \Openstore\Catalog\StockManager
      */
-    public function setConfiguration(Configuration $configuration) {
+    public function setConfiguration(Configuration $configuration)
+    {
         $this->configuration = $configuration;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return \Openstore\Configuration
      */
-    public function getConfiguration() {
+    public function getConfiguration()
+    {
         return $this->configuration;
     }
 
     /**
-     * 
+     *
      * @param \Zend\Db\Adapter\Adapter $adapter
      * @return \Openstore\Catalog\StockManager
      */
-    public function setDbAdapter(Adapter $adapter) {
+    public function setDbAdapter(Adapter $adapter)
+    {
         $this->adapter = $adapter;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return Zend\Db\Adapter\Adapter
      */
-    function getDbAdapter() {
+    public function getDbAdapter()
+    {
         return $this->adapter;
     }
 
     /**
-     * 
+     *
      * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
      * @return \Openstore\Catalog\StockManager
      */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
         $this->serviceLocator = $serviceLocator;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return \Zend\ServiceManager\ServiceLocatorInterface
      */
-    public function getServiceLocator() {
+    public function getServiceLocator()
+    {
         return $this->serviceLocator;
     }
-
 }

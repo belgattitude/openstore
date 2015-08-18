@@ -14,15 +14,15 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_product_media_type_idx",columns={"product_id", "media_id", "type_id"}),
  *     @ORM\UniqueConstraint(name="unique_product_type_flag_primary_idx",columns={"type_id", "product_id", "flag_primary"}),
- *   }, 
+ *   },
  *   indexes={
  *     @ORM\Index(name="sort_index_idx", columns={"sort_index"}),
  *   },
  *   options={"comment" = "Product media table"}
  * )
  */
-class ProductMedia {
-
+class ProductMedia
+{
     /**
      * @var \Zend\InputFilter\InputFilterInterface $inputFilter
      */
@@ -36,21 +36,21 @@ class ProductMedia {
     private $id;
 
     /**
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="Product", inversedBy="products", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="product_id", referencedColumnName="product_id", onDelete="CASCADE", nullable=false)
      */
     private $product_id;
 
     /**
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="Media", inversedBy="products", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="media_id", referencedColumnName="media_id", onDelete="CASCADE", nullable=false)
      */
     private $media_id;
 
     /**
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="ProductMediaType", inversedBy="products", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", onDelete="CASCADE", nullable=false)
      */
@@ -58,7 +58,7 @@ class ProductMedia {
 
     /**
      *
-     * @ORM\Column(name="flag_primary", type="boolean", nullable=true)	  
+     * @ORM\Column(name="flag_primary", type="boolean", nullable=true)
      */
     private $flag_primary;
 
@@ -102,119 +102,132 @@ class ProductMedia {
      */
     protected $legacy_synchro_at;
 
-    public function __construct() {
-        
+    public function __construct()
+    {
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
-     * 
+     *
      * @param integer $product_id
      * @return \Openstore\Entity\ProductMedia
      */
-    public function setProductId($product_id) {
+    public function setProductId($product_id)
+    {
         $this->product_id = $product_id;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getProductId() {
+    public function getProductId()
+    {
         return $this->product_id;
     }
 
     /**
-     * 
+     *
      * @param integer $media_id
      * @return \Openstore\Entity\ProductMedia
      */
-    public function setMediaId($media_id) {
+    public function setMediaId($media_id)
+    {
         $this->media_id = $media_id;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getMediaId() {
+    public function getMediaId()
+    {
         return $this->media_id;
     }
 
     /**
-     * 
+     *
      * @param integer $type_id
      * @return \Openstore\Entity\ProductMedia
      */
-    public function setTypeId($type_id) {
+    public function setTypeId($type_id)
+    {
         $this->type_id = $type_id;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getTypeId() {
+    public function getTypeId()
+    {
         return $this->type_id;
     }
 
     /**
-     * 
+     *
      * @return int
      */
-    public function getSortIndex() {
+    public function getSortIndex()
+    {
         return $this->sort_index;
     }
 
     /**
-     * 
+     *
      * @param int $sort_index
      */
-    public function setSortIndex($sort_index) {
+    public function setSortIndex($sort_index)
+    {
         $this->sort_index = $sort_index;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getCreatedAt() {
+    public function getCreatedAt()
+    {
         return $this->created_at;
     }
 
     /**
-     * 
+     *
      * @param string $created_at
      */
-    public function setCreatedAt($created_at) {
+    public function setCreatedAt($created_at)
+    {
         $this->created_at = $created_at;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getUpdatedAt() {
+    public function getUpdatedAt()
+    {
         return $this->updated_at;
     }
 
     /**
-     * 
+     *
      * @param string $updated_at
      */
-    public function setUpdatedAt($updated_at) {
+    public function setUpdatedAt($updated_at)
+    {
         $this->updated_at = $updated_at;
         return $this;
     }
@@ -223,7 +236,8 @@ class ProductMedia {
      * Return creator username
      * @return string
      */
-    public function getCreatedBy() {
+    public function getCreatedBy()
+    {
         return $this->created_by;
     }
 
@@ -231,7 +245,8 @@ class ProductMedia {
      * Set creator username
      * @param string $created_by
      */
-    public function setCreatedBy($created_by) {
+    public function setCreatedBy($created_by)
+    {
         $this->created_by = $created_by;
         return $this;
     }
@@ -240,7 +255,8 @@ class ProductMedia {
      * Return last updater username
      * @return string
      */
-    public function getUpdatedBy() {
+    public function getUpdatedBy()
+    {
         return $this->updated_by;
     }
 
@@ -248,16 +264,18 @@ class ProductMedia {
      * Set the last updater username
      * @param string $updated_by
      */
-    public function setUpdatedBy($updated_by) {
+    public function setUpdatedBy($updated_by)
+    {
         $this->updated_by = $updated_by;
         return $this;
     }
 
     /**
-     * Return legacy mapping 
+     * Return legacy mapping
      * @return string $legacy_mapping
      */
-    public function getLegacyMapping() {
+    public function getLegacyMapping()
+    {
         return $this->legacy_mapping;
     }
 
@@ -265,7 +283,8 @@ class ProductMedia {
      * Set a legacy mapping for this record
      * @param string $legacy_mapping
      */
-    public function setLegacyMapping($legacy_mapping) {
+    public function setLegacyMapping($legacy_mapping)
+    {
         $this->legacy_mapping = $legacy_mapping;
         return $this;
     }
@@ -274,16 +293,18 @@ class ProductMedia {
      * Set legacy synchro time
      * @param string $legacy_mapping
      */
-    public function setLegacySynchroAt($legacy_synchro_at) {
+    public function setLegacySynchroAt($legacy_synchro_at)
+    {
         $this->legacy_synchro_at = $legacy_synchro_at;
         return $this;
     }
 
     /**
-     * Return legacy synchro timestamp 
-     * @return string 
+     * Return legacy synchro timestamp
+     * @return string
      */
-    public function getLegacySynchroAt() {
+    public function getLegacySynchroAt()
+    {
         return $this->legacy_synchro_at;
     }
 
@@ -292,7 +313,8 @@ class ProductMedia {
      *
      * @return array
      */
-    public function getArrayCopy() {
+    public function getArrayCopy()
+    {
         return get_object_vars($this);
     }
 
@@ -302,7 +324,8 @@ class ProductMedia {
      * @param string $property
      * @return mixed
      */
-    public function __get($property) {
+    public function __get($property)
+    {
         return $this->$property;
     }
 
@@ -312,8 +335,8 @@ class ProductMedia {
      * @param string $property
      * @param mixed $value
      */
-    public function __set($property, $value) {
+    public function __set($property, $value)
+    {
         $this->$property = $value;
     }
-
 }

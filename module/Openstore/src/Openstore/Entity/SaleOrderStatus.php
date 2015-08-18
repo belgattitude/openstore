@@ -15,12 +15,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
  *     @ORM\UniqueConstraint(name="unique_flag_default_idx",columns={"flag_default"}),
- *   }, 
+ *   },
  *   options={"comment" = "Order status table"}
  * )
  */
-class SaleOrderStatus {
-
+class SaleOrderStatus
+{
     /**
      * @ORM\OneToMany(targetEntity="SaleOrderStatusTranslation", mappedBy="status_id")
      */
@@ -92,8 +92,8 @@ class SaleOrderStatus {
      */
     protected $legacy_synchro_at;
 
-    public function __construct() {
-
+    public function __construct()
+    {
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
 
         /**
@@ -102,23 +102,26 @@ class SaleOrderStatus {
         $this->flag_active = true;
     }
 
-    public function getId() {
+    public function getId()
+    {
         return $this->type_id;
     }
 
     /**
-     * 
+     *
      * @param integer $id
      */
-    public function setStatusId($status_id) {
+    public function setStatusId($status_id)
+    {
         $this->status_id = $status_id;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getStatusId() {
+    public function getStatusId()
+    {
         return $this->status_id;
     }
 
@@ -126,112 +129,126 @@ class SaleOrderStatus {
      * Set reference
      * @param string $reference
      */
-    public function setReference($reference) {
+    public function setReference($reference)
+    {
         $this->reference = $reference;
     }
 
     /**
-     * Return reference 
+     * Return reference
      * @return string
      */
-    public function getReference() {
+    public function getReference()
+    {
         return $this->reference;
     }
 
     /**
-     * 
+     *
      * @param string $title
      */
-    public function setTitle($title) {
+    public function setTitle($title)
+    {
         $this->title = $title;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getTitle() {
+    public function getTitle()
+    {
         return $this->title;
     }
 
     /**
-     * 
+     *
      * @return boolean
      */
-    public function getFlagActive() {
+    public function getFlagActive()
+    {
         return (boolean) $this->flag_active;
     }
 
     /**
-     * 
+     *
      */
-    public function setFlagActive($flag_active) {
+    public function setFlagActive($flag_active)
+    {
         $this->flag_active = $flag_active;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return boolean
      */
-    public function getFlagReadOnly() {
+    public function getFlagReadOnly()
+    {
         return (boolean) $this->flag_readonly;
     }
 
     /**
-     * 
+     *
      */
-    public function setFlagReadOnly($flag_readonly) {
+    public function setFlagReadOnly($flag_readonly)
+    {
         $this->flag_readonly = $flag_readonly;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return boolean
      */
-    public function getFlagDefault() {
+    public function getFlagDefault()
+    {
         return (boolean) $this->flag_default;
     }
 
     /**
-     * 
+     *
      */
-    public function setFlagDefault($flag_default) {
+    public function setFlagDefault($flag_default)
+    {
         $this->flag_default = $flag_default;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getCreatedAt() {
+    public function getCreatedAt()
+    {
         return $this->created_at;
     }
 
     /**
-     * 
+     *
      * @param string $created_at
      */
-    public function setCreatedAt($created_at) {
+    public function setCreatedAt($created_at)
+    {
         $this->created_at = $created_at;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getUpdatedAt() {
+    public function getUpdatedAt()
+    {
         return $this->updated_at;
     }
 
     /**
-     * 
+     *
      * @param string $updated_at
      */
-    public function setUpdatedAt($updated_at) {
+    public function setUpdatedAt($updated_at)
+    {
         $this->updated_at = $updated_at;
         return $this;
     }
@@ -240,7 +257,8 @@ class SaleOrderStatus {
      * Return creator username
      * @return string
      */
-    public function getCreatedBy() {
+    public function getCreatedBy()
+    {
         return $this->created_by;
     }
 
@@ -248,7 +266,8 @@ class SaleOrderStatus {
      * Set creator username
      * @param string $created_by
      */
-    public function setCreatedBy($created_by) {
+    public function setCreatedBy($created_by)
+    {
         $this->created_by = $created_by;
         return $this;
     }
@@ -257,7 +276,8 @@ class SaleOrderStatus {
      * Return last updater username
      * @return string
      */
-    public function getUpdatedBy() {
+    public function getUpdatedBy()
+    {
         return $this->updated_by;
     }
 
@@ -265,16 +285,18 @@ class SaleOrderStatus {
      * Set the last updater username
      * @param string $updated_by
      */
-    public function setUpdatedBy($updated_by) {
+    public function setUpdatedBy($updated_by)
+    {
         $this->updated_by = $updated_by;
         return $this;
     }
 
     /**
-     * Return legacy mapping 
+     * Return legacy mapping
      * @return string $legacy_mapping
      */
-    public function getLegacyMapping() {
+    public function getLegacyMapping()
+    {
         return $this->legacy_mapping;
     }
 
@@ -282,7 +304,8 @@ class SaleOrderStatus {
      * Set a legacy mapping for this record
      * @param string $legacy_mapping
      */
-    public function setLegacyMapping($legacy_mapping) {
+    public function setLegacyMapping($legacy_mapping)
+    {
         $this->legacy_mapping = $legacy_mapping;
         return $this;
     }
@@ -291,16 +314,18 @@ class SaleOrderStatus {
      * Set legacy synchro time
      * @param string $legacy_mapping
      */
-    public function setLegacySynchroAt($legacy_synchro_at) {
+    public function setLegacySynchroAt($legacy_synchro_at)
+    {
         $this->legacy_synchro_at = $legacy_synchro_at;
         return $this;
     }
 
     /**
-     * Return legacy synchro timestamp 
-     * @return string 
+     * Return legacy synchro timestamp
+     * @return string
      */
-    public function getLegacySynchroAt() {
+    public function getLegacySynchroAt()
+    {
         return $this->legacy_synchro_at;
     }
 
@@ -309,15 +334,17 @@ class SaleOrderStatus {
      *
      * @return array
      */
-    public function getArrayCopy() {
+    public function getArrayCopy()
+    {
         return get_object_vars($this);
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->getTitle();
     }
 
@@ -327,7 +354,8 @@ class SaleOrderStatus {
      * @param string $property
      * @return mixed
      */
-    public function __get($property) {
+    public function __get($property)
+    {
         return $this->$property;
     }
 
@@ -337,8 +365,8 @@ class SaleOrderStatus {
      * @param string $property
      * @param mixed $value
      */
-    public function __set($property, $value) {
+    public function __set($property, $value)
+    {
         $this->$property = $value;
     }
-
 }

@@ -9,8 +9,7 @@ class AdminController extends AbstractActionController
 {
     public function indexAction()
     {
-		$view = new ViewModel();
+        $view = new ViewModel();
         return $view;
     }
-	
 }

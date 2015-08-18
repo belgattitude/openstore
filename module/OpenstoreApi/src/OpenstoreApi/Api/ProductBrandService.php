@@ -6,14 +6,14 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
 use Soluble\FlexStore\Store;
 
-class ProductBrandService extends AbstractService {
-
+class ProductBrandService extends AbstractService
+{
     /**
-     * @param array $params [brands,pricelists] 
+     * @param array $params [brands,pricelists]
      * @return \Soluble\FlexStore\Store
      */
-    function getList(array $params = array()) {
-
+    public function getList(array $params = array())
+    {
         $select = new Select();
 
         $select->from(array('pb' => 'product_brand'), array())
@@ -46,7 +46,7 @@ class ProductBrandService extends AbstractService {
         }
 
         $select->having('active_pricelists is not null');
-        //$select->order(array('p.product_id' => $select::ORDER_ASCENDING));        
+        //$select->order(array('p.product_id' => $select::ORDER_ASCENDING));
 
         $store = $this->getStore($select);
         if (array_key_exists('limit', $params)) {
@@ -57,8 +57,7 @@ class ProductBrandService extends AbstractService {
         }
         
         
-        $this->initStoreFormatters($store, $params);        
+        $this->initStoreFormatters($store, $params);
         return $store;
     }
-
 }

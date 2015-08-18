@@ -1,7 +1,7 @@
 <?php
 
 /**
- * 
+ *
  * @author Vanvelthem Sébastien
  */
 namespace Akilia;
@@ -30,7 +30,6 @@ function convertMemorySize($size)
 
 class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterface
 {
-
     /**
      * Whether to output logs
      * @var boolean
@@ -51,7 +50,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
     /**
      * mysqli connection
-     * 
+     *
      * @param Mysqli
      */
     protected $mysqli;
@@ -72,7 +71,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
      *
      * @var string
      */
-    protected $intelaccessDb;    
+    protected $intelaccessDb;
     
     /**
      *
@@ -105,12 +104,11 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     
     /**
      *
-     * @param \Doctrine\ORM\EntityManager $em   
-     * @param Adapter $zendDb            
+     * @param \Doctrine\ORM\EntityManager $em
+     * @param Adapter $zendDb
      */
-    function __construct(\Doctrine\ORM\EntityManager $em, Adapter $zendDb)
+    public function __construct(\Doctrine\ORM\EntityManager $em, Adapter $zendDb)
     {
-        
         $this->em = $em;
         $this->openstoreDb = $em->getConnection()->getDatabase();
         $this->mysqli = $em->getConnection()
@@ -122,10 +120,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
     /**
      *
-     * @param array $config            
+     * @param array $config
      * @return \Akilia\Synchronizer
      */
-    function setConfiguration(array $config)
+    public function setConfiguration(array $config)
     {
         $this->akilia2Db = $config['db_akilia2'];
         $this->akilia1Db = $config['db_akilia1'];
@@ -137,7 +135,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         return $this;
     }
 
-    function synchronizeAkilia1ProductDescription()
+    public function synchronizeAkilia1ProductDescription()
     {
         /*
         SELECT p.product_id AS `product_id`, 
@@ -157,7 +155,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         */
     }
     
-    function synchronizeAll()
+    public function synchronizeAll()
     {
         $this->synchronizeCountry();
         $this->synchronizeCustomer();
@@ -202,12 +200,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
      *
      * @return \Soluble\Normalist\Synthetic\TableManager
      */
-    function getTableManager()
+    public function getTableManager()
     {
         return $this->getServiceLocator()->get('SolubleNormalist\TableManager');
     }
 
-    function synchronizeProductMedia()
+    public function synchronizeProductMedia()
     {
         ini_set('memory_limit', "1G");
         
@@ -251,7 +249,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $product_ids = $productTable->search()
             ->columns(array(
             'product_id'
-        ))
+            ))
             ->toArrayColumn('product_id', 'product_id');
         for ($i = 0; ($i < $limit_to_import && $i < $count); $i ++) {
             $infos = $list[$i];
@@ -307,13 +305,13 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         echo "-----------------------------------------------------------\n";
     }
 
-    function synchronizeApi()
+    public function synchronizeApi()
     {
         $akilia2db = $this->akilia2Db;
         $db = $this->openstoreDb;
         
         // Step 1: let's synchronize the api services
-        
+
         $replace = " insert
                      into $db.api_service
                     (
@@ -336,7 +334,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->executeSQL("Delete eventual removed api_service", $delete);
         
         // Step 2: let' synchronize the api keys
-        
+
         $replace = " insert
                      into $db.api_key
                     (
@@ -359,7 +357,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->executeSQL("Delete eventual removed api_key", $delete);
         
         // Step 3: api_key_services
-        
+
         $replace = " insert
                      into $db.api_key_service
                     (
@@ -403,7 +401,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->synchronizeCustomerPricelist();
     }
 
-    function synchronizeCountry()
+    public function synchronizeCountry()
     {
         $akilia2db = $this->akilia2Db;
         $db = $this->openstoreDb;
@@ -439,7 +437,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->executeSQL("Delete eventual removed countries", $delete);
     }
 
-    function synchronizeCustomer()
+    public function synchronizeCustomer()
     {
         $akilia2db = $this->akilia2Db;
         $db = $this->openstoreDb;
@@ -501,7 +499,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->executeSQL("Delete eventual removed customers", $delete);
     }
 
-    function synchronizeCustomerPricelist()
+    public function synchronizeCustomerPricelist()
     {
         $akilia2db = $this->akilia2Db;
         $db = $this->openstoreDb;
@@ -560,9 +558,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     }
 
 
-    function synchronizeProductStock()
+    public function synchronizeProductStock()
     {
-        
         if (!isset($this->configuration['options']['product_stock'])) {
             throw new \Exception(__METHOD__ . " Error missing sync configuration key in akilia.local.php 'akilia/synchronizer/options/product_stock'");
         }
@@ -638,7 +635,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     
     
     
-    function synchronizeProductPricelist()
+    public function synchronizeProductPricelist()
     {
         if (!isset($this->configuration['options']['product_pricelist'])) {
             throw new \Exception(__METHOD__ . " Error missing sync configuration key in akilia.local.php 'akilia/synchronizer/options/product_pricelist'");
@@ -661,20 +658,19 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $db = $this->openstoreDb;
         
         foreach ($elements as $key => $element) {
-
             $akilia1Db = $element['akilia1db'];
 
             
             $pricelists_clause = "";
             if (count($element['pricelists']) > 0) {
                 $pls = array();
-                foreach($element['pricelists'] as $pricelist) {
+                foreach ($element['pricelists'] as $pricelist) {
                     $pls[] = $this->adapter->getPlatform()->quoteValue($pricelist);
                 }
-                $pricelists_clause = "and t.id_pays in (" . join(',', $pls) . ")";                
-            } 
+                $pricelists_clause = "and t.id_pays in (" . join(',', $pls) . ")";
+            }
             
-            $this->log("Product pricelist [$key] sync: taking prices " .  join(',', $pls). " from database '$akilia1Db'");            
+            $this->log("Product pricelist [$key] sync: taking prices " .  join(',', $pls). " from database '$akilia1Db'");
             
             $replace = " 
                 insert into $db.product_pricelist(
@@ -772,7 +768,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             ";
                     
             $this->executeSQL("Replace product pricelist [$key] ", $replace);
-            
         }
         
         
@@ -782,11 +777,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             where legacy_synchro_at < '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
         
         $this->executeSQL("Delete eventual removed product_pricelist", $delete);
-        
-        
     }
 
-    function synchronizePricelist($use_akilia2 = true)
+    public function synchronizePricelist($use_akilia2 = true)
     {
         if ($use_akilia2) {
             $akilia2db = $this->akilia2Db;
@@ -825,7 +818,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             
             $this->executeSQL("Replace pricelist", $replace);
         } else {
-            
             $akilia1db = $this->akilia1Db;
             $db = $this->openstoreDb;
             
@@ -867,13 +859,13 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->executeSQL("Delete eventual removed pricelist", $delete);
     }
 
-    function synchronizeProductCategory()
+    public function synchronizeProductCategory()
     {
         $akilia1db = $this->akilia1Db;
         $db = $this->openstoreDb;
         $root_reference = 'ROOT';
         
-        $default_lsfx = $this->default_language_sfx;        
+        $default_lsfx = $this->default_language_sfx;
         
         $select = "
             select upper(c.id_categorie) as id_categorie, 
@@ -916,7 +908,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         
         
         foreach ($rows as $row) {
-            
             if ($row['category_id'] === null) {
                 $pc = new \Openstore\Entity\ProductCategory();
             } else {
@@ -938,7 +929,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             $pc->setLegacyMapping($row['id_categorie']);
             $pc->setLegacySynchroAt(new \DateTime($this->legacy_synchro_at));
             // $pc->setCreatedAt($row['date_synchro']);
-            
+
             $this->em->persist($pc);
             
             $categs[$row['id_categorie']] = $pc;
@@ -983,7 +974,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->executeSQL("Delete eventual removed categories translations", $delete);
     }
 
-    function synchronizeProductModel()
+    public function synchronizeProductModel()
     {
         $akilia1Db = $this->akilia1Db;
         $db = $this->openstoreDb;
@@ -1014,7 +1005,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->executeSQL("Delete eventual removed product models", $delete);
     }
 
-    function synchronizeProductBrand()
+    public function synchronizeProductBrand()
     {
         $akilia1Db = $this->akilia1Db;
         $db = $this->openstoreDb;
@@ -1047,7 +1038,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->executeSQL("Delete eventual removed brands", $delete);
     }
 
-    function synchronizeProductGroup()
+    public function synchronizeProductGroup()
     {
         $akilia1Db = $this->akilia1Db;
         $db = $this->openstoreDb;
@@ -1083,7 +1074,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->executeSQL("Delete eventual removed groups", $delete);
         
         // 3. Group translations
-        
+
         $langs = $this->akilia1lang;
         foreach ($langs as $lang => $sfx) {
             $replace = "insert into product_group_translation 
@@ -1114,7 +1105,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->executeSQL("Delete eventual removed product group translations", $delete);
     }
 
-    function synchronizeProductPackaging()
+    public function synchronizeProductPackaging()
     {
         $akilia1db = $this->akilia1Db;
         
@@ -1222,7 +1213,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->executeSQL("Delete eventual removed product packagings", $delete);
     }
 
-    function synchronizeProduct()
+    public function synchronizeProduct()
     {
         $akilia1db = $this->akilia1Db;
         $akilia2db = $this->akilia2Db;
@@ -1236,7 +1227,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         //$rep = "REPLACE($rep, '\\n ', '\\n')";
         if ($this->replace_dash_by_newline) {
             $rep = "REPLACE($rep, ' - ', '\\n- ')";
-        }        
+        }
         
         
         $description = "if(trim(COALESCE(i.desc$default_lsfx, '')) = '', null, $rep)";
@@ -1406,7 +1397,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
     /**
      *
-     * @param string $column_name            
+     * @param string $column_name
      * @return string
      */
     protected function hackUtf8TranslationColumn($column_name)
@@ -1417,7 +1408,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     /**
      * Really specific to akilia1/openstore bridge
      */
-    function synchronizeParentAssociation()
+    public function synchronizeParentAssociation()
     {
         $akilia1db = $this->akilia1Db;
         $db = $this->openstoreDb;
@@ -1433,18 +1424,16 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             set parent_id = if (i2.id_article <> 0 and i2.id_article <> '' and i2.id_article is not null, i2.id_article, null)
             where 1=1
         ";
-        //dump($update);        
+        //dump($update);
         $this->executeSQL("Update parent association...", $update);
-        
     }
     
     /**
-     * 
+     *
      * @param array $product_ids restrict sync to the following products id's
      */
-    function synchronizeProductTranslation(array $product_ids=null)
+    public function synchronizeProductTranslation(array $product_ids = null)
     {
-        
         $akilia1db = $this->akilia1Db;
         $db = $this->openstoreDb;
         $intelaccessDb = $this->intelaccessDb;
@@ -1453,7 +1442,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         
         
         if ($product_ids !== null) {
-
             $product_clause = " and ("
                     . "i.id_article in (" . join(',', $product_ids) . ') or '
                     . "i.id_art_tete in (" . join(',', $product_ids) . ') or '
@@ -1464,7 +1452,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         }
         
         foreach ($langs as $lang => $sfx) {
-            
             $lang = strtolower($lang);
             
             if ($lang == 'zh') {
@@ -1496,7 +1483,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             //$rep = "REPLACE($rep, '\\n ', '\\n')";
             if ($this->replace_dash_by_newline) {
                 $rep = "REPLACE($rep, ' - ', '\\n- ')";
-            }        
+            }
             
             $description = $rep;
             
@@ -1573,7 +1560,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         }
         //die();
         // 2. Deleting - old links in case it changes only when product id is no specified
-        
+
         if ($product_ids === null) {
             $delete = "
                 delete from $db.product_translation 
@@ -1588,7 +1575,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     /**
      * Synchronize discount conditions
      */
-    function synchronizeDiscountCondition()
+    public function synchronizeDiscountCondition()
     {
         $akilia1Db = $this->akilia1Db;
         $db = $this->openstoreDb;
@@ -1671,13 +1658,13 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->executeSQL("Delete eventual removed discount conditions", $delete);
     }
 
-    function rebuildProductSearch()
+    public function rebuildProductSearch()
     {
         $query = "CALL rebuild_product_search()";
         $this->executeSQL('Rebuild product search', $query);
     }
 
-    function rebuildCategoryBreadcrumbs()
+    public function rebuildCategoryBreadcrumbs()
     {
         $query = "CALL rebuild_category_breadcrumbs()";
         $this->executeSQL('Rebuild category breadcrumbs', $query);
@@ -1690,8 +1677,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
      *
      * @param string $key
      *            name of the query
-     * @param string $query            
-     * @param boolean $disable_foreign_key_checks            
+     * @param string $query
+     * @param boolean $disable_foreign_key_checks
      * @return void
      */
     protected function executeSQL($key, $query, $disable_foreign_key_checks = true)
@@ -1743,22 +1730,21 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
     /**
      * Log message
-     * 
-     * @param string $message            
-     * @param int $priority            
+     *
+     * @param string $message
+     * @param int $priority
      * @return void
      */
     protected function log($message, $priority = null)
     {
         if ($this->output_log) {
-         
             echo "$message\n";
         }
     }
 
     /**
      *
-     * @param \Zend\Db\Adapter\Adapter $adapter            
+     * @param \Zend\Db\Adapter\Adapter $adapter
      * @return Synchronizer
      */
     public function setDbAdapter(Adapter $adapter)
@@ -1771,14 +1757,14 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
      *
      * @return Zend\Db\Adapter\Adapter
      */
-    function getDbAdapter()
+    public function getDbAdapter()
     {
         return $this->adapter;
     }
 
     /**
      *
-     * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator            
+     * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
      */
     public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
     {

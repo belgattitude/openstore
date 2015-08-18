@@ -10,22 +10,22 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass="Openstore\Entity\Repository\RoleRepository")
- * @Gedmo\Tree(type="nested") 
+ * @Gedmo\Tree(type="nested")
  * @ORM\Table(
  *   name="role",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_name_idx",columns={"name"}),
- *   }, 
+ *   },
  *   indexes={
  *     @ORM\Index(name="lft_idx", columns={"lft"}),
  *     @ORM\Index(name="rgt_idx", columns={"rgt"}),
  *   },
  *   options={"comment" = "Access roles"}
  * )
- * 
+ *
  */
-class Role implements HierarchicalRoleInterface {
-
+class Role implements HierarchicalRoleInterface
+{
     /**
      * @var int|null
      *
@@ -97,7 +97,8 @@ class Role implements HierarchicalRoleInterface {
     /**
      * Init the Doctrine collection
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->children = new ArrayCollection();
         $this->permissions = new ArrayCollection();
         $this->users = new ArrayCollection();
@@ -108,7 +109,8 @@ class Role implements HierarchicalRoleInterface {
      *
      * @return int
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->role_id;
     }
 
@@ -117,7 +119,8 @@ class Role implements HierarchicalRoleInterface {
      *
      * @return int
      */
-    public function getRoleId() {
+    public function getRoleId()
+    {
         return $this->role_id;
     }
 
@@ -127,7 +130,8 @@ class Role implements HierarchicalRoleInterface {
      * @param  string $name
      * @return void
      */
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = (string) $name;
     }
 
@@ -136,21 +140,24 @@ class Role implements HierarchicalRoleInterface {
      *
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function addChild(HierarchicalRoleInterface $child) {
+    public function addChild(HierarchicalRoleInterface $child)
+    {
         $this->children[] = $child;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function addPermission($permission) {
+    public function addPermission($permission)
+    {
         if (is_string($permission)) {
             $permission = new Permission($permission);
         }
@@ -161,38 +168,46 @@ class Role implements HierarchicalRoleInterface {
     /**
      * {@inheritDoc}
      */
-    public function hasPermission($permission) {
+    public function hasPermission($permission)
+    {
         // This can be a performance problem if your role has a lot of permissions. Please refer
         // to the cookbook to an elegant way to solve this issue
 
         return isset($this->permissions[(string) $permission]);
     }
 
-    public function setParent($parent) {
+    public function setParent($parent)
+    {
         $this->parent = $parent;
     }
 
-    public function getParent() {
+    public function getParent()
+    {
         return $this->parent;
     }
 
-    public function getRoot() {
+    public function getRoot()
+    {
         return $this->root;
     }
 
-    public function getLevel() {
+    public function getLevel()
+    {
         return $this->level;
     }
 
-    public function getChildren() {
+    public function getChildren()
+    {
         return $this->children;
     }
 
-    public function getLeft() {
+    public function getLeft()
+    {
         return $this->lft;
     }
 
-    public function getRight() {
+    public function getRight()
+    {
         return $this->rgt;
     }
 
@@ -209,7 +224,8 @@ class Role implements HierarchicalRoleInterface {
     /**
      * {@inheritDoc}
      */
-    public function hasChildren() {
+    public function hasChildren()
+    {
         return !$this->children->isEmpty();
     }
 
@@ -218,8 +234,8 @@ class Role implements HierarchicalRoleInterface {
      *
      * @return User
      */
-    public function getUsers() {
+    public function getUsers()
+    {
         return $this->users;
     }
-
 }

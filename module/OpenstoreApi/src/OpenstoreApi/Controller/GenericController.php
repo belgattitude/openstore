@@ -7,8 +7,8 @@ use OpenstoreApi\Authorize\ApiKeyAccess;
 use Zend\View\Model\ViewModel;
 use Soluble\FlexStore\Options;
 
-class GenericController extends AbstractRestfulController {
-
+class GenericController extends AbstractRestfulController
+{
     protected $collectionOptions = array('GET');
     //protected $resourceOptions = array('GET');
     protected $resourceOptions = array();
@@ -42,9 +42,9 @@ class GenericController extends AbstractRestfulController {
      *
      * @var string
      */
-    protected $view_directory;     
+    protected $view_directory;
 
-    public function onDispatch(\Zend\Mvc\MvcEvent $e) 
+    public function onDispatch(\Zend\Mvc\MvcEvent $e)
     {
         $this->catalogService = $this->getServiceLocator()->get('Api\NammProductCatalogService');
 
@@ -61,28 +61,29 @@ class GenericController extends AbstractRestfulController {
     }
 
     
-    protected function loadTemplate() {
+    protected function loadTemplate()
+    {
         $template = $this->params()->fromQuery('template');
         if (!array_key_exists($template, $this->templates)) {
             throw new \Exception("Template '$template' does not exists");
         }
         $this->template = $this->templates[$template];
         
-        // Check access 
+        // Check access
         foreach ((array) $this->template['check_service_access'] as $sa) {
             $this->apiKeyAccess->checkServiceAccess($sa);
         }
     }
     
-    public function get($id) {
+    public function get($id)
+    {
         die('hello');
         return $response;
     }
     
 
-    public function getList() {
-        
-        
+    public function getList()
+    {
         $view_template = $this->template['view']['list'];
 
 
@@ -109,7 +110,7 @@ class GenericController extends AbstractRestfulController {
             $output = $view_renderer->render($view);
             if ($params['validate'] == 'true') {
                 $this->validateXml($output, $this->template['validate']['list']);
-            }            
+            }
             header('Content-Type: text/xml');
             if ($this->template['filename']['list'] != '') {
                 $filename = $this->template['filename']['list'];
@@ -118,7 +119,7 @@ class GenericController extends AbstractRestfulController {
             echo $output;
         } catch (\Exception $e) {
             throw $e;
-        } 
+        }
         die();
     }
 
@@ -135,7 +136,6 @@ class GenericController extends AbstractRestfulController {
             print '<b>DOMDocument::schemaValidate() Generated Errors!</b>';
             $errors = libxml_get_errors();
             foreach ($errors as $error) {
-                
                 $return = "<br/>\n";
                 switch ($error->level) {
                     case LIBXML_ERR_WARNING:
@@ -152,28 +152,26 @@ class GenericController extends AbstractRestfulController {
                 if ($error->file) {
                     $return .=    " in <b>$error->file</b>";
                 }
-                $return .= " on line <b>$error->line</b>\n";                
+                $return .= " on line <b>$error->line</b>\n";
                 echo $return;
             }
-            libxml_clear_errors();            
+            libxml_clear_errors();
             die();
-        }       
-        
-        
+        }
     }
     
     /**
-     * 
+     *
      * @return \Zend\View\Renderer\PhpRenderer
      */
-    protected function getViewRenderer() {
+    protected function getViewRenderer()
+    {
         $renderer = new \Zend\View\Renderer\PhpRenderer();
         $resolver = new \Zend\View\Resolver\TemplatePathStack(array(
             'script_paths' => array(
                 $this->view_directory)));
         $renderer->setResolver($resolver);
         return $renderer;
-
     }
            
     
@@ -198,14 +196,14 @@ class GenericController extends AbstractRestfulController {
                 'check_service_access' => array(
                     '2000-ProductCatalog'
                 )
-            ),            
+            ),
             'namm_item_v2011.1' => array(
                 'view' => array(
                     'list' => 'namm_b2b/namm_item_v2011.1.phtml'
                 ),
                 'validate' => array(
                     'list' => 'namm_b2b/xsd/item_v2011.1.xsd'
-                ),                
+                ),
                 'filename' => array(
                     'list' => 'namm_item_v2011.1.xml'
                 ),
@@ -215,7 +213,5 @@ class GenericController extends AbstractRestfulController {
             )
         );
         return $templates;
-    }        
-    
-
+    }
 }

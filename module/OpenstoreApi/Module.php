@@ -16,13 +16,14 @@ use Soluble\FlexStore\Writer\SimpleXmlWriter;
 use OpenstoreApi\Authorize\Exception\AuthorizationException;
 use Soluble\Spreadsheet\Library\LibXL;
 
-class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
-
-    public function init(ModuleManager $moduleManager) {
-        
+class Module implements AutoloaderProviderInterface, ConfigProviderInterface
+{
+    public function init(ModuleManager $moduleManager)
+    {
     }
 
-    public function onBootstrap(MvcEvent $e) {
+    public function onBootstrap(MvcEvent $e)
+    {
 
         /** @var \Zend\ModuleManager\ModuleManager $moduleManager */
         $moduleManager = $e->getApplication()->getServiceManager()->get('modulemanager');
@@ -35,7 +36,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
         $sharedEvents->attach('Zend\Mvc\Application', MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'errorProcess'), 999);
 
         //$eventManager = $moduleManager->getEventManager();
-        //$eventManager        = $e->getApplication()->getEventManager();        
+        //$eventManager        = $e->getApplication()->getEventManager();
         //$eventManager->attach(MvcEvent::EVENT_DISPATCH, array($this, 'postProcess'), -100);
         //$eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'errorProcess'), 999);
         /*
@@ -53,8 +54,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
      * @param MvcEvent $e
      * @return null|\Zend\Http\PhpEnvironment\Response
      */
-    public function postProcess(MvcEvent $e) {
-
+    public function postProcess(MvcEvent $e)
+    {
         $routeMatch = $e->getRouteMatch();
         if ($routeMatch) {
             $format = $routeMatch->getParam('format', false);
@@ -70,8 +71,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
 
             
             switch ($format) {
-
-                case 'json' :
+                case 'json':
                     header("Access-Control-Allow-Origin: *");
                     if ($vars instanceof StoreInterface) {
                         $jsonWriter = new JsonWriter($vars);
@@ -82,8 +82,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
                         throw new \Exception('Response must include a valid StoreInterface object');
                     }
                     break;
-                case 'xml' :
-
+                case 'xml':
                     if ($vars instanceof StoreInterface) {
                         $xmlWriter = new SimpleXmlWriter($vars);
                         $xmlWriter->send();
@@ -94,8 +93,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
                     }
 
                     break;
-                case 'xlsx' :
-                    
+                case 'xlsx':
                     if ($vars instanceof StoreInterface) {
                         $lm = $e->getApplication()->getServiceManager()->get('LicenseManager');
                         $lic = $lm->get('libxl');
@@ -105,18 +103,16 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
 
                         $libxlWriter = new LibXLWriter($vars);
                         $libxlWriter->send();
-                        
                     } else {
                         throw new \Exception('Response must include a valid StoreInterface object');
                     }
                     
 
-                case 'csv' :
+                case 'csv':
                     if ($vars instanceof StoreInterface) {
-
                         if (array_key_exists('csv-enclosure', $_GET)) {
                             switch ($_GET['csv-enclosure']) {
-                                case 'false' :
+                                case 'false':
                                 case '':
                                     $enclosure = '';
                                     break;
@@ -143,14 +139,12 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
                         $csvWriter = new CSVWriter($vars);
                         $csvWriter->setOptions($options);
                         $csvWriter->send();
-                        
                     } else {
                         throw new \Exception('Response must include a valid StoreInterface object');
                     }
 
 
                 default:
-                    
                     throw new \Exception("Error '$format' format not supported");
             }
         }
@@ -160,15 +154,12 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
      * @param MvcEvent $e
      * @return null|\Zend\Http\PhpEnvironment\Response
      */
-    public function errorProcess(MvcEvent $e) {
-
+    public function errorProcess(MvcEvent $e)
+    {
         $routeMatch = $e->getRouteMatch();
 
         //var_dump($e->getApplication()->get);die();
         if (php_sapi_name() != 'cli' && $routeMatch !== null && $routeMatch->getMatchedRouteName() == 'api/restful') {
-
-
-
             $format = $routeMatch->getParam('format', false);
             $eventParams = $e->getParams();
 
@@ -188,7 +179,6 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
 
 
             if (isset($eventParams['exception'])) {
-
                 $reason_phrase = "Error: " . $eventParams['exception']->getMessage();
 
                 /** @var \Exception $exception */
@@ -213,14 +203,12 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
 
 
             switch ($format) {
-                case 'json' :
-
+                case 'json':
                     $e->getResponse()->getHeaders()->addHeaderLine('Content-Type', 'application/json', true);
                     $e->getResponse()->setContent(json_encode($body));
                     break;
 
-                case 'xml' :
-
+                case 'xml':
                     $e->getResponse()->getHeaders()->addHeaderLine('Content-Type', 'application/xml', true);
                     $exception_message = $body['error']['exception_message'];
                     $error_type = $body['error']['type'];
@@ -232,15 +220,13 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
                     break;
 
                 default:
-
                     $e->getResponse()->getHeaders()->addHeaderLine('Content-Type', 'text/html', true);
                     $content = $reason_phrase;
                     $e->getResponse()->setContent($content);
                     break;
             }
 
-            if (
-                    $eventParams['error'] === \Zend\Mvc\Application::ERROR_CONTROLLER_NOT_FOUND ||
+            if ($eventParams['error'] === \Zend\Mvc\Application::ERROR_CONTROLLER_NOT_FOUND ||
                     $eventParams['error'] === \Zend\Mvc\Application::ERROR_ROUTER_NO_MATCH
             ) {
                 $e->getResponse()->setStatusCode(\Zend\Http\PhpEnvironment\Response::STATUS_CODE_501);
@@ -256,35 +242,36 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
         }
     }
 
-    public function getConfig() {
-
+    public function getConfig()
+    {
         $config = array_merge(
-                include __DIR__ . '/config/module.config.php', 
-                include __DIR__ . '/config/routes.config.php'
+            include __DIR__ . '/config/module.config.php',
+            include __DIR__ . '/config/routes.config.php'
         );
 
         return $config;
     }
 
-    public function getServiceConfig() {
+    public function getServiceConfig()
+    {
         return array(
             'initializers' => array(
-                'db' => function($service, $sm) {
-                            if ($service instanceof AdapterAwareInterface) {
-                                $service->setDbAdapter($sm->get('Zend\Db\Adapter\Adapter'));
-                            }
-                        },
-                'sm' => function($service, $sm) {
-                            if ($service instanceof ServiceLocatorAwareInterface) {
-                                $service->setServiceLocator($sm);
-                            }
-                        }
+                'db' => function ($service, $sm) {
+                    if ($service instanceof AdapterAwareInterface) {
+                        $service->setDbAdapter($sm->get('Zend\Db\Adapter\Adapter'));
+                    }
+                },
+                'sm' => function ($service, $sm) {
+                    if ($service instanceof ServiceLocatorAwareInterface) {
+                        $service->setServiceLocator($sm);
+                    }
+                }
             ),
             'factories' => array(
-                //'License\LicenceManager' => 'License\Service\LicenseManagerFactory',   
+                //'License\LicenceManager' => 'License\Service\LicenseManagerFactory',
                 //'Test' => function ($sm) { return 'cool'; }
                 'LicenseManager' => 'License\Service\LicenseManagerFactory'
-            ),      
+            ),
             'aliases' => array(
             ),
             'invokables' => array(
@@ -298,7 +285,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
         );
     }
 
-    public function getAutoloaderConfig() {
+    public function getAutoloaderConfig()
+    {
         return array(
             'Zend\Loader\StandardAutoloader' => array(
                 'namespaces' => array(
@@ -308,5 +296,4 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface {
             ),
         );
     }
-
 }

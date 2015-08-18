@@ -10,24 +10,25 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
 
-class UserBrowser extends AbstractBrowser {
-
+class UserBrowser extends AbstractBrowser
+{
     /**
      * @return array
      */
-    function getSearchableParams() {
+    public function getSearchableParams()
+    {
         return array(
         );
     }
 
     /**
-     * 
+     *
      * @return \Zend\Db\Sql\Select
      */
-    function getSelect() {
+    public function getSelect()
+    {
         $select = new Select();
         $select->from(array('u' => 'user'));
         return $select;
     }
-
 }

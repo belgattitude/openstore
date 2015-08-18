@@ -5,8 +5,8 @@ namespace Openstore;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class Permission implements ServiceLocatorAwareInterface {
-
+class Permission implements ServiceLocatorAwareInterface
+{
     /**
      *
      * @var ServiceLocatorInterface
@@ -15,19 +15,20 @@ class Permission implements ServiceLocatorAwareInterface {
 
     /**
      *
-     * @var 
+     * @var
      */
     protected $adapter;
 
-    function __construct() {
-        
+    public function __construct()
+    {
     }
 
     /**
      * Return currenctly logged in identity
      * @return \Openstore\Entity\User|false
      */
-    function getIdentity() {
+    public function getIdentity()
+    {
         $auth = $this->serviceLocator->get('zfcuser_auth_service');
         if ($auth->hasIdentity()) {
             return $auth->getIdentity();
@@ -35,13 +36,14 @@ class Permission implements ServiceLocatorAwareInterface {
         return false;
     }
 
-    public function setServiceLocator(ServiceLocatorInterface $sl) {
+    public function setServiceLocator(ServiceLocatorInterface $sl)
+    {
         $this->serviceLocator = $sl;
         return $this;
     }
 
-    public function getServiceLocator() {
+    public function getServiceLocator()
+    {
         return $this->serviceLocator;
     }
-
 }

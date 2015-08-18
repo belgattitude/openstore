@@ -9,8 +9,8 @@ use Zend\Session\Container;
 use Openstore\Permission\UserCapabilities;
 use Soluble\Normalist\Synthetic\TableManager;
 
-class UserContext implements ServiceLocatorAwareInterface {
-
+class UserContext implements ServiceLocatorAwareInterface
+{
     /**
      * @var ServiceLocatorInterface
      */
@@ -22,14 +22,14 @@ class UserContext implements ServiceLocatorAwareInterface {
      */
     protected $container;
 
-    function __construct(\Zend\Session\Container $container) {
+    public function __construct(\Zend\Session\Container $container)
+    {
         $this->container = $container;
     }
 
-    public function initialize() {
-
+    public function initialize()
+    {
         if (!$this->container['is_initialized']) {
-
             $user_id = $this->container['user_id'];
             if ($user_id !== null) {
                 $userCap = new UserCapabilities($user_id);
@@ -45,7 +45,6 @@ class UserContext implements ServiceLocatorAwareInterface {
                 //var_dump($this->container['testobject']->getCustomers());
                 //die();
             } else {
-
                 $tm = $this->getTableManager();
 
 
@@ -62,33 +61,36 @@ class UserContext implements ServiceLocatorAwareInterface {
         }
     }
 
-    function getAllowedPricelists() {
+    public function getAllowedPricelists()
+    {
         return $this->container['pricelists'];
     }
 
     /**
-     * 
+     *
      * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
      * @return \Openstore\Service
      */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
         $this->serviceLocator = $serviceLocator;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return \Zend\ServiceManager\ServiceLocatorInterface
      */
-    public function getServiceLocator() {
+    public function getServiceLocator()
+    {
         return $this->serviceLocator;
     }
 
     /**
      * @return TableManager
      */
-    protected function getTableManager() {
+    protected function getTableManager()
+    {
         return $this->getServiceLocator()->get('SolubleNormalist\TableManager');
     }
-
 }

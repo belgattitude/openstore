@@ -12,8 +12,8 @@ namespace Openstore;
 
 use Openstore\Configuration;
 
-interface ConfigurationAwareInterface {
-
+interface ConfigurationAwareInterface
+{
     /**
      * Set configuration
      *

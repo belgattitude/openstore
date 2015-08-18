@@ -2,10 +2,8 @@
 
 namespace Openstore;
 
-
-
-class Configuration  {
-
+class Configuration
+{
     /**
      *
      * @var array
@@ -18,12 +16,13 @@ class Configuration  {
      * @param  array|Traversable $options
      * @throws \Zend\Stdlib\Exception\InvalidArgumentException
      */
-    public function __construct($options = null) {
-       $this->options = $options;
+    public function __construct($options = null)
+    {
+        $this->options = $options;
     }
     
     /**
-     * 
+     *
      * @param string $key
      * @return mixed
      */
@@ -37,10 +36,8 @@ class Configuration  {
                 throw new \Exception(__METHOD__ . " Cannot locate configuration key '$key', failed at part '$part'");
             }
             $ref = $ref[$part];
-            
         }
         return $ref;
-        
     }
     
     
@@ -48,6 +45,4 @@ class Configuration  {
     {
         return $this->options;
     }
-
-
 }

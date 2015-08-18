@@ -13,10 +13,10 @@ use Zend\Db\Sql\Sql;
 //use Zend\Db\Sql\Expression;
 use ArrayObject;
 
-class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAwareInterface, AdapterAwareInterface {
-
+class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAwareInterface, AdapterAwareInterface
+{
     /**
-     * @var ServiceLocatorInterface 
+     * @var ServiceLocatorInterface
      */
     protected $serviceLocator;
 
@@ -100,7 +100,7 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
             $sql_string = $sql->getSqlStringForSqlObject($select);
 
             $results = $this->adapter->query($sql_string, Adapter::QUERY_MODE_EXECUTE);
-            foreach($results as $result) {
+            foreach ($results as $result) {
                 $this->exclusions['product_type'][] = $result['type_id'];
             }
         }
@@ -108,11 +108,12 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
   
     
     /**
-     * 
+     *
      * @param integer $customer_id
      * @param string $pricelist pricelist reference
      */
-    function setParams($customer_id, $pricelist) {
+    public function setParams($customer_id, $pricelist)
+    {
         $this->customer_id = $customer_id;
         $this->pricelist = $pricelist;
     }
@@ -120,9 +121,10 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
     
 
     /**
-     * 
+     *
      */
-    protected function loadCustomerDiscounts() {
+    protected function loadCustomerDiscounts()
+    {
         $sl = $this->getServiceLocator();
         $dc = $sl->get('Model\DiscountCondition');
         $matrix = $dc->getCustomerMatrix($this->customer_id, $this->pricelist);
@@ -131,12 +133,12 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
     }
 
     /**
-     * 
+     *
      * @throws \Exception
      * @param ArrayObject $row
      */
-    function apply(ArrayObject $row) {
-        
+    public function apply(ArrayObject $row)
+    {
         if (!$this->loaded_discounts) {
             $this->loadCustomerDiscounts();
         }
@@ -153,9 +155,8 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
         
         $sd = null;
         
-        if (!in_array($type_id, $this->exclusions['product_type']) 
+        if (!in_array($type_id, $this->exclusions['product_type'])
                 && $this->loaded_discounts->count() > 0) {
-            
             $ld = $this->loaded_discounts;
             
             $product_id         = $row[$this->columns['source_product_id']];
@@ -180,7 +181,7 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
         }
 
         // Special discount found
-        
+
         if ($sd === null) {
             $row[$this->columns['target_price']] = $price;
             $row[$this->columns['target_discount_1']] = $discount_1;
@@ -201,7 +202,7 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
             }
             
             // Calculate new price from list_price
-            
+
             $d1 = max($sd['discount_1'], $discount_1);
             $d2 = max($sd['discount_2'], $discount_2);
             $d3 = max($sd['discount_3'], $discount_3);
@@ -218,9 +219,7 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
             $row[$this->columns['target_discount_4']] = $d4;
             
             $row[$this->columns['target_price']] = $target_price;
-            
-        }    
-        
+        }
     }
 
 
@@ -230,8 +229,8 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
      * @param ServiceLocatorInterface $serviceLocator
      * @return CustomerDiscountRenderer
      */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
-
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
         $this->serviceLocator = $serviceLocator;
         return $this;
     }
@@ -241,7 +240,8 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
      *
      * @return ServiceLocatorInterface
      */
-    public function getServiceLocator() {
+    public function getServiceLocator()
+    {
         return $this->serviceLocator;
     }
 
@@ -251,16 +251,18 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
      * @param Adapter $adapter
      * @return CustomerDiscountRenderer
      */
-    public function setDbAdapter(Adapter $adapter) {
+    public function setDbAdapter(Adapter $adapter)
+    {
         $this->adapter = $adapter;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return Adapter
      */
-    public function getDbAdapter() {
+    public function getDbAdapter()
+    {
         return $this->adapter;
     }
 
@@ -268,10 +270,8 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
      * Return the list of columns required in order to use this renderer
      * @return array
      */
-    function getRequiredColumns()
+    public function getRequiredColumns()
     {
         return array_values($this->columns);
     }
-    
-    
 }

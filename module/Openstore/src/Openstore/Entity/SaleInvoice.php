@@ -13,15 +13,15 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   name="sale_invoice",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *   }, 
+ *   },
  *   indexes={
  *     @ORM\Index(name="invoiced_at_idx", columns={"invoiced_at"}),
  *   },
  *   options={"comment" = "Sales invoices table"}
  * )
  */
-class SaleInvoice {
-
+class SaleInvoice
+{
     /**
      * @ORM\Id
      * @ORM\Column(name="invoice_id", type="bigint", nullable=false, options={"unsigned"=true})
@@ -91,14 +91,16 @@ class SaleInvoice {
 
 
 
-    public function setInvoicedAt($invoiced_at) {
+    public function setInvoicedAt($invoiced_at)
+    {
         $this->invoiced_at = $invoiced_at;
     }
 
     /**
      * @param string $customer_reference
      */
-    public function setCustomerReference($customer_reference) {
+    public function setCustomerReference($customer_reference)
+    {
         $this->customer_reference = $customer_reference;
     }
     
@@ -106,71 +108,80 @@ class SaleInvoice {
     /**
      * @return string
      */
-    public function getCustomerReference() {
+    public function getCustomerReference()
+    {
         return $this->customer_reference;
     }
 
     /**
      * @param string $comment
      */
-    public function setCustomerComment($comment) {
+    public function setCustomerComment($comment)
+    {
         $this->comment = $comment;
     }
 
     /**
      * @return string
      */
-    public function getComment() {
+    public function getComment()
+    {
         return $this->comment;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getCreatedAt() {
+    public function getCreatedAt()
+    {
         return $this->created_at;
     }
 
     /**
-     * 
+     *
      * @param string $created_at
      */
-    public function setCreatedAt($created_at) {
+    public function setCreatedAt($created_at)
+    {
         $this->created_at = $created_at;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getUpdatedAt() {
+    public function getUpdatedAt()
+    {
         return $this->updated_at;
     }
 
     /**
-     * 
+     *
      * @param string $updated_at
      */
-    public function setUpdatedAt($updated_at) {
+    public function setUpdatedAt($updated_at)
+    {
         $this->updated_at = $updated_at;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getDeletedAt() {
+    public function getDeletedAt()
+    {
         return $this->deleted_at;
     }
 
     /**
-     * 
+     *
      * @param string $deleted_at
      */
-    public function setDeletedAt($deleted_at) {
+    public function setDeletedAt($deleted_at)
+    {
         $this->deleted_at = $deleted_at;
         return $this;
     }
@@ -179,7 +190,8 @@ class SaleInvoice {
      * Return creator username
      * @return string
      */
-    public function getCreatedBy() {
+    public function getCreatedBy()
+    {
         return $this->created_by;
     }
 
@@ -187,7 +199,8 @@ class SaleInvoice {
      * Set creator username
      * @param string $created_by
      */
-    public function setCreatedBy($created_by) {
+    public function setCreatedBy($created_by)
+    {
         $this->created_by = $created_by;
         return $this;
     }
@@ -196,7 +209,8 @@ class SaleInvoice {
      * Return last updater username
      * @return string
      */
-    public function getUpdatedBy() {
+    public function getUpdatedBy()
+    {
         return $this->updated_by;
     }
 
@@ -204,16 +218,18 @@ class SaleInvoice {
      * Set the last updater username
      * @param string $updated_by
      */
-    public function setUpdatedBy($updated_by) {
+    public function setUpdatedBy($updated_by)
+    {
         $this->updated_by = $updated_by;
         return $this;
     }
 
     /**
-     * Return legacy mapping 
+     * Return legacy mapping
      * @return string $legacy_mapping
      */
-    public function getLegacyMapping() {
+    public function getLegacyMapping()
+    {
         return $this->legacy_mapping;
     }
 
@@ -221,7 +237,8 @@ class SaleInvoice {
      * Set a legacy mapping for this record
      * @param string $legacy_mapping
      */
-    public function setLegacyMapping($legacy_mapping) {
+    public function setLegacyMapping($legacy_mapping)
+    {
         $this->legacy_mapping = $legacy_mapping;
         return $this;
     }
@@ -230,17 +247,18 @@ class SaleInvoice {
      * Set legacy synchro time
      * @param string $legacy_mapping
      */
-    public function setLegacySynchroAt($legacy_synchro_at) {
+    public function setLegacySynchroAt($legacy_synchro_at)
+    {
         $this->legacy_synchro_at = $legacy_synchro_at;
         return $this;
     }
 
     /**
-     * Return legacy synchro timestamp 
-     * @return string 
+     * Return legacy synchro timestamp
+     * @return string
      */
-    public function getLegacySynchroAt() {
+    public function getLegacySynchroAt()
+    {
         return $this->legacy_synchro_at;
     }
-
 }

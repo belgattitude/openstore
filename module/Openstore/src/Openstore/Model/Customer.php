@@ -10,15 +10,15 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 use Zend\Stdlib\Hydrator;
 
-class Customer extends AbstractModel {
-
+class Customer extends AbstractModel
+{
     /**
-     * 
+     *
      * @param int $customer_id
      * @return array
      */
-    function getCustomerPricelists($customer_id) {
-
+    public function getCustomerPricelists($customer_id)
+    {
         $adapter = $this->adapter;
         $sql = new Sql($adapter);
         $select = $sql->select();
@@ -28,7 +28,7 @@ class Customer extends AbstractModel {
                 ->join(array('pl' => 'pricelist'), new Expression('pl.pricelist_id = cpl.pricelist_id'), array());
 
         $select->columns(array(
-            //'user_id'		=> new Expression('u.user_id'), 
+            //'user_id'     => new Expression('u.user_id'),
             'pricelist_id' => new Expression('pl.pricelist_id'),
             'reference' => new Expression('pl.reference')
         ));
@@ -41,11 +41,12 @@ class Customer extends AbstractModel {
     }
 
     /**
-     * 
+     *
      * @param integer $user_id
      * @return array
      */
-    function getUserRoles($user_id) {
+    public function getUserRoles($user_id)
+    {
         $adapter = $this->adapter;
         $sql = new Sql($adapter);
         $select = $sql->select();
@@ -55,7 +56,7 @@ class Customer extends AbstractModel {
                 ->join(array('r' => 'role'), new Expression('r.role_id = ur.role_id'), array());
 
         $select->columns(array(
-            //'user_id'		=> new Expression('u.user_id'), 
+            //'user_id'     => new Expression('u.user_id'),
             'role_id' => new Expression('r.role_id'),
             'reference' => new Expression('r.reference')
         ));
@@ -70,9 +71,10 @@ class Customer extends AbstractModel {
     /**
      * Get associated customers
      * @param int $user_id
-     * @return 
+     * @return
      */
-    function getCustomers($user_id) {
+    public function getCustomers($user_id)
+    {
         $adapter = $this->adapter;
         $sql = new Sql($adapter);
 
@@ -94,7 +96,4 @@ class Customer extends AbstractModel {
         $results = $adapter->query($sql_string, $adapter::QUERY_MODE_EXECUTE)->toArray();
         return $results;
     }
-
-    
-
 }

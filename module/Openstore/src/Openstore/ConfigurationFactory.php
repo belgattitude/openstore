@@ -6,14 +6,14 @@ use Openstore\Configuration;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class ConfigurationFactory implements FactoryInterface {
-
+class ConfigurationFactory implements FactoryInterface
+{
     /**
      * @param ServiceLocatorInterface $sl
      * @return \Openstore\Service
      */
-    public function createService(ServiceLocatorInterface $sl) {
-
+    public function createService(ServiceLocatorInterface $sl)
+    {
         $config = $sl->get('Configuration');
         $cfg = isset($config['openstore']) ? $config['openstore'] : null;
         /*
@@ -26,5 +26,4 @@ class ConfigurationFactory implements FactoryInterface {
 
         return $options;
     }
-
 }

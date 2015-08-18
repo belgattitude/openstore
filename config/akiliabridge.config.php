@@ -17,7 +17,7 @@ $config = array(
         'OpenstoreApi',
         'DoctrineModule',
         'DoctrineORMModule',
-        //'ZendDeveloperTools',        
+        //'ZendDeveloperTools',
 
     ),
     // These are various options for the listeners attached to the ModuleManager

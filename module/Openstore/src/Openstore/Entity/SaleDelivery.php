@@ -13,15 +13,15 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   name="sale_delivery",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *   }, 
+ *   },
  *   indexes={
  *     @ORM\Index(name="delivered_at_idx", columns={"delivered_at"}),
  *   },
  *   options={"comment" = "Sales deliveries table"}
  * )
  */
-class SaleDelivery {
-
+class SaleDelivery
+{
     /**
      * @ORM\Id
      * @ORM\Column(name="delivery_id", type="bigint", nullable=false, options={"unsigned"=true})
@@ -90,14 +90,16 @@ class SaleDelivery {
 
 
 
-    public function setDeliveredAt($delivered_at) {
+    public function setDeliveredAt($delivered_at)
+    {
         $this->delivered_at = $delivered_at;
     }
 
     /**
      * @param string $customer_reference
      */
-    public function setCustomerReference($customer_reference) {
+    public function setCustomerReference($customer_reference)
+    {
         $this->customer_reference = $customer_reference;
     }
     
@@ -105,71 +107,80 @@ class SaleDelivery {
     /**
      * @return string
      */
-    public function getCustomerReference() {
+    public function getCustomerReference()
+    {
         return $this->customer_reference;
     }
 
     /**
      * @param string $comment
      */
-    public function setCustomerComment($comment) {
+    public function setCustomerComment($comment)
+    {
         $this->comment = $comment;
     }
 
     /**
      * @return string
      */
-    public function getComment() {
+    public function getComment()
+    {
         return $this->comment;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getCreatedAt() {
+    public function getCreatedAt()
+    {
         return $this->created_at;
     }
 
     /**
-     * 
+     *
      * @param string $created_at
      */
-    public function setCreatedAt($created_at) {
+    public function setCreatedAt($created_at)
+    {
         $this->created_at = $created_at;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getUpdatedAt() {
+    public function getUpdatedAt()
+    {
         return $this->updated_at;
     }
 
     /**
-     * 
+     *
      * @param string $updated_at
      */
-    public function setUpdatedAt($updated_at) {
+    public function setUpdatedAt($updated_at)
+    {
         $this->updated_at = $updated_at;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getDeletedAt() {
+    public function getDeletedAt()
+    {
         return $this->deleted_at;
     }
 
     /**
-     * 
+     *
      * @param string $deleted_at
      */
-    public function setDeletedAt($deleted_at) {
+    public function setDeletedAt($deleted_at)
+    {
         $this->deleted_at = $deleted_at;
         return $this;
     }
@@ -178,7 +189,8 @@ class SaleDelivery {
      * Return creator username
      * @return string
      */
-    public function getCreatedBy() {
+    public function getCreatedBy()
+    {
         return $this->created_by;
     }
 
@@ -186,7 +198,8 @@ class SaleDelivery {
      * Set creator username
      * @param string $created_by
      */
-    public function setCreatedBy($created_by) {
+    public function setCreatedBy($created_by)
+    {
         $this->created_by = $created_by;
         return $this;
     }
@@ -195,7 +208,8 @@ class SaleDelivery {
      * Return last updater username
      * @return string
      */
-    public function getUpdatedBy() {
+    public function getUpdatedBy()
+    {
         return $this->updated_by;
     }
 
@@ -203,16 +217,18 @@ class SaleDelivery {
      * Set the last updater username
      * @param string $updated_by
      */
-    public function setUpdatedBy($updated_by) {
+    public function setUpdatedBy($updated_by)
+    {
         $this->updated_by = $updated_by;
         return $this;
     }
 
     /**
-     * Return legacy mapping 
+     * Return legacy mapping
      * @return string $legacy_mapping
      */
-    public function getLegacyMapping() {
+    public function getLegacyMapping()
+    {
         return $this->legacy_mapping;
     }
 
@@ -220,7 +236,8 @@ class SaleDelivery {
      * Set a legacy mapping for this record
      * @param string $legacy_mapping
      */
-    public function setLegacyMapping($legacy_mapping) {
+    public function setLegacyMapping($legacy_mapping)
+    {
         $this->legacy_mapping = $legacy_mapping;
         return $this;
     }
@@ -229,17 +246,18 @@ class SaleDelivery {
      * Set legacy synchro time
      * @param string $legacy_mapping
      */
-    public function setLegacySynchroAt($legacy_synchro_at) {
+    public function setLegacySynchroAt($legacy_synchro_at)
+    {
         $this->legacy_synchro_at = $legacy_synchro_at;
         return $this;
     }
 
     /**
-     * Return legacy synchro timestamp 
-     * @return string 
+     * Return legacy synchro timestamp
+     * @return string
      */
-    public function getLegacySynchroAt() {
+    public function getLegacySynchroAt()
+    {
         return $this->legacy_synchro_at;
     }
-
 }

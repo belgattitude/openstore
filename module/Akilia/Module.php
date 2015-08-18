@@ -12,9 +12,10 @@ use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\Console\Adapter\AdapterInterface;
 
-class Module implements AutoloaderProviderInterface, ConfigProviderInterface, ConsoleUsageProviderInterface {
-
-    public function init(ModuleManager $moduleManager) {
+class Module implements AutoloaderProviderInterface, ConfigProviderInterface, ConsoleUsageProviderInterface
+{
+    public function init(ModuleManager $moduleManager)
+    {
 
         /*
           $sharedEvents = $moduleManager->getEventManager()->getSharedManager();
@@ -48,14 +49,15 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
          */
     }
 
-    public function onBootstrap(MvcEvent $e) {
-        
+    public function onBootstrap(MvcEvent $e)
+    {
     }
 
     /**
      * @inheritdoc
      */
-    public function getServiceConfig() {
+    public function getServiceConfig()
+    {
         return array(
             'aliases' => array(
             //'ZendDeveloperTools\ReportInterface' => 'ZendDeveloperTools\Report',
@@ -66,15 +68,17 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
         );
     }
 
-    public function getConfig() {
-
+    public function getConfig()
+    {
         $config = array_merge(
-                include __DIR__ . '/config/module.config.php', include __DIR__ . '/config/routes.config.php'
+            include __DIR__ . '/config/module.config.php',
+            include __DIR__ . '/config/routes.config.php'
         );
         return $config;
     }
 
-    public function getAutoloaderConfig() {
+    public function getAutoloaderConfig()
+    {
         return array(
             'Zend\Loader\StandardAutoloader' => array(
                 'namespaces' => array(
@@ -105,7 +109,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
      * @param AdapterInterface $console
      * @return array|string|null
      */
-    public function getConsoleUsage(AdapterInterface $console) {
+    public function getConsoleUsage(AdapterInterface $console)
+    {
         return array(
             'akilia setup' => 'Dummy setup action.',
             'akilia syncdb' => 'Synchronize with akilia database.',
@@ -118,5 +123,4 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
             'akilia geocodecustomers' => 'Geocode customers'
         );
     }
-
 }

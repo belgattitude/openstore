@@ -11,12 +11,13 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
 use Patchwork\Utf8 as u;
 
-class ProductBrowser extends AbstractBrowser {
-
+class ProductBrowser extends AbstractBrowser
+{
     /**
      * @return array
      */
-    function getSearchableParams() {
+    public function getSearchableParams()
+    {
         return array(
             'language' => array('required' => true),
             'pricelist' => array('required' => true),
@@ -30,12 +31,11 @@ class ProductBrowser extends AbstractBrowser {
     
 
     /**
-     * 
+     *
      * @return array
      */
     protected function getPackagingColumns()
     {
-        
         $columns = array(
                 'pack_unit_volume' => new Expression("packs.pack_unit_volume"),
                 'pack_unit_weight' => new Expression("packs.pack_unit_weight"),
@@ -60,12 +60,11 @@ class ProductBrowser extends AbstractBrowser {
                 'pack_mastercarton_height' => new Expression("packs.pack_mastercarton_height")
             );
         return $columns;
-        
     }
 
     /**
      * Return inner select for getting packaging extended information
-     * 
+     *
      * @return Select
      */
     protected function getPackagingInnerSelect()
@@ -75,7 +74,7 @@ class ProductBrowser extends AbstractBrowser {
         $packSelect->from(array('pp' => 'product_packaging'), array())
                 ->join(array('pt' => 'packaging_type'), new Expression("pp.type_id = pt.type_id"), array());
         $packSelect->columns(
-                array(
+            array(
                     'product_id' => new Expression('pp.product_id'),
                     'pack_unit_qty' => new Expression("MAX(if (pt.reference = 'UNIT', pp.quantity, null))"),
                     'pack_unit_barcode_ean' => new Expression("MAX(if (pt.reference = 'UNIT', pp.barcode_ean, null))"),
@@ -101,18 +100,19 @@ class ProductBrowser extends AbstractBrowser {
                     'pack_mastercarton_length' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.length, null))"),
                     'pack_mastercarton_width' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.width, null))"),
                     'pack_mastercarton_height' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.height, null))"),
-                )
-                , true);
-        $packSelect->group(array('product_id'));
+                ),
+            true
+        );
+                $packSelect->group(array('product_id'));
 
-       return $packSelect; 
+                return $packSelect;
     }
 
     /**
-     * 
+     *
      * @return Select
      */
-    function getSelect() 
+    public function getSelect()
     {
         $params = $this->getSearchParams();
         
@@ -223,7 +223,7 @@ class ProductBrowser extends AbstractBrowser {
         
         
         
-        $select->columns($columns, true);        
+        $select->columns($columns, true);
         
         $product_id = $params->get('id');
         if ($product_id != '') {
@@ -241,7 +241,6 @@ class ProductBrowser extends AbstractBrowser {
 
         $categories = $params->get('categories');
         if ($categories !== null && count($categories) > 0) {
-
             $sql = new Sql($this->adapter);
             $category_clauses = array();
 
@@ -264,7 +263,6 @@ class ProductBrowser extends AbstractBrowser {
         }
 
         if (($query = trim($params->get('query'))) != "") {
-
             $platform = $this->adapter->getPlatform();
 
 
@@ -275,13 +273,12 @@ class ProductBrowser extends AbstractBrowser {
 
 
 
-            // 1. TEST PART WITH 
+            // 1. TEST PART WITH
             // BARCODE, SEARCH_REFERENCE, PRODUCT_ID,
 
             $matches = array();
             if (is_numeric($query) && u::strlen($query) < 20) {
-
-                // Can be a barcode or a product_id, 
+                // Can be a barcode or a product_id,
                 $matches[1000000000] = "p.product_id = $query";
 
                 if (strlen($query) > 10) {
@@ -350,7 +347,8 @@ class ProductBrowser extends AbstractBrowser {
      * @param string $reference
      * @return string
      */
-    protected function getSearchableReference($reference, $wildcards_starts_at_char = 4, $max_reference_length = 20) {
+    protected function getSearchableReference($reference, $wildcards_starts_at_char = 4, $max_reference_length = 20)
+    {
         $reference = substr($reference, 0, $max_reference_length);
         $quoted = $this->adapter->getPlatform()->quoteValue($reference);
         $ref = $this->adapter->query("select get_searchable_reference($quoted) as ref")->execute()->current()['ref'];
@@ -363,5 +361,4 @@ class ProductBrowser extends AbstractBrowser {
         }
         return $out;
     }
-
 }

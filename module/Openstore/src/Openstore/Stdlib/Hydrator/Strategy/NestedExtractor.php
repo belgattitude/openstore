@@ -1,6 +1,7 @@
 <?php
 
 namespace Openstore\Stdlib\Hydrator\Strategy;
+
 use DoctrineModule\Stdlib\Hydrator\Strategy\AllowRemoveByValue;
 use Doctrine\Common\Collections\Collection;
 
@@ -8,7 +9,6 @@ use Doctrine\Common\Collections\Collection;
 
 class NestedExtractor extends AllowRemoveByValue
 {
-	
     public function extract($value)
     {
         if ($value instanceof Collection) {
@@ -18,12 +18,10 @@ class NestedExtractor extends AllowRemoveByValue
             }
             return $return;
         }
-		if (is_object($value)) {
-			return $value->getId();
-		}
-		
+        if (is_object($value)) {
+            return $value->getId();
+        }
+        
         return $value;
     }
-	
-	
 }

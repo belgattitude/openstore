@@ -10,8 +10,8 @@ use Zend\Db\Sql\Sql;
 use Zend\Stdlib;
 use Soluble\Normalist\Synthetic\TableManager;
 
-class MediaManager {
-
+class MediaManager
+{
     /**
      * @var \MMan\Service\Storage
      */
@@ -23,16 +23,17 @@ class MediaManager {
      */
     protected $tm;
 
-    function __construct() {
-        
+    public function __construct()
+    {
     }
 
     /**
-     * 
+     *
      * @param integer $media_id
      * @return Media
      */
-    function get($media_id) {
+    public function get($media_id)
+    {
         $tm = $this->getTableManager();
         $select = $tm->select();
         $select->from(array('m' => 'media'))
@@ -57,14 +58,13 @@ class MediaManager {
     }
 
     /**
-     * 
+     *
      * @param ImportElement $element
      * @param int $container_id
      * @param boolean $overwrite
      */
-    function import(ImportElement $element, $container_id, $overwrite = true) {
-
-
+    public function import(ImportElement $element, $container_id, $overwrite = true)
+    {
         $fs = $this->storage->getFilesystem();
 
         // STEP 1 : Adding into database
@@ -84,9 +84,8 @@ class MediaManager {
         }
 
         if (!$unchanged) {
-            
             // File have changed
-            
+
             $tm->transaction()->start();
 
 
@@ -111,8 +110,6 @@ class MediaManager {
             try {
                 //echo 'Writing file';
                 $fs->write($mediaLocation['filename'], file_get_contents($filename), $overwrite);
-                
-                
             } catch (\Exception $e) {
                 // If something goes wrong throw an exception
                 $tm->transaction()->rollback();
@@ -138,8 +135,8 @@ class MediaManager {
      * @param string $filename
      * @return array
      */
-    function getMediaLocation($container_id, $media_id, $filename) {
-
+    public function getMediaLocation($container_id, $media_id, $filename)
+    {
         $tm = $this->getTableManager();
 
         $mcTable = $tm->table('media_container');
@@ -176,12 +173,12 @@ class MediaManager {
     }
 
     /**
-     * 
+     *
      * @param int $media_id
      * @return string
      */
-    protected function getMediaDirectory($media_id) {
-
+    protected function getMediaDirectory($media_id)
+    {
         $dirs = array();
         $dirs[] = str_pad(substr($media_id, 0, 2), 2, 0, STR_PAD_LEFT);
         $dirs[] = str_pad(substr($media_id, 2, 4), 2, 0, STR_PAD_LEFT);
@@ -191,18 +188,20 @@ class MediaManager {
 
     /**
      * \MMan\Service\Storage $storage
-     * @return 
+     * @return
      */
-    function getStorage() {
+    public function getStorage()
+    {
         return $this->storage;
     }
 
     /**
-     * 
+     *
      * @param \MMan\Service\Storage $storage
      * @return \MMan\MediaManager
      */
-    function setStorage(Storage $storage) {
+    public function setStorage(Storage $storage)
+    {
         $this->storage = $storage;
         return $this;
     }
@@ -211,16 +210,17 @@ class MediaManager {
      * @param TableManager $tm
      * @return MediaManager
      */
-    function setTableManager(TableManager $tm) {
+    public function setTableManager(TableManager $tm)
+    {
         $this->tm = $tm;
         return $this;
     }
 
-    function getTableManager() {
+    public function getTableManager()
+    {
         if ($this->tm === null) {
             throw new \Exception(__METHOD__ . " No table manager instance set");
         }
         return $this->tm;
     }
-
 }

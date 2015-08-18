@@ -14,12 +14,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *   }, 
+ *   },
  *   options={"comment" = "Customer table"}
  * )
  */
-class Customer {
-
+class Customer
+{
     /**
      * @ORM\Id
      * @ORM\Column(name="customer_id", type="integer", nullable=false, options={"unsigned"=true})
@@ -33,7 +33,7 @@ class Customer {
     private $reference;
 
     /**
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="CustomerGroup", inversedBy="customers", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="group_id", referencedColumnName="group_id", onDelete="CASCADE", nullable=true)
      */
@@ -80,7 +80,7 @@ class Customer {
     private $city;
 
     /**
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="Country", inversedBy="customers", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="country_id", referencedColumnName="country_id", nullable=true)
      */
@@ -165,7 +165,8 @@ class Customer {
      */
     protected $legacy_synchro_at;
 
-    public function __construct() {
+    public function __construct()
+    {
         /**
          * Default value for flag_active
          */
@@ -173,19 +174,21 @@ class Customer {
     }
 
     /**
-     * 
+     *
      * @param integer $customer_id
      */
-    public function setId($customer_id) {
+    public function setId($customer_id)
+    {
         $this->customer_id = $customer_id;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getCustomerId() {
+    public function getCustomerId()
+    {
         return $this->customer_id;
     }
 
@@ -193,99 +196,111 @@ class Customer {
      * Set reference
      * @param string $reference
      */
-    public function setReference($reference) {
+    public function setReference($reference)
+    {
         $this->reference = $reference;
         return $this;
     }
 
     /**
-     * Return reference 
+     * Return reference
      * @return string
      */
-    public function getReference() {
+    public function getReference()
+    {
         return $this->reference;
     }
 
     /**
-     * 
+     *
      * @param string $title
      */
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
     /**
-     * 
+     *
      * @param string $first_name
      */
-    public function setFirstName($first_name) {
+    public function setFirstName($first_name)
+    {
         $this->first_name = $first_name;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getFirstName() {
+    public function getFirstName()
+    {
         return $this->first_name;
     }
 
     /**
-     * 
+     *
      * @return boolean
      */
-    public function getFlagActive() {
+    public function getFlagActive()
+    {
         return (boolean) $this->flag_active;
     }
 
     /**
-     * 
+     *
      */
-    public function setFlagActive($flag_active) {
+    public function setFlagActive($flag_active)
+    {
         $this->flag_active = $flag_active;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getCreatedAt() {
+    public function getCreatedAt()
+    {
         return $this->created_at;
     }
 
     /**
-     * 
+     *
      * @param string $created_at
      */
-    public function setCreatedAt($created_at) {
+    public function setCreatedAt($created_at)
+    {
         $this->created_at = $created_at;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getUpdatedAt() {
+    public function getUpdatedAt()
+    {
         return $this->updated_at;
     }
 
     /**
-     * 
+     *
      * @param string $updated_at
      */
-    public function setUpdatedAt($updated_at) {
+    public function setUpdatedAt($updated_at)
+    {
         $this->updated_at = $updated_at;
         return $this;
     }
@@ -294,7 +309,8 @@ class Customer {
      * Return creator username
      * @return string
      */
-    public function getCreatedBy() {
+    public function getCreatedBy()
+    {
         return $this->created_by;
     }
 
@@ -302,7 +318,8 @@ class Customer {
      * Set creator username
      * @param string $created_by
      */
-    public function setCreatedBy($created_by) {
+    public function setCreatedBy($created_by)
+    {
         $this->created_by = $created_by;
         return $this;
     }
@@ -311,7 +328,8 @@ class Customer {
      * Return last updater username
      * @return string
      */
-    public function getUpdatedBy() {
+    public function getUpdatedBy()
+    {
         return $this->updated_by;
     }
 
@@ -319,16 +337,18 @@ class Customer {
      * Set the last updater username
      * @param string $updated_by
      */
-    public function setUpdatedBy($updated_by) {
+    public function setUpdatedBy($updated_by)
+    {
         $this->updated_by = $updated_by;
         return $this;
     }
 
     /**
-     * Return legacy mapping 
+     * Return legacy mapping
      * @return string $legacy_mapping
      */
-    public function getLegacyMapping() {
+    public function getLegacyMapping()
+    {
         return $this->legacy_mapping;
     }
 
@@ -336,7 +356,8 @@ class Customer {
      * Set a legacy mapping for this record
      * @param string $legacy_mapping
      */
-    public function setLegacyMapping($legacy_mapping) {
+    public function setLegacyMapping($legacy_mapping)
+    {
         $this->legacy_mapping = $legacy_mapping;
         return $this;
     }
@@ -345,16 +366,18 @@ class Customer {
      * Set legacy synchro time
      * @param string $legacy_mapping
      */
-    public function setLegacySynchroAt($legacy_synchro_at) {
+    public function setLegacySynchroAt($legacy_synchro_at)
+    {
         $this->legacy_synchro_at = $legacy_synchro_at;
         return $this;
     }
 
     /**
-     * Return legacy synchro timestamp 
-     * @return string 
+     * Return legacy synchro timestamp
+     * @return string
      */
-    public function getLegacySynchroAt() {
+    public function getLegacySynchroAt()
+    {
         return $this->legacy_synchro_at;
     }
 
@@ -363,15 +386,17 @@ class Customer {
      *
      * @return array
      */
-    public function getArrayCopy() {
+    public function getArrayCopy()
+    {
         return get_object_vars($this);
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->getName();
     }
 
@@ -381,7 +406,8 @@ class Customer {
      * @param string $property
      * @return mixed
      */
-    public function __get($property) {
+    public function __get($property)
+    {
         return $this->$property;
     }
 
@@ -391,8 +417,8 @@ class Customer {
      * @param string $property
      * @param mixed $value
      */
-    public function __set($property, $value) {
+    public function __set($property, $value)
+    {
         $this->$property = $value;
     }
-
 }

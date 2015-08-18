@@ -8,8 +8,8 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Session\Container;
 use Openstore\Permission\UserCapabilities;
 
-class UserSession implements ServiceLocatorAwareInterface {
-
+class UserSession implements ServiceLocatorAwareInterface
+{
     /**
      * @var ServiceLocatorInterface
      */
@@ -21,11 +21,13 @@ class UserSession implements ServiceLocatorAwareInterface {
      */
     protected $container;
 
-    function __construct(Container $container) {
+    public function __construct(Container $container)
+    {
         $this->container = $container;
     }
 
-    function getCapabilities() {
+    public function getCapabilities()
+    {
         if ($this->container) {
             $user_id = 1;
             $user_cap = new UserCapabilities($user_id);
@@ -33,21 +35,22 @@ class UserSession implements ServiceLocatorAwareInterface {
     }
 
     /**
-     * 
+     *
      * @param ServiceLocatorInterface $serviceLocator
      * @return \Openstore\Service
      */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
         $this->serviceLocator = $serviceLocator;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return ServiceLocatorInterface
      */
-    public function getServiceLocator() {
+    public function getServiceLocator()
+    {
         return $this->serviceLocator;
     }
-
 }

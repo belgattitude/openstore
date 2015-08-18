@@ -18,9 +18,10 @@ use Zend\Db\Sql\Expression;
 use Zend\Permissions\Acl\Role\RoleInterface;
 use ZfcUser\Service\User;
 
-class OpenstoreDb extends ZfcUserZendDb {
-
-    public function getIdentityRoles() {
+class OpenstoreDb extends ZfcUserZendDb
+{
+    public function getIdentityRoles()
+    {
         $authService = $this->userService->getAuthService();
 
         if (!$authService->hasIdentity()) {
@@ -35,7 +36,7 @@ class OpenstoreDb extends ZfcUserZendDb {
                 ->columns(array(
             'reference' => new Expression('r.reference'),
             'role_id' => new Expression('ur.role_id')
-        ));
+                ));
 
 
         $where = new Where();
@@ -52,7 +53,8 @@ class OpenstoreDb extends ZfcUserZendDb {
     /**
      * @return string|\Zend\Permissions\Acl\Role\RoleInterface
      */
-    public function getDefaultRole() {
+    public function getDefaultRole()
+    {
         return $this->defaultRole;
     }
 
@@ -61,12 +63,12 @@ class OpenstoreDb extends ZfcUserZendDb {
      *
      * @throws \BjyAuthorize\Exception\InvalidRoleException
      */
-    public function setDefaultRole($defaultRole) {
+    public function setDefaultRole($defaultRole)
+    {
         if (!($defaultRole instanceof RoleInterface || is_string($defaultRole))) {
             throw InvalidRoleException::invalidRoleInstance($defaultRole);
         }
 
         $this->defaultRole = $defaultRole;
     }
-
 }

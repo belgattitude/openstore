@@ -11,8 +11,8 @@ use Soluble\Normalist\Synthetic\TableManager;
 use Soluble\Normalist\Synthetic\Record;
 use Soluble\Normalist\Exception as NormalistException;
 
-class ApiKeyAccess implements ServiceLocatorAwareInterface {
-
+class ApiKeyAccess implements ServiceLocatorAwareInterface
+{
     /**
      *
      * @var \Zend\ServiceManager\ServiceLocatorInterface
@@ -44,11 +44,12 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface {
     protected $tm;
 
     /**
-     * @param string $api_key 
+     * @param string $api_key
      * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
 
      */
-    function __construct($api_key, ServiceLocatorInterface $serviceLocator) {
+    public function __construct($api_key, ServiceLocatorInterface $serviceLocator)
+    {
         $this->api_key = trim($api_key);
         $this->setServiceLocator($serviceLocator);
         $this->setDbAdapter($serviceLocator->get("Zend\Db\Adapter\Adapter"));
@@ -74,13 +75,13 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface {
     }
 
     /**
-     * 
+     *
      * @param string $service_reference
      * @return Record
      * @throws Exception\ServiceUnavailableException
      */
-    public function addLog($service_reference) {
-
+    public function addLog($service_reference)
+    {
         $tm = $this->getTableManager();
 
         $service = $tm->table('api_service')->findOneBy(array('reference' => $service_reference));
@@ -103,13 +104,14 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface {
     }
 
     /**
-     * 
+     *
      * @param string $service_reference
      * @return \OpenstoreApi\Authorize\ApiKeyAccess
      * @throws Exception\ServiceUnavailableException
      * @throws Exception\ForbiddenServiceException
      */
-    public function checkServiceAccess($service_reference) {
+    public function checkServiceAccess($service_reference)
+    {
         $api_id = $this->api_id;
         $api_key = $this->api_key;
         $tm = $this->getTableManager();
@@ -138,7 +140,8 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface {
     /**
      * @return array
      */
-    public function getCustomers() {
+    public function getCustomers()
+    {
         $api_id = $this->api_id;
         $api_key = $this->api_key;
         $tm = $this->getTableManager();
@@ -149,12 +152,13 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface {
     }
 
     /**
-     * 
+     *
      * @param string $pricelist
      * @return \OpenstoreApi\Authorize\ApiKeyAccess
      * @throws Exception\ForbiddenServiceException
      */
-    public function checkPricelistAccess($pricelist) {
+    public function checkPricelistAccess($pricelist)
+    {
         $pricelists = $this->getPricelists();
         if (!in_array($pricelist, $pricelists)) {
             $api_key = $this->api_key;
@@ -166,7 +170,8 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface {
     /**
      * @return array
      */
-    public function getPricelists() {
+    public function getPricelists()
+    {
         $customers = $this->getCustomers();
         $pricelists = array();
         foreach ($customers as $customer_id) {
@@ -191,8 +196,8 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface {
      * @param string $api_key
      * @return boolean
      */
-    public function isValidApi($api_key) {
-
+    public function isValidApi($api_key)
+    {
         $table = new SyntheticTable($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
         $record = $table->findOneBy('api_key', array('api_key' => $api_key));
         if ($record === false) {
@@ -219,17 +224,18 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface {
      * @param Adapter $adapter
      * @return \OpenstoreApi\Api\AbstractService
      */
-    public function setDbAdapter(Adapter $adapter) {
-
+    public function setDbAdapter(Adapter $adapter)
+    {
         $this->adapter = $adapter;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return \Zend\Db\Adapter\Adapter
      */
-    public function getDbAdapter() {
+    public function getDbAdapter()
+    {
         return $this->adapter;
     }
 
@@ -239,8 +245,8 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface {
      * @param ServiceLocatorInterface $serviceLocator
      * @return \OpenstoreApi\Api\AbstractService
      */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
-
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
         $this->serviceLocator = $serviceLocator;
         return $this;
     }
@@ -250,7 +256,8 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface {
      *
      * @return ServiceLocatorInterface
      */
-    public function getServiceLocator() {
+    public function getServiceLocator()
+    {
         return $this->serviceLocator;
     }
 
@@ -258,7 +265,8 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface {
      * @param TableManager $tm
      * @return ApiKeyAccess
      */
-    function setTableManager(TableManager $tm) {
+    public function setTableManager(TableManager $tm)
+    {
         $this->tm = $tm;
         return $this;
     }
@@ -266,11 +274,11 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface {
     /**
      * @return TableManager
      */
-    function getTableManager() {
+    public function getTableManager()
+    {
         if ($this->tm === null) {
             $this->tm = $this->getServiceLocator()->get('SolubleNormalist\TableManager');
         }
         return $this->tm;
     }
-
 }

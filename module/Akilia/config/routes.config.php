@@ -2,111 +2,110 @@
 
 namespace Akilia;
 
-
 return array(
-	'console' => array(
-		'router' => array(
-			'routes' => array(
-				'archiveproductpictures' => array(
-					'options' => array(
-						'route' => 'akilia archiveproductpictures',
-						'defaults' => array(
-							//'__NAMESPACE__' => 'Openstore\Controller',
-							'controller' => 'Akilia\Controller\Console',
-							'action' => 'archiveproductpictures'
-						)
-					)
-				),
-				
-				'listproductpictures' => array(
-					'options' => array(
-						'route' => 'akilia listproductpictures',
-						'defaults' => array(
-							//'__NAMESPACE__' => 'Openstore\Controller',
-							'controller' => 'Akilia\Controller\Console',
-							'action' => 'listproductpictures'
-						)
-					)
-				),
-				'syncdb' => array(
-					'options' => array(
-						'route' => 'akilia syncdb',
-						'defaults' => array(
-							//'__NAMESPACE__' => 'Openstore\Controller',
-							'controller' => 'Akilia\Controller\Console',
-							'action' => 'syncdb'
-						)
-					)
-				),
-				'geocodecustomers' => array(
-					'options' => array(
-						'route' => 'akilia geocodecustomers',
-						'defaults' => array(
-							//'__NAMESPACE__' => 'Openstore\Controller',
-							'controller' => 'Akilia\Controller\Console',
-							'action' => 'geocodecustomers'
-						)
-					)
-					
-				),
-				'syncapi' => array(
-					'options' => array(
-						'route' => 'akilia syncapi',
-						'defaults' => array(
-							//'__NAMESPACE__' => 'Openstore\Controller',
-							'controller' => 'Akilia\Controller\Console',
-							'action' => 'syncapi'
-						)
-					)
-				),				
-				
-				'syncstock' => array(
-					'options' => array(
-						'route' => 'akilia syncstock',
-						'defaults' => array(
-							//'__NAMESPACE__' => 'Openstore\Controller',
-							'controller' => 'Akilia\Controller\Console',
-							'action' => 'syncstock'
-						)
-					)
-				),				
-				
-				
-				'syncmedia' => array(
-					'options' => array(
-						'route' => 'akilia syncmedia',
-						'defaults' => array(
-							//'__NAMESPACE__' => 'Openstore\Controller',
-							'controller' => 'Akilia\Controller\Console',
-							'action' => 'syncmedia'
-						)
-					)
-				),				
-				'checksynchro' => array(
-					'options' => array(
-						'route' => 'akilia checksynchro',
-						'defaults' => array(
-							//'__NAMESPACE__' => 'Openstore\Controller',
-							'controller' => 'Akilia\Controller\Console',
-							'action' => 'checksynchro'
-						)
-					)
-				),					
-			)
-		)
-	),
-	'router' => array(
-		'routes' => array(
-			'akilia' => array(
-					   'type' => 'Zend\Mvc\Router\Http\Literal',
-					   'options' => array(
-						   'route' => '/akilia',
-						   'defaults' => array(
-							   'controller' => 'Akilia\Controller\Index',
-							   'action' => 'index',
-						   ),
-					   ),
-				   ),			
-		)
-	)
+    'console' => array(
+        'router' => array(
+            'routes' => array(
+                'archiveproductpictures' => array(
+                    'options' => array(
+                        'route' => 'akilia archiveproductpictures',
+                        'defaults' => array(
+                            //'__NAMESPACE__' => 'Openstore\Controller',
+                            'controller' => 'Akilia\Controller\Console',
+                            'action' => 'archiveproductpictures'
+                        )
+                    )
+                ),
+                
+                'listproductpictures' => array(
+                    'options' => array(
+                        'route' => 'akilia listproductpictures',
+                        'defaults' => array(
+                            //'__NAMESPACE__' => 'Openstore\Controller',
+                            'controller' => 'Akilia\Controller\Console',
+                            'action' => 'listproductpictures'
+                        )
+                    )
+                ),
+                'syncdb' => array(
+                    'options' => array(
+                        'route' => 'akilia syncdb',
+                        'defaults' => array(
+                            //'__NAMESPACE__' => 'Openstore\Controller',
+                            'controller' => 'Akilia\Controller\Console',
+                            'action' => 'syncdb'
+                        )
+                    )
+                ),
+                'geocodecustomers' => array(
+                    'options' => array(
+                        'route' => 'akilia geocodecustomers',
+                        'defaults' => array(
+                            //'__NAMESPACE__' => 'Openstore\Controller',
+                            'controller' => 'Akilia\Controller\Console',
+                            'action' => 'geocodecustomers'
+                        )
+                    )
+                    
+                ),
+                'syncapi' => array(
+                    'options' => array(
+                        'route' => 'akilia syncapi',
+                        'defaults' => array(
+                            //'__NAMESPACE__' => 'Openstore\Controller',
+                            'controller' => 'Akilia\Controller\Console',
+                            'action' => 'syncapi'
+                        )
+                    )
+                ),
+                
+                'syncstock' => array(
+                    'options' => array(
+                        'route' => 'akilia syncstock',
+                        'defaults' => array(
+                            //'__NAMESPACE__' => 'Openstore\Controller',
+                            'controller' => 'Akilia\Controller\Console',
+                            'action' => 'syncstock'
+                        )
+                    )
+                ),
+                
+                
+                'syncmedia' => array(
+                    'options' => array(
+                        'route' => 'akilia syncmedia',
+                        'defaults' => array(
+                            //'__NAMESPACE__' => 'Openstore\Controller',
+                            'controller' => 'Akilia\Controller\Console',
+                            'action' => 'syncmedia'
+                        )
+                    )
+                ),
+                'checksynchro' => array(
+                    'options' => array(
+                        'route' => 'akilia checksynchro',
+                        'defaults' => array(
+                            //'__NAMESPACE__' => 'Openstore\Controller',
+                            'controller' => 'Akilia\Controller\Console',
+                            'action' => 'checksynchro'
+                        )
+                    )
+                ),
+            )
+        )
+    ),
+    'router' => array(
+        'routes' => array(
+            'akilia' => array(
+                       'type' => 'Zend\Mvc\Router\Http\Literal',
+                       'options' => array(
+                           'route' => '/akilia',
+                           'defaults' => array(
+                               'controller' => 'Akilia\Controller\Index',
+                               'action' => 'index',
+                           ),
+                       ),
+                   ),
+        )
+    )
 );

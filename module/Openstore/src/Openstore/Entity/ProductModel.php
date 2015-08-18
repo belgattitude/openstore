@@ -15,7 +15,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *     @ORM\UniqueConstraint(name="unique_brand_reference_idx",columns={"brand_id", "reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
  *     @ORM\UniqueConstraint(name="unique_slug_idx",columns={"slug"})
- *   }, 
+ *   },
  *   indexes={
  *     @ORM\Index(name="title_idx", columns={"title"}),
  *     @ORM\Index(name="description_idx", columns={"description"}),
@@ -25,15 +25,15 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   options={"comment" = "Product model table"}
  * )
  */
-class ProductModel {
-
+class ProductModel
+{
     /**
      * @ORM\OneToMany(targetEntity="ProductModelTranslation", mappedBy="model_id")
      * */
     private $translations;
 
     /**
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="ProductBrand", inversedBy="products", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="brand_id", referencedColumnName="brand_id", onDelete="CASCADE", nullable=true)
      */
@@ -70,12 +70,12 @@ class ProductModel {
    /**
      * @ORM\Column(type="string", length=10000, nullable=true, options={"comment" = "Specifications"})
      */
-    private $specs;    
+    private $specs;
 
     /**
      * @ORM\Column(type="integer", nullable=true, options={"default"=1, "unsigned"=true, "comment" = "Translation revision number"})
      */
-    private $revision;    
+    private $revision;
     
     /**
      * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the model is active in public website"})
@@ -116,8 +116,8 @@ class ProductModel {
      */
     protected $legacy_synchro_at;
 
-    public function __construct() {
-
+    public function __construct()
+    {
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
 
         /**
@@ -127,19 +127,21 @@ class ProductModel {
     }
 
     /**
-     * 
+     *
      * @param integer $model_id
      */
-    public function setModelId($model_id) {
+    public function setModelId($model_id)
+    {
         $this->model_id = $id;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getModelId() {
+    public function getModelId()
+    {
         return $this->model_id;
     }
 
@@ -147,150 +149,168 @@ class ProductModel {
      * Set reference
      * @param string $reference
      */
-    public function setReference($reference) {
+    public function setReference($reference)
+    {
         $this->reference = $reference;
         return $this;
     }
 
     /**
-     * Return reference 
+     * Return reference
      * @return string
      */
-    public function getReference() {
+    public function getReference()
+    {
         return $this->reference;
     }
 
     /**
      * @param string $slug
      */
-    public function setSlug($slug) {
+    public function setSlug($slug)
+    {
         $this->slug = $slug;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getSlug() {
+    public function getSlug()
+    {
         return $this->slug;
     }
 
     /**
-     * 
+     *
      * @param string $title
      */
-    public function setTitle($title) {
+    public function setTitle($title)
+    {
         $this->title = $title;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getTitle() {
+    public function getTitle()
+    {
         return $this->title;
     }
 
     /**
-     * 
+     *
      * @param string $description
      */
-    public function setDescription($description) {
+    public function setDescription($description)
+    {
         $this->description = $description;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->description;
     }
     
     /**
-     * 
+     *
      * @param string $specs
      */
-    public function setSpecs($specs) {
+    public function setSpecs($specs)
+    {
         $this->specs = $specs;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getSpecs() {
+    public function getSpecs()
+    {
         return $this->specs;
     }
     
     /**
-     * 
+     *
      * @param integer $revision
      */
-    public function setRevision($revision) {
+    public function setRevision($revision)
+    {
         $this->revision = $revision;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getRevision() {
+    public function getRevision()
+    {
         return $this->revision;
     }
     
 
     /**
-     * 
+     *
      * @return boolean
      */
-    public function getFlagActive() {
+    public function getFlagActive()
+    {
         return (boolean) $this->flag_active;
     }
 
     /**
-     * 
+     *
      */
-    public function setFlagActive($flag_active) {
+    public function setFlagActive($flag_active)
+    {
         $this->flag_active = $flag_active;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getCreatedAt() {
+    public function getCreatedAt()
+    {
         return $this->created_at;
     }
 
     /**
-     * 
+     *
      * @param string $created_at
      */
-    public function setCreatedAt($created_at) {
+    public function setCreatedAt($created_at)
+    {
         $this->created_at = $created_at;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getUpdatedAt() {
+    public function getUpdatedAt()
+    {
         return $this->updated_at;
     }
 
     /**
-     * 
+     *
      * @param string $updated_at
      */
-    public function setUpdatedAt($updated_at) {
+    public function setUpdatedAt($updated_at)
+    {
         $this->updated_at = $updated_at;
         return $this;
     }
@@ -299,7 +319,8 @@ class ProductModel {
      * Return creator username
      * @return string
      */
-    public function getCreatedBy() {
+    public function getCreatedBy()
+    {
         return $this->created_by;
     }
 
@@ -307,7 +328,8 @@ class ProductModel {
      * Set creator username
      * @param string $created_by
      */
-    public function setCreatedBy($created_by) {
+    public function setCreatedBy($created_by)
+    {
         $this->created_by = $created_by;
         return $this;
     }
@@ -316,7 +338,8 @@ class ProductModel {
      * Return last updater username
      * @return string
      */
-    public function getUpdatedBy() {
+    public function getUpdatedBy()
+    {
         return $this->updated_by;
     }
 
@@ -324,16 +347,18 @@ class ProductModel {
      * Set the last updater username
      * @param string $updated_by
      */
-    public function setUpdatedBy($updated_by) {
+    public function setUpdatedBy($updated_by)
+    {
         $this->updated_by = $updated_by;
         return $this;
     }
 
     /**
-     * Return legacy mapping 
+     * Return legacy mapping
      * @return string $legacy_mapping
      */
-    public function getLegacyMapping() {
+    public function getLegacyMapping()
+    {
         return $this->legacy_mapping;
     }
 
@@ -341,7 +366,8 @@ class ProductModel {
      * Set a legacy mapping for this record
      * @param string $legacy_mapping
      */
-    public function setLegacyMapping($legacy_mapping) {
+    public function setLegacyMapping($legacy_mapping)
+    {
         $this->legacy_mapping = $legacy_mapping;
         return $this;
     }
@@ -350,18 +376,18 @@ class ProductModel {
      * Set legacy synchro time
      * @param string $legacy_mapping
      */
-    public function setLegacySynchroAt($legacy_synchro_at) {
+    public function setLegacySynchroAt($legacy_synchro_at)
+    {
         $this->legacy_synchro_at = $legacy_synchro_at;
         return $this;
     }
 
     /**
-     * Return legacy synchro timestamp 
-     * @return string 
+     * Return legacy synchro timestamp
+     * @return string
      */
-    public function getLegacySynchroAt() {
+    public function getLegacySynchroAt()
+    {
         return $this->legacy_synchro_at;
     }
-
-
 }

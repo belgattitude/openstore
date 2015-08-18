@@ -12,13 +12,12 @@ class ServiceFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $sl)
     {
-		
         $configuration = $sl->get('Openstore\Configuration');
-		$adapter	   = $sl->get('Zend\Db\Adapter\Adapter');
-		
+        $adapter       = $sl->get('Zend\Db\Adapter\Adapter');
+        
         $service = new Service($configuration, $adapter);
-		
-		$service->setServiceLocator($sl);
+        
+        $service->setServiceLocator($sl);
         return $service;
     }
 }

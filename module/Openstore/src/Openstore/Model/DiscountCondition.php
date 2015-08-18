@@ -12,8 +12,8 @@ use Soluble\FlexStore\Store;
 use Soluble\FlexStore\Source\Zend\SqlSource;
 use ArrayObject;
 
-class DiscountCondition implements AdapterAwareInterface {
-
+class DiscountCondition implements AdapterAwareInterface
+{
     const TYPE_PRODUCT              = 'product';
     const TYPE_BRAND                = 'brand';
     const TYPE_PRODUCT_GROUP        = 'group';
@@ -29,17 +29,17 @@ class DiscountCondition implements AdapterAwareInterface {
     protected $adapter;
 
     /**
-     * 
+     *
      * @param array $params
      */
-    public function getDiscountStore(array $params = array()) {
-
+    public function getDiscountStore(array $params = array())
+    {
         $select = new Select();
         $select->from(array('dc' => 'discount_condition'), array())
                 ->join(array('c' => 'customer'), 'c.customer_id = dc.customer_id', array(), Select::JOIN_LEFT)
                 ->join(array('pl' => 'pricelist'), 'pl.pricelist_id = dc.pricelist_id', array(), Select::JOIN_LEFT)
                 ->join(array('pb' => 'product_brand'), 'pb.brand_id = dc.brand_id', array(), Select::JOIN_LEFT)
-                ->join(array('pg' => 'product_group'), 'pg.group_id = dc.customer_group_id', array(), Select::JOIN_LEFT)       
+                ->join(array('pg' => 'product_group'), 'pg.group_id = dc.customer_group_id', array(), Select::JOIN_LEFT)
                 ->join(array('pm' => 'product_model'), 'pm.model_id = dc.model_id', array(), Select::JOIN_LEFT)
                 ->join(array('cg' => 'customer_group'), 'cg.group_id = dc.customer_group_id', array(), Select::JOIN_LEFT)
                 ->join(array('p' => 'product'), 'p.product_id = dc.product_id', array(), Select::JOIN_LEFT);
@@ -90,7 +90,7 @@ class DiscountCondition implements AdapterAwareInterface {
     public function getCustomerMatrix($customer_id, $pricelist)
     {
         // Step 1: get pricelist information
-        
+
         $select = new Select();
         $select->from(array('pl' => 'pricelist'), array())
                ->where(array('pl.reference' => $pricelist))
@@ -113,7 +113,6 @@ class DiscountCondition implements AdapterAwareInterface {
         
         // Only if pricelist has enabled discount conditions.
         if ($flag_enable_discounts == 1) {
-
             // Use the defined pricelist id.
             $pricelist_id = $pricelist_data['discount_condition_pricelist_id'];
 
@@ -128,14 +127,13 @@ class DiscountCondition implements AdapterAwareInterface {
             $conditions = $store->getData();
             
             $tmp = array();
-            foreach($conditions as $c) {
-
+            foreach ($conditions as $c) {
                 $discounts = array(
                     'discount_1'  => $c['discount_1'],
                     'discount_2'  => $c['discount_2'],
                     'discount_3'  => $c['discount_3'],
                     'discount_4'  => $c['discount_4'],
-                    'fixed_price' => $c['fixed_price']   
+                    'fixed_price' => $c['fixed_price']
                 );
 
                 $product_id         = $c['product_id'];
@@ -171,17 +169,18 @@ class DiscountCondition implements AdapterAwareInterface {
      * @param Adapter $adapter
      * @return CustomerDiscounts
      */
-    public function setDbAdapter(Adapter $adapter) {
+    public function setDbAdapter(Adapter $adapter)
+    {
         $this->adapter = $adapter;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return Adapter
      */
-    public function getDbAdapter() {
+    public function getDbAdapter()
+    {
         return $this->adapter;
     }
-
 }

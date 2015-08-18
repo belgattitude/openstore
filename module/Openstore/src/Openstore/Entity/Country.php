@@ -14,12 +14,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *   }, 
+ *   },
  *   options={"comment" = "Country table"}
  * )
  */
-class Country {
-
+class Country
+{
     /**
      * @ORM\OneToMany(targetEntity="ProductBrandTranslation", mappedBy="brand_id")
      * */
@@ -86,7 +86,8 @@ class Country {
      */
     protected $legacy_synchro_at;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
         /**
          * Default value for flag_active
@@ -95,19 +96,21 @@ class Country {
     }
 
     /**
-     * 
+     *
      * @param integer $country_id
      */
-    public function setCountryId($country_id) {
+    public function setCountryId($country_id)
+    {
         $this->country_id = $country_id;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return integer
      */
-    public function getCountryId() {
+    public function getCountryId()
+    {
         return $this->country_id;
     }
 
@@ -115,99 +118,111 @@ class Country {
      * Set reference
      * @param string $reference
      */
-    public function setReference($reference) {
+    public function setReference($reference)
+    {
         $this->reference = $reference;
         return $this;
     }
 
     /**
-     * Return reference 
+     * Return reference
      * @return string
      */
-    public function getReference() {
+    public function getReference()
+    {
         return $this->reference;
     }
 
     /**
-     * 
+     *
      * @param string $name
      */
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function setIconClass($icon_class) {
+    public function setIconClass($icon_class)
+    {
         $this->icon_class = $icon_class;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getIconClass() {
+    public function getIconClass()
+    {
         return $this->icon_class;
     }
 
     /**
-     * 
+     *
      * @return boolean
      */
-    public function getFlagActive() {
+    public function getFlagActive()
+    {
         return (boolean) $this->flag_active;
     }
 
     /**
-     * 
+     *
      */
-    public function setFlagActive($flag_active) {
+    public function setFlagActive($flag_active)
+    {
         $this->flag_active = $flag_active;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getCreatedAt() {
+    public function getCreatedAt()
+    {
         return $this->created_at;
     }
 
     /**
-     * 
+     *
      * @param string $created_at
      */
-    public function setCreatedAt($created_at) {
+    public function setCreatedAt($created_at)
+    {
         $this->created_at = $created_at;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function getUpdatedAt() {
+    public function getUpdatedAt()
+    {
         return $this->updated_at;
     }
 
     /**
-     * 
+     *
      * @param string $updated_at
      */
-    public function setUpdatedAt($updated_at) {
+    public function setUpdatedAt($updated_at)
+    {
         $this->updated_at = $updated_at;
         return $this;
     }
@@ -216,7 +231,8 @@ class Country {
      * Return creator username
      * @return string
      */
-    public function getCreatedBy() {
+    public function getCreatedBy()
+    {
         return $this->created_by;
     }
 
@@ -224,7 +240,8 @@ class Country {
      * Set creator username
      * @param string $created_by
      */
-    public function setCreatedBy($created_by) {
+    public function setCreatedBy($created_by)
+    {
         $this->created_by = $created_by;
         return $this;
     }
@@ -233,7 +250,8 @@ class Country {
      * Return last updater username
      * @return string
      */
-    public function getUpdatedBy() {
+    public function getUpdatedBy()
+    {
         return $this->updated_by;
     }
 
@@ -241,16 +259,18 @@ class Country {
      * Set the last updater username
      * @param string $updated_by
      */
-    public function setUpdatedBy($updated_by) {
+    public function setUpdatedBy($updated_by)
+    {
         $this->updated_by = $updated_by;
         return $this;
     }
 
     /**
-     * Return legacy mapping 
+     * Return legacy mapping
      * @return string $legacy_mapping
      */
-    public function getLegacyMapping() {
+    public function getLegacyMapping()
+    {
         return $this->legacy_mapping;
     }
 
@@ -258,7 +278,8 @@ class Country {
      * Set a legacy mapping for this record
      * @param string $legacy_mapping
      */
-    public function setLegacyMapping($legacy_mapping) {
+    public function setLegacyMapping($legacy_mapping)
+    {
         $this->legacy_mapping = $legacy_mapping;
         return $this;
     }
@@ -267,16 +288,18 @@ class Country {
      * Set legacy synchro time
      * @param string $legacy_mapping
      */
-    public function setLegacySynchroAt($legacy_synchro_at) {
+    public function setLegacySynchroAt($legacy_synchro_at)
+    {
         $this->legacy_synchro_at = $legacy_synchro_at;
         return $this;
     }
 
     /**
-     * Return legacy synchro timestamp 
-     * @return string 
+     * Return legacy synchro timestamp
+     * @return string
      */
-    public function getLegacySynchroAt() {
+    public function getLegacySynchroAt()
+    {
         return $this->legacy_synchro_at;
     }
 
@@ -285,15 +308,17 @@ class Country {
      *
      * @return array
      */
-    public function getArrayCopy() {
+    public function getArrayCopy()
+    {
         return get_object_vars($this);
     }
 
     /**
-     * 
+     *
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->getTitle();
     }
 
@@ -303,7 +328,8 @@ class Country {
      * @param string $property
      * @return mixed
      */
-    public function __get($property) {
+    public function __get($property)
+    {
         return $this->$property;
     }
 
@@ -313,8 +339,8 @@ class Country {
      * @param string $property
      * @param mixed $value
      */
-    public function __set($property, $value) {
+    public function __set($property, $value)
+    {
         $this->$property = $value;
     }
-
 }

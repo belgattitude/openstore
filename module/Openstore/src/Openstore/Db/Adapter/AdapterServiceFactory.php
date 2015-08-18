@@ -8,15 +8,16 @@ use Zend\Log\Logger;
 use Zend\Log\Writer;
 use BjyProfiler\Db\Profiler;
 
-class AdapterServiceFactory implements FactoryInterface {
-
+class AdapterServiceFactory implements FactoryInterface
+{
     /**
      * Create db adapter service
      *
      * @param ServiceLocatorInterface $serviceLocator
      * @return Adapter
      */
-    public function createService(ServiceLocatorInterface $serviceLocator) {
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
         $dbParams = array(
             // buffer_results - only for mysqli buffered queries, skip for others
             'options' => array('buffer_results' => true),
@@ -60,5 +61,4 @@ class AdapterServiceFactory implements FactoryInterface {
 
         return $adapter;
     }
-
 }

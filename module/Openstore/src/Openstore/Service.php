@@ -11,8 +11,8 @@ use Openstore\Catalog\ProductFilters;
 use Openstore\UserContext;
 use Openstore\Permission;
 
-class Service implements ServiceLocatorAwareInterface, AdapterAwareInterface, ConfigurationAwareInterface {
-
+class Service implements ServiceLocatorAwareInterface, AdapterAwareInterface, ConfigurationAwareInterface
+{
     /**
      * @var ServiceLocatorInterface
      */
@@ -37,19 +37,21 @@ class Service implements ServiceLocatorAwareInterface, AdapterAwareInterface, Co
     protected $productFilters;
 
     /**
-     * 
+     *
      * @param \Openstore\Configuration $options
      */
-    function __construct(Configuration $configuration, Adapter $adapter) {
+    public function __construct(Configuration $configuration, Adapter $adapter)
+    {
         $this->setConfiguration($configuration);
         $this->setDbAdapter($adapter);
     }
 
     /**
-     * 
+     *
      * @return \Openstore\Catalog\Browser\ProductFilter\NewProducts
      */
-    public function getProductFilters() {
+    public function getProductFilters()
+    {
         if ($this->productFilters === null) {
             $this->productFilters = new ProductFilters($this->serviceLocator);
             $this->productFilters->register(new \Openstore\Model\Filter\Product\AllProducts());
@@ -64,7 +66,8 @@ class Service implements ServiceLocatorAwareInterface, AdapterAwareInterface, Co
     /**
      * @return \Openstore\Model\AbstractModel
      */
-    function getModel($name) {
+    public function getModel($name)
+    {
         $model = $this->serviceLocator->get($name);
         $model->setDbAdapter($this->adapter);
         $model->setServiceLocator($this->serviceLocator);
@@ -72,11 +75,11 @@ class Service implements ServiceLocatorAwareInterface, AdapterAwareInterface, Co
     }
 
     /**
-     * 
+     *
      * @return int
      */
-    function getLoggedInUserId() {
-
+    public function getLoggedInUserId()
+    {
         $auth = $this->serviceLocator->get('zfcuser_auth_service');
         if (!$auth->hasIdentity()) {
             throw new \Exception('Not logged in user');
@@ -86,10 +89,11 @@ class Service implements ServiceLocatorAwareInterface, AdapterAwareInterface, Co
     }
 
     /**
-     * 
+     *
      * @return \Openstore\UserContext
      */
-    function getUserContext() {
+    public function getUserContext()
+    {
         $userContext = new UserContext();
         $userContext->setServiceLocator($this->getServiceLocator());
         //$userContext->initialize();
@@ -101,57 +105,62 @@ class Service implements ServiceLocatorAwareInterface, AdapterAwareInterface, Co
     }
 
     /**
-     * 
+     *
      * @param \Openstore\Configuration $configuration
      * @return \Openstore\Catalog\PriceManager
      */
-    public function setConfiguration(Configuration $configuration) {
+    public function setConfiguration(Configuration $configuration)
+    {
         $this->configuration = $configuration;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return \Openstore\Configuration
      */
-    public function getConfiguration() {
+    public function getConfiguration()
+    {
         return $this->configuration;
     }
 
     /**
-     * 
+     *
      * @param \Zend\Db\Adapter\Adapter $adapter
      * @return \Openstore\Service
      */
-    public function setDbAdapter(Adapter $adapter) {
+    public function setDbAdapter(Adapter $adapter)
+    {
         $this->adapter = $adapter;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return Zend\Db\Adapter\Adapter
      */
-    function getDbAdapter() {
+    public function getDbAdapter()
+    {
         return $this->adapter;
     }
 
     /**
-     * 
+     *
      * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
      * @return \Openstore\Service
      */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
         $this->serviceLocator = $serviceLocator;
         return $this;
     }
 
     /**
-     * 
+     *
      * @return \Zend\ServiceManager\ServiceLocatorInterface
      */
-    public function getServiceLocator() {
+    public function getServiceLocator()
+    {
         return $this->serviceLocator;
     }
-
 }
