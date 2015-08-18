@@ -101,6 +101,7 @@ class ConsoleController extends AbstractActionController
 		$commands = array(
 			"$php $dir/public/index.php orm:schema-tool:drop --force",
 			"$php $dir/public/index.php orm:schema-tool:create",
+                        "$php $dir/public/index.php openstore recreatedbextra",
 		);
 		
 		foreach($commands as $command) {
