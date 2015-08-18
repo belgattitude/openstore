@@ -80,7 +80,7 @@ class SaleOrder {
     private $pricelist_id;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true, options={"comment" = "Internal comment"})
+     * @ORM\Column(type="string", length=512, nullable=true, options={"comment" = "Internal comment"})
      */
     private $comment;
 
