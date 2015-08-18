@@ -28,7 +28,7 @@ class SaleOrderLineStatus {
 
     /**
      * @ORM\Id
-     * @ORM\Column(name="status_id", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(name="status_id", type="smallint", nullable=false, options={"unsigned"=true})
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $status_id;

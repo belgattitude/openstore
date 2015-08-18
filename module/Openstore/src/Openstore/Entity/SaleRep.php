@@ -10,40 +10,118 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="sale_order_type",
+ *   name="sale_rep",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
  *   }, 
- *   options={"comment" = "Order type table"}
+ *   options={"comment" = "Sales representative table"}
  * )
  */
-class SaleOrderType {
-
-    /**
-     * @ORM\OneToMany(targetEntity="SaleOrderTypeTranslation", mappedBy="type_id")
-     */
-    private $translations;
+class SaleRep {
 
     /**
      * @ORM\Id
-     * @ORM\Column(name="type_id", type="smallint", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(name="rep_id", type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $type_id;
+    private $rep_id;
 
     /**
-     * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
+     * @ORM\Column(type="string", length=60, nullable=true, options={"comment" = "Reference"})
      */
     private $reference;
+
+
+    /**
+     * @ORM\Column(type="string", length=80, nullable=false)
+     */
+    private $name;
+
+    /**
+     * @ORM\Column(type="string", length=40, nullable=true)
+     */
+    private $first_name;
 
     /**
      * @ORM\Column(type="string", length=80, nullable=true)
      */
-    private $title;
+    private $street;
 
     /**
-     * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the model is active in public website"})
+     * @ORM\Column(type="string", length=80, nullable=true)
+     */
+    private $street_2;
+
+    /**
+     * @ORM\Column(type="string", length=10, nullable=true)
+     */
+    private $street_number;
+
+    /**
+     * @ORM\Column(type="string", length=10, nullable=true)
+     */
+    private $po_box;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $zipcode;
+
+    /**
+     * @ORM\Column(type="string", length=60, nullable=true)
+     */
+    private $city;
+
+    /**
+     * 
+     * @ORM\ManyToOne(targetEntity="Country", inversedBy="customers", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="country_id", referencedColumnName="country_id", nullable=true)
+     */
+    private $country_id;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $phone;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $phone_2;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $mobile;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $mobile_2;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $fax;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $fax_2;
+
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $email;
+
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $email_2;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the rep is active"})
      */
     private $flag_active;
 
@@ -81,30 +159,20 @@ class SaleOrderType {
      */
     protected $legacy_synchro_at;
 
+    
     public function __construct() {
-
-        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
-
         /**
          * Default value for flag_active
          */
         $this->flag_active = true;
     }
 
-    public function getId() {
-        return $this->type_id;
-    }
-
-    public function getTranslations() {
-        return $this->translations;
-    }
-
     /**
      * 
-     * @param integer $type_id
+     * @param integer $rep_id
      */
-    public function setTypeId($type_id) {
-        $this->type_id = $type_id;
+    public function setId($rep_id) {
+        $this->rep_id = $rep_id;
         return $this;
     }
 
@@ -112,8 +180,8 @@ class SaleOrderType {
      * 
      * @return integer
      */
-    public function getTypeId() {
-        return $this->type_id;
+    public function getRepId() {
+        return $this->rep_id;
     }
 
     /**
@@ -135,10 +203,10 @@ class SaleOrderType {
 
     /**
      * 
-     * @param string $title
+     * @param string $name
      */
-    public function setTitle($title) {
-        $this->title = $title;
+    public function setName($name) {
+        $this->name = $name;
         return $this;
     }
 
@@ -146,8 +214,25 @@ class SaleOrderType {
      * 
      * @return string
      */
-    public function getTitle() {
-        return $this->title;
+    public function getName() {
+        return $this->name;
+    }
+
+    /**
+     * 
+     * @param string $first_name
+     */
+    public function setFirstName($first_name) {
+        $this->first_name = $first_name;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getFirstName() {
+        return $this->first_name;
     }
 
     /**
@@ -253,7 +338,7 @@ class SaleOrderType {
 
     /**
      * Set legacy synchro time
-     * @param string $legacy_mapping
+     * @param string $legacy_synchro_at
      */
     public function setLegacySynchroAt($legacy_synchro_at) {
         $this->legacy_synchro_at = $legacy_synchro_at;
@@ -268,41 +353,14 @@ class SaleOrderType {
         return $this->legacy_synchro_at;
     }
 
-    /**
-     * Convert the object to an array.
-     *
-     * @return array
-     */
-    public function getArrayCopy() {
-        return get_object_vars($this);
-    }
 
     /**
      * 
      * @return string
      */
     public function __toString() {
-        return $this->getTitle();
+        return $this->getName();
     }
 
-    /**
-     * Magic getter to expose protected properties.
-     *
-     * @param string $property
-     * @return mixed
-     */
-    public function __get($property) {
-        return $this->$property;
-    }
-
-    /**
-     * Magic setter to save protected properties.
-     *
-     * @param string $property
-     * @param mixed $value
-     */
-    public function __set($property, $value) {
-        $this->$property = $value;
-    }
 
 }

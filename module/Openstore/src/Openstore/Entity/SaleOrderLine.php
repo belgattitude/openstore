@@ -47,21 +47,18 @@ class SaleOrderLine {
      */
     private $status_id;
 
-    
     /**
      * @ORM\ManyToOne(targetEntity="SaleDelivery", inversedBy="lines")
      * @ORM\JoinColumn(name="delivery_id", nullable=true, referencedColumnName="delivery_id", onDelete="CASCADE")
      */
     private $delivery_id;
 
-    
     /**
      * @ORM\ManyToOne(targetEntity="SaleInvoice", inversedBy="lines")
      * @ORM\JoinColumn(name="invoice_id", nullable=true, referencedColumnName="invoice_id", onDelete="CASCADE")
      */
     private $invoice_id;
-    
-    
+
     /**
      * 
      * @ORM\ManyToOne(targetEntity="Product", inversedBy="orders", cascade={"persist", "remove"})
@@ -100,6 +97,11 @@ class SaleOrderLine {
     private $discount_4;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true, options={"comment" = "Internal comment"})
+     */
+    private $comment;
+
+    /**
      * @ORM\Column(type="string", length=60, nullable=true, options={"comment" = "Customer reference"})
      */
     private $customer_reference;
@@ -109,17 +111,16 @@ class SaleOrderLine {
      */
     private $customer_comment;
 
-
     /**
      * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Delivery date"})
      */
-    private $delivered_at;      
+    private $delivered_at;
 
     /**
      * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Invoice date"})
      */
-    private $invoiced_at;    
-    
+    private $invoiced_at;
+
     /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record creation timestamp"})
@@ -203,6 +204,20 @@ class SaleOrderLine {
         return $this->discount_4;
     }
 
+    /**
+     * @param string $comment
+     */
+    public function setComment($comment) {
+        $this->comment = $comment;
+    }
+
+    /**
+     * @return string
+     */
+    public function getComment() {
+        return $this->comment;
+    }
+
     public function getCustomerReference() {
         return $this->customer_reference;
     }
@@ -210,7 +225,6 @@ class SaleOrderLine {
     public function getCustomerComment() {
         return $this->customer_comment;
     }
-
 
     public function setReference($reference) {
         $this->reference = $reference;
@@ -259,7 +273,6 @@ class SaleOrderLine {
     public function setCustomerComment($customer_comment) {
         $this->customer_comment = $customer_comment;
     }
-
 
     /**
      * 
@@ -379,6 +392,5 @@ class SaleOrderLine {
     public function getLegacySynchroAt() {
         return $this->legacy_synchro_at;
     }
-
 
 }

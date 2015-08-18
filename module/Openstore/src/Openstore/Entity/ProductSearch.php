@@ -17,7 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   indexes={
  *     @ORM\Index(name="keywords_ft_idx", columns={"keywords"}, flags={"fulltext"})
  *   },
- *   options={"comment" = "Product search indexes", "engine":"MyISAM"}
+ *   options={"comment" = "Product search indexes", "engine":"Myisam"}
  * )
  * 
  * NOTE THAT ON MYSQL 5.6+ / MariaDB 10+ fulltext index can be on INNODB table

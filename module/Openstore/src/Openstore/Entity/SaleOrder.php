@@ -52,28 +52,37 @@ class SaleOrder {
      */
     private $customer_id;
 
-    
+    /**
+     * 
+     * @ORM\ManyToOne(targetEntity="SaleRep", inversedBy="orders", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="rep_id", referencedColumnName="rep_id", nullable=true)
+     */
+    private $rep_id;
+
     /**
      * 
      * @ORM\ManyToOne(targetEntity="User", inversedBy="orders", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="user_id", referencedColumnName="user_id", nullable=true)
      */
     private $user_id;
-    
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="SaleOrder", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="order_id", onDelete="CASCADE", nullable=true)
      */
     private $parent_id;
-    
-    
+
     /**
      * 
      * @ORM\ManyToOne(targetEntity="Pricelist", inversedBy="orders", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="pricelist_id", referencedColumnName="pricelist_id", nullable=false)
      */
     private $pricelist_id;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true, options={"comment" = "Internal comment"})
+     */
+    private $comment;
 
     /**
      * @ORM\Column(type="string", length=60, nullable=true, options={"comment" = "Customer reference"})
@@ -90,7 +99,6 @@ class SaleOrder {
      */
     private $document_date;
 
-    
     /**
      * @ORM\Column(type="datetime", nullable=true, options={"comment" = "When in quote, make an expiry date"})
      */
@@ -243,6 +251,20 @@ class SaleOrder {
      */
     public function getCustomerComment() {
         return $this->customer_comment;
+    }
+
+    /**
+     * @param string $comment
+     */
+    public function setComment($comment) {
+        $this->comment = $comment;
+    }
+
+    /**
+     * @return string
+     */
+    public function getComment() {
+        return $this->comment;
     }
 
     /**
