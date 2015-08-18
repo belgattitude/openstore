@@ -183,24 +183,26 @@ BEGIN
             if (p18.lang is null, @default_lang, p18.lang) as lang,
             UPPER(
                 delete_double_spaces(
-                    strip_tags(
-                            TRIM(
-                                    CONCAT_WS(' ',
-                                            COALESCE(p.reference, ''),
-                                            COALESCE(pb.title, ''),
-                                            COALESCE(p18.title, p.title, ''),
-                                            COALESCE(p18.invoice_title, p.invoice_title, ''),
-                                            IF(p2.product_id is not null,
-                                                COALESCE(p18_2.description, p2.description, ''),
-                                                COALESCE(p18.description, p.description, '')
-                                            ),
-                                            COALESCE(p18.characteristic, p.characteristic, ''),
-                                            COALESCE(p18.keywords, p.keywords, ''),
-                                            COALESCE(pc18.breadcrumb, pc.breadcrumb, ''),
-                                            COALESCE(pg18.title, pg.title, '')
-                                    )
-                            )
-                    )
+                    REPLACE(
+                        strip_tags(
+                                TRIM(
+                                        CONCAT_WS(' ',
+                                                COALESCE(p.reference, ''),
+                                                COALESCE(pb.title, ''),
+                                                COALESCE(p18.title, p.title, ''),
+                                                COALESCE(p18.invoice_title, p.invoice_title, ''),
+                                                IF(p2.product_id is not null,
+                                                    COALESCE(p18_2.description, p2.description, ''),
+                                                    COALESCE(p18.description, p.description, '')
+                                                ),
+                                                COALESCE(p18.characteristic, p.characteristic, ''),
+                                                COALESCE(p18.keywords, p.keywords, ''),
+                                                COALESCE(pc18.breadcrumb, pc.breadcrumb, ''),
+                                                COALESCE(pg18.title, pg.title, '')
+                                        )
+                                )
+                        )
+                    , '\n', ' ')
                 )
             )
             as keywords,
@@ -238,24 +240,26 @@ BEGIN
     on duplicate key update
             keywords = UPPER(
                 delete_double_spaces(
-                    strip_tags(
-                            TRIM(
-                                    CONCAT_WS(' ',
-                                            COALESCE(p.reference, ''),
-                                            COALESCE(pb.title, ''),
-                                            COALESCE(p18.title, p.title, ''),
-                                            COALESCE(p18.invoice_title, p.invoice_title, ''),
-                                            IF(p2.product_id is not null,
-                                                COALESCE(p18_2.description, p2.description, ''),
-                                                COALESCE(p18.description, p.description, '')
-                                            ),
-                                            COALESCE(p18.characteristic, p.characteristic, ''),
-                                            COALESCE(p18.keywords, p.keywords, ''),
-                                            COALESCE(pc18.breadcrumb, pc.breadcrumb, ''),
-                                            COALESCE(pg18.title, pg.title, '')
-                                    )
-                            )
-                    )
+                    REPLACE(        
+                        strip_tags(
+                                TRIM(
+                                        CONCAT_WS(' ',
+                                                COALESCE(p.reference, ''),
+                                                COALESCE(pb.title, ''),
+                                                COALESCE(p18.title, p.title, ''),
+                                                COALESCE(p18.invoice_title, p.invoice_title, ''),
+                                                IF(p2.product_id is not null,
+                                                    COALESCE(p18_2.description, p2.description, ''),
+                                                    COALESCE(p18.description, p.description, '')
+                                                ),
+                                                COALESCE(p18.characteristic, p.characteristic, ''),
+                                                COALESCE(p18.keywords, p.keywords, ''),
+                                                COALESCE(pc18.breadcrumb, pc.breadcrumb, ''),
+                                                COALESCE(pg18.title, pg.title, '')
+                                        )
+                                )
+                        )
+                    , '\n', ' ')
                 )
             )
             ,
