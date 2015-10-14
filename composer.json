@@ -12,6 +12,7 @@
         "php": ">=5.4.4",
         "zendframework/zendframework": "2.5.*",
         "soluble/solublecomponents": "dev-master",
+	"Soluble/japha": "dev-master",
         "doctrine/orm": "2.5.*",
         "doctrine/dbal": "2.5.*",
         "doctrine/common": "2.5.*",
