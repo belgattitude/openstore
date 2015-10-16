@@ -94,6 +94,9 @@ class ProductTranslationBrowser extends AbstractBrowser
             $inner_columns["updated_at_$lang"] = new Expression("DATE_FORMAT(MAX(if(p18.lang = '$lang', p18.updated_at, null)), '%Y-%m-%dT%H:%i:%s')");
             $inner_columns["created_by_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.created_by, null))");
             $inner_columns["updated_by_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.updated_by, null))");
+            // useful for testing multiple windows save
+            //$inner_columns["version_timestamp_$lang"] = new Expression("UNIX_TIMESTAMP(MAX(IF(p18.lang = '$lang', if(p18.updated_at is null, p18.created_at, p18.updated_at), null)))");
+            $inner_columns["version_timestamp_$lang"] = new Expression("MAX(IF(p18.lang = '$lang', if(p18.updated_at is null, p18.created_at, p18.updated_at), null))");
             $inner_columns["revision_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.revision, null))");
             $inner_columns["count_chars_$lang"] = new Expression("MAX(if(p18.lang = '$lang', CHAR_LENGTH(CONCAT(COALESCE(p18.title, ''), COALESCE(p18.description, ''), COALESCE(p18.characteristic, ''))), null))");
         }
