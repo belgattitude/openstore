@@ -57,6 +57,12 @@ class Revision
      */
     private $created_by;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=false, options={"default"=0, "comment"="Whether the saving includes a new revision"})
+     */
+    private $flag_revision_updated;
+    
+    
     
     /**
      * @ORM\Column(type="integer", nullable=true, options={"comment" = "Optional revision number, revision differ from version as it acts like a milestone"})
@@ -77,7 +83,7 @@ class Revision
     
 
     /**
-     * @ORM\Column(type="string", length=64000, nullable=false, options={"comment" = "Data at time of revision, stored as json"})
+     * @ORM\Column(type="string", length=64000, nullable=false, options={"comment" = "Data at time of saving, stored as json"})
      */
     private $current_data;
     
