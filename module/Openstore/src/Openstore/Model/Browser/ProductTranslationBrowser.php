@@ -361,7 +361,15 @@ class ProductTranslationBrowser extends AbstractBrowser
                         break;
                     case 'revised':
                         if (count($languages) > 1) {
-                            $filter_having_clauses[] = 'nb_distinct_revision > 1';
+                            //$filter_having_clauses[] = 'nb_distinct_revision > 1';
+                            $clauses = array();
+                            foreach ($languages as $lang) {
+                                if ($lang != $master_language) {
+                                    $clauses[] = "count_chars_$lang > 0";
+                                }
+                            }
+                            $filter_having_clauses[] = "(nb_distinct_revision > 1 and (count_chars_$master_language > 0 and (" . join(' or ', $clauses) . ')))';
+                            
                         }
                         break;
                 }
