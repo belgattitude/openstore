@@ -1540,7 +1540,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                   invoice_title = REPLACE($invoice_title, '–', '-'),
                   description = $description,
                   characteristic = REPLACE($characteristic, '–', '-'),
-                  revision = if (
+                  revision = 
+                    if (revision is null, 
+                        if(
                         (
                             CHAR_LENGTH(coalesce(trim(i.libelle$sfx), '')) +
                             CHAR_LENGTH(coalesce(trim(i.desc$sfx), '')) + 
@@ -1548,7 +1550,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         ) > 0,
                             1,
                             0
-                        ),    
+                        )
+                    , revision)
+                        
+                        ,    
                   created_at = if(product_translation.created_at is null, if(i.date_maj$sfx = 0, null, i.date_maj$sfx), product_translation.created_at),
                   updated_at = if (i.date_maj$sfx = 0, null, i.date_maj$sfx),
                   created_by = if(product_translation.created_by is null, u.login, product_translation.created_by),
