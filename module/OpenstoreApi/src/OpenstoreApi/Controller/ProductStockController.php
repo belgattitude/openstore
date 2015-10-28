@@ -57,7 +57,7 @@ class ProductStockController extends AbstractRestfulController
                 $cm->includeOnly($limited_columns);
             }
         }
-        
+
         return $store;
     }
 }

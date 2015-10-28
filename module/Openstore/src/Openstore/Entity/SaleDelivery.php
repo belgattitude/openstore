@@ -102,8 +102,8 @@ class SaleDelivery
     {
         $this->customer_reference = $customer_reference;
     }
-    
-    
+
+
     /**
      * @return string
      */

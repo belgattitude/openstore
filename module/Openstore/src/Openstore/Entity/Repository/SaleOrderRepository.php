@@ -17,8 +17,8 @@ class SaleOrderRepository extends EntityRepository implements InputFilterAwareIn
      * @var InputFilterInterface $inputFilter
      */
     protected $inputFilter;
-    
-    
+
+
     /**
      *
      * @param InputFilterInterface $inputFilter

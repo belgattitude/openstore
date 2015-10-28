@@ -3,7 +3,7 @@
 namespace Openstore\Model\Browser;
 
 use Openstore\Core\Model\Browser\AbstractBrowser;
-//use Openstore\Catalog\Browser\SearchParams\SearchParamsAbstract as SearchParams; 
+//use Openstore\Catalog\Browser\SearchParams\SearchParamsAbstract as SearchParams;
 //use Openstore\Catalog\Browser\ProductFilter;
 use Zend\Db\Sql\Sql;
 use Soluble\Db\Sql\Select;
@@ -27,8 +27,8 @@ class ProductBrowser extends AbstractBrowser
             'id' => array('required' => false)
         );
     }
-    
-    
+
+
 
     /**
      *
@@ -115,7 +115,7 @@ class ProductBrowser extends AbstractBrowser
     public function getSelect()
     {
         $params = $this->getSearchParams();
-        
+
         $enable_packaging_columns = ($params['enable_packaging_columns'] === true);
 
         $lang = $params->get('language');
@@ -149,12 +149,12 @@ class ProductBrowser extends AbstractBrowser
                 ->where('ppl.flag_active = 1')
                 ->where("pl.reference = '$pricelist'");
 
-        
+
         if ($enable_packaging_columns) {
             $packSelect = $this->getPackagingInnerSelect();
             $select->join(array('packs' => $packSelect), new Expression("packs.product_id = p.product_id"), array(), $select::JOIN_LEFT);
         }
-        
+
         $this->assignFilters($select);
 
 
@@ -214,17 +214,17 @@ class ProductBrowser extends AbstractBrowser
                 'picture_media_id' => new Expression('pm.media_id'),
                 'picture_media_filemtime' => new Expression('m.filemtime')
             );
-            
+
             if ($enable_packaging_columns) {
                 $columns = array_merge($columns, $this->getPackagingColumns());
             }
         }
 
-        
-        
-        
+
+
+
         $select->columns($columns, true);
-        
+
         $product_id = $params->get('id');
         if ($product_id != '') {
             $select->where("p.product_id = $product_id");
@@ -333,7 +333,7 @@ class ProductBrowser extends AbstractBrowser
 
           echo $select->getSql();
           die();
-         * 
+         *
          */
         //$select->order($relevance);
 

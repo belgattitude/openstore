@@ -44,7 +44,7 @@ class ProductUnit
      * @ORM\Column(type="string", length=80, nullable=true)
      */
     private $title;
-    
+
     /**
      * @ORM\Column(type="string", length=4, nullable=true, options={"comment" = "Symbol"})
      */
@@ -54,7 +54,7 @@ class ProductUnit
      * @ORM\Column(type="smallint", nullable=true, options={"default"=2, "unsigned"=true, "comment"="Number of decimals to display"})
      */
     private $display_decimals;
-    
+
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -207,7 +207,7 @@ class ProductUnit
     {
         return $this->icon_class;
     }
-    
+
     /**
      *
      * @return int
@@ -224,7 +224,7 @@ class ProductUnit
     {
         $this->display_decimals = $display_decimals;
     }
-    
+
     /**
      * Set symbol
      * @param string $symbol
@@ -242,7 +242,7 @@ class ProductUnit
     {
         return $this->symbol;
     }
-    
+
 
     /**
      *

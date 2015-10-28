@@ -10,7 +10,7 @@ class NewProducts extends AbstractFilter
     {
         return 'new';
     }
-    
+
     /**
      *
      * @param \Zend\Db\Sql\Select $select
@@ -25,8 +25,8 @@ class NewProducts extends AbstractFilter
         $select->where("(COALESCE(pl.new_product_min_date, '$minimum_date') <= COALESCE(ppl.available_at, p.available_at))");
         return $select;
     }
-    
-    
+
+
     /**
      * @param \Zend\Db\Sql\Select $select
      * @return \Openstore\Model\Filter\Product\NewProducts

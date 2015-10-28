@@ -225,13 +225,13 @@ class Product
      * @ORM\Column(type="string", length=40, nullable=true)
      */
     private $icon_class;
-    
-    
+
+
     /**
      * @ORM\Column(type="string", length=20, nullable=true, options={"comment"="European intrastat customs code"})
      */
     private $trade_code_intrastat;
-    
+
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true, options={"comment"="International Harmonized Trade System common nomenclature code"})
@@ -572,7 +572,7 @@ class Product
         return $this->icon_class;
     }
 
-    
+
     /**
      *
      * @return string
@@ -590,8 +590,8 @@ class Product
     {
         $this->trade_code_hts = $code;
     }
-    
-    
+
+
     /**
      *
      * @param string $code
@@ -600,7 +600,7 @@ class Product
     {
         $this->trade_code_intrastat = $code;
     }
-    
+
     /**
      *
      * @return string
@@ -609,7 +609,7 @@ class Product
     {
         return $this->trade_code_intrastat;
     }
-    
+
     /**
      *
      * @return boolean

@@ -35,7 +35,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
      * @var boolean
      */
     public $output_log = true;
-    
+
     /**
      *
      * @var array
@@ -72,7 +72,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
      * @var string
      */
     protected $intelaccessDb;
-    
+
     /**
      *
      * @var string
@@ -92,16 +92,16 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     protected $default_unit_id = 1;
 
     protected $default_product_type_id = 1;
-    
-    
+
+
 
     protected $legacy_synchro_at;
 
     protected $replace_dash_by_newline = false;
-    
+
     protected $default_language;
     protected $default_language_sfx;
-    
+
     /**
      *
      * @param \Doctrine\ORM\EntityManager $em
@@ -138,23 +138,23 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     public function synchronizeAkilia1ProductDescription()
     {
         /*
-        SELECT p.product_id AS `product_id`, 
-               p.reference AS `reference`, 
-               p2.reference AS `parent_reference`, 
-               COALESCE(p.display_reference, p.reference) AS `display_reference`, 
-               pb.reference AS `brand_reference`, pb.title AS `brand_title`, 
-               pg.reference AS `group_reference`, 
-               pc.reference AS `category_reference`, 
-               COALESCE(pc18.title, pc.title) AS `category_title`, 
-               COALESCE(pc18.breadcrumb, pc.breadcrumb) AS `category_breadcrumb`, 
-               pst.reference AS `status_reference`, 
-               pst.flag_end_of_lifecycle AS `flag_end_of_lifecycle`, 
-               pst.flag_till_end_of_stock AS `flag_till_end_of_stock`, 
-               pm.media_id AS `picture_media_id`, 
-               DATE_FORMAT(p.created_at, '%Y-%m-%dT%TZ') AS `created_at`, DATE_FORMAT(p.available_at, '%Y-%m-%dT%TZ') AS `available_at`, COALESCE(MAX(if(p18.lang = 'en', p18.invoice_title, null)), '') AS `invoice_title_en`, COALESCE(MAX(if(p18.lang = 'en', p18.title, null)), '') AS `title_en`, COALESCE(MAX(if(p18.lang = 'en', p18.description, null)), '') AS `description_en`, COALESCE(MAX(if(p18.lang = 'en', p18.characteristic, null)), '') AS `characteristic_en`, DATE_FORMAT(MAX(if(p18.lang = 'en', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_en`, DATE_FORMAT(MAX(if(p18.lang = 'en', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_en`, MAX(if(p18.lang = 'en', p18.created_by, null)) AS `created_by_en`, MAX(if(p18.lang = 'en', p18.updated_by, null)) AS `updated_by_en`, MAX(if(p18.lang = 'en', p18.revision, null)) AS `revision_en`, COALESCE(MAX(if(p18.lang = 'fr', p18.invoice_title, null)), '') AS `invoice_title_fr`, COALESCE(MAX(if(p18.lang = 'fr', p18.title, null)), '') AS `title_fr`, COALESCE(MAX(if(p18.lang = 'fr', p18.description, null)), '') AS `description_fr`, COALESCE(MAX(if(p18.lang = 'fr', p18.characteristic, null)), '') AS `characteristic_fr`, DATE_FORMAT(MAX(if(p18.lang = 'fr', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_fr`, DATE_FORMAT(MAX(if(p18.lang = 'fr', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_fr`, MAX(if(p18.lang = 'fr', p18.created_by, null)) AS `created_by_fr`, MAX(if(p18.lang = 'fr', p18.updated_by, null)) AS `updated_by_fr`, MAX(if(p18.lang = 'fr', p18.revision, null)) AS `revision_fr`, COALESCE(MAX(if(p18.lang = 'zh', p18.invoice_title, null)), '') AS `invoice_title_zh`, COALESCE(MAX(if(p18.lang = 'zh', p18.title, null)), '') AS `title_zh`, COALESCE(MAX(if(p18.lang = 'zh', p18.description, null)), '') AS `description_zh`, COALESCE(MAX(if(p18.lang = 'zh', p18.characteristic, null)), '') AS `characteristic_zh`, DATE_FORMAT(MAX(if(p18.lang = 'zh', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_zh`, DATE_FORMAT(MAX(if(p18.lang = 'zh', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_zh`, MAX(if(p18.lang = 'zh', p18.created_by, null)) AS `created_by_zh`, MAX(if(p18.lang = 'zh', p18.updated_by, null)) AS `updated_by_zh`, MAX(if(p18.lang = 'zh', p18.revision, null)) AS `revision_zh`, COALESCE(MAX(if(p18.lang = 'de', p18.invoice_title, null)), '') AS `invoice_title_de`, COALESCE(MAX(if(p18.lang = 'de', p18.title, null)), '') AS `title_de`, COALESCE(MAX(if(p18.lang = 'de', p18.description, null)), '') AS `description_de`, COALESCE(MAX(if(p18.lang = 'de', p18.characteristic, null)), '') AS `characteristic_de`, DATE_FORMAT(MAX(if(p18.lang = 'de', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_de`, DATE_FORMAT(MAX(if(p18.lang = 'de', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_de`, MAX(if(p18.lang = 'de', p18.created_by, null)) AS `created_by_de`, MAX(if(p18.lang = 'de', p18.updated_by, null)) AS `updated_by_de`, MAX(if(p18.lang = 'de', p18.revision, null)) AS `revision_de`, COALESCE(MAX(if(p18.lang = 'it', p18.invoice_title, null)), '') AS `invoice_title_it`, COALESCE(MAX(if(p18.lang = 'it', p18.title, null)), '') AS `title_it`, COALESCE(MAX(if(p18.lang = 'it', p18.description, null)), '') AS `description_it`, COALESCE(MAX(if(p18.lang = 'it', p18.characteristic, null)), '') AS `characteristic_it`, DATE_FORMAT(MAX(if(p18.lang = 'it', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_it`, DATE_FORMAT(MAX(if(p18.lang = 'it', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_it`, MAX(if(p18.lang = 'it', p18.created_by, null)) AS `created_by_it`, MAX(if(p18.lang = 'it', p18.updated_by, null)) AS `updated_by_it`, MAX(if(p18.lang = 'it', p18.revision, null)) AS `revision_it`, COALESCE(MAX(if(p18.lang = 'nl', p18.invoice_title, null)), '') AS `invoice_title_nl`, COALESCE(MAX(if(p18.lang = 'nl', p18.title, null)), '') AS `title_nl`, COALESCE(MAX(if(p18.lang = 'nl', p18.description, null)), '') AS `description_nl`, COALESCE(MAX(if(p18.lang = 'nl', p18.characteristic, null)), '') AS `characteristic_nl`, DATE_FORMAT(MAX(if(p18.lang = 'nl', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_nl`, DATE_FORMAT(MAX(if(p18.lang = 'nl', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_nl`, MAX(if(p18.lang = 'nl', p18.created_by, null)) AS `created_by_nl`, MAX(if(p18.lang = 'nl', p18.updated_by, null)) AS `updated_by_nl`, MAX(if(p18.lang = 'nl', p18.revision, null)) AS `revision_nl`, COALESCE(MAX(if(p18.lang = 'es', p18.invoice_title, null)), '') AS `invoice_title_es`, COALESCE(MAX(if(p18.lang = 'es', p18.title, null)), '') AS `title_es`, COALESCE(MAX(if(p18.lang = 'es', p18.description, null)), '') AS `description_es`, COALESCE(MAX(if(p18.lang = 'es', p18.characteristic, null)), '') AS `characteristic_es`, DATE_FORMAT(MAX(if(p18.lang = 'es', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_es`, DATE_FORMAT(MAX(if(p18.lang = 'es', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_es`, MAX(if(p18.lang = 'es', p18.created_by, null)) AS `created_by_es`, MAX(if(p18.lang = 'es', p18.updated_by, null)) AS `updated_by_es`, MAX(if(p18.lang = 'es', p18.revision, null)) AS `revision_es`, MIN(COALESCE(p18.revision, 0)) AS `min_revision`, MAX(p18.updated_at) AS `max_updated_at`, MAX(COALESCE(p18.revision, 0)) AS `max_revision`, COUNT(distinct COALESCE(p18.revision, 9999999)) AS `nb_distinct_revision`, 'A' AS `relevance` FROM `product` AS `p` LEFT JOIN `product_translation` AS `p18` ON p18.product_id = p.product_id and p18.lang in ('en','fr','zh','de','it','nl','es') LEFT JOIN `product` AS `p2` ON p2.product_id = p.parent_id INNER JOIN `product_brand` AS `pb` ON pb.brand_id = p.brand_id LEFT JOIN `product_group` AS `pg` ON pg.group_id = p.group_id INNER JOIN `product_category` AS `pc` ON pc.category_id = p.category_id LEFT JOIN `product_category_translation` AS `pc18` ON pc.category_id = pc18.category_id and pc18.lang = 'es' LEFT JOIN `product_search` AS `psi` ON psi.product_id = p.product_id and psi.lang = 'es' LEFT JOIN `product_type` AS `pt` ON p.type_id = pt.type_id LEFT JOIN `product_status` AS `pst` ON pst.status_id = p.status_id LEFT JOIN `product_media` AS `pm` ON pm.product_id = p.product_id and pm.flag_primary=1 LEFT JOIN `product_media_type` AS `pmt` ON pmt.type_id = p.type_id and pmt.reference = 'PICTURE' INNER JOIN `product_pricelist` AS `ppl` ON ppl.product_id = p.product_id INNER JOIN `pricelist` AS `pl` ON pl.pricelist_id = ppl.pricelist_id WHERE p.flag_active = 1 AND `pl`.`reference` IN ('BE') AND ppl.flag_active = 1 AND `p`.`type_id` IN ('1') GROUP BY `product_id`, `reference`, `parent_reference`, `display_reference`, `brand_reference`, `brand_title`, `group_reference`, `category_reference`, `category_title`, `category_breadcrumb`, `status_reference`, `flag_end_of_lifecycle`, `flag_till_end_of_stock`, `picture_media_id`, `created_at`, `available_at` ORDER BY `relevance` DESC, `p`.`created_at`       
+        SELECT p.product_id AS `product_id`,
+               p.reference AS `reference`,
+               p2.reference AS `parent_reference`,
+               COALESCE(p.display_reference, p.reference) AS `display_reference`,
+               pb.reference AS `brand_reference`, pb.title AS `brand_title`,
+               pg.reference AS `group_reference`,
+               pc.reference AS `category_reference`,
+               COALESCE(pc18.title, pc.title) AS `category_title`,
+               COALESCE(pc18.breadcrumb, pc.breadcrumb) AS `category_breadcrumb`,
+               pst.reference AS `status_reference`,
+               pst.flag_end_of_lifecycle AS `flag_end_of_lifecycle`,
+               pst.flag_till_end_of_stock AS `flag_till_end_of_stock`,
+               pm.media_id AS `picture_media_id`,
+               DATE_FORMAT(p.created_at, '%Y-%m-%dT%TZ') AS `created_at`, DATE_FORMAT(p.available_at, '%Y-%m-%dT%TZ') AS `available_at`, COALESCE(MAX(if(p18.lang = 'en', p18.invoice_title, null)), '') AS `invoice_title_en`, COALESCE(MAX(if(p18.lang = 'en', p18.title, null)), '') AS `title_en`, COALESCE(MAX(if(p18.lang = 'en', p18.description, null)), '') AS `description_en`, COALESCE(MAX(if(p18.lang = 'en', p18.characteristic, null)), '') AS `characteristic_en`, DATE_FORMAT(MAX(if(p18.lang = 'en', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_en`, DATE_FORMAT(MAX(if(p18.lang = 'en', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_en`, MAX(if(p18.lang = 'en', p18.created_by, null)) AS `created_by_en`, MAX(if(p18.lang = 'en', p18.updated_by, null)) AS `updated_by_en`, MAX(if(p18.lang = 'en', p18.revision, null)) AS `revision_en`, COALESCE(MAX(if(p18.lang = 'fr', p18.invoice_title, null)), '') AS `invoice_title_fr`, COALESCE(MAX(if(p18.lang = 'fr', p18.title, null)), '') AS `title_fr`, COALESCE(MAX(if(p18.lang = 'fr', p18.description, null)), '') AS `description_fr`, COALESCE(MAX(if(p18.lang = 'fr', p18.characteristic, null)), '') AS `characteristic_fr`, DATE_FORMAT(MAX(if(p18.lang = 'fr', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_fr`, DATE_FORMAT(MAX(if(p18.lang = 'fr', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_fr`, MAX(if(p18.lang = 'fr', p18.created_by, null)) AS `created_by_fr`, MAX(if(p18.lang = 'fr', p18.updated_by, null)) AS `updated_by_fr`, MAX(if(p18.lang = 'fr', p18.revision, null)) AS `revision_fr`, COALESCE(MAX(if(p18.lang = 'zh', p18.invoice_title, null)), '') AS `invoice_title_zh`, COALESCE(MAX(if(p18.lang = 'zh', p18.title, null)), '') AS `title_zh`, COALESCE(MAX(if(p18.lang = 'zh', p18.description, null)), '') AS `description_zh`, COALESCE(MAX(if(p18.lang = 'zh', p18.characteristic, null)), '') AS `characteristic_zh`, DATE_FORMAT(MAX(if(p18.lang = 'zh', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_zh`, DATE_FORMAT(MAX(if(p18.lang = 'zh', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_zh`, MAX(if(p18.lang = 'zh', p18.created_by, null)) AS `created_by_zh`, MAX(if(p18.lang = 'zh', p18.updated_by, null)) AS `updated_by_zh`, MAX(if(p18.lang = 'zh', p18.revision, null)) AS `revision_zh`, COALESCE(MAX(if(p18.lang = 'de', p18.invoice_title, null)), '') AS `invoice_title_de`, COALESCE(MAX(if(p18.lang = 'de', p18.title, null)), '') AS `title_de`, COALESCE(MAX(if(p18.lang = 'de', p18.description, null)), '') AS `description_de`, COALESCE(MAX(if(p18.lang = 'de', p18.characteristic, null)), '') AS `characteristic_de`, DATE_FORMAT(MAX(if(p18.lang = 'de', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_de`, DATE_FORMAT(MAX(if(p18.lang = 'de', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_de`, MAX(if(p18.lang = 'de', p18.created_by, null)) AS `created_by_de`, MAX(if(p18.lang = 'de', p18.updated_by, null)) AS `updated_by_de`, MAX(if(p18.lang = 'de', p18.revision, null)) AS `revision_de`, COALESCE(MAX(if(p18.lang = 'it', p18.invoice_title, null)), '') AS `invoice_title_it`, COALESCE(MAX(if(p18.lang = 'it', p18.title, null)), '') AS `title_it`, COALESCE(MAX(if(p18.lang = 'it', p18.description, null)), '') AS `description_it`, COALESCE(MAX(if(p18.lang = 'it', p18.characteristic, null)), '') AS `characteristic_it`, DATE_FORMAT(MAX(if(p18.lang = 'it', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_it`, DATE_FORMAT(MAX(if(p18.lang = 'it', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_it`, MAX(if(p18.lang = 'it', p18.created_by, null)) AS `created_by_it`, MAX(if(p18.lang = 'it', p18.updated_by, null)) AS `updated_by_it`, MAX(if(p18.lang = 'it', p18.revision, null)) AS `revision_it`, COALESCE(MAX(if(p18.lang = 'nl', p18.invoice_title, null)), '') AS `invoice_title_nl`, COALESCE(MAX(if(p18.lang = 'nl', p18.title, null)), '') AS `title_nl`, COALESCE(MAX(if(p18.lang = 'nl', p18.description, null)), '') AS `description_nl`, COALESCE(MAX(if(p18.lang = 'nl', p18.characteristic, null)), '') AS `characteristic_nl`, DATE_FORMAT(MAX(if(p18.lang = 'nl', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_nl`, DATE_FORMAT(MAX(if(p18.lang = 'nl', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_nl`, MAX(if(p18.lang = 'nl', p18.created_by, null)) AS `created_by_nl`, MAX(if(p18.lang = 'nl', p18.updated_by, null)) AS `updated_by_nl`, MAX(if(p18.lang = 'nl', p18.revision, null)) AS `revision_nl`, COALESCE(MAX(if(p18.lang = 'es', p18.invoice_title, null)), '') AS `invoice_title_es`, COALESCE(MAX(if(p18.lang = 'es', p18.title, null)), '') AS `title_es`, COALESCE(MAX(if(p18.lang = 'es', p18.description, null)), '') AS `description_es`, COALESCE(MAX(if(p18.lang = 'es', p18.characteristic, null)), '') AS `characteristic_es`, DATE_FORMAT(MAX(if(p18.lang = 'es', p18.created_at, null)), '%Y-%m-%dT%TZ') AS `created_at_es`, DATE_FORMAT(MAX(if(p18.lang = 'es', p18.updated_at, null)), '%Y-%m-%dT%TZ') AS `updated_at_es`, MAX(if(p18.lang = 'es', p18.created_by, null)) AS `created_by_es`, MAX(if(p18.lang = 'es', p18.updated_by, null)) AS `updated_by_es`, MAX(if(p18.lang = 'es', p18.revision, null)) AS `revision_es`, MIN(COALESCE(p18.revision, 0)) AS `min_revision`, MAX(p18.updated_at) AS `max_updated_at`, MAX(COALESCE(p18.revision, 0)) AS `max_revision`, COUNT(distinct COALESCE(p18.revision, 9999999)) AS `nb_distinct_revision`, 'A' AS `relevance` FROM `product` AS `p` LEFT JOIN `product_translation` AS `p18` ON p18.product_id = p.product_id and p18.lang in ('en','fr','zh','de','it','nl','es') LEFT JOIN `product` AS `p2` ON p2.product_id = p.parent_id INNER JOIN `product_brand` AS `pb` ON pb.brand_id = p.brand_id LEFT JOIN `product_group` AS `pg` ON pg.group_id = p.group_id INNER JOIN `product_category` AS `pc` ON pc.category_id = p.category_id LEFT JOIN `product_category_translation` AS `pc18` ON pc.category_id = pc18.category_id and pc18.lang = 'es' LEFT JOIN `product_search` AS `psi` ON psi.product_id = p.product_id and psi.lang = 'es' LEFT JOIN `product_type` AS `pt` ON p.type_id = pt.type_id LEFT JOIN `product_status` AS `pst` ON pst.status_id = p.status_id LEFT JOIN `product_media` AS `pm` ON pm.product_id = p.product_id and pm.flag_primary=1 LEFT JOIN `product_media_type` AS `pmt` ON pmt.type_id = p.type_id and pmt.reference = 'PICTURE' INNER JOIN `product_pricelist` AS `ppl` ON ppl.product_id = p.product_id INNER JOIN `pricelist` AS `pl` ON pl.pricelist_id = ppl.pricelist_id WHERE p.flag_active = 1 AND `pl`.`reference` IN ('BE') AND ppl.flag_active = 1 AND `p`.`type_id` IN ('1') GROUP BY `product_id`, `reference`, `parent_reference`, `display_reference`, `brand_reference`, `brand_title`, `group_reference`, `category_reference`, `category_title`, `category_breadcrumb`, `status_reference`, `flag_end_of_lifecycle`, `flag_till_end_of_stock`, `picture_media_id`, `created_at`, `available_at` ORDER BY `relevance` DESC, `p`.`created_at`
         */
     }
-    
+
     public function synchronizeAll()
     {
         $this->synchronizeCountry();
@@ -162,7 +162,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->synchronizeApi();
         $this->synchronizePricelist();
         $this->synchronizeCustomerPricelist();
-        
+
         $this->synchronizeProductGroup();
         $this->synchronizeProductBrand();
         $this->synchronizeProductCategory();
@@ -173,10 +173,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->synchronizeProductStock();
         $this->synchronizeProductPackaging();
         $this->synchronizeDiscountCondition();
-        
+
         $this->rebuildCategoryBreadcrumbs();
         $this->rebuildProductSearch();
-    
+
         /**
          * INSERT INTO `nuvolia`.`user_scope` (
          * `id` ,
@@ -208,7 +208,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     public function synchronizeProductMedia()
     {
         ini_set('memory_limit', "1G");
-        
+
         $sl = $this->getServiceLocator();
         $configuration = $sl->get('Configuration');
         if (! is_array($configuration['akilia'])) {
@@ -219,11 +219,11 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $products->setServiceLocator($this->getServiceLocator());
         $products->setDbAdapter($this->getServiceLocator()
             ->get('Zend\Db\Adapter\Adapter'));
-        
+
         $list = $products->getProductPictures();
-        
+
         $mediaManager = $this->getServiceLocator()->get('MMan/MediaManager');
-        
+
         $tm = $this->getTableManager();
         $mcTable = $tm->table('media_container');
         $container = $mcTable->findOneBy(array(
@@ -232,16 +232,16 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         if (! $container) {
             throw new \Exception("Cannot find media container 'PRODUCT_MEDIAS'");
         }
-        
+
         $pmtTable = $tm->table('product_media_type');
         $media_type_id = $pmtTable->findOneBy(array(
             'reference' => 'PICTURE'
         ))->type_id;
-        
+
         if ($media_type_id == '') {
             throw new \Exception("Cannot find PICTURE product media type in your database");
         }
-        
+
         $limit_to_import = 25000;
         $count = count($list);
         $productTable = $tm->table('product');
@@ -255,12 +255,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             $infos = $list[$i];
             // var_dump($infos);
             $importElement = new \MMan\Import\Element();
-            
+
             $importElement->setFilename($infos['filename']);
             $importElement->setLegacyMapping($infos['md5']);
-            
+
             $media_id = $mediaManager->import($importElement, $container['container_id']);
-            
+
             if (array_key_exists($infos['product_id'], $product_ids)) {
                 /*
                  * $product_id = $infos['product_id'];
@@ -292,14 +292,14 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             } else {
                 echo "[+] Warning product '" . $infos['product_id'] . "' does not exists in database\n";
             }
-            
+
             if (($i % 500) == 0) {
                 echo "-----------------------------------------------------------\n";
                 echo "Memory: " . convertMemorySize(memory_get_usage($real_usage = true)) . "\n";
                 echo "-----------------------------------------------------------\n";
             }
         }
-        
+
         echo "-----------------------------------------------------------\n";
         echo "Memory: " . convertMemorySize(memory_get_usage($real_usage = true)) . "\n";
         echo "-----------------------------------------------------------\n";
@@ -309,7 +309,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     {
         $akilia2db = $this->akilia2Db;
         $db = $this->openstoreDb;
-        
+
         // Step 1: let's synchronize the api services
 
         $replace = " insert
@@ -332,7 +332,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             delete from $db.api_service 
             where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
         $this->executeSQL("Delete eventual removed api_service", $delete);
-        
+
         // Step 2: let' synchronize the api keys
 
         $replace = " insert
@@ -355,7 +355,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             delete from $db.api_key 
             where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
         $this->executeSQL("Delete eventual removed api_key", $delete);
-        
+
         // Step 3: api_key_services
 
         $replace = " insert
@@ -376,7 +376,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             delete from $db.api_key_service 
             where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
         $this->executeSQL("Delete eventual removed api_key_service", $delete);
-        
+
         // Step 4: api_key_customers
         $replace = " insert
                      into $db.api_key_customer
@@ -396,7 +396,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             delete from $db.api_key_customer 
             where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
         $this->executeSQL("Delete eventual removed api_key_customer", $delete);
-        
+
         // Resync customer pricelists access
         $this->synchronizeCustomerPricelist();
     }
@@ -405,7 +405,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     {
         $akilia2db = $this->akilia2Db;
         $db = $this->openstoreDb;
-        
+
         $replace = " insert
                      into $db.country
                     (
@@ -426,14 +426,14 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         name = co.name,
                         legacy_synchro_at = '{$this->legacy_synchro_at}'
                      ";
-        
+
         $this->executeSQL("Replace countries", $replace);
-        
+
         // 2. Deleting - old links in case it changes
         $delete = "
             delete from $db.country 
             where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-        
+
         $this->executeSQL("Delete eventual removed countries", $delete);
     }
 
@@ -441,7 +441,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     {
         $akilia2db = $this->akilia2Db;
         $db = $this->openstoreDb;
-        
+
         $replace = " insert
                      into $db.customer
                     (
@@ -488,14 +488,14 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                        country_id = bc.country_id,                
                        legacy_synchro_at = '{$this->legacy_synchro_at}'
                      ";
-        
+
         $this->executeSQL("Replace customers", $replace);
-        
+
         // 2. Deleting - old links in case it changes
         $delete = "
             delete from $db.customer
             where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-        
+
         $this->executeSQL("Delete eventual removed customers", $delete);
     }
 
@@ -503,7 +503,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     {
         $akilia2db = $this->akilia2Db;
         $db = $this->openstoreDb;
-        
+
         $replace = " insert
                      into $db.customer_pricelist
                     (
@@ -546,14 +546,14 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                        flag_active = u.flag_active,
                        legacy_synchro_at = '{$this->legacy_synchro_at}'
                      ";
-        
+
         $this->executeSQL("Replace customer pricelists", $replace);
-        
+
         // 2. Deleting - old links in case it changes
         $delete = "
             delete from $db.customer_pricelist 
             where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-        
+
         $this->executeSQL("Delete eventual removed customer pricelists", $delete);
     }
 
@@ -577,9 +577,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 )
             );
         }
-        
+
         $db = $this->openstoreDb;
-        
+
         foreach ($elements as $key => $element) {
             $akilia1Db = $element['akilia1db'];
             if ($element['pricelist'] != '') {
@@ -587,7 +587,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             } else {
                 $pricelist_clause = '';
             }
-            
+
             $replace = " insert
                          into $db.product_stock
                         (
@@ -620,21 +620,21 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                             updated_at = if(product_stock.updated_at > t.date_synchro, product_stock.updated_at, t.date_synchro)                        
 
                          ";
-            
+
             $this->executeSQL("Replace product stock [$key] ", $replace);
         }
-        
+
         // 2. Deleting - old links in case it changes
         $delete = "
             delete from $db.product_stock
             where legacy_synchro_at < '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-        
+
         $this->executeSQL("Delete eventual removed product_stock", $delete);
     }
-    
-    
-    
-    
+
+
+
+
     public function synchronizeProductPricelist()
     {
         if (!isset($this->configuration['options']['product_pricelist'])) {
@@ -654,13 +654,13 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 )
             );
         }
-        
+
         $db = $this->openstoreDb;
-        
+
         foreach ($elements as $key => $element) {
             $akilia1Db = $element['akilia1db'];
 
-            
+
             $pricelists_clause = "";
             if (count($element['pricelists']) > 0) {
                 $pls = array();
@@ -669,9 +669,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 }
                 $pricelists_clause = "and t.id_pays in (" . join(',', $pls) . ")";
             }
-            
+
             $this->log("Product pricelist [$key] sync: taking prices " .  join(',', $pls). " from database '$akilia1Db'");
-            
+
             $replace = " 
                 insert into $db.product_pricelist(
                     product_id,
@@ -766,16 +766,16 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     available_at = COALESCE(t.date_in_stock, p.created_at),
                     legacy_synchro_at = '{$this->legacy_synchro_at}'
             ";
-                    
+
             $this->executeSQL("Replace product pricelist [$key] ", $replace);
         }
-        
-        
+
+
         // 2. Deleting - old links in case it changes
         $delete = "
             delete from $db.product_pricelist
             where legacy_synchro_at < '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-        
+
         $this->executeSQL("Delete eventual removed product_pricelist", $delete);
     }
 
@@ -784,9 +784,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         if ($use_akilia2) {
             $akilia2db = $this->akilia2Db;
             $db = $this->openstoreDb;
-            
+
             $stock_id = $this->default_stock_id;
-            
+
             $replace = " insert
                          into $db.pricelist
                         (
@@ -815,14 +815,14 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                             title = if(pricelist.title is null, bp.reference, pricelist.title),
                             legacy_synchro_at = '{$this->legacy_synchro_at}'
                          ";
-            
+
             $this->executeSQL("Replace pricelist", $replace);
         } else {
             $akilia1db = $this->akilia1Db;
             $db = $this->openstoreDb;
-            
+
             $stock_id = $this->default_stock_id;
-            
+
             $replace = " insert
                          into $db.pricelist
                         (
@@ -847,15 +847,15 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                             currency_id = if(pricelist.currency_id is null, {$this->default_currency_id}, pricelist.currency_id),
                             legacy_synchro_at = '{$this->legacy_synchro_at}'
                          ";
-            
+
             $this->executeSQL("Replace pricelist", $replace);
         }
-        
+
         // 2. Deleting - old links in case it changes
         $delete = "
             delete from $db.pricelist 
             where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-        
+
         $this->executeSQL("Delete eventual removed pricelist", $delete);
     }
 
@@ -864,9 +864,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $akilia1db = $this->akilia1Db;
         $db = $this->openstoreDb;
         $root_reference = 'ROOT';
-        
+
         $default_lsfx = $this->default_language_sfx;
-        
+
         $select = "
             select upper(c.id_categorie) as id_categorie, 
                 substring( upper(c.id_categorie), 1, (length( c.id_categorie ) -2 )) AS parent_categorie, 
@@ -893,7 +893,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             ->query($select)
             ->fetchAll();
         $categs = array();
-        
+
         $rootCategory = $this->em->getRepository('Openstore\Entity\ProductCategory')->findOneBy(array(
             'reference' => $root_reference
         ));
@@ -904,24 +904,24 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             $this->em->persist($rootCategory);
             $this->em->flush();
         }
-        
-        
-        
+
+
+
         foreach ($rows as $row) {
             if ($row['category_id'] === null) {
                 $pc = new \Openstore\Entity\ProductCategory();
             } else {
                 $pc = $this->em->find('Openstore\Entity\ProductCategory', $row['category_id']);
             }
-            
+
             if ($row['parent_categorie'] != null) {
                 $pc->setParent($categs[$row['parent_categorie']]);
             } else {
                 $pc->setParent($rootCategory);
             }
-            
+
             $pc->setTitle($row["libelle$default_lsfx"]);
-            
+
             $pc->setReference($row['id_categorie']);
             $pc->setSortIndex($row['sort_index']);
             $pc->setGlobalSortIndex($row['global_sort_index']);
@@ -931,19 +931,19 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             // $pc->setCreatedAt($row['date_synchro']);
 
             $this->em->persist($pc);
-            
+
             $categs[$row['id_categorie']] = $pc;
         }
-        
+
         $this->em->flush();
-        
+
         // 2. Deleting - old links in case it changes
         $delete = "
             delete from $db.product_category 
             where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-        
+
         $this->executeSQL("Delete eventual removed categories", $delete);
-        
+
         $langs = $this->akilia1lang;
         foreach ($langs as $lang => $sfx) {
             $replace = "insert into product_category_translation 
@@ -963,14 +963,14 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                   title = IF(c.libelle$sfx = '' OR c.libelle$sfx is null, c.libelle$default_lsfx, c.libelle$sfx),
                   legacy_synchro_at = '{$this->legacy_synchro_at}'      
             ";
-            
+
             $this->executeSQL("Replace categories translations", $replace);
         }
         // 2. Deleting - old links in case it changes
         $delete = "
             delete from $db.product_category_translation 
             where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-        
+
         $this->executeSQL("Delete eventual removed categories translations", $delete);
     }
 
@@ -978,7 +978,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     {
         $akilia1Db = $this->akilia1Db;
         $db = $this->openstoreDb;
-        
+
         $replace = "insert into $db.product_model
                 (reference, brand_id, title, legacy_mapping, legacy_synchro_at)
                 select 
@@ -994,14 +994,14 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 brand_id = pb.brand_id,
                 title = m.libelle_1, 
                 legacy_synchro_at = '{$this->legacy_synchro_at}'";
-        
+
         $this->executeSQL("Replace product model", $replace);
-        
+
         // 2. Deleting - old links in case it changes
         $delete = "
             delete from $db.product_model where
             legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-        
+
         $this->executeSQL("Delete eventual removed product models", $delete);
     }
 
@@ -1009,7 +1009,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     {
         $akilia1Db = $this->akilia1Db;
         $db = $this->openstoreDb;
-        
+
         $replace = "
                 insert into $db.product_brand
                     (reference, title, url, 
@@ -1027,14 +1027,14 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 url = m.url,
                 flag_active = if (m.flag_public_hidden = 1, 0, 1),
                 legacy_synchro_at = '{$this->legacy_synchro_at}'";
-        
+
         $this->executeSQL("Replace product brands", $replace);
-        
+
         // 2. Deleting - old links in case it changes
         $delete = "
             delete from $db.product_brand where
             legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-        
+
         $this->executeSQL("Delete eventual removed brands", $delete);
     }
 
@@ -1042,16 +1042,16 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     {
         $akilia1Db = $this->akilia1Db;
         $db = $this->openstoreDb;
-        
+
         $default_lsfx = $this->default_language_sfx;
-        
+
         $use_upper = false;
         if ($use_upper) {
             $group_ref_clause = "UPPER(TRIM(f.id_famille))";
         } else {
             $group_ref_clause = "TRIM(f.id_famille)";
         }
-        
+
         $replace = "insert into $db.product_group
                 (group_id, reference, title, legacy_mapping, legacy_synchro_at)
                 select null, 
@@ -1065,14 +1065,14 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 title = f.libelle$default_lsfx, 
                 legacy_synchro_at = '{$this->legacy_synchro_at}'";
         $this->executeSQL("Replace product groups", $replace);
-        
+
         // 2. Deleting - old links in case it changes
         $delete = "
             delete from $db.product_group where
             legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-        
+
         $this->executeSQL("Delete eventual removed groups", $delete);
-        
+
         // 3. Group translations
 
         $langs = $this->akilia1lang;
@@ -1094,23 +1094,23 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 on duplicate key update
                     title = f.libelle$sfx, 
                     legacy_synchro_at = '{$this->legacy_synchro_at}'";
-            
+
             $this->executeSQL("Replace product group translations", $replace);
         }
         // 2. Deleting - old links in case it changes
         $delete = "
             delete from $db.product_group_translation 
             where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-        
+
         $this->executeSQL("Delete eventual removed product group translations", $delete);
     }
 
     public function synchronizeProductPackaging()
     {
         $akilia1db = $this->akilia1Db;
-        
+
         $db = $this->openstoreDb;
-        
+
         $replace = "
                     insert into $db.product_packaging (
                             product_id, 
@@ -1202,14 +1202,14 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                             width = packs.width,
                             legacy_synchro_at = '{$this->legacy_synchro_at}'
                 ";
-        
+
         $this->executeSQL("Replace product packagings", $replace);
-        
+
         // 2. Deleting - old links in case it changes
         $delete = "
             delete from $db.product_packaging 
             where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-        
+
         $this->executeSQL("Delete eventual removed product packagings", $delete);
     }
 
@@ -1218,7 +1218,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $akilia1db = $this->akilia1Db;
         $akilia2db = $this->akilia2Db;
         $db = $this->openstoreDb;
-        
+
         $default_lsfx = $this->default_language_sfx;
 
         $rep = "REPLACE(REPLACE(i.desc$default_lsfx, '–', '-'), '\\n ', '\\n')";
@@ -1228,10 +1228,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         if ($this->replace_dash_by_newline) {
             $rep = "REPLACE($rep, ' - ', '\\n- ')";
         }
-        
-        
+
+
         $description = "if(trim(COALESCE(i.desc$default_lsfx, '')) = '', null, $rep)";
-        
+
         $replace = " insert
                      into $db.product
                     (product_id,
@@ -1386,12 +1386,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         legacy_synchro_at = '{$this->legacy_synchro_at}'
                      ";
         $this->executeSQL("Replace product", $replace);
-        
+
         // 2. Deleting - old links in case it changes
         $delete = "
             delete from $db.product 
             where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-        
+
         $this->executeSQL("Delete eventual removed products", $delete);
     }
 
@@ -1412,9 +1412,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     {
         $akilia1db = $this->akilia1Db;
         $db = $this->openstoreDb;
-        
+
         $langs = $this->akilia1lang;
-        
+
         $update = " 
             update $db.product
                    inner join 
@@ -1427,7 +1427,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         //dump($update);
         $this->executeSQL("Update parent association...", $update);
     }
-    
+
     /**
      *
      * @param array $product_ids restrict sync to the following products id's
@@ -1437,10 +1437,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $akilia1db = $this->akilia1Db;
         $db = $this->openstoreDb;
         $intelaccessDb = $this->intelaccessDb;
-        
+
         $langs = $this->akilia1lang;
-        
-        
+
+
         if ($product_ids !== null) {
             $product_clause = " and ("
                     . "i.id_article in (" . join(',', $product_ids) . ') or '
@@ -1450,10 +1450,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         } else {
             $product_clause = "";
         }
-        
+
         foreach ($langs as $lang => $sfx) {
             $lang = strtolower($lang);
-            
+
             if ($lang == 'zh') {
                 // Handle a double encoding bug in chinese only
                 $title = "if (trim(i.libelle$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i.libelle$sfx") . "))";
@@ -1474,7 +1474,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 ";
                 $characteristic = "if (trim(i.couleur$sfx) = '', null, trim(i.couleur$sfx))";
             }
-            
+
             $rep = "REPLACE($description, '–', '-')";
             //$rep = "REPLACE($rep, '\\t', ' ')";
             //$rep = "REPLACE($rep, '\\r', '')";
@@ -1484,9 +1484,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             if ($this->replace_dash_by_newline) {
                 $rep = "REPLACE($rep, ' - ', '\\n- ')";
             }
-            
+
             $description = $rep;
-            
+
             $replace = "insert into product_translation 
                  ( product_id,
                    lang,
@@ -1560,7 +1560,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                   updated_by = u.login,
                   legacy_synchro_at = '{$this->legacy_synchro_at}'      
             ";
-            
+
             $this->executeSQL("Replace product translations for lang: $lang", $replace);
         }
         //die();
@@ -1584,7 +1584,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     {
         $akilia1Db = $this->akilia1Db;
         $db = $this->openstoreDb;
-        
+
         $replace = "
             insert into $db.discount_condition(
                 pricelist_id,
@@ -1652,14 +1652,14 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 fixed_price = null, -- not supported yet
                 legacy_synchro_at = '{$this->legacy_synchro_at}'
         ";
-        
+
         $this->executeSQL("Replace discount conditions", $replace);
-        
+
         // 2. Deleting - old links in case it changes
         $delete = "
             delete from $db.discount_condition where
             legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-        
+
         $this->executeSQL("Delete eventual removed discount conditions", $delete);
     }
 
@@ -1689,9 +1689,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     protected function executeSQL($key, $query, $disable_foreign_key_checks = true)
     {
         $this->log("Sync::executeSQL '$key'...\n");
-        
+
         $total_time_start = microtime(true);
-        
+
         if ($disable_foreign_key_checks) {
             $time_start = microtime(true);
             $this->mysqli->query('set foreign_key_checks=0');
@@ -1699,7 +1699,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             $time = number_format(($time_stop - $time_start), 2);
             $this->log("  * Disabling foreign key checks (in time $time sec(s))\n");
         }
-        
+
         $time_start = microtime(true);
         $result = $this->mysqli->query($query);
         $affected_rows = $this->mysqli->affected_rows;
@@ -1708,9 +1708,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->log("  * Querying database (in time $time sec(s))\n");
         $formatted_query = preg_replace('/(\n)|(\r)|(\t)/', ' ', $query);
         $formatted_query = preg_replace('/(\ )+/', ' ', $formatted_query);
-        
+
         $this->log("  * " . substr($formatted_query, 0, 60));
-        
+
         if (! $result) {
             $msg = "Error running query ({$this->mysqli->error}) : \n--------------------\n$query\n------------------\n";
             $this->log("[+] $msg\n");
@@ -1720,7 +1720,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             }
             throw new \Exception($msg);
         }
-        
+
         if ($disable_foreign_key_checks) {
             $time_start = microtime(true);
             $this->mysqli->query('set foreign_key_checks=1');

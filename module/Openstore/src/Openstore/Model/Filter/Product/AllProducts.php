@@ -10,7 +10,7 @@ class AllProducts extends AbstractFilter
     {
         return 'all';
     }
-    
+
     /**
      *
      * @param \Zend\Db\Sql\Select $select

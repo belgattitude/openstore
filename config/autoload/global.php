@@ -12,9 +12,9 @@
  * credentials from accidentally being committed into version control.
  */
 return array(
-    
-    
-    
+
+
+
     // Whether or not to enable a configuration cache.
     // If enabled, the merged configuration will be cached and used in
     // subsequent requests.
@@ -49,7 +49,7 @@ return array(
               'remember_me_seconds' => ini_get('session.remember_me_seconds'), // 	integer 	Specifies how long to remember the session before clearing data.
               'save_path' => dirname(__FILE__) . '/../../data/session', // 	string 	Defines the argument which is passed to the save handler.
               'use_cookies' => ini_get('session.use_cookies')
-             * 
+             *
              */
             ),
         ),

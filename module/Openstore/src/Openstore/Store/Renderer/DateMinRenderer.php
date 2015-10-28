@@ -12,27 +12,27 @@ class DateMinRenderer implements RowRendererInterface
      * @var string
      */
     protected $date_column;
-    
+
     /**
      *
      * @var string
      */
     protected $date_format;
-    
-    
+
+
     /**
      *
      * @var DateTime
      */
     protected $min_date;
-    
-    
+
+
     /**
      *
      * @var string
      */
     protected $formatted_min_date;
-    
+
 
     /**
      *
@@ -48,9 +48,9 @@ class DateMinRenderer implements RowRendererInterface
             $min_date = new DateTime();
         }
         $this->min_date = $min_date;
-        
+
         $fmd = $this->min_date->format($row_date_format);
-        
+
         // Actually shoul never send an exception,
         // no real way to check if formatting works
         if (!$fmd) {
@@ -58,9 +58,9 @@ class DateMinRenderer implements RowRendererInterface
         }
         $this->formatted_min_date = $fmd;
     }
-    
-    
-    
+
+
+
     /**
      *
      * @param ArrayObject $row
@@ -77,16 +77,16 @@ class DateMinRenderer implements RowRendererInterface
             if (!$dt) {
                 throw new \Exception(__METHOD__ . " Date '$date' does not honour date format '{$this->date_format}'");
             }
-           
+
             $now = new DateTime();
-            
+
             if ($dt < $this->min_date) {
                 $row[$this->date_column] = $this->formatted_min_date;
             }
         }
     }
-    
-    
+
+
     /**
      * Return the list of columns required in order to use this renderer
      * @return array

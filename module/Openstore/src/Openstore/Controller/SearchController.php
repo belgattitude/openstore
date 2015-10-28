@@ -22,27 +22,27 @@ class SearchController extends AbstractActionController
      * @var Zend\Db\Adapter\Adapter
      */
     protected $adapter;
-    
-    
+
+
     public function onDispatch(\Zend\Mvc\MvcEvent $e)
     {
         //$this->config	= $this->getServiceLocator()->get('Openstore\Config');
         $this->adapter    = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         parent::onDispatch($e);
     }
-    
-    
+
+
     public function indexAction()
     {
         die('searchcontroller');
     }
-    
-    
-    
+
+
+
     public function productAction()
     {
         $searchParams = SearchParams::createFromRequest($this->params(), $this->getServiceLocator());
-        
+
         $product = $this->getServiceLocator()->get('Openstore\Service')->getModel('Model\Product');
         $browser = $product->getBrowser()->setSearchParams(
             [
@@ -66,22 +66,22 @@ class SearchController extends AbstractActionController
                                 )
                             )
                         ->addFilter($searchParams->getFilter());
-                
+
         //var_dump(get_class($browser)); die();
         $store = $browser->getStore();
-                
-        
+
+
         $writer = new JsonWriter($store);
                 //$writer->setDebug(true);
         $json = $writer->send();
         die();
     }
 
-    
+
     public function brandAction()
     {
         $searchParams = SearchParams::createFromRequest($this->params(), $this->getServiceLocator());
-        
+
         $brand = $this->getServiceLocator()->get('Openstore\Service')->getModel('Model\Brand');
         $browser = $brand->getBrowser()->setSearchParams(
             [
@@ -92,7 +92,7 @@ class SearchController extends AbstractActionController
         )
                             ->setLimit(20, $offset = 0)
                             ->addFilter($searchParams->getFilter());
-                            
+
                             $store = $browser->getStore();
 
                             $writer = new JsonWriter($store);

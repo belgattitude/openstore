@@ -26,10 +26,10 @@ class DoctrineEntity extends DoctrineORMModuleEntity
 
         foreach ($data as $field => $value) {
             $value  = $this->handleTypeConversions($value, $metadata->getTypeOfField($field));
-            
+
             // Inflector with ID, patch by seb
             $setter = 'set' . str_replace(' ', '', ucwords(preg_replace('/[^A-Z^a-z^0-9]+/', ' ', $field)));
-            
+
             //$setter = 'set' . ucfirst($field);
 
             if ($metadata->hasAssociation($field)) {
@@ -63,7 +63,7 @@ class DoctrineEntity extends DoctrineORMModuleEntity
 
         return $object;
     }
-    
+
     /**
      * Extract values from an object
      *
@@ -85,14 +85,14 @@ class DoctrineEntity extends DoctrineORMModuleEntity
             if ($filter && !$filter->filter($fieldName)) {
                 continue;
             }
-            
+
             $inflected = str_replace(' ', '', ucwords(preg_replace('/[^A-Z^a-z^0-9]+/', ' ', $fieldName)));
 
-            
+
             $getter = 'get' . $inflected;
             $isser  = 'is' . $inflected;
 
-        
+
             if (in_array($getter, $methods)) {
                 $data[$fieldName] = $this->extractValue($fieldName, $object->$getter(), $object);
             } elseif (in_array($isser, $methods)) {
@@ -101,13 +101,13 @@ class DoctrineEntity extends DoctrineORMModuleEntity
 
             // Unknown fields are ignored
         }
-        
-        
+
+
 
         return $data;
     }
-    
-    
+
+
     /**
      * Extract values from an object using a by-value logic (this means that it uses the entity
      * API, in this case, getters)
@@ -129,10 +129,10 @@ class DoctrineEntity extends DoctrineORMModuleEntity
             if ($filter && !$filter->filter($fieldName)) {
                 continue;
             }
-            
+
             $inflected = str_replace(' ', '', ucwords(preg_replace('/[^A-Z^a-z^0-9]+/', ' ', $fieldName)));
 
-            
+
             $getter = 'get' . $inflected;
             $isser  = 'is' . $inflected;
 

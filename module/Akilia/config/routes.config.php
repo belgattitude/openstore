@@ -16,7 +16,7 @@ return array(
                         )
                     )
                 ),
-                
+
                 'listproductpictures' => array(
                     'options' => array(
                         'route' => 'akilia listproductpictures',
@@ -46,7 +46,7 @@ return array(
                             'action' => 'geocodecustomers'
                         )
                     )
-                    
+
                 ),
                 'syncapi' => array(
                     'options' => array(
@@ -58,7 +58,7 @@ return array(
                         )
                     )
                 ),
-                
+
                 'syncstock' => array(
                     'options' => array(
                         'route' => 'akilia syncstock',
@@ -69,8 +69,8 @@ return array(
                         )
                     )
                 ),
-                
-                
+
+
                 'syncmedia' => array(
                     'options' => array(
                         'route' => 'akilia syncmedia',

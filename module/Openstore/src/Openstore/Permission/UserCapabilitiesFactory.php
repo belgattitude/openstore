@@ -15,7 +15,7 @@ class UserCapabilitiesFactory implements FactoryInterface
         $userCapabilities = new UserCapabilities();
         $userCapabilities->setServiceLocator($sl);
         $userCapabilities->setServiceLocator($sl);
-        
+
         $auth = $sl->get('zfcuser_auth_service');
         if ($auth->hasIdentity()) {
             $userCapabilities->setUserId($auth->getIdentity()->getUserId());

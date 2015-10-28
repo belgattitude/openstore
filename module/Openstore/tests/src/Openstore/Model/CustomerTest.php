@@ -20,7 +20,7 @@ class CustomerTest extends \PHPUnit_Framework_TestCase
      * @var ServiceManager
      */
     protected $serviceManager;
-    
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
@@ -29,7 +29,7 @@ class CustomerTest extends \PHPUnit_Framework_TestCase
     {
         $serviceManagerGrabber   = new ServiceManagerGrabber();
         $this->serviceManager = $serviceManagerGrabber->getServiceManager();
-        
+
         $this->category = $this->serviceManager->get('Model\Customer');
     }
 

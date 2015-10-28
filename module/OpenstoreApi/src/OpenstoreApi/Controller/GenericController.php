@@ -24,20 +24,20 @@ class GenericController extends AbstractRestfulController
      * @var ApiKeyAccess
      */
     protected $apiKeyAccess;
-    
-    
+
+
     /**
      *
      * @var array
      */
     protected $templates;
-    
+
     /**
      *
      * @var array
      */
     protected $template;
-    
+
     /**
      *
      * @var string
@@ -50,17 +50,17 @@ class GenericController extends AbstractRestfulController
 
         $api_key = $this->params()->fromQuery('api_key');
         $this->apiKeyAccess = new ApiKeyAccess($api_key, $this->getServiceLocator());
-        
+
         $this->templates = $this->getRegisteredTemplates();
         $this->view_directory = realpath(dirname(__FILE__) . '/../../../view');
-        
+
         $this->loadTemplate();
-        
-        
+
+
         parent::onDispatch($e);
     }
 
-    
+
     protected function loadTemplate()
     {
         $template = $this->params()->fromQuery('template');
@@ -68,19 +68,19 @@ class GenericController extends AbstractRestfulController
             throw new \Exception("Template '$template' does not exists");
         }
         $this->template = $this->templates[$template];
-        
+
         // Check access
         foreach ((array) $this->template['check_service_access'] as $sa) {
             $this->apiKeyAccess->checkServiceAccess($sa);
         }
     }
-    
+
     public function get($id)
     {
         die('hello');
         return $response;
     }
-    
+
 
     public function getList()
     {
@@ -88,13 +88,13 @@ class GenericController extends AbstractRestfulController
 
 
         $params = $this->params()->fromQuery();
-        
+
         $this->apiKeyAccess->checkPricelistAccess($params['pricelist']);
 
 
         $api_key_log = $this->apiKeyAccess->addLog("2000-ProductCatalog");
         $store = $this->catalogService->getList($params);
- 
+
 
         $view_renderer = $this->getViewRenderer();
 
@@ -125,7 +125,7 @@ class GenericController extends AbstractRestfulController
 
     protected function validateXml($xml_string, $xsd_file)
     {
-        
+
         // Enable user error handling
         libxml_use_internal_errors(true);
 
@@ -159,7 +159,7 @@ class GenericController extends AbstractRestfulController
             die();
         }
     }
-    
+
     /**
      *
      * @return \Zend\View\Renderer\PhpRenderer
@@ -173,9 +173,9 @@ class GenericController extends AbstractRestfulController
         $renderer->setResolver($resolver);
         return $renderer;
     }
-           
-    
-    
+
+
+
     /**
      * Method to refactor in a configuration file later
      * @return array

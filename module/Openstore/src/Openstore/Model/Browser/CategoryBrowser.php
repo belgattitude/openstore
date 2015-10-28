@@ -3,7 +3,7 @@
 namespace Openstore\Model\Browser;
 
 use Openstore\Core\Model\Browser\AbstractBrowser;
-//use Openstore\Catalog\Browser\SearchParams\SearchParamsAbstract as SearchParams; 
+//use Openstore\Catalog\Browser\SearchParams\SearchParamsAbstract as SearchParams;
 //use Openstore\Catalog\Browser\ProductFilter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
@@ -11,6 +11,7 @@ use Zend\Db\Sql\Expression;
 
 class CategoryBrowser extends AbstractBrowser
 {
+
     /**
      *
      * @var array;
@@ -148,17 +149,11 @@ class CategoryBrowser extends AbstractBrowser
             true
         );
 
-                $select->group($columns);
+        $select->group($columns);
 
         if (($depth = $options['depth']) != 0) {
             if ($expanded_category != '') {
-        //echo "(parent.lvl <= $depth or parent.id in $open_categories or (parent.lft between $parent_left and $parent_right)"; die();
-                //$select->where("(parent.lvl <= $depth or parent.id in $open_categories");
-
                 $ancestors = $this->model->getAncestors($expanded_category, $lang)->toArray();
-
-                // close all levels
-
 
                 $clauses = array('parent.lvl = 1');
                 foreach ($ancestors as $idx => $ancestor) {
@@ -166,16 +161,7 @@ class CategoryBrowser extends AbstractBrowser
                     $clauses[$ancestor['reference']] = "(parent.lft between " . $ancestor['lft'] . " and " . $ancestor['rgt'] . ' and parent.lvl = ' . ($ancestor['lvl'] + 1) . ')';
                     //}
                 }
-                /*
-                  echo '<pre>';
-                  var_dump($clauses);
-                  echo '</pre>';
-                  die();
-                 * 
-                 */
                 $select->where('(' . join(' or ', $clauses) . ')');
-
-                //$select->where('parent.lvl <=1')
             } else {
                 $select->where("(parent.lvl <= $depth)");
             }
@@ -187,19 +173,12 @@ class CategoryBrowser extends AbstractBrowser
         }
 
 
-        //$select->order(array('pc.root' => $select::ORDER_ASCENDING, 'pc.lft' => $select::ORDER_ASCENDING));
-                $select->order(array('parent.lft' => $select::ORDER_ASCENDING, 'parent.sort_index' => $select::ORDER_ASCENDING));
+        $select->order(array('parent.lft' => $select::ORDER_ASCENDING, 'parent.sort_index' => $select::ORDER_ASCENDING));
 
-                $adapter = $this->adapter;
-                $sql = new Sql($adapter);
-                $sql_string = $sql->getSqlStringForSqlObject($select);
-//echo $sql_string;
-//die();
-        //$results = $adapter->query($sql_string, Adapter::QUERY_MODE_EXECUTE);
-        //echo '<pre>';
-        //var_dump($results->toArray());
-        //die();
+        $adapter = $this->adapter;
+        $sql = new Sql($adapter);
+        $sql_string = $sql->buildSqlString($select);
 
-                return $select;
+        return $select;
     }
 }

@@ -296,7 +296,7 @@ class ConsoleController extends AbstractActionController
         }
     }
 
-    
+
     public function archiveproducthdpicturesAction()
     {
         $configuration = $this->getAkiliaConfiguration();
@@ -355,9 +355,9 @@ class ConsoleController extends AbstractActionController
             $console->writeLine("Success, $count files moved to $archive_picture_path", ColorInterface::GREEN);
         }
     }
-    
-    
-    
+
+
+
     /**
      *
      * @return array

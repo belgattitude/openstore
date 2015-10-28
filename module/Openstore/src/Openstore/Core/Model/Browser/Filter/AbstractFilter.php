@@ -13,14 +13,14 @@ abstract class AbstractFilter implements FilterInterface, ServiceLocatorAwareInt
      * @var \Zend\ServiceManager\ServiceLocatorInterface
      */
     protected $serviceLocator;
-    
+
     /**
      *
      * @param \Zend\Db\Sql\Select $select
      * @return \Zend\Db\Sql\Select $select
      */
     abstract public function filter(\Zend\Db\Sql\Select $select);
-    
+
     /**
      *
      * @return \Zend\ServiceManager\ServiceLocatorInterface

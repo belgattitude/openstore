@@ -188,7 +188,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
                 'Model\Customer' => 'Openstore\Model\Customer',
                 'Model\DiscountCondition' => 'Openstore\Model\DiscountCondition',
                 'Model\ProductTranslation' => 'Openstore\Model\ProductTranslation',
-                
+
                 // Various renderers
                 'Store\Renderer\CustomerDiscount' => 'Openstore\Store\Renderer\CustomerDiscountRenderer',
             ),
@@ -268,11 +268,11 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
               }
              */
 
-            public function onFinish(MvcEvent $e)
-            {
-                $purify_method = 'htmlpurifier';
-                $purify_method = 'domdocument';
-                $purify_method = '';
+    public function onFinish(MvcEvent $e)
+    {
+        $purify_method = 'htmlpurifier';
+        $purify_method = 'domdocument';
+        $purify_method = '';
         switch ($purify_method) {
             case 'htmlpurifier':
                 $response = $e->getResponse();
@@ -310,43 +310,43 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 
                 break;
         }
-            }
+    }
 
             /**
              *
              * @return array
              */
-            public function getConfig()
-            {
-                $config = array_merge(
-                    include __DIR__ . '/config/module.config.php',
-                    include __DIR__ . '/config/routes.config.php',
-                    include __DIR__ . '/config/openstore.config.php',
-                    include __DIR__ . '/config/assetic.config.php'
-                );
-                return $config;
-            }
+    public function getConfig()
+    {
+        $config = array_merge(
+            include __DIR__ . '/config/module.config.php',
+            include __DIR__ . '/config/routes.config.php',
+            include __DIR__ . '/config/openstore.config.php',
+            include __DIR__ . '/config/assetic.config.php'
+        );
+        return $config;
+    }
 
             /**
              *
              * @return array
              */
-            public function getAutoloaderConfig()
-            {
-                return array(
-                    'Zend\Loader\ClassMapAutoloader' => array(
-                        __DIR__ . '/autoload_classmap.php',
-                    ),
-                    'Zend\Loader\StandardAutoloader' => array(
-                        'namespaces' => array(
-                            __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-                            'MMan' => __DIR__ . '/src/MMan',
-                            //'Soluble' => '/web/www/solublecomponents/src/Soluble'
-                            'License' => __DIR__ . '/src/License',
-                        ),
-                    ),
-                );
-            }
+    public function getAutoloaderConfig()
+    {
+        return array(
+            'Zend\Loader\ClassMapAutoloader' => array(
+                __DIR__ . '/autoload_classmap.php',
+            ),
+            'Zend\Loader\StandardAutoloader' => array(
+                'namespaces' => array(
+                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
+                    'MMan' => __DIR__ . '/src/MMan',
+                    //'Soluble' => '/web/www/solublecomponents/src/Soluble'
+                    'License' => __DIR__ . '/src/License',
+                ),
+            ),
+        );
+    }
 
             /**
              * Returns an array or a string containing usage information for this module's Console commands.
@@ -369,16 +369,16 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
              * @param AdapterInterface $console
              * @return array|string|null
              */
-            public function getConsoleUsage(AdapterInterface $console)
-            {
-                return array(
-                    'openstore recreatedb' => 'Recreate database schema.',
-                    'openstore build-all-reload' => 'Recreate database schema and load initial fixtures.',
-                    'openstore updatedb' => 'Update database schema and reload initial fixtures.',
-                    'openstore recreatedbextra' => 'Recreate database extra features (trigger, procedures, functions...).',
-                    'openstore relocategroupcateg' => 'Replace product categories by product groups',
-                    'openstore clearcache' => 'Clear all system caches.',
-                    'openstore clearmediacache' => 'Clear media cache.',
-                );
-            }
+    public function getConsoleUsage(AdapterInterface $console)
+    {
+        return array(
+            'openstore recreatedb' => 'Recreate database schema.',
+            'openstore build-all-reload' => 'Recreate database schema and load initial fixtures.',
+            'openstore updatedb' => 'Update database schema and reload initial fixtures.',
+            'openstore recreatedbextra' => 'Recreate database extra features (trigger, procedures, functions...).',
+            'openstore relocategroupcateg' => 'Replace product categories by product groups',
+            'openstore clearcache' => 'Clear all system caches.',
+            'openstore clearmediacache' => 'Clear media cache.',
+        );
+    }
 }

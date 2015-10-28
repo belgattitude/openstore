@@ -10,7 +10,7 @@ interface FilterableInterface
      * @return array
      */
     public function getFilters();
-    
+
     /**
      *
      * @param \Openstore\Core\Model\Browser\Filter\FilterInterface $filter

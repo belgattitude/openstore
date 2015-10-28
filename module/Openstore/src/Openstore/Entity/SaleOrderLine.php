@@ -31,12 +31,12 @@ class SaleOrderLine
      */
     private $line_id;
 
-    
+
     /**
      * @ORM\Column(name="line_number", type="smallint", nullable=true, options={"unsigned"=true, "comment" = "Order line number for display, sort...."})
      */
     private $line_number;
-    
+
     /**
      * @ORM\Column(type="string", length=60, nullable=true, options={"comment" = "Reference"})
      */

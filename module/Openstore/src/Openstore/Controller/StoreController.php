@@ -53,7 +53,7 @@ class StoreController extends AbstractActionController
         //die();
         parent::onDispatch($e);
     }
-    
+
     public function indexAction()
     {
     }
@@ -77,11 +77,11 @@ class StoreController extends AbstractActionController
                                 'pricelist'  => $pricelist,
                             ]
         );
-                            
+
                             $product = $productBrowser->getStore()->getData()->current();
                             $view->product = $product;
 
-        
+
         /**
          * Assign other items
          */
@@ -112,7 +112,7 @@ class StoreController extends AbstractActionController
     {
         return $this->getServiceLocator()->get('SolubleNormalist\TableManager');
     }
-    
+
     public function browseAction()
     {
         $tm = $this->getTableManager();
@@ -128,14 +128,14 @@ class StoreController extends AbstractActionController
         $pricelist = $searchParams->getPricelist();
         $language = $searchParams->getLanguage();
 
-        
+
         $this->layout()->search_keywords = $searchParams->getQuery();
 
         $browserItems = $this->getBrowserItems($searchParams);
         $view->categories = $browserItems['categories'];
         $view->brands = $browserItems['brands'];
-        
-        
+
+
         /**
          * Product Browser
          */
@@ -151,7 +151,7 @@ class StoreController extends AbstractActionController
         )
                             ->setLimit($searchParams->getLimit(), $searchParams->getOffset())
                             ->addFilter($searchParams->getFilter());
-                            
+
                             $view->products = $productBrowser->getStore()->getData();
 
         /**
@@ -165,12 +165,12 @@ class StoreController extends AbstractActionController
 
                             return $view;
     }
-    
-    
+
+
     protected function getBrowserItems($searchParams)
     {
         $items = array();
-        
+
 
         $language = $searchParams->getLanguage();
         $pricelist = $searchParams->getPricelist();
@@ -205,7 +205,7 @@ class StoreController extends AbstractActionController
                                 ]
                             )
                             ->addFilter($searchParams->getFilter());
-        
+
                             $items['brands'] = $brandBrowser->getStore()->getData();
 
                             return $items;

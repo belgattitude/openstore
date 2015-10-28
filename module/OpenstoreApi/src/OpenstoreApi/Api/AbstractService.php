@@ -29,7 +29,7 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
      * @var Adapter
      */
     protected $adapter;
-    
+
     /**
      *
      * @var Sql
@@ -94,7 +94,7 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
     {
         return $this->serviceLocator;
     }
-    
+
     /**
      *
      * @param Select $select
@@ -105,7 +105,7 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
         return new Store(new SqlSource($this->getDbAdapter(), $select));
     }
 
-    
+
     /**
      * Prevent next_available_stock_at to be in the past
      *
@@ -114,11 +114,11 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
     protected function addNextAvailableStockAtRenderer(Store $store, $date_column = 'next_available_stock_at')
     {
         $cm = $store->getColumnModel();
-        
+
         if ($cm->exists($date_column)) {
             //$col = $cm->get($date_column);
             $dateMinRenderer = new DateMinRenderer($date_column);
-            
+
             $cm->addRowRenderer($dateMinRenderer);
         }
     }
@@ -140,16 +140,16 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
                 throw new \Exception(__METHOD__ . ": Filemtime column '$filemtime_column' does not exists in column model");
             }
         }
-        
+
         if ($cm->exists($media_column)) {
             $column = new Column('picture_url');
             $column->setType(ColumnType::TYPE_STRING);
             $cm->add($column, $insert_after, ColumnModel::ADD_COLUMN_AFTER);
 
-            
+
             $configuration = $this->getServiceLocator()->get('Openstore\Configuration');
             $base_url = $configuration->getConfigKey('media_library.preview.base_url');
-            
+
             //'picture_media_filemtime' => new Expression('m.filemtime')
 
             $pictureRenderer = new RowPictureRenderer($media_column, 'picture_url', '1024x768', 95, $base_url, $filemtime_column);
@@ -163,8 +163,8 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
             $cm->addRowRenderer($thumbRenderer);
         }
     }
-    
-    
+
+
     /**
      * Initialize column model
      * @param Store $store
@@ -186,7 +186,7 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
             'NL' => 'nl_NL',
             'ES' => 'es_ES',
         );
-        
+
         if (array_key_exists($pricelist_reference, $localeMap)) {
             $locale = $localeMap[$pricelist_reference];
         } else {
@@ -206,12 +206,12 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
 
             $cm->search()->in(['price', 'map_price', 'list_price', 'public_price', 'my_price'])->setFormatter($currF);
         }
-        
+
         $discF = Formatter::create(
             Formatter::FORMATTER_UNIT,
             ['decimals' => 2, 'unit' => '%', 'locale' => $locale]
         );
-        
+
         $cm->search()->regexp('/^discount\_/')->setFormatter($discF);
         $cm->search()->regexp('/my_discount\_/')->setFormatter($discF);
 
@@ -219,16 +219,16 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
             Formatter::FORMATTER_NUMBER,
             ['decimals' => 0, 'locale' => $locale]
         );
-        
+
         $cm->search()->regexp('/available_stock$/')->setFormatter($intF);
-        
+
         $cm->search()->regexp('/^pack\_qty/')->setFormatter($intF);
-        
+
         $cm->search()->regexp('/(length|width|height)$/')->setFormatter($intF);
     }
-    
-           
-    
+
+
+
     /**
      *
      * @param string $pricelist_reference
@@ -245,7 +245,7 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
         //var_dump($str);
         //die();
         $sql_string = $this->sql->getSqlStringForSqlObject($select);
-        
+
         $result = $this->adapter->query($sql_string, Adapter::QUERY_MODE_EXECUTE);
         if ($result->count() == 0) {
             return false;

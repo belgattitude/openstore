@@ -49,7 +49,7 @@ class ProductPricelist
      * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the product is active in public website"})
      */
     private $flag_active;
-    
+
     /**
      * Status id
      * @ORM\ManyToOne(targetEntity="ProductStatus", inversedBy="products", cascade={"persist", "remove"})
@@ -72,12 +72,12 @@ class ProductPricelist
      */
     private $public_price;
 
-    
+
     /**
      * @ORM\Column(type="decimal", precision=12, scale=6, nullable=true, options={"comment"="Minimum advertised price, only where regulation applies"})
      */
     private $map_price;
-    
+
     /**
      * @ORM\Column(type="decimal", precision=16, scale=6, nullable=true, options={"comment"="Sales minimum quantity"})
      */
@@ -156,12 +156,12 @@ class ProductPricelist
      * @ORM\Column(type="date", nullable=true, options={"comment" = "Date on which product was made available, useful to display as new product"})
      */
     private $available_at;
-    
+
     /**
      * @ORM\Column(type="date", nullable=true, options={"comment" = "Date on which product was/will be made unavailable"})
      */
     private $unavailable_at;
-    
+
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -298,8 +298,8 @@ class ProductPricelist
         $this->unavailable_at = $unavailable_at;
         return $this;
     }
-    
-    
+
+
     /**
      *
      * @return date
@@ -355,7 +355,7 @@ class ProductPricelist
         return $this->public_price;
     }
 
-    
+
     /**
      * @param float $map_price
      */
@@ -371,9 +371,9 @@ class ProductPricelist
     {
         return $this->map_price;
     }
-    
-    
-    
+
+
+
     /**
      * @param string $promo_start_at date Y-m-d H:i:s
      */

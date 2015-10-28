@@ -21,7 +21,7 @@ class NestedExtractor extends AllowRemoveByValue
         if (is_object($value)) {
             return $value->getId();
         }
-        
+
         return $value;
     }
 }

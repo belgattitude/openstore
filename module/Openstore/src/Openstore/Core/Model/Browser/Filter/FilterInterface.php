@@ -9,7 +9,7 @@ interface FilterInterface
      * @return string
      */
     public function getName();
-    
+
     /**
      *
      * @param \Zend\Db\Sql\Select $select

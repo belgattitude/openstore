@@ -77,7 +77,7 @@ class ProductTranslation
      */
     private $description;
 
-    
+
     /**
      * @ORM\Column(type="string", length=150, nullable=true)
      */
@@ -87,18 +87,18 @@ class ProductTranslation
      * @ORM\Column(type="string", length=5000, nullable=true, options={"comment" = "Specifications"})
      */
     private $specs;
-    
-    
+
+
     /**
      * @ORM\Column(type="string", length=200, nullable=true)
      */
     private $keywords;
-    
+
     /**
      * @ORM\Column(type="integer", nullable=true, options={"default"=1, "unsigned"=true, "comment" = "Translation revision number"})
      */
     private $revision;
-    
+
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -213,7 +213,7 @@ class ProductTranslation
         return $this->description;
     }
 
-    
+
     /**
      *
      * @param string $specs
@@ -232,8 +232,8 @@ class ProductTranslation
     {
         return $this->specs;
     }
-    
-    
+
+
     /**
      *
      * @param integer $product_id
@@ -253,7 +253,7 @@ class ProductTranslation
         return $this->product_id;
     }
 
-    
+
     /**
      *
      * @param integer $revision
@@ -272,8 +272,8 @@ class ProductTranslation
     {
         return $this->revision;
     }
-    
-    
+
+
     /**
      *
      * @param integer $lang_id

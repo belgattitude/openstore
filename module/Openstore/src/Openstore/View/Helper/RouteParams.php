@@ -26,13 +26,13 @@ class RouteParams extends AbstractHelper
      */
     protected $routeMatch;
 
-    
+
     /**
      *
      * @var \Zend\Mvc\MvcEvent
      */
     protected $mvcEvent;
-    
+
     public function __construct(\Zend\Mvc\MvcEvent $mvcEvent)
     {
         // injecting the mvc event, since $mvcEvent->getRouteMatch() may be null
@@ -40,7 +40,7 @@ class RouteParams extends AbstractHelper
         $this->setRouter($mvcEvent->getRouter());
         $this->setRouteMatch($mvcEvent->getRouteMatch());
     }
-    
+
     /**
      * Get the route parameter value
      *
@@ -57,12 +57,12 @@ class RouteParams extends AbstractHelper
         if ($this->routeMatch === null) {
             throw new Exception\RuntimeException('No RouteMatch instance provided');
         }
-        
+
 
         if ($name === null) {
             return $this->routeMatch->getParams();
         }
-        
+
         return $this->routeMatch->getParam($name);
     }
 

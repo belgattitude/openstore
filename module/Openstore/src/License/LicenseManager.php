@@ -9,7 +9,7 @@ class LicenseManager
      * @var array
      */
     protected $licenses;
-    
+
     /**
      *
      * @param array $licenses
@@ -18,7 +18,7 @@ class LicenseManager
     {
         $this->licenses = $licenses;
     }
-    
+
     /**
      *
      * @param string $license

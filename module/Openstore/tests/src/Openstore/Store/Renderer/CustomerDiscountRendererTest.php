@@ -54,7 +54,7 @@ class CustomerDiscountRendererTest extends \PHPUnit_Framework_TestCase
     protected function getCatalogStore($pricelist_reference, $customer_id, $language = 'en', $limit = 1000)
     {
         $product = $this->serviceManager->get('Model\Product');
-        
+
         $browser = $product->getBrowser()->setSearchParams(
             [
                             'language' => $language,
@@ -62,34 +62,34 @@ class CustomerDiscountRendererTest extends \PHPUnit_Framework_TestCase
                         ]
         )
                         ->setLimit($limit);
-                
+
                         return $browser->getStore();
     }
-    
-    
+
+
     public function testRendering()
     {
         $customer_id = 3521;
         $pricelist   = 'FR';
-        
+
         $cdr = $this->serviceManager->get('Store\Renderer\CustomerDiscount');
         $cdr->setParams($customer_id, $pricelist);
         $store = $this->getCatalogStore($pricelist, $customer_id, 'en', 30);
-        
+
         $store->getSource()->getSelect()->where->in('p.product_id', array(17436, 16978));
         var_dump($store->getSource()->__toString());
         die();
-        
+
         $cm = $store->getColumnModel();
-        
+
         $cm->add(new Column('my_price', array('type' => ColumnType::TYPE_DECIMAL)));
         $cm->add(new Column('my_discount_1', array('type' => ColumnType::TYPE_DECIMAL)));
         $cm->add(new Column('my_discount_2', array('type' => ColumnType::TYPE_DECIMAL)));
         $cm->add(new Column('my_discount_3', array('type' => ColumnType::TYPE_DECIMAL)));
         $cm->add(new Column('my_discount_4', array('type' => ColumnType::TYPE_DECIMAL)));
-        
+
         $cm->addRowRenderer($cdr);
-        
+
         $data = $store->getData()->toArray();
         foreach ($data as $row) {
             $arr = array(
@@ -105,8 +105,8 @@ class CustomerDiscountRendererTest extends \PHPUnit_Framework_TestCase
             echo join("\t", $arr);
             echo "\n";
         }
-        
-        
+
+
         die();
     }
 

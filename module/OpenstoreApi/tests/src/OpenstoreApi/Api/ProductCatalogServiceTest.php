@@ -15,7 +15,7 @@ class ProductCatalogServiceTest extends \PHPUnit_Framework_TestCase
      * @var ProductCatalogService
      */
     protected $catalogService;
-    
+
     /**
      *
      * @var ServiceManager
@@ -53,7 +53,7 @@ class ProductCatalogServiceTest extends \PHPUnit_Framework_TestCase
           //'offset' => null
 
         );
-        
+
         $store = $this->catalogService->getList($params);
         $product_id = 14349;
         $select = $store->getSource()->getSelect();
@@ -69,15 +69,15 @@ class ProductCatalogServiceTest extends \PHPUnit_Framework_TestCase
                 $cm->includeOnly($limited_columns);
             }
         }
-        
-        
+
+
         $row = $store->getData()->current();
         $this->assertEquals($product_id, $row['product_id']);
         $this->assertContains('€', $row['my_price']);
         $this->assertContains('%', $row['my_discount_1']);
         $this->assertEquals($limited_columns, array_keys((array) $row));
     }
-    
+
     public function testGetListWithoutColumns()
     {
         $params = array(

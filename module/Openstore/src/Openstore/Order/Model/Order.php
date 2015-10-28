@@ -14,12 +14,12 @@ class Order extends AbstractModel
      * @var \Soluble\Normalist\SyntheticTable
      */
     protected $st;
-    
-    
+
+
     public function __construct()
     {
     }
-    
+
     /**
      *
      * @return \Doctrine\ORM\EntityManager
@@ -28,8 +28,8 @@ class Order extends AbstractModel
     {
         return $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
     }
-        
-    
+
+
     /**
      *
      * @throws Exception\InvalidCustomerException
@@ -42,9 +42,9 @@ class Order extends AbstractModel
     public function create(ArrayObject $data)
     {
         $em = $this->getEntityManager();
-        
-        
-        
+
+
+
         $st = new SyntheticTable($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
         $d = $st->getRecordCleanedData('order', $data);
 
@@ -68,11 +68,11 @@ class Order extends AbstractModel
         if (!$d->offsetExists('customer_id') || !$st->exists('customer', $d['customer_id'])) {
             throw new Exception\InvalidCustomerException("Customer '" . $d['customer_id'] . "' does not exists.");
         }
-        
+
         if (!$d->offsetExists('pricelist_id') || !$st->exists('pricelist', $d['pricelist_id'])) {
             throw new Exception\InvalidPricelistException("Pricelist '" . $d['pricelist_id'] . "' does not exists.");
         }
-        
+
         // End of validation
 
         try {
@@ -80,11 +80,11 @@ class Order extends AbstractModel
         } catch (NormalistException\ExceptionInterface $e) {
             throw $e;
         }
-        
+
         return $order;
     }
 
-    
+
     /**
      *
      * @param type $order_id
@@ -97,26 +97,26 @@ class Order extends AbstractModel
     public function addOrderLine($order_id, ArrayObject $data)
     {
         $st = new SyntheticTable($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
-        
+
         $d = $st->getRecordCleanedData('order_line', $data);
-        
+
         // Validation
         $order = $st->find('order', $order_id);
         if (!$order) {
             throw new Exception\InvalidOrderException("Order '$order_id' does not exists.");
         }
-        
+
         if ($d['product_id'] == '' || !$st->find('product', $d['product_id'])) {
             throw new Exception\InvalidProductException("Product '" . $d['product_id'] . " does not exists.");
         }
-        
+
         // Check for quantity
 
-        
+
 
         // Filling missing data
         $d['order_id'] = $order_id;
-        
+
         $now = date('Y-m-d H:i:s');
         if (!$d->offsetExists('created_at')) {
             $d['created_at'] = $now;
@@ -128,7 +128,7 @@ class Order extends AbstractModel
             $default_line_status = $st->findOneBy('order_line_status', array('flag_default' => 1));
             $d['status_id'] = $default_line_status['status_id'];
         }
-        
+
         // Precalculate price and conditions
         if (!$d->offsetExists('price')) {
             // retrieve price
@@ -139,14 +139,14 @@ class Order extends AbstractModel
             if (!$product) {
                 throw new Exception\InvalidProductException("Product '" . $d['product_id'] . "' is not active in pricelist '{$order->getParent('pricelist')->pricelist_id}'");
             }
-            
+
             $d['price'] = $product['price'] * $d['quantity'];
             $d['discount_1'] = $product['discount_1'];
             $d['discount_2'] = $product['discount_2'];
             $d['discount_3'] = $product['discount_3'];
             $d['discount_4'] = $product['discount_4'];
         }
-        
+
         try {
             $line = $st->insert('order_line', $d);
         } catch (NormalistException\ExceptionInterface $e) {

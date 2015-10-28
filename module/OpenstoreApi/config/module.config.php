@@ -76,7 +76,7 @@ return array(
         'template_path_stack' => array(
             //realpath(__DIR__ . '/../../public/themes'),
             realpath(__DIR__ . '/../view'),
-            
+
         ),
     )
 );

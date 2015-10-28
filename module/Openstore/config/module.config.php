@@ -153,7 +153,7 @@ return array(
       'data-fixture' => array(
       'location' => __DIR__ . '/../src/Openstore/Fixtures',
       ),
-     * 
+     *
      */
     /*
       'di' => array(

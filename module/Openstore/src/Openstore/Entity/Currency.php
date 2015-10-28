@@ -43,7 +43,7 @@ class Currency
      * @ORM\Column(type="string", length=4, nullable=true, options={"comment" = "Symbol"})
      */
     private $symbol;
-    
+
     /**
      * @ORM\Column(type="smallint", nullable=true, options={"default"=2, "unsigned"=true, "comment"="Number of decimals to display"})
      */
@@ -201,7 +201,7 @@ class Currency
     {
         $this->display_decimals = $display_decimals;
     }
-    
+
     /**
      *
      * @return string

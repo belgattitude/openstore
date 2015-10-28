@@ -44,7 +44,7 @@ class ProductType
      * @ORM\Column(type="string", length=15000, nullable=true)
      */
     private $description;
-    
+
     /**
      * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the product type must honour special discount conditions"})
      */
@@ -59,7 +59,7 @@ class ProductType
      * @ORM\Column(type="boolean", nullable=false, options={"default"=false, "comment"="Tells whether the type should be excluded from exported catalog"})
      */
     private $flag_excluded_export;
-    
+
     /**
      * @ORM\Column(type="boolean", nullable=true, options={"default"=null, "comment"="Is the default state"})
      */
@@ -194,7 +194,7 @@ class ProductType
         return $this->description;
     }
 
-    
+
     /**
      * @return ProductType
      */
@@ -212,7 +212,7 @@ class ProductType
     {
         return (boolean) $this->flag_enable_discount_condition;
     }
-    
+
     /**
      *
      * @return boolean

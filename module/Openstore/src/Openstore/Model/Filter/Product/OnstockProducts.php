@@ -10,8 +10,8 @@ class OnstockProducts extends AbstractFilter
     {
         return 'onstock';
     }
-    
-    
+
+
     /**
      *
      * @param \Zend\Db\Sql\Select $select

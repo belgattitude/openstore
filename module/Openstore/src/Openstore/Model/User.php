@@ -32,7 +32,7 @@ class User extends AbstractModel implements BrowsableInterface
         }
         return $entity;
     }
-    
+
     /**
      * @return \Openstore\Model\Browser\UserBrowser
      */
@@ -40,7 +40,7 @@ class User extends AbstractModel implements BrowsableInterface
     {
         return new UserBrowser($this);
     }
-    
+
     /**
      *
      * @param int $user_id
@@ -51,7 +51,7 @@ class User extends AbstractModel implements BrowsableInterface
         $adapter = $this->adapter;
         $sql = new Sql($adapter);
         $select = $sql->select();
-        
+
         $select->from(array('u' => 'user'), array())
                 ->join(
                     array('upl' => 'user_pricelist'),
@@ -63,21 +63,21 @@ class User extends AbstractModel implements BrowsableInterface
                     new Expression('pl.pricelist_id = upl.pricelist_id'),
                     array()
                 );
-                
+
         $select->columns(array(
             //'user_id'     => new Expression('u.user_id'),
             'pricelist_id'    => new Expression('upl.pricelist_id'),
             'reference'        => new Expression('pl.reference')
         ));
-        
+
         $select->where(array("u.user_id" => $user_id));
-        
+
         $sql_string = $sql->getSqlStringForSqlObject($select);
         $results = $adapter->query($sql_string, array());
         return $results->toArray();
     }
-    
-    
+
+
     /**
      *
      * @param integer $user_id
@@ -88,7 +88,7 @@ class User extends AbstractModel implements BrowsableInterface
         $adapter = $this->adapter;
         $sql = new Sql($adapter);
         $select = $sql->select();
-        
+
         $select->from(array('u' => 'user'), array())
                 ->join(
                     array('ur' => 'user_role'),
@@ -100,20 +100,20 @@ class User extends AbstractModel implements BrowsableInterface
                     new Expression('r.role_id = ur.role_id'),
                     array()
                 );
-                
+
         $select->columns(array(
             //'user_id'     => new Expression('u.user_id'),
             'role_id'    => new Expression('r.role_id'),
             'reference'        => new Expression('r.reference')
         ));
-        
+
         $select->where(array("u.user_id" => $user_id));
-        
+
         $sql_string = $sql->getSqlStringForSqlObject($select);
         $results = $adapter->query($sql_string, array());
         return $results->toArray();
     }
-    
+
     /**
      * Get associated customers
      * @param int $user_id
@@ -123,9 +123,9 @@ class User extends AbstractModel implements BrowsableInterface
     {
         $adapter = $this->adapter;
         $sql = new Sql($adapter);
-        
+
         $select = $sql->select();
-        
+
         $select->from(array('u' => 'user'), array())
                 ->join(
                     array('us' => 'user_scope'),
@@ -137,10 +137,10 @@ class User extends AbstractModel implements BrowsableInterface
             'user_id'        => new Expression('u.user_id'),
             'customer_id'    => new Expression('us.customer_id'),
         ));
-        
+
         $select->where('user_id = ?', $user_id);
         $sql_string = $sql->getSqlStringForSqlObject($select);
-        
+
         //echo '<pre>';
         //var_dump($sql_string);die();
         //die();

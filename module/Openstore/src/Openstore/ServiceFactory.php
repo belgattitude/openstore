@@ -14,9 +14,9 @@ class ServiceFactory implements FactoryInterface
     {
         $configuration = $sl->get('Openstore\Configuration');
         $adapter       = $sl->get('Zend\Db\Adapter\Adapter');
-        
+
         $service = new Service($configuration, $adapter);
-        
+
         $service->setServiceLocator($sl);
         return $service;
     }

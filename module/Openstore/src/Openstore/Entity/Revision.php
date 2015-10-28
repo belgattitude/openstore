@@ -36,20 +36,20 @@ class Revision
      * @ORM\Column(type="string", length=40, nullable=false, options={"comment" = "Related table"})
      */
     private $related_table;
-    
+
 
     /**
      * @ORM\Column(type="bigint", nullable=false, options={"comment" = "Related table primary key"})
      */
     private $related_id;
 
-        
+
     /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record creation timestamp"})
      */
     private $created_at;
-    
+
 
     /**
      * @Gedmo\Blameable(on="create")
@@ -61,32 +61,32 @@ class Revision
      * @ORM\Column(type="boolean", nullable=false, options={"default"=0, "comment"="Whether the saving includes a new revision"})
      */
     private $flag_revision_updated;
-    
-    
-    
+
+
+
     /**
      * @ORM\Column(type="integer", nullable=true, options={"comment" = "Optional revision number, revision differ from version as it acts like a milestone"})
      */
     private $revision;
-    
+
 
     /**
      * @ORM\Column(type="string", length=150, nullable=true, options={"comment" = "Log message, reason of change"})
      */
     private $message;
 
-    
+
     /**
      * @ORM\Column(type="string", length=64000, nullable=false, options={"comment" = "Previous data, stored as json"})
      */
     private $previous_data;
-    
+
 
     /**
      * @ORM\Column(type="string", length=64000, nullable=false, options={"comment" = "Data at time of saving, stored as json"})
      */
     private $current_data;
-    
+
 
     public function __construct()
     {
@@ -111,7 +111,7 @@ class Revision
         return $this->message;
     }
 
-    
+
     /**
      *
      * @return string

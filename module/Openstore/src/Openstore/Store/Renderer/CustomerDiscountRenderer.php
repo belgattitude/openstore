@@ -25,20 +25,20 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
      * @var Adapter
      */
     protected $adapter;
-    
+
 
     /**
      *
      * @var integer
      */
     protected $customer_id;
-    
+
     /**
      *
      * @var string
      */
     protected $pricelist;
-    
+
     /**
      *
      * @var array
@@ -46,46 +46,46 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
     protected $columns = array(
         'source_price'      => 'price',
         'source_list_price' => 'list_price',
-        
+
         'source_type_id'    => 'type_id',
-        
+
         'source_discount_1' => 'discount_1',
         'source_discount_2' => 'discount_2',
         'source_discount_3' => 'discount_3',
         'source_discount_4' => 'discount_4',
-        
+
 
         // All those columns must be available in row
         'source_product_id'      => 'product_id',
         'source_brand_id'         => 'brand_id',
         'source_category_id'    => 'category_id',
         'source_product_group_id'   => 'group_id',
-        
+
         'source_status_reference'   => 'status_reference',
-        
+
         'target_discount_1' => 'my_discount_1',
         'target_discount_2' => 'my_discount_2',
         'target_discount_3' => 'my_discount_3',
         'target_discount_4' => 'my_discount_4',
-        
+
         'target_price'      => 'my_price',
-        
-        
+
+
     );
-    
+
     /**
      *
      * @var ArrayObject|null
      */
     protected $exclusions;
-    
+
     /**
      *
      * @var ArrayObject|null
      */
     protected $loaded_discounts;
 
-    
+
     protected function loadExclusions()
     {
         if ($this->exclusions === null) {
@@ -95,7 +95,7 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
             $select->from('product_type', array())
                    ->where->equalTo('flag_enable_discount_condition', 0);
             $select->columns(array('type_id'), true);
-                    
+
             $sql = new Sql($this->adapter);
             $sql_string = $sql->getSqlStringForSqlObject($select);
 
@@ -105,8 +105,8 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
             }
         }
     }
-  
-    
+
+
     /**
      *
      * @param integer $customer_id
@@ -117,8 +117,8 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
         $this->customer_id = $customer_id;
         $this->pricelist = $pricelist;
     }
-    
-    
+
+
 
     /**
      *
@@ -142,28 +142,28 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
         if (!$this->loaded_discounts) {
             $this->loadCustomerDiscounts();
         }
-        
+
         $list_price = $row[$this->columns['source_list_price']];
         $price      = $row[$this->columns['source_price']];
-        
+
         $discount_1 =  $row[$this->columns['source_discount_1']];
         $discount_2 =  $row[$this->columns['source_discount_2']];
         $discount_3 =  $row[$this->columns['source_discount_3']];
         $discount_4 =  $row[$this->columns['source_discount_4']];
-        
+
         $type_id    = $row[$this->columns['source_type_id']];
-        
+
         $sd = null;
-        
+
         if (!in_array($type_id, $this->exclusions['product_type'])
                 && $this->loaded_discounts->count() > 0) {
             $ld = $this->loaded_discounts;
-            
+
             $product_id         = $row[$this->columns['source_product_id']];
             $brand_id           = $row[$this->columns['source_brand_id']];
             $product_group_id   = $row[$this->columns['source_product_group_id']];
             $category_id        = $row[$this->columns['source_category_id']];
-            
+
             // TEST EXISTENCE in order PRODUCT/...
             if (isset($ld[DiscountCondition::TYPE_PRODUCT][$product_id])) {
                 $sd = $ld[DiscountCondition::TYPE_PRODUCT][$product_id];
@@ -195,19 +195,19 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
             if (in_array($status, array('L', 'S'))) {
                 $sd['discount_2'] = 0.0;
             }
-            
+
             // Remove discount 1 (company discount) for all export pricelists
             if (in_array($this->pricelist, array('100B', '120B', '100U', '120U'))) {
                 $sd['discount_1'] = 0.0;
             }
-            
+
             // Calculate new price from list_price
 
             $d1 = max($sd['discount_1'], $discount_1);
             $d2 = max($sd['discount_2'], $discount_2);
             $d3 = max($sd['discount_3'], $discount_3);
             $d4 = max($sd['discount_4'], $discount_4);
-            
+
             $target_price = $list_price * (1-($d1/100))
                                         * (1-($d2/100))
                                         * (1-($d3/100))
@@ -217,7 +217,7 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
             $row[$this->columns['target_discount_2']] = $d2;
             $row[$this->columns['target_discount_3']] = $d3;
             $row[$this->columns['target_discount_4']] = $d4;
-            
+
             $row[$this->columns['target_price']] = $target_price;
         }
     }

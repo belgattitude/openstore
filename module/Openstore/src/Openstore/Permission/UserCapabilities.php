@@ -12,15 +12,15 @@ class UserCapabilities implements ServiceLocatorAwareInterface
      * @var \Zend\ServiceManager\ServiceLocatorInterface
      */
     protected $serviceLocator;
-    
+
 
     /**
      *
      * @var integer
      */
     protected $user_id;
-    
-    
+
+
     /**
      *
      * @var \Openstore\Service
@@ -34,8 +34,8 @@ class UserCapabilities implements ServiceLocatorAwareInterface
     {
         $this->setUserId($user_id);
     }
-    
-    
+
+
     /**
      *
      * @param integer $user_id
@@ -46,7 +46,7 @@ class UserCapabilities implements ServiceLocatorAwareInterface
         $this->user_id = $user_id;
         return $this;
     }
-    
+
     /**
      * @return integer
      */
@@ -54,7 +54,7 @@ class UserCapabilities implements ServiceLocatorAwareInterface
     {
         return $this->user_id;
     }
-    
+
     /**
      * @return array
      */
@@ -64,8 +64,8 @@ class UserCapabilities implements ServiceLocatorAwareInterface
         $roles = array_column($userModel->getUserRoles($this->getUserId()), 'reference', 'role_id');
         return $roles;
     }
-    
-    
+
+
     /**
      * @param string $role role reference
      * @return boolean
@@ -74,7 +74,7 @@ class UserCapabilities implements ServiceLocatorAwareInterface
     {
         return in_array($role, $this->getRoles());
     }
-    
+
     /**
      *
      * @return boolean
@@ -83,7 +83,7 @@ class UserCapabilities implements ServiceLocatorAwareInterface
     {
         return $this->getRole() == 'admin';
     }
-    
+
     /**
      * Return pricelists the user can have
      * @return array associative array with pricelist_id as key and pricelist reference as value
@@ -91,9 +91,9 @@ class UserCapabilities implements ServiceLocatorAwareInterface
     public function getPricelists()
     {
         $pricelists = array();
-        
+
         $user_id = $this->getUserId();
-        
+
         if ($this->hasRole('admin')) {
             $plModel = $this->getService()->getModel('Model\Pricelist');
             $pricelists = array_column($plModel->getPricelists(), 'reference', 'pricelist_id');
@@ -107,10 +107,10 @@ class UserCapabilities implements ServiceLocatorAwareInterface
             $userModel = $this->getService()->getModel('Model\User');
             $pricelists = array_column($userModel->getUserPricelists($user_id), 'reference', 'pricelist_id');
         }
-        
+
         return $pricelists;
     }
-    
+
     /**
      *
      * @param string $pricelist Pricelist reference
@@ -120,7 +120,7 @@ class UserCapabilities implements ServiceLocatorAwareInterface
     {
         return in_array($pricelist, $this->getPricelists());
     }
-    
+
     /**
      * @return customers the user can choose
      */
@@ -140,11 +140,11 @@ class UserCapabilities implements ServiceLocatorAwareInterface
         }
         return $customers;
     }
-    
-    
-    
-    
-    
+
+
+
+
+
     /**
      *
      * @param int $customer_id
@@ -156,7 +156,7 @@ class UserCapabilities implements ServiceLocatorAwareInterface
         if ($this->hasRole('admin')) {
             return true;
         }
-        
+
         return in_array($customer_id, $this->getCustomers());
     }
 
@@ -179,8 +179,8 @@ class UserCapabilities implements ServiceLocatorAwareInterface
     {
         return $this->serviceLocator;
     }
-    
-    
+
+
     /**
      *
      * @return \Openstore\Service

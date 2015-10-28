@@ -46,7 +46,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 
         /*
 
-         * 
+         *
          */
     }
 
@@ -69,7 +69,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                 $vars = $e->getResult();
             }
 
-            
+
             switch ($format) {
                 case 'json':
                     header("Access-Control-Allow-Origin: *");
@@ -106,7 +106,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                     } else {
                         throw new \Exception('Response must include a valid StoreInterface object');
                     }
-                    
+
 
                 case 'csv':
                     if ($vars instanceof StoreInterface) {

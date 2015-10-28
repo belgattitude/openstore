@@ -54,7 +54,7 @@ class Pricelist
      * @ORM\JoinColumn(name="discount_condition_pricelist_id", referencedColumnName="pricelist_id", onDelete="CASCADE", nullable=true)
      */
     private $discount_condition_pricelist_id;
-    
+
     /**
      * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
      */
@@ -77,7 +77,7 @@ class Pricelist
 
 
 
-    
+
     /**
      * @ORM\Column(type="boolean", nullable=true, options={"default"=null, "comment"="Whether this pricelist is default"})
      */
@@ -102,7 +102,7 @@ class Pricelist
      * @ORM\Column(type="integer", nullable=true, options={"unsigned"=true, "comment"="Relative sort index"})
      */
     private $sort_index;
-    
+
     /**
      * @ORM\Column(type="string", length=40, nullable=true)
      */
@@ -274,8 +274,8 @@ class Pricelist
         $this->icon_class = $icon_class;
         return $this;
     }
-    
-    
+
+
     /**
      *
      * @param integer $sort_index
@@ -295,7 +295,7 @@ class Pricelist
     {
         return $this->sort_index;
     }
-    
+
 
     /**
      *
@@ -333,7 +333,7 @@ class Pricelist
         return (boolean) $this->flag_public;
     }
 
-    
+
     /**
      * @return Pricelist
      */
@@ -351,8 +351,8 @@ class Pricelist
     {
         return (boolean) $this->flag_enable_discount_condition;
     }
-    
-    
+
+
     /**
      * @return Pricelist
      */

@@ -11,12 +11,12 @@ class IndexController extends AbstractActionController
      * @var Openstore\Service
      */
     protected $service;
-    
+
     public function onDispatch(\Zend\Mvc\MvcEvent $e)
     {
         parent::onDispatch($e);
     }
-    
+
     /**
      *
      * @return \Doctrine\ORM\EntityManager
@@ -25,7 +25,7 @@ class IndexController extends AbstractActionController
     {
         return $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
     }
-    
+
     public function indexAction()
     {
         /*
@@ -37,7 +37,7 @@ class IndexController extends AbstractActionController
         var_dump($user->getRoles()[0]->getName());
         die('cool');
         $service = $this->getServiceLocator()->get('Openstore\Service');
-        
+
         $userContext = $this->getServiceLocator()->get('Openstore\UserContext');
 */
         /*
@@ -45,7 +45,7 @@ class IndexController extends AbstractActionController
 //		echo '<pre>';
         var_dump($capabilities->getPricelists());
         var_dump($capabilities->getCustomers());
-        
+
         */
         /*
         echo '<pre>';
@@ -53,9 +53,9 @@ class IndexController extends AbstractActionController
         die();
         */
         $view = new ViewModel();
-        
+
         $view->test        = 'hello';
-        
+
         /*
         echo '<pre>';
         var_dump(unserialize(file_get_contents('/tmp/aaaa.txt')));
@@ -63,8 +63,8 @@ class IndexController extends AbstractActionController
         */
         return $view;
     }
-    
-    
+
+
     public function createAction()
     {
         die('cool');

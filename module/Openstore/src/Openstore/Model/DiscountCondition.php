@@ -21,7 +21,7 @@ class DiscountCondition implements AdapterAwareInterface
     const TYPE_CUSTOMER             = 'customer';
     const TYPE_CATEGORY             = 'category';
     const TYPE_CUSTOMER_GROUP       = 'customer_group';
-    
+
     /**
      *
      * @var Adapter
@@ -80,9 +80,9 @@ class DiscountCondition implements AdapterAwareInterface
         $store = new Store($sqlSource);
         return $store;
     }
-    
-    
-    
+
+
+
     /**
      * @throws \Exception
      * @return ArrayObject
@@ -100,7 +100,7 @@ class DiscountCondition implements AdapterAwareInterface
                    'flag_enable_discount_condition' => new Expression('pl.flag_enable_discount_condition'),
                    'discount_condition_pricelist_id' => new Expression('pl.discount_condition_pricelist_id')
                ), false);
-        
+
         $sql = new Sql($this->adapter);
         $results = $this->adapter->query($sql->getSqlStringForSqlObject($select))->execute();
         if ($results->count() != 1) {
@@ -108,9 +108,9 @@ class DiscountCondition implements AdapterAwareInterface
         }
         $pricelist_data = $results->current();
         $flag_enable_discounts = $pricelist_data['flag_enable_discount_condition'];
-        
+
         $matrix = new ArrayObject();
-        
+
         // Only if pricelist has enabled discount conditions.
         if ($flag_enable_discounts == 1) {
             // Use the defined pricelist id.
@@ -125,7 +125,7 @@ class DiscountCondition implements AdapterAwareInterface
                 $select->where->equalTo('dc.pricelist_id', $pricelist_id);
             }
             $conditions = $store->getData();
-            
+
             $tmp = array();
             foreach ($conditions as $c) {
                 $discounts = array(
@@ -141,7 +141,7 @@ class DiscountCondition implements AdapterAwareInterface
                 $product_group_id   = $c['product_group_id'];
                 $customer_id        = $c['customer_id'];
                 $category_id        = $c['category_id'];
-                
+
                 if ($product_id != '') {
                     $matrix[self::TYPE_PRODUCT][$product_id] = $discounts;
                 } elseif ($brand_id != '' && $product_group_id != '') {
@@ -157,11 +157,11 @@ class DiscountCondition implements AdapterAwareInterface
                 }
             }
         }
-        
+
         return $matrix;
     }
-    
-    
+
+
 
     /**
      * Set db adapter

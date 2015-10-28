@@ -17,12 +17,12 @@ class AdapterResourceFactory implements FactoryInterface
         $dbAdapter = $services->get('Zend\Db\Adapter\Adapter');
 
         $resource = $dbAdapter->getDriver()->getConnection()->getResource();
-        
+
         /*
         if (!$pdo instanceof \PDO && !) {
             throw new ServiceNotCreatedException('Connection resource must be an instance of PDO');
         }
-         * 
+         *
          */
         return $resource;
     }

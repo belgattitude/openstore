@@ -9,7 +9,7 @@ class Configuration
      * @var array
      */
     protected $options;
-    
+
     /**
      * Overloading Constructor.
      *
@@ -20,7 +20,7 @@ class Configuration
     {
         $this->options = $options;
     }
-    
+
     /**
      *
      * @param string $key
@@ -29,7 +29,7 @@ class Configuration
     public function getConfigKey($key)
     {
         $parts = explode('.', $key);
-        
+
         $ref = $this->options;
         foreach ($parts as $part) {
             if (!isset($ref[$part])) {
@@ -39,8 +39,8 @@ class Configuration
         }
         return $ref;
     }
-    
-    
+
+
     public function getOptions()
     {
         return $this->options;

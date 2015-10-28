@@ -66,7 +66,7 @@ class ProductModel
      * @ORM\Column(type="string", length=10000, nullable=true)
      */
     private $description;
-    
+
    /**
      * @ORM\Column(type="string", length=10000, nullable=true, options={"comment" = "Specifications"})
      */
@@ -76,7 +76,7 @@ class ProductModel
      * @ORM\Column(type="integer", nullable=true, options={"default"=1, "unsigned"=true, "comment" = "Translation revision number"})
      */
     private $revision;
-    
+
     /**
      * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the model is active in public website"})
      */
@@ -219,7 +219,7 @@ class ProductModel
     {
         return $this->description;
     }
-    
+
     /**
      *
      * @param string $specs
@@ -238,7 +238,7 @@ class ProductModel
     {
         return $this->specs;
     }
-    
+
     /**
      *
      * @param integer $revision
@@ -257,7 +257,7 @@ class ProductModel
     {
         return $this->revision;
     }
-    
+
 
     /**
      *

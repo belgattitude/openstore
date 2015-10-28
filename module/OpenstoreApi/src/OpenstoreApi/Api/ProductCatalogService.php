@@ -39,14 +39,14 @@ class ProductCatalogService extends AbstractService
     public function getList(array $params = array())
     {
         $this->checkListParams($params);
-        
+
         $select = new Select();
         $lang = $params['language'];
 
         $pricelist_reference = $params['pricelist'];
 
         $disable_packaging = (isset($params['disable_packaging']) && $params['disable_packaging'] == true);
-        
+
         if (!$disable_packaging) {
             // Step 1: Inner select packaging selection
             $packSelect = new Select();
@@ -126,11 +126,11 @@ class ProductCatalogService extends AbstractService
                 ->join(array('pmed' => 'product_media'), new Expression("pmed.product_id = p.product_id and pmed.flag_primary=1"), array(), $select::JOIN_LEFT)
                 ->join(array('pmt' => 'product_media_type'), new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), array(), $select::JOIN_LEFT)
                 ->join(array('m' => 'media'), new Expression('pmed.media_id = m.media_id'), array(), $select::JOIN_LEFT);
-        
+
         if (!$disable_packaging) {
             $select->join(array('packs' => $packSelect), new Expression("packs.product_id = p.product_id"), array(), $select::JOIN_LEFT);
         }
-                
+
         $max_stock = 30;
 
         /*
@@ -223,7 +223,7 @@ class ProductCatalogService extends AbstractService
                 'pack_mastercarton_height' => new Expression("packs.pack_mastercarton_height")
             ));
         }
-        
+
         $columns = array_merge($columns, array(
             'category_breadcrumb' => new Expression('if (pc18.breadcrumb is null, pc.breadcrumb, pc18.breadcrumb)'),
             'flag_till_end_of_stock' => new Expression('pst.flag_till_end_of_stock'),
@@ -246,7 +246,7 @@ class ProductCatalogService extends AbstractService
 
         $select->where('p.flag_active = 1');
         $select->where('ppl.flag_active = 1');
-        
+
         // only product that are not 'OFFER' (combination of products)
         $select->where("pt.flag_excluded_export = 0");
         // FOR EMD - TODO add a flag in brand or product_type to automatically
@@ -314,36 +314,36 @@ class ProductCatalogService extends AbstractService
             $price_min = $params['price_min'];
             $select->where("ppl.price >= $price_min");
         }
-        
+
         if (array_key_exists('price_max', $params) && is_numeric($params['price_max'])) {
             $price_max = $params['price_max'];
             $select->where("ppl.price <= $price_max");
         }
-        
-        
+
+
         // List price
         if (array_key_exists('list_price_min', $params) && is_numeric($params['list_price_min'])) {
             $list_price_min = $params['list_price_min'];
             $select->where("ppl.list_price >= $list_price_min");
         }
-        
+
         if (array_key_exists('list_price_max', $params) && is_numeric($params['list_price_max'])) {
             $list_price_max = $params['list_price_max'];
             $select->where("ppl.list_price <= $list_price_max");
         }
-        
+
         // Public price
         if (array_key_exists('public_price_min', $params) && is_numeric($params['public_price_min'])) {
             $public_price_min = $params['public_price_min'];
             $select->where("ppl.public_price >= $public_price_min");
         }
-        
+
         if (array_key_exists('list_price_max', $params) && is_numeric($params['public_price_max'])) {
             $public_price_max = $params['public_price_max'];
             $select->where("ppl.public_price <= $public_price_max");
         }
-        
-        
+
+
 
         if (array_key_exists('brands', $params)) {
             $select->where->in('pb.reference', explode(',', $params['brands']));
@@ -362,7 +362,7 @@ class ProductCatalogService extends AbstractService
         $select->order(array(new Expression($relevance . ' desc'), 'pb.reference', 'pc.global_sort_index', 'p.sort_index', 'p.display_reference'));
 
         $store = $this->getStore($select);
-        
+
         if (array_key_exists('limit', $params)) {
             $store->getSource()->getOptions()->setLimit($params['limit']);
         }
@@ -374,19 +374,19 @@ class ProductCatalogService extends AbstractService
         // Remove unwanted columns, that are included just because
         // required for row renderers
         $store->getColumnModel()->exclude(array('status_reference', 'currency_symbol', 'picture_media_filemtime'));
-        
+
         if (isset($params['customer_id'])) {
             $customer_id = $params['customer_id'];
         } else {
             $customer_id = null;
         }
-        
+
         // Initialize column model
         $this->addStorePictureRenderer($store, 'picture_media_id', 'available_at', 'picture_media_filemtime');
         $this->addNextAvailableStockAtRenderer($store, 'next_available_stock_at');
         $this->addStorePriceRenderer($store, $customer_id, $pricelist_reference, 'picture_thumbnail_url');
         $this->initStoreFormatters($store, $params);
-        
+
         return $store;
     }
     /**
@@ -405,22 +405,22 @@ class ProductCatalogService extends AbstractService
         if (!$insert_mode) {
             $insert_mode = ColumnModel::ADD_COLUMN_AFTER;
         }
-        
+
         if (!in_array($insert_mode, array(ColumnModel::ADD_COLUMN_AFTER,
                                           ColumnModel::ADD_COLUMN_BEFORE))) {
             throw new \InvalidArgumentException(__METHOD__ . " unsupported insert_mode parameter ($insert_mode)");
         }
-        
+
         $cdr = $this->serviceLocator->get('Store\Renderer\CustomerDiscount');
         $cdr->setParams($customer_id, $pricelist_reference);
-        
+
         $my_price = new Column('my_price', array('type' => ColumnType::TYPE_DECIMAL, 'virtual' => true));
         $my_discount_1 = new Column('my_discount_1', array('type' => ColumnType::TYPE_DECIMAL, 'virtual' => true));
         $my_discount_2 = new Column('my_discount_2', array('type' => ColumnType::TYPE_DECIMAL, 'virtual' => true));
         $my_discount_3 = new Column('my_discount_3', array('type' => ColumnType::TYPE_DECIMAL, 'virtual' => true));
         $my_discount_4 = new Column('my_discount_4', array('type' => ColumnType::TYPE_DECIMAL, 'virtual' => true));
-        
-        
+
+
         switch ($insert_mode) {
             case ColumnModel::ADD_COLUMN_AFTER:
                 $cm->add($my_price, $insert_reference_column, ColumnModel::ADD_COLUMN_AFTER);
@@ -437,11 +437,11 @@ class ProductCatalogService extends AbstractService
             default:
                 throw new \Exception(__METHOD__ . " Not yet supported");
         }
-        
+
         $cm->addRowRenderer($cdr);
     }
-    
-          
+
+
 
     /**
      * Return quoted searchable reference from a keyword

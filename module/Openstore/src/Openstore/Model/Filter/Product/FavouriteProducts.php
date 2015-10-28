@@ -10,7 +10,7 @@ class FavouriteProducts extends AbstractFilter
     {
         return 'favourite';
     }
-    
+
     /**
      *
      * @param \Zend\Db\Sql\Select $select

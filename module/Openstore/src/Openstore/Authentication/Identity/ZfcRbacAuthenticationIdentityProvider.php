@@ -14,7 +14,7 @@ class ZfcRbacAuthenticationIdentityProvider implements IdentityProviderInterface
      */
     protected $authenticationService;
 
-    
+
     /**
      *
      * @var Doctrine\ORM\EntityManager
@@ -41,7 +41,7 @@ class ZfcRbacAuthenticationIdentityProvider implements IdentityProviderInterface
         if ($identity !== null) {
             $user_id = $identity->getId();
             $user =  $this->em->find('Openstore\Entity\User', $user_id);
-            
+
             return $user;
         } else {
             return null;

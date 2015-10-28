@@ -55,8 +55,8 @@ class ProductBrandService extends AbstractService
         if (array_key_exists('offset', $params)) {
             $store->getSource()->getOptions()->setOffset($params['offset']);
         }
-        
-        
+
+
         $this->initStoreFormatters($store, $params);
         return $store;
     }

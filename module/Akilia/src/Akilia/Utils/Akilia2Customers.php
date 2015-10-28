@@ -19,20 +19,20 @@ class Akilia2Customers implements ServiceLocatorAwareInterface, AdapterAwareInte
      * @var ServiceLocatorInterface
      */
     protected $serviceLocator;
-    
+
     /**
      *
      * @var \Zend\Db\Adapter\Adapter
      */
     protected $adapter;
-    
-    
+
+
     public function __construct(array $configuration)
     {
         $this->configuration = $configuration;
     }
-    
-    
+
+
     /**
      *
      * @param int $days_threshold days threshold
@@ -72,20 +72,20 @@ class Akilia2Customers implements ServiceLocatorAwareInterface, AdapterAwareInte
                 'accuracy'    => new Expression('bcg.accuracy'),
                 'latitude'    => new Expression('bcg.latitude'),
                 'longitude'    => new Expression('bcg.longitude'),
-            
+
             );
-        
+
         $select->columns(array_merge($columns, array(
             'total_net' => new Expression('sum(sol.price_total_net)')
         )), true);
-        
-        
+
+
         $select->group($columns);
         $select->having("sum(sol.price_total_net) > $ca_threshold");
         $select->where(function (Where $where) use ($min_accuracy) {
             //$where->greaterThan('so.date_order', '2012-12-31');
 
-            
+
             $where->notLike('bc.name', '%FINISHED%');
             $where->nest
                     ->lessThan('accuracy', $min_accuracy)
@@ -97,10 +97,10 @@ class Akilia2Customers implements ServiceLocatorAwareInterface, AdapterAwareInte
         if ($limit > 0) {
             $select->limit($limit);
         }
-        
-         
+
+
         $store = $this->getStore($select);
-        
+
         $data = $store->getData()->toArray();
         return $data;
     }
@@ -109,48 +109,48 @@ class Akilia2Customers implements ServiceLocatorAwareInterface, AdapterAwareInte
          * @param Select $select
          * @return Store
          */
-        protected function getStore(Select $select = null)
-        {
-            return new Store(new SqlSource($this->getDbAdapter(), $select));
-        }
-    
-    
+    protected function getStore(Select $select = null)
+    {
+        return new Store(new SqlSource($this->getDbAdapter(), $select));
+    }
+
+
     /**
      *
      * @param \Zend\Db\Adapter\Adapter $adapter
      */
-        public function setDbAdapter(Adapter $adapter)
-        {
-            $this->adapter = $adapter;
-            return $this;
-        }
-    
-    
+    public function setDbAdapter(Adapter $adapter)
+    {
+        $this->adapter = $adapter;
+        return $this;
+    }
+
+
     /**
      *
      * @return Zend\Db\Adapter\Adapter
      */
-        public function getDbAdapter()
-        {
-            return $this->adapter;
-        }
-    
+    public function getDbAdapter()
+    {
+        return $this->adapter;
+    }
+
     /**
      *
      * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
      */
-        public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-        {
-            $this->serviceLocator = $serviceLocator;
-            return $this;
-        }
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+        return $this;
+    }
 
     /**
      *
      * @return \Zend\ServiceManager\ServiceLocatorInterface
      */
-        public function getServiceLocator()
-        {
-            return $this->serviceLocator;
-        }
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
 }

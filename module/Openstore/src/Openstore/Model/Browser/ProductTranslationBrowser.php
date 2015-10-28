@@ -3,7 +3,7 @@
 namespace Openstore\Model\Browser;
 
 use Openstore\Core\Model\Browser\AbstractBrowser;
-//use Openstore\Catalog\Browser\SearchParams\SearchParamsAbstract as SearchParams; 
+//use Openstore\Catalog\Browser\SearchParams\SearchParamsAbstract as SearchParams;
 //use Openstore\Catalog\Browser\ProductFilter;
 use Zend\Db\Sql\Sql;
 use Soluble\Db\Sql\Select;
@@ -52,7 +52,7 @@ class ProductTranslationBrowser extends AbstractBrowser
         } else {
             $languages = array();
         }
-        
+
         if (isset($params['pricelists']) && $params['pricelists'] != '') {
             $pricelists = $params['pricelists'];
         } else {
@@ -63,27 +63,27 @@ class ProductTranslationBrowser extends AbstractBrowser
         if (isset($params['updated_by']) && $params['updated_by'] != '') {
             $updated_by_logins = $params['updated_by'];
         }
-        
-        
+
+
         if (isset($params['brands']) && $params['brands'] != '') {
             $brands = $params['brands'];
         } else {
             $brands = array();
         }
-        
-        
+
+
         if (isset($params['types']) && $params['types'] != '') {
             $types = $params['types'];
         } else {
             $types = array();
         }
 
-        
+
         $lang_clause = '(' . join(',', array_map(function ($lang) {
             return "'" . $lang . "'";
 
         }, $languages)) . ")";
-        
+
         foreach ($languages as $lang) {
             $inner_columns["invoice_title_$lang"] = new Expression("COALESCE(MAX(if(p18.lang = '$lang', p18.invoice_title, null)), '')");
             $inner_columns["title_$lang"] = new Expression("COALESCE(MAX(if(p18.lang = '$lang', p18.title, null)), '')");
@@ -100,7 +100,7 @@ class ProductTranslationBrowser extends AbstractBrowser
             $inner_columns["revision_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.revision, null))");
             $inner_columns["count_chars_$lang"] = new Expression("MAX(if(p18.lang = '$lang', CHAR_LENGTH(CONCAT(COALESCE(p18.title, ''), COALESCE(p18.description, ''), COALESCE(p18.characteristic, ''))), null))");
         }
-        
+
         $select->from(array('p' => 'product'), array())
                 //->join(['tr' => $innerSelect], 'tr.product_id = p.product_id')
                 ->join(
@@ -125,7 +125,7 @@ class ProductTranslationBrowser extends AbstractBrowser
                     array(),
                     $select::JOIN_LEFT
                 )
-                
+
                 ->join(array('pt' => 'product_type'), new Expression('p.type_id = pt.type_id'), array(), $select::JOIN_LEFT)
                 //->join(array('c' => 'currency'), new Expression('c.currency_id = pl.currency_id'), array(), $select::JOIN_LEFT)
                 //->join(array('pu' => 'product_unit'), new Expression('pu.unit_id = p.unit_id'), array(), $select::JOIN_LEFT)
@@ -134,13 +134,13 @@ class ProductTranslationBrowser extends AbstractBrowser
                 ->join(array('pm' => 'product_media'), new Expression("pm.product_id = p.product_id and pm.flag_primary=1"), array(), $select::JOIN_LEFT)
                 ->join(array('m' => 'media'), new Expression('pm.media_id = m.media_id'), array(), $select::JOIN_LEFT)
                 ->join(array('pmt' => 'product_media_type'), new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), array(), $select::JOIN_LEFT);
-        
-        
-        
+
+
+
         $select->where('p.flag_active = 1');
-        
-        
-                
+
+
+
         // Adding languages and pricelists selections
         if (count($pricelists) > 0) {
             $select->join(array('ppl' => 'product_pricelist'), new Expression('ppl.product_id = p.product_id'), array())
@@ -168,9 +168,9 @@ class ProductTranslationBrowser extends AbstractBrowser
                 'created_at' => new Expression("DATE_FORMAT(p.created_at, '%Y-%m-%dT%H:%i:%s')"),
                 'available_at' => new Expression("DATE_FORMAT(p.available_at, '%Y-%m-%dT%H:%i:%s')"),
                 'picture_media_filemtime' => new Expression('m.filemtime')
-            
+
         ];
-        
+
         if (count($updated_by_logins) > 0) {
             $ubls = [];
             foreach ($updated_by_logins as $login) {
@@ -183,20 +183,20 @@ class ProductTranslationBrowser extends AbstractBrowser
             $filter_updated_clause = new Expression("1");
             $having_updated_clause = "";
         }
-        
+
         // Processing filters
 
         $product_id = $params->get('product_id');
         if ($product_id != '') {
             $select->where("p.product_id = $product_id");
         }
-        
+
         if (count($types) > 0) {
             $select->where(['p.type_id' => $types]);
         }
 
-        
-        
+
+
         if (count($brands) > 0) {
             $select->where(['pb.reference' => $brands]);
         }
@@ -252,14 +252,14 @@ class ProductTranslationBrowser extends AbstractBrowser
                 $matches[10000000] = "p.search_reference like " . $platform->quoteValue($searchable_ref . '%');
                 $matches[1000000] = "p.search_reference like " . $platform->quoteValue('%' . $searchable_ref . '%');
             }
-            
+
             // ALL MATCHES from product table are added to the
             // where clause
             // to avoid limiting results from left joined table
             // product_translation
 
             $product_where_clauses = $matches;
-            
+
             //echo "p.search_reference like CONCAT('%', get_searchable_reference($quoted), '%')";
             //die();
             if (u::strlen($query) > 3) {
@@ -298,10 +298,10 @@ class ProductTranslationBrowser extends AbstractBrowser
             $keyword_matches_clause = new Expression('1');
             $having_keywords_clause = false;
         }
-        
-        
-        
-        
+
+
+
+
         //
         $full_columns = array_merge(
             $columns,
@@ -316,10 +316,10 @@ class ProductTranslationBrowser extends AbstractBrowser
                 'relevance' => new Expression($relevance)
             ]
         );
-        
+
         $select->columns($full_columns, true);
         $select->group(array_keys($columns));
-        
+
 
         // Automatically add relevance column
         //$columns = array_merge($select->getRawState(Select::COLUMNS), array('relevance' => new Expression($relevance)));
@@ -338,10 +338,10 @@ class ProductTranslationBrowser extends AbstractBrowser
                 }
             }
         }
-        
-        
+
+
         $filters = $params['filters'];
-        
+
         $filter_having_clauses = [];
         if (is_array($filters) && count($filters) > 0) {
             foreach ($filters as $filter) {
@@ -369,7 +369,7 @@ class ProductTranslationBrowser extends AbstractBrowser
                                 }
                             }
                             $filter_having_clauses[] = "(nb_distinct_revision > 1 and (count_chars_$master_language > 0 and (" . join(' or ', $clauses) . ')))';
-                            
+
                         }
                         break;
                 }
@@ -387,21 +387,21 @@ class ProductTranslationBrowser extends AbstractBrowser
         if ($having_keywords_clause != '') {
             $havings[] = $having_keywords_clause;
         }
-        
-        
+
+
         if (count($havings) > 0) {
             $select->having(join(' and ', $havings));
         }
-        
+
         $order_columns = ['relevance desc'];
         if ($params['order']) {
             $order_columns = array_merge($order_columns, $params['order']);
         }
 
         $select->order($order_columns);
-        
+
         /*
-        
+
           echo '<pre>';
 
           echo $select->getSql();

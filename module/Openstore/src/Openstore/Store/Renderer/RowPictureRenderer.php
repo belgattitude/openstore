@@ -11,40 +11,40 @@ class RowPictureRenderer implements RowRendererInterface
      * @var string
      */
     protected $resolution;
-    
-    
+
+
     /**
      *
      * @var string
      */
     protected $source_column;
-    
+
     /**
      *
      * @var string
      */
     protected $target_column;
-    
+
     /**
      *
      * @var string
      */
     protected $base_url;
-    
+
     /**
      *
      * @var string
      */
     protected $url;
-    
-    
+
+
     /**
      *
      * @var string|null
      */
     protected $filemtime_column;
-    
-    
+
+
     /**
      *
      * @param string $source_column column containing the media_id
@@ -59,18 +59,18 @@ class RowPictureRenderer implements RowRendererInterface
     {
         $this->source_column = $source_column;
         $this->target_column = $target_column;
-        
+
         if ($base_url === null) {
             $base_url = 'http://api.emdmusic.com/media/preview/picture';
         }
         $this->base_url = $base_url;
-        
+
         $this->url = $base_url . '/' . $resolution . "-" . $quality . "/";
         $this->filemtime_column = $filemtime_column;
     }
-    
-    
-    
+
+
+
     /**
      *
      * @param ArrayObject $row
@@ -96,8 +96,8 @@ class RowPictureRenderer implements RowRendererInterface
             $row[$this->target_column] = $this->url .  $prefix . '/' . $filename;
         }
     }
-    
-    
+
+
     /**
      * Return the list of columns required in order to use this renderer
      * @return array

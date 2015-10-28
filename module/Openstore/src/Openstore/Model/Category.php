@@ -16,9 +16,9 @@ class Category extends AbstractModel implements BrowsableInterface
     {
         return new CategoryBrowser($this);
     }
-    
-    
-    
+
+
+
     /**
      *
      * @param type $category
@@ -28,11 +28,11 @@ class Category extends AbstractModel implements BrowsableInterface
     public function getAncestors($category, $language)
     {
         $adapter = $this->adapter;
-        
+
         $sql = new Sql($adapter);
-        
+
         $select = $sql->select();
-        
+
         $select->from(array('pc1' => 'product_category'), array())
                 ->join(
                     array('pc2' => 'product_category'),
@@ -46,8 +46,8 @@ class Category extends AbstractModel implements BrowsableInterface
                     array(),
                     $select::JOIN_LEFT
                 );
-        
-        
+
+
         $select->columns(array(
             'category_id'    => new Expression('pc2.category_id'),
             'parent_id'        => new Expression('pc2.parent_id'),
@@ -58,31 +58,31 @@ class Category extends AbstractModel implements BrowsableInterface
             'rgt'            => new Expression('pc2.rgt'),
             'lvl'            => new Expression('pc2.lvl'),
         ));
-                
+
         $select->where(array('pc1.reference' => $category));
         $select->where(array('pc2.lvl > 0'));
         $select->order(array('pc2.lvl' => $select::ORDER_ASCENDING));
-        
+
         $sql_string = $sql->getSqlStringForSqlObject($select);
-        
+
         //echo '<pre>';
         //var_dump($sql_string);die();
 
         $results = $adapter->query($sql_string, $adapter::QUERY_MODE_EXECUTE);
-        
+
         //var_dump($results->toArray());
         //die();
         return $results;
     }
-    
+
     public function getParent($category, $language)
     {
         $adapter = $this->adapter;
-        
+
         $sql = new Sql($adapter);
-        
+
         $select = $sql->select();
-        
+
         $select->from(array('pc' => 'product_category'), array())
                 ->join(
                     array('pc18' => 'product_category_translation'),
@@ -90,8 +90,8 @@ class Category extends AbstractModel implements BrowsableInterface
                     array(),
                     $select::JOIN_LEFT
                 );
-        
-        
+
+
         $select->columns(array(
             'category_id'    => new Expression('pc.category_id'),
             'parent_id'        => new Expression('pc.parent_id'),
@@ -101,15 +101,15 @@ class Category extends AbstractModel implements BrowsableInterface
             'lvl'            => new Expression('pc.lvl'),
             'lft'            => new Expression('pc.lft'),
             'rgt'            => new Expression('pc.rgt'),
-             
+
         ));
-                
+
         $select->where(array('pc.reference' => $category));
-        
-        
-        
+
+
+
         $sql_string = $sql->getSqlStringForSqlObject($select);
-        
+
         //echo '<pre>';
         //var_dump($sql_string);die();
         //die();

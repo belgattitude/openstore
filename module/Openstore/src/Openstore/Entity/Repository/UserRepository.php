@@ -19,7 +19,7 @@ class UserRepository extends EntityRepository implements InputFilterAwareInterfa
      */
     protected $inputFilter;
 
-    
+
     /**
      * Get all roles hierachically
      */
@@ -27,7 +27,7 @@ class UserRepository extends EntityRepository implements InputFilterAwareInterfa
     {
         $roles = array();
         $repo = $this->em->getRepository('Openstore\Entity\Role');
-            
+
         foreach ($user->getRoles() as $role) {
             $roles[] = $role->getName();
             // all parents of this role
@@ -40,7 +40,7 @@ class UserRepository extends EntityRepository implements InputFilterAwareInterfa
         die();
         //var_dump($user->getRoles()[0]->getName());
     }
-    
+
     /**
      *
      * @param InputFilterInterface $inputFilter

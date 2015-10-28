@@ -325,7 +325,7 @@ BEGIN
     SET product_category_translation.breadcrumb = tmp.breadcrumb;    
 END;
 ENDQ;
-        
+
 
 ####################################################################
 # 4. DATABASE TRIGGERS                                             #
@@ -342,5 +342,5 @@ return array(
     'dbextra' => array(
         'statements' => $stmts
     )
-    
+
 );

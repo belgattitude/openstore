@@ -3,7 +3,7 @@
 namespace Openstore\Model\Browser;
 
 use Openstore\Core\Model\Browser\AbstractBrowser;
-//use Openstore\Catalog\Browser\SearchParams\SearchParamsAbstract as SearchParams; 
+//use Openstore\Catalog\Browser\SearchParams\SearchParamsAbstract as SearchParams;
 //use Openstore\Catalog\Browser\ProductFilter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;

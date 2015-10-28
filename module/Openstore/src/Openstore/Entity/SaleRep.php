@@ -159,7 +159,7 @@ class SaleRep
      */
     protected $legacy_synchro_at;
 
-    
+
     public function __construct()
     {
         /**

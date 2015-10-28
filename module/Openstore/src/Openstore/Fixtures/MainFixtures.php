@@ -261,9 +261,9 @@ class LoadUserData implements FixtureInterface
 
         $manager->flush();
     }
-    
-    
-    
+
+
+
     public function importStock(ObjectManager $manager)
     {
         $stock = new Entity\Stock();
@@ -349,14 +349,14 @@ class LoadUserData implements FixtureInterface
     public function importUser(ObjectManager $manager)
     {
         $users = array(
-            1 => array('username' => 'admin', 'email' => 's.vanvelthem@gmail.com', 'password' => 'intelart',
+            1 => array('username' => 'admin', 'email' => 's.vanvelthem@gmail.com', 'password' => 'changeme',
                 'roles' => array(
                     'admin'
                 ),
                 'pricelists' => array(
                     'BE', 'FR', 'NL'
                 )),
-                2 => array('username' => 'testcustomer', 'email' => 'sebastien@nuvolia.com', 'password' => 'intelart',
+                2 => array('username' => 'testcustomer', 'email' => 'sebastien@nuvolia.com', 'password' => 'changeme',
                 'roles' => array(
                     'customer'
                 ),
@@ -453,7 +453,7 @@ class LoadUserData implements FixtureInterface
         );
 
         $manager->getConnection()->executeUpdate("DELETE FROM currency where currency_id in (" . join(',', array_keys($currencies)) . ')');
-        
+
         foreach ($currencies as $id => $infos) {
             $currency = new Entity\Currency();
             $currency->setCurrencyId($id);

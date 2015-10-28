@@ -10,8 +10,8 @@ class PromoProducts extends AbstractFilter
     {
         return 'promos';
     }
-    
-    
+
+
     /**
      *
      * @param \Zend\Db\Sql\Select $select
@@ -22,7 +22,7 @@ class PromoProducts extends AbstractFilter
         $select->where("(ppl.is_promotional = 1)");
         return $select;
     }
-    
+
 
     public function addDefaultSortClause(Select $select)
     {

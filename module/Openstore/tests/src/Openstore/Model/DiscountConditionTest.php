@@ -20,7 +20,7 @@ class DiscountConditionTest extends \PHPUnit_Framework_TestCase
      * @var ServiceManager
      */
     protected $serviceManager;
-    
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
@@ -44,7 +44,7 @@ class DiscountConditionTest extends \PHPUnit_Framework_TestCase
     public function testGetDiscountStore()
     {
         $store = $this->dc->getDiscountStore();
-        
+
         $source = $store->getSource();
         $select = $store->getSource()->getSelect();
         $select->where(array('dc.customer_id' => 3521));
@@ -54,7 +54,7 @@ class DiscountConditionTest extends \PHPUnit_Framework_TestCase
                         ->isNull('pl.reference')
                        ->unnest;
         $select->order(array('pl.reference desc'));
-        
+
         $data = $store->getData();
         $this->assertInstanceOf('Soluble\FlexStore\ResultSet\ResultSet', $data);
        // var_dump($data->toArray());

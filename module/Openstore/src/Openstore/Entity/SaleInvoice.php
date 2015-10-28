@@ -103,8 +103,8 @@ class SaleInvoice
     {
         $this->customer_reference = $customer_reference;
     }
-    
-    
+
+
     /**
      * @return string
      */
