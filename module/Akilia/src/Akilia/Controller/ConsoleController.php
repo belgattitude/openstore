@@ -128,6 +128,9 @@ class ConsoleController extends AbstractActionController
             new \Geocoder\Provider\GoogleMaps(
                 $curl
             ),
+            new \Geocoder\Provider\OpenStreetMap(
+                $curl
+            ),            
             new \Geocoder\Provider\Yandex(
                 $curl
             ),
@@ -135,12 +138,15 @@ class ConsoleController extends AbstractActionController
         
         $total_geocoded = 0;
         foreach ($geo as $r) {
+            
             $city = preg_replace('[0-9]', '', $r['city']);
             $city = str_replace('CEDEX', '', $city);
             $city = str_replace('"', ' ', $city);
             $city = str_replace('(', ' ', $city);
             $city = str_replace(')', ' ', $city);
             $street = $r['street'];
+            
+            
             $street = str_replace('STR.', "", $street);
             $street = str_replace('"', " ", $street);
             $street = str_replace('(', " ", $street);
@@ -162,6 +168,7 @@ class ConsoleController extends AbstractActionController
              * 9 Premise (building name, property name, shopping center, etc.) level accuracy.
              */
             try {
+                
                 $addressCollection = $geocoder->geocode($address);
                 
                 if ($addressCollection->count() > 1) {
