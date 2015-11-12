@@ -1665,8 +1665,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
     public function rebuildProductSearch()
     {
-        $query = "CALL rebuild_product_search()";
-        $this->executeSQL('Rebuild product search', $query);
+        $query = "CALL rebuild_catalog_search()";
+        $this->executeSQL('Rebuild catalog search', $query);
     }
 
     public function rebuildCategoryBreadcrumbs()

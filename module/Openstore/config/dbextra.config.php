@@ -168,9 +168,9 @@ ENDQ;
 # 3. DATABASE PROCEDURES                                           #
 ####################################################################
 
-$stmts['drop/procedure/rebuild_product_search'] = "DROP PROCEDURE IF EXISTS `rebuild_product_search`";
-$stmts['create/procedure/rebuild_product_search']    = <<< ENDQ
-CREATE PROCEDURE `rebuild_product_search` ()
+$stmts['drop/procedure/rebuild_catalog_search'] = "DROP PROCEDURE IF EXISTS `rebuild_catalog_search`";
+$stmts['create/procedure/rebuild_catalog_search']    = <<< ENDQ
+CREATE PROCEDURE `rebuild_catalog_search` ()
 BEGIN
         SET @updated_at = NOW();
         SET @default_lang := (SELECT lang FROM `language` where flag_default = 1);
@@ -271,6 +271,112 @@ END
 ENDQ;
 
 
+$stmts['drop/procedure/rebuild_product_search'] = "DROP PROCEDURE IF EXISTS `rebuild_product_search`";
+$stmts['create/procedure/rebuild_product_search']    = <<< ENDQ
+CREATE PROCEDURE `rebuild_product_search` (IN product_id BIGINT)
+BEGIN
+        SET @updated_at = NOW();
+        SET @product_id = product_id;
+        SET @default_lang := (SELECT lang FROM `language` where flag_default = 1);
+        IF (@default_lang is null) THEN 
+             SET @default_lang = 'en'; 
+        END IF;
+        PREPARE stmt FROM 
+        "INSERT INTO product_search (product_id, lang, keywords, updated_at)
+        SELECT DISTINCT
+            p.product_id,
+            if (p18.lang is null, @default_lang, p18.lang) as lang,
+            UPPER(
+                delete_double_spaces(
+                    REPLACE(
+                        strip_tags(
+                                TRIM(
+                                        CONCAT_WS(' ',
+                                                COALESCE(p.reference, ''),
+                                                COALESCE(pb.title, ''),
+                                                COALESCE(p18.title, p.title, ''),
+                                                COALESCE(p18.invoice_title, p.invoice_title, ''),
+                                                IF(p2.product_id is not null,
+                                                    COALESCE(p18_2.description, p2.description, ''),
+                                                    COALESCE(p18.description, p.description, '')
+                                                ),
+                                                COALESCE(p18.characteristic, p.characteristic, ''),
+                                                COALESCE(p18.keywords, p.keywords, ''),
+                                                COALESCE(pc18.breadcrumb, pc.breadcrumb, ''),
+                                                COALESCE(pg18.title, pg.title, '')
+                                        )
+                                )
+                        )
+                    , '\n', ' ')
+                )
+            )
+            as keywords,
+            @updated_at as updated_at
+        from
+            product p
+                left outer join
+            product_translation p18 ON p18.product_id = p.product_id
+                left outer join
+            product_brand pb ON p.brand_id = pb.brand_id
+                left outer join
+            product p2 ON p2.product_id = p.parent_id
+                left outer join
+            product_translation p18_2 ON p18_2.product_id = p2.product_id
+                and p18_2.lang = p18.lang
+                left outer join
+            product_group pg ON p.group_id = pg.group_id
+                left outer join
+            product_group_translation pg18 ON pg18.group_id = pg.group_id
+                and pg18.lang = p18.lang
+                left outer join
+            product_category pc on pc.category_id = p.category_id
+                left outer join
+            product_category_translation pc18 on pc18.category_id = p.category_id
+                and pc18.lang = p18.lang
+                left outer join
+            product_pricelist ppl on (p.product_id = ppl.product_id and ppl.flag_active=1)
+                    left outer join 
+            pricelist pl on (pl.pricelist_id = ppl.pricelist_id and pl.flag_active=1)
+        where
+            1=1
+            and p.flag_active = 1
+            and pl.flag_active = 1
+            and p.product_id = ?
+        order by if (p18.lang is null, @default_lang, p18.lang), p.product_id 
+        on duplicate key update
+            keywords = UPPER(
+                delete_double_spaces(
+                    REPLACE(        
+                        strip_tags(
+                                TRIM(
+                                        CONCAT_WS(' ',
+                                                COALESCE(p.reference, ''),
+                                                COALESCE(pb.title, ''),
+                                                COALESCE(p18.title, p.title, ''),
+                                                COALESCE(p18.invoice_title, p.invoice_title, ''),
+                                                IF(p2.product_id is not null,
+                                                    COALESCE(p18_2.description, p2.description, ''),
+                                                    COALESCE(p18.description, p.description, '')
+                                                ),
+                                                COALESCE(p18.characteristic, p.characteristic, ''),
+                                                COALESCE(p18.keywords, p.keywords, ''),
+                                                COALESCE(pc18.breadcrumb, pc.breadcrumb, ''),
+                                                COALESCE(pg18.title, pg.title, '')
+                                        )
+                                )
+                        )
+                    , '\n', ' ')
+                )
+            )
+            ,
+            updated_at = @updated_at";   
+        EXECUTE stmt USING @product_id;
+        DEALLOCATE PREPARE stmt;
+END
+ENDQ;
+
+
+
 $stmts['drop/procedure/rebuild_category_breadcrumbs'] = "DROP PROCEDURE IF EXISTS `rebuild_category_breadcrumbs`";
 $stmts['create/procedure/rebuild_category_breadcrumbs']    = <<< ENDQ
 CREATE PROCEDURE `rebuild_category_breadcrumbs` ()
@@ -330,6 +436,21 @@ ENDQ;
 ####################################################################
 # 4. DATABASE TRIGGERS                                             #
 ####################################################################
+
+/*
+$stmts['drop/trigger/product_translation_insert'] = "DROP TRIGGER IF EXISTS product_translation_insert";
+$stmts['drop/trigger/product_translation_update'] = "DROP TRIGGER IF EXISTS product_translation_update";
+$stmts['drop/trigger/product_translation_delete'] = "DROP TRIGGER IF EXISTS product_translation_delete";
+
+$stmts['create/trigger/product_translation_insert'] = <<< ENDQ
+CREATE TRIGGER `product_translation_insert` AFTER INSERT ON `product_translation` FOR EACH ROW 
+BEGIN
+   IF @disable_openstore_triggers IS NULL THEN
+	  CALL rebuild_product_search(NEW.product_id);
+   END IF;
+END  
+ENDQ;
+*/ 
 
 
 ####################################################################
