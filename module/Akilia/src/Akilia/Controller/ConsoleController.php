@@ -120,16 +120,19 @@ class ConsoleController extends AbstractActionController
         $ak2Customers->setDbAdapter($adapter);
 
         $geo = $ak2Customers->getCustomerGeo($days_threshold = 300, $turnover_min = 1000, $min_accuracy = 6, $limit = 0);
+        
+        $curl     = new \Ivory\HttpAdapter\CurlHttpAdapter();        
+        $geocoder = new \Geocoder\ProviderAggregator();
 
-
-        $geocoder = new \Geocoder\Geocoder();
-        $geoadapter = new \Geocoder\HttpAdapter\CurlHttpAdapter();
-        $chain = new \Geocoder\Provider\ChainProvider(array(
-            new \Geocoder\Provider\GoogleMapsProvider($geoadapter, 'fr_FR', 'Belgium', true),
-            new \Geocoder\Provider\FreeGeoIpProvider($geoadapter),
-            new \Geocoder\Provider\HostIpProvider($geoadapter),
-        ));
-        $geocoder->registerProvider($chain);
+        $geocoder->registerProviders([
+            new \Geocoder\Provider\GoogleMaps(
+                $curl
+            ),
+            new \Geocoder\Provider\Yandex(
+                $curl
+            ),
+        ]);        
+        
         $total_geocoded = 0;
         foreach ($geo as $r) {
             $city = preg_replace('[0-9]', '', $r['city']);
@@ -143,7 +146,7 @@ class ConsoleController extends AbstractActionController
             $street = str_replace('(', " ", $street);
             $street = str_replace(')', " ", $street);
             $street = str_replace('STRASSE', 'Straße', $street);
-            $address = $street . ", " . $r['zipcode'] . " " . $city . ", " . $r['state'] . ', ' . $r['country'];
+            $address = $street . ", " . $r['zipcode'] . " " . $city . ", " . $r['state_reference'] . ', ' . $r['country'];
             $address = str_replace(", ,", ",", $address);
             /**
               Accuracy codes
@@ -159,54 +162,64 @@ class ConsoleController extends AbstractActionController
              * 9 Premise (building name, property name, shopping center, etc.) level accuracy.
              */
             try {
-                $geocode = $geocoder->geocode($address);
-                $latitude = $geocode->getLatitude();
-                $longitude = $geocode->getLongitude();
-                $country = $geocode->getCountry();
-                $city = $geocode->getCity();
-                $zipcode = $geocode->getZipcode();
-                $street_number = $geocode->getStreetNumber();
-                $street_name = $geocode->getStreetName();
-                if ($street_number != '') {
-                    $accuracy = 8;
-                } elseif ($street_name != '') {
-                    $accuracy = 6;
-                } elseif ($zipcode != '') {
-                    $accuracy = 5;
-                } elseif ($city != '') {
-                    $accuracy = 4;
-                } else {
-                    $accuracy = 1;
-                }
-                echo "[Success] Geocoded: " . $address . "\n";
-                $adrs = "$street_number, $street_name, $zipcode $city, $country";
-                echo "      [$accuracy] $adrs\n";
+                $addressCollection = $geocoder->geocode($address);
+                
+                if ($addressCollection->count() > 1) {
+                
+                    $geocoded = $addressCollection->first();
+                    
+                    $latitude = $geocoded->getLatitude();
+                    $longitude = $geocoded->getLongitude();
+                    $country = $geocoded->getCountry();
+                    $city = $geocoded->getLocality();
+                    $zipcode = $geocoded->getPostalCode();
+                    $street_number = $geocoded->getStreetNumber();
+                    $street_name = $geocoded->getStreetName();
+                    if ($street_number != '') {
+                        $accuracy = 8;
+                    } elseif ($street_name != '') {
+                        $accuracy = 6;
+                    } elseif ($zipcode != '') {
+                        $accuracy = 5;
+                    } elseif ($city != '') {
+                        $accuracy = 4;
+                    } else {
+                        $accuracy = 1;
+                    }
+                    echo "[Success] Geocoded: " . $address . "\n";
+                    $adrs = "$street_number, $street_name, $zipcode $city, $country";
+                    echo "      [$accuracy] $adrs\n";
 
-                if ($r['accuracy'] <= $accuracy) {
-                    $total_geocoded++;
-                    // update in database
-                    $sql = new Sql($adapter);
-                    $akilia2db = $configuration['synchronizer']['db_akilia2'];
+                    if ($r['accuracy'] <= $accuracy) {
+                        $total_geocoded++;
+                        // update in database
+                        $sql = new Sql($adapter);
+                        $akilia2db = $configuration['synchronizer']['db_akilia2'];
 
-                    $bcg = new \Zend\Db\Sql\TableIdentifier('base_customer_geo', $akilia2db);
+                        $bcg = new \Zend\Db\Sql\TableIdentifier('base_customer_geo', $akilia2db);
 
-                    $insert = $sql->insert($bcg);
-                    $now = date('Y-m-d H:i:s');
-                    $newData = array(
-                        'customer_id' => $r['customer_id'],
-                        'longitude' => $longitude,
-                        'latitude' => $latitude,
-                        'accuracy' => $accuracy,
-                        'address' => $adrs,
-                        'geocoded_at' => $now,
-                        'created_at' => $now,
-                        'updated_at' => $now,
-                    );
-                    $insert->values($newData);
-                    $selectString = $sql->getSqlStringForSqlObject($insert);
-                    $selectString = str_replace('INSERT INTO', 'REPLACE INTO', $selectString);
+                        $insert = $sql->insert($bcg);
+                        $now = date('Y-m-d H:i:s');
+                        $newData = array(
+                            'customer_id' => $r['customer_id'],
+                            'longitude' => $longitude,
+                            'latitude' => $latitude,
+                            'accuracy' => $accuracy,
+                            'address' => $adrs,
+                            'geocoded_at' => $now,
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        );
+                        //var_dump($newData);
+                        $insert->values($newData);
+                        $selectString = $sql->getSqlStringForSqlObject($insert);
+                        $selectString = str_replace('INSERT INTO', 'REPLACE INTO', $selectString);
 
-                    $results = $adapter->query($selectString, Adapter::QUERY_MODE_EXECUTE);
+                        $results = $adapter->query($selectString, Adapter::QUERY_MODE_EXECUTE);
+                    } else {
+                        
+                        echo "[Error] Cannot find: " . $address . "\n";
+                    }
                 }
             } catch (\Exception $e) {
                 echo "[Error] Cannot find: " . $address . "\n";
