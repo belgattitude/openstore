@@ -25,10 +25,10 @@ class ProductPricelist
 {
     /**
      * @ORM\Id
-     * @ORM\Column(name="id", type="bigint", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(name="product_pricelist_id", type="bigint", nullable=false, options={"unsigned"=true})
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private $product_pricelist_id;
 
     /**
      *
@@ -212,7 +212,7 @@ class ProductPricelist
      */
     public function setId($id)
     {
-        $this->id = $id;
+        $this->product_pricelist_id = $id;
         return $this;
     }
 
@@ -222,7 +222,7 @@ class ProductPricelist
      */
     public function getId()
     {
-        return $this->id;
+        return $this->product_pricelist_id;
     }
 
     /**

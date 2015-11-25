@@ -18,6 +18,7 @@ zf-commons
 ezyang
 neilime
 sebastian
+sebastian/*
 filp
 ghislainf
 imagine
@@ -28,4 +29,5 @@ soluble
 soluble/solublecomponents
 soluble/solublecomponents/*
 soluble/solublecomponents/src
+zfcampus/*
 autoload.php

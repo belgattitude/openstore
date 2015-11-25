@@ -170,6 +170,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->synchronizeProduct();
         $this->synchronizeProductTranslation();
         $this->synchronizeProductPricelist();
+        $this->synchronizeProductPricelistStat();
         $this->synchronizeProductStock();
         $this->synchronizeProductPackaging();
         $this->synchronizeDiscountCondition();
@@ -779,6 +780,73 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->executeSQL("Delete eventual removed product_pricelist", $delete);
     }
 
+    public function synchronizeProductPricelistStat()
+    {
+        if (!isset($this->configuration['options']['product_pricelist'])) {
+            throw new \Exception(__METHOD__ . " Error missing sync configuration key in akilia.local.php 'akilia/synchronizer/options/product_pricelist'");
+        }
+        if (!$this->configuration['options']['product_pricelist']['enabled']) {
+            $this->log("Skipping product pricelist synchro [disabled by config]");
+            return;
+        }
+        if (is_array($this->configuration['options']['product_pricelist']['elements'])) {
+            $elements = $this->configuration['options']['product_pricelist']['elements'];
+        } else {
+            $elements = array(
+                'DEFAULT' => array(
+                    'akilia1db' => $this->akilia1Db,
+                    
+                )
+            );
+        }
+
+        $db = $this->openstoreDb;
+
+        foreach ($elements as $key => $element) {
+            $akilia1Db = $element['akilia1db'];
+
+
+
+            $replace = " 
+                insert into $db.product_pricelist_stat(
+                    product_pricelist_id,
+                    forecasted_monthly_sales,
+                    legacy_synchro_at
+                )
+                SELECT 
+                    ppl.product_pricelist_id,
+                    t.moyenne_vente,
+                    '{$this->legacy_synchro_at}' AS legacy_synchro_at
+                FROM
+                    $akilia1Db.article a
+                        INNER JOIN
+                    $akilia1Db.art_tarif t ON t.id_article = a.id_article
+                        INNER JOIN
+                    $db.product p ON p.legacy_mapping = a.id_article
+                        INNER JOIN
+                    $db.pricelist pl ON pl.legacy_mapping = t.id_pays
+                        INNER JOIN
+                    $db.product_pricelist ppl ON ppl.product_id = p.product_id
+                        AND pl.pricelist_id = ppl.pricelist_id
+                on duplicate key update
+                    forecasted_monthly_sales = t.moyenne_vente,
+                    legacy_synchro_at = '{$this->legacy_synchro_at}'
+            ";
+
+            $this->executeSQL("Replace product pricelist stats [$key] ", $replace);
+        }
+
+
+        // 2. Deleting - old links in case it changes
+        $update = "
+            update $db.product_pricelist_stat
+            set forecasted_monthly_sales = null
+            where legacy_synchro_at < '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+
+        $this->executeSQL("Removing eventual product_pricelist_stat forecasts monthly sales", $update);
+    }
+    
+    
     public function synchronizePricelist($use_akilia2 = true)
     {
         if ($use_akilia2) {

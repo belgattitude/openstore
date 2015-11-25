@@ -1,4 +1,5 @@
 nbproject
+!.gitignore
 ._*
 .~lock.*
 .buildpath
@@ -11,5 +12,6 @@ composer.phar
 vendor
 vendor/bin
 public/assets/vendor
+
 
 /config/development.config.php

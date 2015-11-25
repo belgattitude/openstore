@@ -37,9 +37,7 @@
         "zfcampus/zf-apigility": "~1.2",
         "zf-commons/zfc-rbac": "~2.5.2",
         "intervention/image": "~2.3",
-        
         "patchwork/utf8": "1.2.*"
-        
         
    },
     "require-dev": {
