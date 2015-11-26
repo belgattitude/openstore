@@ -42,7 +42,7 @@ class ProductBrowser extends AbstractBrowser
                 'pack_unit_length' => new Expression("packs.pack_unit_length"),
                 'pack_unit_width' => new Expression("packs.pack_unit_width"),
                 'pack_unit_height' => new Expression("packs.pack_unit_height"),
-                //'pack_box_qty'           => new Expression("packs.pack_box_qty"),
+                'pack_carton_qty' => new Expression("packs.pack_carton_qty"),
                 'pack_carton_barcode_ean' => new Expression("packs.pack_carton_barcode_ean"),
                 'pack_carton_barcode_upc' => new Expression("packs.pack_carton_barcode_upc"),
                 'pack_carton_volume' => new Expression("packs.pack_carton_volume"),
@@ -50,7 +50,7 @@ class ProductBrowser extends AbstractBrowser
                 'pack_carton_length' => new Expression("packs.pack_carton_length"),
                 'pack_carton_width' => new Expression("packs.pack_carton_width"),
                 'pack_carton_height' => new Expression("packs.pack_carton_height"),
-                //'pack_mastercarton_qty'  => new Expression("packs.pack_mastercarton_qty"),
+                'pack_mastercarton_qty'  => new Expression("packs.pack_mastercarton_qty"),
                 'pack_mastercarton_barcode_ean' => new Expression("packs.pack_mastercarton_barcode_ean"),
                 'pack_mastercarton_barcode_upc' => new Expression("packs.pack_mastercarton_barcode_upc"),
                 'pack_mastercarton_volume' => new Expression("packs.pack_mastercarton_volume"),
@@ -214,7 +214,13 @@ class ProductBrowser extends AbstractBrowser
                 'unit_reference' => new Expression('pu.reference'),
                 'type_reference' => new Expression('pt.reference'),
                 'picture_media_id' => new Expression('pm.media_id'),
-                'picture_media_filemtime' => new Expression('m.filemtime')
+                'picture_media_filemtime' => new Expression('m.filemtime'),
+                'flag_till_end_of_stock' => new Expression('pst.flag_till_end_of_stock'),
+                'flag_end_of_lifecycle' => new Expression('pst.flag_end_of_lifecycle'),
+                'available_at' => new Expression('COALESCE(ppl.available_at, p.available_at)'),
+                'status_reference' => new Expression('pst.reference'),
+                'status_legacy_mapping' => new Expression('pst.legacy_mapping')
+                
             );
 
             if ($enable_packaging_columns) {
