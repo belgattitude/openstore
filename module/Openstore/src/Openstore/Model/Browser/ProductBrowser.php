@@ -193,6 +193,8 @@ class ProductBrowser extends AbstractBrowser
                 'list_price' => new Expression('ppl.list_price'),
                 'public_price' => new Expression('ppl.public_price'),
                 'map_price' => new Expression('ppl.map_price'),
+                'barcode_ean' => new Expression('p.barcode_ean13'),
+                'barcode_upc' => new Expression('p.barcode_upca'),
                 'flag_new' => new Expression("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.available_at, p.available_at))"),
                 'discount_1' => new Expression('ppl.discount_1'),
                 'discount_2' => new Expression('ppl.discount_2'),
