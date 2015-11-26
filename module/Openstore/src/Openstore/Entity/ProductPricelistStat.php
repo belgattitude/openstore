@@ -20,19 +20,12 @@ class ProductPricelistStat
     
     /**
      * @ORM\Id
-     * @ORM\Column(name="product_pricelist_stat_id", type="bigint", nullable=false, options={"unsigned"=true})
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\OneToOne(targetEntity="ProductPricelist")
+     * @ORM\JoinColumn(name="product_pricelist_stat_id", nullable=false, referencedColumnName="product_pricelist_id", onDelete="CASCADE")
      */
     private $product_pricelist_stat_id;
     
     
-    /**
-     * @ORM\OneToOne(targetEntity="ProductPricelist")
-     * @ORM\JoinColumn(name="product_pricelist_id", nullable=false, referencedColumnName="product_pricelist_id", onDelete="CASCADE")
-     */
-    private $product_pricelist_id;
-
-
     /**
      * @ORM\Column(type="decimal", precision=16, scale=6, nullable=true, options={"comment"="Forecasted monthly sales quantity"})
      */

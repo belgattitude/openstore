@@ -809,7 +809,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
             $replace = " 
                 insert into $db.product_pricelist_stat(
-                    product_pricelist_id,
+                    product_pricelist_stat_id,
                     forecasted_monthly_sales,
                     legacy_synchro_at
                 )
