@@ -33,6 +33,17 @@ class ProductPricelistStat
 
 
     /**
+     * @ORM\Column(type="date", nullable=true, options={"comment" = "First recorded sale at"})
+     */
+    private $first_sale_recorded_at;
+    
+
+    /**
+     * @ORM\Column(type="date", nullable=true, options={"comment" = "Latest recorded sale at"})
+     */
+    private $latest_sale_recorded_at;
+    
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record creation timestamp"})
      */
