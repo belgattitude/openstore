@@ -37,6 +37,7 @@ class ProductBrowser extends AbstractBrowser
     protected function getPackagingColumns()
     {
         $columns = array(
+                'pack_unit_qty' => new Expression("packs.pack_unit_qty"),
                 'pack_unit_volume' => new Expression("packs.pack_unit_volume"),
                 'pack_unit_weight' => new Expression("packs.pack_unit_weight"),
                 'pack_unit_length' => new Expression("packs.pack_unit_length"),
@@ -76,7 +77,7 @@ class ProductBrowser extends AbstractBrowser
         $packSelect->columns(
             array(
                     'product_id' => new Expression('pp.product_id'),
-                    'pack_unit_qty' => new Expression("MAX(if (pt.reference = 'UNIT', pp.quantity, null))"),
+                    'pack_unit_qty' => new Expression("MAX(if (pt.reference = 'UNIT', pp.quantity, 1))"),
                     'pack_unit_barcode_ean' => new Expression("MAX(if (pt.reference = 'UNIT', pp.barcode_ean, null))"),
                     'pack_unit_barcode_upc' => new Expression("MAX(if (pt.reference = 'UNIT', pp.barcode_upc, null))"),
                     'pack_unit_volume' => new Expression("MAX(if (pt.reference = 'UNIT', pp.volume, null))"),
