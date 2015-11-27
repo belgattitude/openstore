@@ -201,6 +201,7 @@ class ProductBrowser extends AbstractBrowser
                 'discount_3' => new Expression('ppl.discount_3'),
                 'discount_4' => new Expression('ppl.discount_4'),
                 'is_promotional' => new Expression('ppl.is_promotional'),
+                'is_liquidation' => new Expression('ppl.is_liquidation'),
                 'is_bestseller' => new Expression('ppl.is_bestseller'),
                 'is_bestvalue' => new Expression('ppl.is_bestvalue'),
                 'is_hot' => new Expression('ppl.is_hot'),
@@ -209,6 +210,15 @@ class ProductBrowser extends AbstractBrowser
                 'next_available_stock' => new Expression('ps.next_available_stock'),
                 'next_available_stock_at' => new Expression('ps.next_available_stock_at'),
                 'theoretical_stock' => new Expression('ps.theoretical_stock'),
+                'next_theoretical_stock' => new Expression('ps.theoretical_stock + (ps.available_stock - ps.next_available_stock)'),
+                'next_theoretical_stock_at' => new Expression('ps.next_available_stock_at'),
+                'stock_updated_at' => new Expression('ps.updated_at'),
+                'sale_minimum_qty' => new Expression('ppl.sale_minimum_qty'),
+                'weight' => new Expression('p.weight'),
+                'volume' => new Expression('p.volume'),
+                'length' => new Expression('p.length'),
+                'width' => new Expression('p.width'),
+                'height' => new Expression('p.height'),
                 'currency_reference' => new Expression('c.reference'),
                 'currency_symbol' => new Expression('c.symbol'),
                 'unit_reference' => new Expression('pu.reference'),
@@ -219,8 +229,8 @@ class ProductBrowser extends AbstractBrowser
                 'flag_end_of_lifecycle' => new Expression('pst.flag_end_of_lifecycle'),
                 'available_at' => new Expression('COALESCE(ppl.available_at, p.available_at)'),
                 'status_reference' => new Expression('pst.reference'),
+                'status_title' => new Expression('pst.title'),
                 'status_legacy_mapping' => new Expression('pst.legacy_mapping')
-                
             );
 
             if ($enable_packaging_columns) {
