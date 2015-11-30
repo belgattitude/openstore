@@ -10,66 +10,39 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="product_brand",
+ *   name="color",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *     @ORM\UniqueConstraint(name="unique_title_idx",columns={"title"}),
- *     @ORM\UniqueConstraint(name="unique_slug_idx",columns={"slug"})
  *   },
- *   indexes={
- *     @ORM\Index(name="title_idx", columns={"title"}),
- *     @ORM\Index(name="description_idx", columns={"description"}),
- *     @ORM\Index(name="slug_idx", columns={"slug"}),
- *   },
- *   options={"comment" = "Product brand table"}
+ *   options={"comment" = "Color table"}
  * )
  */
-class ProductBrand
+class Color
 {
 
     /**
      * @ORM\Id
-     * @ORM\Column(name="brand_id", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(name="color_id", type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $brand_id;
+    private $color_id;
 
     /**
-     * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
+     * @ORM\Column(type="string", length=16, nullable=false, options={"comment" = "Color code"})
      */
     private $reference;
 
     /**
-     * @Gedmo\Slug(fields={"title"})
-     * @ORM\Column(length=64, nullable=true, options={"comment" = "Unique slug for this record"})
+     * @ORM\Column(type="string", length=80, nullable=false)
      */
-    private $slug;
+    private $name;
 
     /**
-     * @ORM\Column(type="string", length=80, nullable=true)
+     * @ORM\Column(type="string", length=8, nullable=true, options={"comment" = "Hex color code, i.e. #FFFFFF"})
      */
-    private $title;
-
-    /**
-     * @ORM\Column(type="string", length=15000, nullable=true)
-     */
-    private $description;
-
-    /**
-     * @ORM\Column(type="string", length=80, nullable=true)
-     */
-    private $url;
-
-    /**
-     * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the brand is active in public website"})
-     */
-    private $flag_active;
-
-    /**
-     * @ORM\Column(type="string", length=40, nullable=true)
-     */
-    private $icon_class;
+    private $hex_code;    
+    
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -107,19 +80,15 @@ class ProductBrand
 
     public function __construct()
     {
-        /**
-         * Default value for flag_active
-         */
-        $this->flag_active = true;
     }
 
     /**
      *
-     * @param integer $id
+     * @param integer $color_id
      */
-    public function setBrandId($id)
+    public function setColorId($color_id)
     {
-        $this->brand_id = $id;
+        $this->color_id = $color_id;
         return $this;
     }
 
@@ -127,9 +96,9 @@ class ProductBrand
      *
      * @return integer
      */
-    public function getBRandId()
+    public function getColorId()
     {
-        return $this->brand_id;
+        return $this->color_id;
     }
 
     /**
@@ -152,11 +121,12 @@ class ProductBrand
     }
 
     /**
-     * @param string $slug
+     *
+     * @param string $name
      */
-    public function setSlug($slug)
+    public function setName($name)
     {
-        $this->slug = $slug;
+        $this->name = $name;
         return $this;
     }
 
@@ -164,104 +134,12 @@ class ProductBrand
      *
      * @return string
      */
-    public function getSlug()
+    public function getName()
     {
-        return $this->slug;
+        return $this->name;
     }
 
-    /**
-     *
-     * @param string $title
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-        return $this;
-    }
 
-    /**
-     *
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-     *
-     * @param string $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-        return $this;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     *
-     * @param string $url homepage url
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
-        return $this;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getUrl()
-    {
-        return $this->url;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function setIconClass($icon_class)
-    {
-        $this->icon_class = $icon_class;
-        return $this;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getIconClass()
-    {
-        return $this->icon_class;
-    }
-
-    /**
-     *
-     * @return boolean
-     */
-    public function getFlagActive()
-    {
-        return (boolean) $this->flag_active;
-    }
-
-    /**
-     *
-     */
-    public function setFlagActive($flag_active)
-    {
-        $this->flag_active = $flag_active;
-        return $this;
-    }
 
     /**
      *
@@ -360,7 +238,7 @@ class ProductBrand
 
     /**
      * Set legacy synchro time
-     * @param string $legacy_mapping
+     * @param string $legacy_synchro_at
      */
     public function setLegacySynchroAt($legacy_synchro_at)
     {

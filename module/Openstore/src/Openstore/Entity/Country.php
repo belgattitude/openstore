@@ -20,10 +20,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Country
 {
-    /**
-     * @ORM\OneToMany(targetEntity="ProductBrandTranslation", mappedBy="brand_id")
-     * */
-    private $translations;
+
 
     /**
      * @ORM\Id
@@ -88,7 +85,6 @@ class Country
 
     public function __construct()
     {
-        $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
         /**
          * Default value for flag_active
          */

@@ -116,6 +116,13 @@ class Product
     private $unit_id;
 
     /**
+     * Primary color id
+     * @ORM\ManyToOne(targetEntity="Color", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="primary_color_id", referencedColumnName="color_id", onDelete="CASCADE", nullable=true)
+     */
+    private $primary_color_id;    
+    
+    /**
      * @Gedmo\Slug(fields={"title"})
      * @ORM\Column(length=255, nullable=true, options={"comment" = "Unique slug for this record"})
      */
@@ -171,6 +178,16 @@ class Product
      */
     private $width;
 
+    /**
+     * @ORM\Column(type="decimal", precision=10, scale=8, nullable=true, options={"comment"="Diameter in meter"})
+     */
+    private $diameter;    
+
+    /**
+     * @ORM\Column(type="string", length=10, nullable=true, options={"comment"="Format, i.e. 10x10.."})
+     */
+    private $format;    
+    
     /**
      * @ORM\Column(type="decimal", precision=15, scale=6, nullable=true, options={"comment"="Packaging items per box"})
      */

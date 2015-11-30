@@ -10,7 +10,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="product_brand",
+ *   name="product_set",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
@@ -22,18 +22,24 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *     @ORM\Index(name="description_idx", columns={"description"}),
  *     @ORM\Index(name="slug_idx", columns={"slug"}),
  *   },
- *   options={"comment" = "Product brand table"}
+ *   options={"comment" = "Product set table"}
  * )
  */
-class ProductBrand
+class ProductSet
 {
-
     /**
      * @ORM\Id
-     * @ORM\Column(name="brand_id", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(name="set_id", type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $brand_id;
+    private $set_id;
+    
+    /**
+     * Type id
+     * @ORM\ManyToOne(targetEntity="ProductType", inversedBy="products", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="type_id", referencedColumnName="type_id", onDelete="CASCADE", nullable=true)
+     */
+    private $type_id; 
 
     /**
      * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
@@ -117,9 +123,9 @@ class ProductBrand
      *
      * @param integer $id
      */
-    public function setBrandId($id)
+    public function setId($id)
     {
-        $this->brand_id = $id;
+        $this->set_id = $id;
         return $this;
     }
 
@@ -127,9 +133,9 @@ class ProductBrand
      *
      * @return integer
      */
-    public function getBRandId()
+    public function getId()
     {
-        return $this->brand_id;
+        return $this->set_id;
     }
 
     /**

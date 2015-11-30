@@ -10,41 +10,30 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="product_brand",
+ *   name="product_set_type",
  *   uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *     @ORM\UniqueConstraint(name="unique_title_idx",columns={"title"}),
- *     @ORM\UniqueConstraint(name="unique_slug_idx",columns={"slug"})
+ *     @ORM\UniqueConstraint(name="unique_flag_default_idx",columns={"flag_default"}),
  *   },
  *   indexes={
- *     @ORM\Index(name="title_idx", columns={"title"}),
- *     @ORM\Index(name="description_idx", columns={"description"}),
- *     @ORM\Index(name="slug_idx", columns={"slug"}),
  *   },
- *   options={"comment" = "Product brand table"}
+ *   options={"comment" = "Product set type table"}
  * )
  */
-class ProductBrand
+class ProductSetType
 {
-
     /**
      * @ORM\Id
-     * @ORM\Column(name="brand_id", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(name="type_id", type="smallint", nullable=false, options={"unsigned"=true})
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $brand_id;
+    private $type_id;
 
     /**
      * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
      */
     private $reference;
-
-    /**
-     * @Gedmo\Slug(fields={"title"})
-     * @ORM\Column(length=64, nullable=true, options={"comment" = "Unique slug for this record"})
-     */
-    private $slug;
 
     /**
      * @ORM\Column(type="string", length=80, nullable=true)
@@ -56,13 +45,14 @@ class ProductBrand
      */
     private $description;
 
-    /**
-     * @ORM\Column(type="string", length=80, nullable=true)
-     */
-    private $url;
 
     /**
-     * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the brand is active in public website"})
+     * @ORM\Column(type="boolean", nullable=true, options={"default"=null, "comment"="Is the default state"})
+     */
+    private $flag_default;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the type is active"})
      */
     private $flag_active;
 
@@ -107,6 +97,7 @@ class ProductBrand
 
     public function __construct()
     {
+
         /**
          * Default value for flag_active
          */
@@ -115,11 +106,11 @@ class ProductBrand
 
     /**
      *
-     * @param integer $id
+     * @param integer $type_id
      */
-    public function setBrandId($id)
+    public function setTypeId($type_id)
     {
-        $this->brand_id = $id;
+        $this->type_id = $type_id;
         return $this;
     }
 
@@ -127,9 +118,9 @@ class ProductBrand
      *
      * @return integer
      */
-    public function getBRandId()
+    public function getTypeId()
     {
-        return $this->brand_id;
+        return $this->type_id;
     }
 
     /**
@@ -149,24 +140,6 @@ class ProductBrand
     public function getReference()
     {
         return $this->reference;
-    }
-
-    /**
-     * @param string $slug
-     */
-    public function setSlug($slug)
-    {
-        $this->slug = $slug;
-        return $this;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getSlug()
-    {
-        return $this->slug;
     }
 
     /**
@@ -199,7 +172,7 @@ class ProductBrand
     }
 
     /**
-     *
+     * Return description
      * @return string
      */
     public function getDescription()
@@ -207,23 +180,23 @@ class ProductBrand
         return $this->description;
     }
 
+
     /**
      *
-     * @param string $url homepage url
+     * @return boolean
      */
-    public function setUrl($url)
+    public function getFlagDefault()
     {
-        $this->url = $url;
-        return $this;
+        return (boolean) $this->flag_default;
     }
 
     /**
      *
-     * @return string
      */
-    public function getUrl()
+    public function setFlagDefault($flag_default)
     {
-        return $this->url;
+        $this->flag_default = $flag_default;
+        return $this;
     }
 
     /**
@@ -360,7 +333,7 @@ class ProductBrand
 
     /**
      * Set legacy synchro time
-     * @param string $legacy_mapping
+     * @param string $legacy_synchro_at
      */
     public function setLegacySynchroAt($legacy_synchro_at)
     {
@@ -376,5 +349,4 @@ class ProductBrand
     {
         return $this->legacy_synchro_at;
     }
-
 }

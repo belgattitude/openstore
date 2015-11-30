@@ -10,35 +10,39 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="product_brand",
+ *   name="product_set_translation",
  *   uniqueConstraints={
- *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *     @ORM\UniqueConstraint(name="unique_title_idx",columns={"title"}),
- *     @ORM\UniqueConstraint(name="unique_slug_idx",columns={"slug"})
+ *     @ORM\UniqueConstraint(name="unique_translation_idx",columns={"set_id", "lang"})
  *   },
  *   indexes={
  *     @ORM\Index(name="title_idx", columns={"title"}),
  *     @ORM\Index(name="description_idx", columns={"description"}),
- *     @ORM\Index(name="slug_idx", columns={"slug"}),
  *   },
- *   options={"comment" = "Product brand table"}
+ *   options={"comment" = "Product set translation table"}
  * )
  */
-class ProductBrand
+class ProductSetTranslation
 {
-
     /**
      * @ORM\Id
-     * @ORM\Column(name="brand_id", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(name="id", type="bigint", nullable=false, options={"unsigned"=true, "comment" = "Primary key"})
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $brand_id;
+    private $id;
 
     /**
-     * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
+     *
+     * @ORM\ManyToOne(targetEntity="ProductSet", inversedBy="translations", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="set_id", referencedColumnName="set_id", onDelete="CASCADE", nullable=false)
      */
-    private $reference;
+    private $set_id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Language", inversedBy="product_set_translations", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="lang", referencedColumnName="lang", onDelete="RESTRICT", nullable=false)
+     */
+    private $lang;
 
     /**
      * @Gedmo\Slug(fields={"title"})
@@ -55,21 +59,6 @@ class ProductBrand
      * @ORM\Column(type="string", length=15000, nullable=true)
      */
     private $description;
-
-    /**
-     * @ORM\Column(type="string", length=80, nullable=true)
-     */
-    private $url;
-
-    /**
-     * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the brand is active in public website"})
-     */
-    private $flag_active;
-
-    /**
-     * @ORM\Column(type="string", length=40, nullable=true)
-     */
-    private $icon_class;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -107,19 +96,15 @@ class ProductBrand
 
     public function __construct()
     {
-        /**
-         * Default value for flag_active
-         */
-        $this->flag_active = true;
     }
 
     /**
      *
      * @param integer $id
      */
-    public function setBrandId($id)
+    public function setId($id)
     {
-        $this->brand_id = $id;
+        $this->id = $id;
         return $this;
     }
 
@@ -127,28 +112,9 @@ class ProductBrand
      *
      * @return integer
      */
-    public function getBRandId()
+    public function getId()
     {
-        return $this->brand_id;
-    }
-
-    /**
-     * Set reference
-     * @param string $reference
-     */
-    public function setReference($reference)
-    {
-        $this->reference = $reference;
-        return $this;
-    }
-
-    /**
-     * Return reference
-     * @return string
-     */
-    public function getReference()
-    {
-        return $this->reference;
+        return $this->id;
     }
 
     /**
@@ -209,58 +175,40 @@ class ProductBrand
 
     /**
      *
-     * @param string $url homepage url
+     * @param integer $product_id
      */
-    public function setUrl($url)
+    public function setProductId($product_id)
     {
-        $this->url = $url;
+        $this->product_id = $product_id;
         return $this;
     }
 
     /**
      *
-     * @return string
+     * @return integer
      */
-    public function getUrl()
+    public function getProductId()
     {
-        return $this->url;
+        return $this->product_id;
     }
 
     /**
      *
-     * @return string
+     * @param integer $lang_id
      */
-    public function setIconClass($icon_class)
+    public function setLangId($lang_id)
     {
-        $this->icon_class = $icon_class;
+        $this->lang_id = $lang_id;
         return $this;
     }
 
     /**
      *
-     * @return string
+     * @return integer
      */
-    public function getIconClass()
+    public function getLangId()
     {
-        return $this->icon_class;
-    }
-
-    /**
-     *
-     * @return boolean
-     */
-    public function getFlagActive()
-    {
-        return (boolean) $this->flag_active;
-    }
-
-    /**
-     *
-     */
-    public function setFlagActive($flag_active)
-    {
-        $this->flag_active = $flag_active;
-        return $this;
+        return $this->lang_id;
     }
 
     /**
@@ -360,7 +308,7 @@ class ProductBrand
 
     /**
      * Set legacy synchro time
-     * @param string $legacy_mapping
+     * @param string $legacy_synchro_at
      */
     public function setLegacySynchroAt($legacy_synchro_at)
     {

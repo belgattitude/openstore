@@ -90,6 +90,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     protected $default_stock_id = 1;
 
     protected $default_unit_id = 1;
+    
+    protected $default_status_id = 20; // regular
 
     protected $default_product_type_id = 1;
 
@@ -157,6 +159,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
     public function synchronizeAll()
     {
+        
         $this->synchronizeCountry();
         $this->synchronizeCustomer();
         $this->synchronizeApi();
@@ -175,9 +178,11 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->synchronizeProductPackaging();
         $this->synchronizeDiscountCondition();
 
+        
         $this->rebuildCategoryBreadcrumbs();
         $this->rebuildProductSearch();
 
+        $this->processGuessedDiametersAndFormat();
         /**
          * INSERT INTO `nuvolia`.`user_scope` (
          * `id` ,
@@ -206,6 +211,83 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         return $this->getServiceLocator()->get('SolubleNormalist\TableManager');
     }
 
+    
+    /**
+     * Guess diameter
+     * @return array associative with product_id => diameter
+     */
+    public function processGuessedDiametersAndFormat()
+    {
+        $query = "select p.product_id, p.reference, p.invoice_title, p.title
+                    from product p
+                    where p.flag_active = 1
+                    and title regexp '(([0-9\.]){1,5}\")'
+                    ";
+        
+        $result = $this->mysqli->query($query);
+        $affected_rows = $this->mysqli->affected_rows;        
+        $errors = [];
+        $products = [];
+        foreach($result as $row) {
+            $product_id = $row['product_id'];
+            $products[$product_id] = [
+                'diameter' => null,
+                'format' => null
+            ];
+            $title = $row['title'];
+            if (substr_count($title, '"')  == 1) {
+                $match = preg_match_all('/(([1-3]?[0-9](\.[1-9])?)\ ?")/', $title, $matches);
+                if ($match && $matches[2][0] > 0) {
+                    $diameter = $matches[2][0];
+                    // meters to inches = 1m * 39.3700787402
+                    $products[$product_id]['diameter'] = $diameter * 0.0254;
+                } else {
+                    $errors[$product_id] = [
+                        'reason' => 'Cannot grep diameter',
+                        'title' => $title
+                    ];
+                }
+            } elseif (substr_count($title, '"')  < 4) {
+
+                $match = preg_match_all('/(((([1-3]?[0-9](\.[1-9])?)\ ?")\ ?)X(\ ?(([1-3]?[0-9](\.[1-9])?)\ ?")))/', strtoupper($title), $matches);
+                if ($match) {
+                    $format = str_replace(' ', '', strtolower($matches[1][0]));
+                    $format = str_replace('x', ' x ', $format);
+                    $products[$product_id]['format'] = $format;
+                } else {
+                    $errors[$product_id] = [
+                        'reason' => 'Cannot grep format',
+                        'title' => $title
+                    ];
+                }
+                
+            } else {
+                $errors[$product_id] = [
+                    'reason' => 'More than 3 inches found',
+                    'title' => $title
+                ];
+                
+                
+            }
+        }
+        
+        foreach ($products as $product_id => $infos) {
+
+            $update = "update product set ";
+            $values = [];
+            foreach($infos as $key => $value) {
+                $values[] ="$key = " . (($value === null) ? 'null' : $this->adapter->platform->quoteValue($value));
+            }
+
+
+            $update .= join(',', $values) . " where product_id = " . $product_id;
+
+            $this->mysqli->query($update);
+        }
+        
+        
+    }
+    
     public function synchronizeProductMedia()
     {
         ini_set('memory_limit', "1G");
@@ -795,10 +877,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             $elements = array(
                 'DEFAULT' => array(
                     'akilia1db' => $this->akilia1Db,
-                    
+                    'pricelists' => []
                 )
             );
         }
+        
+        
 
         $db = $this->openstoreDb;
 
@@ -806,7 +890,17 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             $akilia1Db = $element['akilia1db'];
 
 
-
+            $pricelists_clause = "";
+            $code_tarif_clause = '';
+            if (count($element['pricelists']) > 0) {
+                $pls = array();
+                foreach ($element['pricelists'] as $pricelist) {
+                    $pls[] = $this->adapter->getPlatform()->quoteValue($pricelist);
+                }
+                $pricelists_clause = "and pl.legacy_mapping in (" . join(',', $pls) . ")";
+                $code_tarif_clause = "and c.code_tarif in (" . join(',', $pls) . ")";
+            }
+            
             $replace = " 
                 insert into $db.product_pricelist_stat(
                     product_pricelist_stat_id,
@@ -828,16 +922,83 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         INNER JOIN
                     $db.product_pricelist ppl ON ppl.product_id = p.product_id
                         AND pl.pricelist_id = ppl.pricelist_id
+                where 1=1 
+                      $pricelists_clause
                 on duplicate key update
                     forecasted_monthly_sales = t.moyenne_vente,
                     legacy_synchro_at = '{$this->legacy_synchro_at}'
             ";
 
-            $this->executeSQL("Replace product pricelist stats [$key] ", $replace);
+            $this->executeSQL("Replace product pricelist stats for foreacasted sales [$key] ", $replace);
+
+            if ($element['pricelist'] != '') {
+                $pricelist_clause = "and pl.legacy_mapping  = '" . $element['pricelist'] . "'";
+            } else {
+                $pricelist_clause = '';
+            }
+
+            
+            $replace = "
+                insert into $db.product_pricelist_stat(
+                    product_pricelist_stat_id,
+                    first_sale_recorded_at,
+                    latest_sale_recorded_at,
+                    nb_customers,
+                    nb_sale_reps,
+                    nb_orders,
+                    total_recorded_quantity,
+                    total_recorded_turnover,
+                    legacy_synchro_at
+                )
+                select 
+                    ppl.product_pricelist_id, 
+                    plstats.first_sale_recorded_at, 
+                    plstats.latest_sale_recorded_at,
+                    plstats.nb_customers,
+                    plstats.nb_sale_reps,
+                    plstats.nb_orders,
+                    plstats.total_recorded_quantity,
+                    plstats.total_recorded_turnover,
+                    '{$this->legacy_synchro_at}' AS legacy_synchro_at
+
+                from 
+                    (SELECT 
+                        l.id_article,
+                        c.code_tarif,
+                        min(c.date_commande) AS first_sale_recorded_at,
+                        max(c.date_commande) AS latest_sale_recorded_at,
+                        count(distinct c.id_client) as nb_customers,
+                        count(distinct c.id_representant) as nb_sale_reps,
+                        sum(distinct c.id_commande) as nb_orders,
+                        sum(l.qty_commande) as total_recorded_quantity,
+                        sum(l.total_ht) as total_recorded_turnover
+                    FROM
+                        $akilia1Db.commande c
+                        INNER JOIN $akilia1Db.ligne_commande l on c.id_commande = l.id_commande
+                    WHERE 1=1
+                          $code_tarif_clause
+                    GROUP BY 1,2) 
+                as plstats
+                inner join $db.pricelist pl on pl.legacy_mapping = plstats.code_tarif
+                inner join $db.product_pricelist ppl on ppl.product_id = plstats.id_article and pl.pricelist_id = ppl.pricelist_id
+                on duplicate key update
+                    first_sale_recorded_at = plstats.first_sale_recorded_at,
+                    latest_sale_recorded_at = plstats.latest_sale_recorded_at,
+                    nb_customers = plstats.nb_customers,
+                    nb_sale_reps = plstats.nb_sale_reps,
+                    nb_orders = plstats.nb_orders,
+                    total_recorded_quantity = plstats.total_recorded_quantity,
+                    total_recorded_turnover = plstats.total_recorded_turnover,
+                    legacy_synchro_at = '{$this->legacy_synchro_at}'
+                    
+            ";
+            
+                    
+            $this->executeSQL("Replace product pricelist stats for pricelist sales [$key] ", $replace);
         }
 
 
-        // 2. Deleting - old links in case it changes
+        // 2. Deleting - old forecasted monthly sales (only !!!)
         $update = "
             update $db.product_pricelist_stat
             set forecasted_monthly_sales = null
@@ -1297,6 +1458,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             $rep = "REPLACE($rep, ' - ', '\\n- ')";
         }
 
+        
+        
 
         $description = "if(trim(COALESCE(i.desc$default_lsfx, '')) = '', null, $rep)";
 
@@ -1357,7 +1520,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     {$this->default_unit_id} as unit_id,
                     COALESCE(pt.type_id, {$this->default_product_type_id}) as type_id,
                                         
-                    ps.status_id as status_id,    
+                    if(ps.status_id is null, {$this->default_status_id}, ps.status_id) as status_id,    
                     if (i.id_art_tete <> 0 and i.id_art_tete <> '' and i.id_art_tete is not null, i.id_art_tete, null) as parent_id,     
                     upper(TRIM(a.reference)) as reference,
                                         upper(TRIM(a.reference)) as display_reference,
@@ -1415,7 +1578,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         group_id = product_group.group_id,
                         unit_id = {$this->default_unit_id},
                         parent_id = if (i.id_art_tete <> 0 and i.id_art_tete <> '' and i.id_art_tete is not null, i.id_art_tete, null),     
-                        status_id = ps.status_id,        
+                        status_id = if(ps.status_id is null, {$this->default_status_id}, ps.status_id),        
                         category_id = category.category_id,
                         reference = upper(TRIM(a.reference)),
                         display_reference = upper(TRIM(a.reference)),

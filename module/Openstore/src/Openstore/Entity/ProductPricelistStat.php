@@ -15,34 +15,56 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *   options={"comment" = "Product pricelist quick statistics"}
  * )
  */
-class ProductPricelistStat
-{
-    
+class ProductPricelistStat {
+
     /**
      * @ORM\Id
      * @ORM\OneToOne(targetEntity="ProductPricelist")
      * @ORM\JoinColumn(name="product_pricelist_stat_id", nullable=false, referencedColumnName="product_pricelist_id", onDelete="CASCADE")
      */
     private $product_pricelist_stat_id;
-    
-    
+
     /**
      * @ORM\Column(type="decimal", precision=16, scale=6, nullable=true, options={"comment"="Forecasted monthly sales quantity"})
      */
     private $forecasted_monthly_sales;
 
-
     /**
      * @ORM\Column(type="date", nullable=true, options={"comment" = "First recorded sale at"})
      */
     private $first_sale_recorded_at;
-    
 
     /**
      * @ORM\Column(type="date", nullable=true, options={"comment" = "Latest recorded sale at"})
      */
     private $latest_sale_recorded_at;
     
+    /**
+     * @ORM\Column(type="integer", nullable=true, options={"comment"="Number of distinct customers"})
+     */
+    private $nb_customers;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true, options={"comment"="Number of distinct sales reps"})
+     */
+    private $nb_sale_reps;
+    
+    
+    /**
+     * @ORM\Column(type="integer", nullable=true, options={"comment"="Number of distinct orders"})
+     */
+    private $nb_orders;
+
+    /**
+     * @ORM\Column(type="decimal", precision=15, scale=6, nullable=true, options={"comment"="Total recorded order line quantity"})
+     */
+    private $total_recorded_quantity;
+
+    /**
+     * @ORM\Column(type="decimal", precision=15, scale=6, nullable=true, options={"comment"="Total recorded turn over"})
+     */
+    private $total_recorded_turnover;
+
     /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record creation timestamp"})
@@ -54,7 +76,6 @@ class ProductPricelistStat
      * @ORM\Column(type="datetime", nullable=true, options={"comment" = "Record last update timestamp"})
      */
     private $updated_at;
-
 
     /**
      * @Gedmo\Blameable(on="create")
@@ -78,16 +99,15 @@ class ProductPricelistStat
      */
     protected $legacy_synchro_at;
 
-    public function __construct()
-    {
+    public function __construct() {
+        
     }
 
     /**
      *
      * @param integer $id
      */
-    public function setId($id)
-    {
+    public function setId($id) {
         $this->id = $id;
         return $this;
     }
@@ -96,8 +116,7 @@ class ProductPricelistStat
      *
      * @return integer
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->product_pricelist_stat_id;
     }
 
@@ -105,8 +124,7 @@ class ProductPricelistStat
      *
      * @param integer $product_pricelist_id
      */
-    public function setProduct_PricelistId($product_pricelist_id)
-    {
+    public function setProduct_PricelistId($product_pricelist_id) {
         $this->product_pricelist_id = $product_pricelist_id;
         return $this;
     }
@@ -115,19 +133,15 @@ class ProductPricelistStat
      *
      * @return integer
      */
-    public function getProductPricelistId()
-    {
+    public function getProductPricelistId() {
         return $this->product_pricelist_id;
     }
-
-
 
     /**
      *
      * @return string
      */
-    public function getCreatedAt()
-    {
+    public function getCreatedAt() {
         return $this->created_at;
     }
 
@@ -135,8 +149,7 @@ class ProductPricelistStat
      *
      * @param string $created_at
      */
-    public function setCreatedAt($created_at)
-    {
+    public function setCreatedAt($created_at) {
         $this->created_at = $created_at;
         return $this;
     }
@@ -145,8 +158,7 @@ class ProductPricelistStat
      *
      * @return string
      */
-    public function getUpdatedAt()
-    {
+    public function getUpdatedAt() {
         return $this->updated_at;
     }
 
@@ -154,8 +166,7 @@ class ProductPricelistStat
      *
      * @param string $updated_at
      */
-    public function setUpdatedAt($updated_at)
-    {
+    public function setUpdatedAt($updated_at) {
         $this->updated_at = $updated_at;
         return $this;
     }
@@ -164,8 +175,7 @@ class ProductPricelistStat
      * Return creator username
      * @return string
      */
-    public function getCreatedBy()
-    {
+    public function getCreatedBy() {
         return $this->created_by;
     }
 
@@ -173,8 +183,7 @@ class ProductPricelistStat
      * Set creator username
      * @param string $created_by
      */
-    public function setCreatedBy($created_by)
-    {
+    public function setCreatedBy($created_by) {
         $this->created_by = $created_by;
         return $this;
     }
@@ -183,8 +192,7 @@ class ProductPricelistStat
      * Return last updater username
      * @return string
      */
-    public function getUpdatedBy()
-    {
+    public function getUpdatedBy() {
         return $this->updated_by;
     }
 
@@ -192,8 +200,7 @@ class ProductPricelistStat
      * Set the last updater username
      * @param string $updated_by
      */
-    public function setUpdatedBy($updated_by)
-    {
+    public function setUpdatedBy($updated_by) {
         $this->updated_by = $updated_by;
         return $this;
     }
@@ -202,8 +209,7 @@ class ProductPricelistStat
      * Return legacy mapping
      * @return string $legacy_mapping
      */
-    public function getLegacyMapping()
-    {
+    public function getLegacyMapping() {
         return $this->legacy_mapping;
     }
 
@@ -211,8 +217,7 @@ class ProductPricelistStat
      * Set a legacy mapping for this record
      * @param string $legacy_mapping
      */
-    public function setLegacyMapping($legacy_mapping)
-    {
+    public function setLegacyMapping($legacy_mapping) {
         $this->legacy_mapping = $legacy_mapping;
         return $this;
     }
@@ -221,8 +226,7 @@ class ProductPricelistStat
      * Set legacy synchro time
      * @param string $legacy_synchro_at
      */
-    public function setLegacySynchroAt($legacy_synchro_at)
-    {
+    public function setLegacySynchroAt($legacy_synchro_at) {
         $this->legacy_synchro_at = $legacy_synchro_at;
         return $this;
     }

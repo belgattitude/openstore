@@ -10,66 +10,44 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *   name="product_brand",
+ *   name="color_translation",
  *   uniqueConstraints={
- *     @ORM\UniqueConstraint(name="unique_reference_idx",columns={"reference"}),
  *     @ORM\UniqueConstraint(name="unique_legacy_mapping_idx",columns={"legacy_mapping"}),
- *     @ORM\UniqueConstraint(name="unique_title_idx",columns={"title"}),
- *     @ORM\UniqueConstraint(name="unique_slug_idx",columns={"slug"})
+ *     @ORM\UniqueConstraint(name="unique_translation_idx",columns={"color_id", "lang"})
  *   },
  *   indexes={
- *     @ORM\Index(name="title_idx", columns={"title"}),
- *     @ORM\Index(name="description_idx", columns={"description"}),
- *     @ORM\Index(name="slug_idx", columns={"slug"}),
+ *     @ORM\Index(name="name_idx", columns={"name"}),
  *   },
- *   options={"comment" = "Product brand table"}
+ *   options={"comment" = "Color translation table"}
  * )
  */
-class ProductBrand
+class ColorTranslation
 {
-
     /**
      * @ORM\Id
-     * @ORM\Column(name="brand_id", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(name="id", type="bigint", nullable=false, options={"unsigned"=true, "comment" = "Primary key"})
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $brand_id;
+    private $id;
 
     /**
-     * @ORM\Column(type="string", length=60, nullable=false, options={"comment" = "Reference"})
+     *
+     * @ORM\ManyToOne(targetEntity="Color", inversedBy="translations", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="color_id", referencedColumnName="color_id", onDelete="CASCADE", nullable=false)
      */
-    private $reference;
+    private $color_id;
 
     /**
-     * @Gedmo\Slug(fields={"title"})
-     * @ORM\Column(length=64, nullable=true, options={"comment" = "Unique slug for this record"})
+     * @ORM\ManyToOne(targetEntity="Language", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="lang", referencedColumnName="lang", onDelete="RESTRICT", nullable=false)
      */
-    private $slug;
+    private $lang;
 
-    /**
-     * @ORM\Column(type="string", length=80, nullable=true)
-     */
-    private $title;
-
-    /**
-     * @ORM\Column(type="string", length=15000, nullable=true)
-     */
-    private $description;
 
     /**
      * @ORM\Column(type="string", length=80, nullable=true)
      */
-    private $url;
-
-    /**
-     * @ORM\Column(type="boolean", nullable=false, options={"default"=1, "comment"="Whether the brand is active in public website"})
-     */
-    private $flag_active;
-
-    /**
-     * @ORM\Column(type="string", length=40, nullable=true)
-     */
-    private $icon_class;
+    private $name;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -107,19 +85,15 @@ class ProductBrand
 
     public function __construct()
     {
-        /**
-         * Default value for flag_active
-         */
-        $this->flag_active = true;
     }
 
     /**
      *
      * @param integer $id
      */
-    public function setBrandId($id)
+    public function setId($id)
     {
-        $this->brand_id = $id;
+        $this->id = $id;
         return $this;
     }
 
@@ -127,36 +101,19 @@ class ProductBrand
      *
      * @return integer
      */
-    public function getBRandId()
+    public function getId()
     {
-        return $this->brand_id;
+        return $this->id;
     }
 
-    /**
-     * Set reference
-     * @param string $reference
-     */
-    public function setReference($reference)
-    {
-        $this->reference = $reference;
-        return $this;
-    }
 
     /**
-     * Return reference
-     * @return string
+     *
+     * @param string $name
      */
-    public function getReference()
+    public function setName($name)
     {
-        return $this->reference;
-    }
-
-    /**
-     * @param string $slug
-     */
-    public function setSlug($slug)
-    {
-        $this->slug = $slug;
+        $this->name = $name;
         return $this;
     }
 
@@ -164,103 +121,28 @@ class ProductBrand
      *
      * @return string
      */
-    public function getSlug()
+    public function getName()
     {
-        return $this->slug;
+        return $this->name;
     }
 
     /**
      *
-     * @param string $title
+     * @param integer $color_id
      */
-    public function setTitle($title)
+    public function setColorId($color_id)
     {
-        $this->title = $title;
+        $this->color_id = $color_id;
         return $this;
     }
 
     /**
      *
-     * @return string
+     * @return integer
      */
-    public function getTitle()
+    public function getColorId()
     {
-        return $this->title;
-    }
-
-    /**
-     *
-     * @param string $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-        return $this;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     *
-     * @param string $url homepage url
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
-        return $this;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getUrl()
-    {
-        return $this->url;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function setIconClass($icon_class)
-    {
-        $this->icon_class = $icon_class;
-        return $this;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getIconClass()
-    {
-        return $this->icon_class;
-    }
-
-    /**
-     *
-     * @return boolean
-     */
-    public function getFlagActive()
-    {
-        return (boolean) $this->flag_active;
-    }
-
-    /**
-     *
-     */
-    public function setFlagActive($flag_active)
-    {
-        $this->flag_active = $flag_active;
-        return $this;
+        return $this->color_id;
     }
 
     /**
@@ -360,7 +242,7 @@ class ProductBrand
 
     /**
      * Set legacy synchro time
-     * @param string $legacy_mapping
+     * @param string $legacy_synchro_at
      */
     public function setLegacySynchroAt($legacy_synchro_at)
     {
