@@ -881,14 +881,11 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 )
             );
         }
-        
-        
 
         $db = $this->openstoreDb;
 
         foreach ($elements as $key => $element) {
             $akilia1Db = $element['akilia1db'];
-
 
             $pricelists_clause = "";
             $code_tarif_clause = '';
@@ -990,13 +987,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     total_recorded_quantity = plstats.total_recorded_quantity,
                     total_recorded_turnover = plstats.total_recorded_turnover,
                     legacy_synchro_at = '{$this->legacy_synchro_at}'
-                    
             ";
-            
                     
             $this->executeSQL("Replace product pricelist stats for pricelist sales [$key] ", $replace);
         }
-
 
         // 2. Deleting - old forecasted monthly sales (only !!!)
         $update = "
