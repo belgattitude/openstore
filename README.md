@@ -11,36 +11,45 @@ NOTE : If you want to contribute don't hesitate, I'll review any PR.
 Clone in a directory
 
 ```sh
-	cd my/project/dir
-	git clone https://github.com/belgattitude/openstore.git .
-	php composer.phar self-update
-	php composer.phar install
+$ cd my/project/dir
+$ git clone https://github.com/belgattitude/openstore.git .
+$ composer update
 ```	
 
 Create configuration files
 
  Rename all .dist config files and adapt with database name...
 
-Installing database
+## Creating database
 
 ```sh
-	cd my/project/dir
-	php public/index.php openstore recreatedb
+$ cd my/project/dir
+$ php public/index.php openstore:schema-core:create
 ``` 
 
-Test it with local webserver
+## Load initial fixtures
 
 ```sh
-   cd /my/project/dir
-   php -S localhost:8082
+$ cd my/project/dir
+$ php public/index.php openstore:fixture:load
+``` 
+
+## Test
+
+Local server testing
+
+```sh
+$ cd /my/project/dir
+$ php -S localhost:8082
 ```
 
 
 ## Updating
 
 ```sh
-	cd my/project/dir
-	git pull
+$ cd my/project/dir
+$ git pull
+$ composer update
 ```
 
 	

@@ -336,6 +336,13 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
             }
 
             /**
+             * This method is defined in ConsoleBannerProviderInterface
+             */
+            public function getConsoleBanner(Console $console) {
+                return 'Openstore console';
+            }
+
+            /**
              * Returns an array or a string containing usage information for this module's Console commands.
              * The method is called with active Zend\Console\Adapter\AdapterInterface that can be used to directly access
              * Console and send output.
@@ -357,15 +364,19 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
              * @return array|string|null
              */
             public function getConsoleUsage(AdapterInterface $console) {
-                return array(
+                return [
+                    'openstore:schema-core:create [--dump-sql]' => 'Create core database schema',
+                    ['--dump-sql', '(optional) output SQL to console instead of applying to database'],
+                    'openstore:schema-core:recreate-extra' => 'Create or recreate core db extras (procedures, triggers,...)',
+                    ['--dump-sql', '(optional) output SQL to console instead of applying to database'],
+                    
                     'openstore recreatedb' => 'Recreate database schema.',
                     'openstore build-all-reload' => 'Recreate database schema and load initial fixtures.',
                     'openstore updatedb' => 'Update database schema and reload initial fixtures.',
-                    'openstore recreatedbextra' => 'Recreate database extra features (trigger, procedures, functions...).',
                     'openstore relocategroupcateg' => 'Replace product categories by product groups',
                     'openstore clearcache' => 'Clear all system caches.',
                     'openstore clearmediacache' => 'Clear media cache.',
-                );
+                ];
             }
 
         }

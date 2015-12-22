@@ -10,32 +10,50 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Adapter\Adapter;
 use Zend\Console\Request as ConsoleRequest;
-use Nv\Akilia;
 use Zend\Console\Console;
 use Zend\Console\ColorInterface;
+use Zend\Mvc\MvcEvent;
+use Doctrine\ORM\EntityManager;
 
-class ConsoleController extends AbstractActionController
-{
+class ConsoleController extends AbstractActionController {
+
+    
+    
     /**
      *
      * @var Adapter
      */
     protected $adapter;
+    
+    
+    /**
+     *
+     * @var EntityManager
+     */
+    protected $em;
 
-    public function onDispatch(\Zend\Mvc\MvcEvent $e)
-    {
+    /**
+     * @var Console
+     */
+    protected $console;
+    
+    /**
+     * 
+     * @param MvcEvent $e
+     */
+    public function onDispatch(MvcEvent $e) {
         //$this->config	= $this->getServiceLocator()->get('Openstore\Config');
         $this->adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $this->em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+        $this->console = Console::getInstance();
         parent::onDispatch($e);
     }
 
-    public function setupAction()
-    {
+    public function setupAction() {
         echo 'setup done';
     }
 
-    public function clearcacheAction()
-    {
+    public function clearcacheAction() {
         $serviceLocator = $this->getServiceLocator();
         if ($serviceLocator->has('Cache\SolubleDbMetadata')) {
             /** @var \Zend\Cache\Storage\StorageInterface */
@@ -44,8 +62,7 @@ class ConsoleController extends AbstractActionController
         }
     }
 
-    public function clearmediacacheAction()
-    {
+    public function clearmediacacheAction() {
         $serviceLocator = $this->getServiceLocator();
         if ($serviceLocator->has('Cache\SolubleMediaConverter')) {
             /** @var \Zend\Cache\Storage\StorageInterface */
@@ -56,49 +73,99 @@ class ConsoleController extends AbstractActionController
     }
 
     /**
-     * recreate db and load data fixtures
-     *
+     * Create the database
      */
-    public function updatedbAction()
-    {
-        $dir = realpath(__DIR__ . '/../../../../../');
-        $php = "/usr/local/bin/php";
+    public function schemaCoreCreateAction() {
+        
+        $request = $this->getRequest();
 
+        // Make sure that we are running in a console and the user has not tricked our
+        // application into running this action from a public web server.
+        if (!$request instanceof ConsoleRequest){
+            throw new \RuntimeException('You can only use this action from a console!');
+        }
 
-        $commands = array(
-            "$php $dir/public/index.php orm:schema-tool:update --force",
-            "$php $dir/public/index.php data-fixture:import",
-        );
-
-        foreach ($commands as $command) {
-            echo "Executing $command\n";
-            passthru($command);
+        $dumpSql   = $request->getParam('dump-sql');
+        
+        $extra = new \OpenstoreSchema\Core\Extra\MysqlExtra();
+        $metadatas = $this->em->getMetadataFactory()->getAllMetadata();
+        $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
+        
+        if ($dumpSql) {
+            $ddls = array_merge(
+                    $schemaTool->getCreateSchemaSql($metadatas),
+                    [$extra->getExtrasDDLWithDelimiter()]
+                   );
+            foreach ($ddls as $ddl) {
+                $this->console->writeLine($ddl);
+            }
+            
+        } else {
+            $warning = 'ATTENTION: This operation should not be executed in a production environment.';
+            $this->console->writeLine($warning, ColorInterface::RED);
+            
+            $this->console->writeLine('Are you sure you want to create database (Y/n) ?', ColorInterface::YELLOW);
+            $response = $this->console->readChar('YyNn');
+            if (strtoupper($response) == 'Y') {
+                
+                $this->console->writeLine('Creating database...');
+                $schemaTool->createSchema($metadatas);
+                $this->console->writeLine('Creating database extras procedures, triggers, functions...');
+                $metadatas = $extra->getExtrasDDL();
+                $conn = $this->em->getConnection();
+                foreach ($metadatas as $key => $ddl) {
+                    $this->console->writeLine("Executing extra : $key");
+                    $ret = $conn->exec($ddl);
+                }
+                $this->console->writeLine('Database schema and extras created successfully!', ColorInterface::GREEN);
+            } else {
+                $this->console->writeLine('Skipped database creation');
+            }
         }
     }
 
     /**
-     * recreate db and load data fixtures
-     *
+     * Create the database
      */
-    public function recreatedbAction()
-    {
-        $dir = realpath(__DIR__ . '/../../../../../');
-        $php = "/usr/local/bin/php";
+    public function schemaCoreRecreateExtraAction() {
+        
+        $request = $this->getRequest();
 
-        $commands = array(
-            "$php $dir/public/index.php orm:schema-tool:drop --force",
-            "$php $dir/public/index.php orm:schema-tool:create",
-            "$php $dir/public/index.php openstore recreatedbextra",
-        );
+        // Make sure that we are running in a console and the user has not tricked our
+        // application into running this action from a public web server.
+        if (!$request instanceof ConsoleRequest){
+            throw new \RuntimeException('You can only use this action from a console!');
+        }
 
-        foreach ($commands as $command) {
-            echo "Executing $command\n";
-            passthru($command);
+        $dumpSql   = $request->getParam('dump-sql');
+        
+        $extra = new \OpenstoreSchema\Core\Extra\MysqlExtra();
+        
+        if ($dumpSql) {
+            echo $extra->getExtrasDDLWithDelimiter();
+        } else {
+            $warning = 'ATTENTION: This operation should not be executed in a production environment.';
+            $this->console->writeLine($warning, ColorInterface::RED);
+            
+            $this->console->writeLine('Are you sure you want to re-create dbextras (Y/n) ?', ColorInterface::YELLOW);
+            $response = $this->console->readChar('YyNn');
+            if (strtoupper($response) == 'Y') {
+                $this->console->writeLine('Creating database extras procedures, triggers, functions...');
+                $metadatas = $extra->getExtrasDDL();
+                $conn = $this->em->getConnection();
+                foreach ($metadatas as $key => $ddl) {
+                    $this->console->writeLine("Executing extra : $key");
+                    $ret = $conn->exec($ddl);
+                }
+                $this->console->writeLine('Database extras created successfully!', ColorInterface::GREEN);
+            } else {
+                $this->console->writeLine('Skipped database extra (re-)creation');
+            }
         }
     }
+    
 
-    public function updateproductslugAction()
-    {
+    public function updateproductslugAction() {
         $console = Console::getInstance();
         $queries = array();
         $queries[] = "
@@ -136,8 +203,7 @@ class ConsoleController extends AbstractActionController
         }
     }
 
-    public function recreatedbextraAction()
-    {
+    public function recreatedbextraAction() {
         $console = Console::getInstance();
 
         $console->writeLine(str_repeat('-', 80), ColorInterface::NORMAL);
@@ -166,8 +232,7 @@ class ConsoleController extends AbstractActionController
      * recreate db and load data fixtures
      *
      */
-    public function buildallreloadAction()
-    {
+    public function buildallreloadAction() {
         $dir = realpath(__DIR__ . '/../../../../../');
 
         $php = "/usr/local/bin/php";
@@ -188,8 +253,7 @@ class ConsoleController extends AbstractActionController
         $this->adapter->query("ALTER TABLE `product_search` ADD FULLTEXT(`keywords`)")->execute();
     }
 
-    public function relocategroupcategAction()
-    {
+    public function relocategroupcategAction() {
         $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 
         // Step 1: Adding categories
@@ -245,4 +309,5 @@ class ConsoleController extends AbstractActionController
 
         $result = $em->getConnection()->query($update);
     }
+
 }

@@ -16,26 +16,25 @@ return array(
     'console' => array(
         'router' => array(
             'routes' => array(
-                'openstore-updatedb' => array(
+                'openstore:schema-core:create' => array(
                     'options' => array(
-                        'route' => 'openstore updatedb',
+                        'route' => 'openstore:schema-core:create [--dump-sql]',
                         'defaults' => array(
-                            //'__NAMESPACE__' => 'Openstore\Controller',
                             'controller' => 'Openstore\Controller\Console',
-                            'action' => 'updatedb'
+                            'action' => 'schema-core-create'
                         )
                     )
                 ),
-                'openstore-recreatedb' => array(
+                'openstore:schema-core:recreate-extra' => array(
                     'options' => array(
-                        'route' => 'openstore recreatedb',
+                        'route' => 'openstore:schema-core:recreate-extra [--dump-sql]',
                         'defaults' => array(
-                            //'__NAMESPACE__' => 'Openstore\Controller',
                             'controller' => 'Openstore\Controller\Console',
-                            'action' => 'recreatedb'
+                            'action' => 'schema-core-recreate-extra'
                         )
                     )
                 ),
+                
                 'openstore-recreatedbextra' => array(
                     'options' => array(
                         'route' => 'openstore recreatedbextra',
