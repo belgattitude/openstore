@@ -120,8 +120,8 @@ class ConsoleController extends AbstractActionController
         $ak2Customers->setDbAdapter($adapter);
 
         $geo = $ak2Customers->getCustomerGeo($days_threshold = 300, $turnover_min = 1000, $min_accuracy = 6, $limit = 0);
-        
-        $curl     = new \Ivory\HttpAdapter\CurlHttpAdapter();        
+
+        $curl     = new \Ivory\HttpAdapter\CurlHttpAdapter();
         $geocoder = new \Geocoder\ProviderAggregator();
 
         $geocoder->registerProviders([
@@ -130,23 +130,22 @@ class ConsoleController extends AbstractActionController
             ),
             new \Geocoder\Provider\OpenStreetMap(
                 $curl
-            ),            
+            ),
             new \Geocoder\Provider\Yandex(
                 $curl
             ),
-        ]);        
-        
+        ]);
+
         $total_geocoded = 0;
         foreach ($geo as $r) {
-            
             $city = preg_replace('[0-9]', '', $r['city']);
             $city = str_replace('CEDEX', '', $city);
             $city = str_replace('"', ' ', $city);
             $city = str_replace('(', ' ', $city);
             $city = str_replace(')', ' ', $city);
             $street = $r['street'];
-            
-            
+
+
             $street = str_replace('STR.', "", $street);
             $street = str_replace('"', " ", $street);
             $street = str_replace('(', " ", $street);
@@ -168,13 +167,11 @@ class ConsoleController extends AbstractActionController
              * 9 Premise (building name, property name, shopping center, etc.) level accuracy.
              */
             try {
-                
                 $addressCollection = $geocoder->geocode($address);
-                
+
                 if ($addressCollection->count() > 1) {
-                
                     $geocoded = $addressCollection->first();
-                    
+
                     $latitude = $geocoded->getLatitude();
                     $longitude = $geocoded->getLongitude();
                     $country = $geocoded->getCountry();
@@ -224,7 +221,6 @@ class ConsoleController extends AbstractActionController
 
                         $results = $adapter->query($selectString, Adapter::QUERY_MODE_EXECUTE);
                     } else {
-                        
                         echo "[Error] Cannot find: " . $address . "\n";
                     }
                 }

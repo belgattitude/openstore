@@ -11,12 +11,14 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Expression;
 use Patchwork\Utf8 as u;
 
-class ProductBrowser extends AbstractBrowser {
+class ProductBrowser extends AbstractBrowser
+{
 
     /**
      * @return array
      */
-    public function getSearchableParams() {
+    public function getSearchableParams()
+    {
         return array(
             'language' => array('required' => true),
             'pricelist' => array('required' => true),
@@ -31,7 +33,8 @@ class ProductBrowser extends AbstractBrowser {
      *
      * @return array
      */
-    protected function getPackagingColumns() {
+    protected function getPackagingColumns()
+    {
         $columns = array(
             'pack_unit_qty' => new Expression("packs.pack_unit_qty"),
             'pack_unit_volume' => new Expression("packs.pack_unit_volume"),
@@ -64,13 +67,14 @@ class ProductBrowser extends AbstractBrowser {
      *
      * @return Select
      */
-    protected function getPackagingInnerSelect() {
+    protected function getPackagingInnerSelect()
+    {
         // Step 1: Inner select packaging selection
         $packSelect = new Select();
         $packSelect->from(array('pp' => 'product_packaging'), array())
                 ->join(array('pt' => 'packaging_type'), new Expression("pp.type_id = pt.type_id"), array());
         $packSelect->columns(
-                array(
+            array(
             'product_id' => new Expression('pp.product_id'),
             'pack_unit_qty' => new Expression("MAX(if (pt.reference = 'UNIT', pp.quantity, 1))"),
             'pack_unit_barcode_ean' => new Expression("MAX(if (pt.reference = 'UNIT', pp.barcode_ean, null))"),
@@ -96,7 +100,8 @@ class ProductBrowser extends AbstractBrowser {
             'pack_mastercarton_length' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.length, null))"),
             'pack_mastercarton_width' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.width, null))"),
             'pack_mastercarton_height' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.height, null))"),
-                ), true
+                ),
+            true
         );
         $packSelect->group(array('product_id'));
         return $packSelect;
@@ -106,7 +111,8 @@ class ProductBrowser extends AbstractBrowser {
      *
      * @return Select
      */
-    public function getSelect() {
+    public function getSelect()
+    {
         $params = $this->getSearchParams();
 
         $enable_packaging_columns = ($params['enable_packaging_columns'] === true);
@@ -345,7 +351,7 @@ class ProductBrowser extends AbstractBrowser {
             'picture_media_filemtime' => new Expression('MAX(if(pm.flag_primary = 1, m.filemtime, null))'),
             'alternate_medias' => new Expression("GROUP_CONCAT(if(pm.flag_primary is null, CONCAT(pm.media_id, ':' ,m.filemtime), null))")
         ];
-            
+
         $select->columns(array_merge($columns, $group_columns));
         $select->group(array_keys($columns));
 
@@ -359,7 +365,8 @@ class ProductBrowser extends AbstractBrowser {
      * @param string $reference
      * @return string
      */
-    protected function getSearchableReference($reference, $wildcards_starts_at_char = 4, $max_reference_length = 20) {
+    protected function getSearchableReference($reference, $wildcards_starts_at_char = 4, $max_reference_length = 20)
+    {
         $reference = substr($reference, 0, $max_reference_length);
         $quoted = $this->adapter->getPlatform()->quoteValue($reference);
         $ref = $this->adapter->query("select get_searchable_reference($quoted) as ref")->execute()->current()['ref'];
@@ -372,5 +379,4 @@ class ProductBrowser extends AbstractBrowser {
         }
         return $out;
     }
-
 }

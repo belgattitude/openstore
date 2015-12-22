@@ -22,9 +22,11 @@ use Openstore\View\Helper;
 //use Zend\Console\Console;
 
 
-class Module implements AutoloaderProviderInterface, ConfigProviderInterface, ConsoleUsageProviderInterface {
+class Module implements AutoloaderProviderInterface, ConfigProviderInterface, ConsoleUsageProviderInterface
+{
 
-    public function init(ModuleManager $moduleManager) {
+    public function init(ModuleManager $moduleManager)
+    {
 
 
 
@@ -61,7 +63,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
          */
     }
 
-    public function onBootstrap(MvcEvent $e) {
+    public function onBootstrap(MvcEvent $e)
+    {
         $eventManager = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
@@ -79,10 +82,11 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
         //$translator->setFallbackLocale('fr_FR');
     }
 
-    protected function configureUnauthorizedStrategy(MvcEvent $e) {
+    protected function configureUnauthorizedStrategy(MvcEvent $e)
+    {
         $t = $e->getTarget();
         $t->getEventManager()->attach(
-                $t->getServiceManager()->get('ZfcRbac\View\Strategy\RedirectStrategy')
+            $t->getServiceManager()->get('ZfcRbac\View\Strategy\RedirectStrategy')
         );
         /*
           $em = $e->getApplication()->getEventManager();
@@ -91,7 +95,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
           ); */
     }
 
-    protected function configureZfcUser(MvcEvent $e) {
+    protected function configureZfcUser(MvcEvent $e)
+    {
         $serviceManager = $e->getApplication()->getServiceManager();
         $zfcServiceEvents = $serviceManager->get('ZfcUser\Authentication\Adapter\AdapterChain')->getEventManager();
 
@@ -113,13 +118,15 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
         });
 
         $zfcServiceEvents->attach(
-                'logout', function ($e) use ($serviceManager) {
-            $serviceManager->get('Zend\Session\SessionManager')->getStorage()->clear('Openstore\UserContext');
-        }
+            'logout',
+            function ($e) use ($serviceManager) {
+                    $serviceManager->get('Zend\Session\SessionManager')->getStorage()->clear('Openstore\UserContext');
+            }
         );
     }
 
-    protected function bootstrapSession(MvcEvent $e) {
+    protected function bootstrapSession(MvcEvent $e)
+    {
         // Hack for unit testing, will have to find a better solution
         //if (!Console::isConsole()) {
 
@@ -144,7 +151,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
         //}
     }
 
-    public function onPreDispatch(MvcEvent $e) {
+    public function onPreDispatch(MvcEvent $e)
+    {
         $app = $e->getTarget();
 
         // TODO
@@ -164,7 +172,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
     /**
      * @inheritdoc
      */
-    public function getServiceConfig() {
+    public function getServiceConfig()
+    {
         return array(
             'aliases' => array(
             //'ZendDeveloperTools\ReportInterface' => 'ZendDeveloperTools\Report',
@@ -247,7 +256,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
                 },
                     )
                 );
-            }
+    }
 
             /*
               public function on2DispatchError(MvcEvent $event){
@@ -259,88 +268,97 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
               }
              */
 
-            public function onFinish(MvcEvent $e) {
-                $purify_method = 'htmlpurifier';
-                $purify_method = 'domdocument';
-                $purify_method = '';
-                switch ($purify_method) {
-                    case 'htmlpurifier':
-                        $response = $e->getResponse();
-                        $content = $response->getBody();
+    public function onFinish(MvcEvent $e)
+    {
+        $purify_method = 'htmlpurifier';
+        $purify_method = 'domdocument';
+        $purify_method = '';
+        switch ($purify_method) {
+            case 'htmlpurifier':
+                $response = $e->getResponse();
+                $content = $response->getBody();
 
-                        $config = \HTMLPurifier_Config::createDefault();
-                        $config->set('Cache.SerializerPath', dirname(__FILE__) . '/../../data/cache');
-                        $purifier = new \HTMLPurifier($config);
-                        $clean_html = $purifier->purify($content);
-                        if ($clean_html !== false) {
-                            $response->setContent($clean_html);
-                        }
-
-                        break;
-
-                    case 'domdocument':
-                        $response = $e->getResponse();
-                        $content = $response->getBody();
-
-                        $dom = new \DOMDocument();
-                        $dom->preserveWhiteSpace = false;
-                        $dom->formatOutput = false;
-                        $dom->recover = false;
-                        $dom->strictErrorChecking = false;
-                        $dom->formatOutput = true;
-
-                        $dom->loadHTML($content, LIBXML_NOBLANKS);
-
-                        // do stuff here
-                        $clean_html = $dom->saveHTML();
-
-                        if ($clean_html !== false) {
-                            $response->setContent($clean_html);
-                        }
-
-                        break;
+                $config = \HTMLPurifier_Config::createDefault();
+                $config->set('Cache.SerializerPath', dirname(__FILE__) . '/../../data/cache');
+                $purifier = new \HTMLPurifier($config);
+                $clean_html = $purifier->purify($content);
+                if ($clean_html !== false) {
+                    $response->setContent($clean_html);
                 }
-            }
+
+                break;
+
+            case 'domdocument':
+                $response = $e->getResponse();
+                $content = $response->getBody();
+
+                $dom = new \DOMDocument();
+                $dom->preserveWhiteSpace = false;
+                $dom->formatOutput = false;
+                $dom->recover = false;
+                $dom->strictErrorChecking = false;
+                $dom->formatOutput = true;
+
+                $dom->loadHTML($content, LIBXML_NOBLANKS);
+
+                // do stuff here
+                $clean_html = $dom->saveHTML();
+
+                if ($clean_html !== false) {
+                    $response->setContent($clean_html);
+                }
+
+                break;
+        }
+    }
 
             /**
              *
              * @return array
              */
-            public function getConfig() {
-                $config = array_merge(
-                        include __DIR__ . '/config/module.config.php', include __DIR__ . '/config/routes.config.php', include __DIR__ . '/config/openstore.config.php', include __DIR__ . '/config/assetic.config.php'
-                );
-                return $config;
-            }
+    public function getConfig()
+    {
+        $config = array_merge(
+            include __DIR__ . '/config/module.config.php',
+            include __DIR__ . '/config/routes.config.php',
+            include __DIR__ . '/config/openstore.config.php',
+            include __DIR__ . '/config/assetic.config.php'
+        );
+        return $config;
+    }
 
             /**
              *
              * @return array
              */
-            public function getAutoloaderConfig() {
-                return array(
-                    /*
-                      'Zend\Loader\ClassMapAutoloader' => array(
-                      __DIR__ . '/autoload_classmap.php',
-                      ), */
-                    'Zend\Loader\StandardAutoloader' => array(
-                        'namespaces' => array(
-                            //'OpenstoreSchema\Core\Entity' => ''
-                            __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-                            'MMan' => __DIR__ . '/src/MMan',
-                            //'Soluble' => '/web/www/solublecomponents/src/Soluble'
-                            'License' => __DIR__ . '/src/License',
-                        ),
-                    ),
-                );
-            }
+    public function getAutoloaderConfig()
+    {
+        return array(
+            /*
+              'Zend\Loader\ClassMapAutoloader' => array(
+              __DIR__ . '/autoload_classmap.php',
+              ), */
+            'Zend\Loader\StandardAutoloader' => array(
+                'namespaces' => array(
+                    //'OpenstoreSchema\Core\Entity' => ''
+                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
+                    'MMan' => __DIR__ . '/src/MMan',
+                    //'Soluble' => '/web/www/solublecomponents/src/Soluble'
+                    'License' => __DIR__ . '/src/License',
+                ),
+            ),
+        );
+    }
 
             /**
-             * This method is defined in ConsoleBannerProviderInterface
+             *
+             * @param AdapterInterface $console
+             * @return string
              */
-            public function getConsoleBanner(Console $console) {
-                return 'Openstore console';
-            }
+    public function getConsoleBanner(AdapterInterface $console)
+    {
+        return 'Openstore console';
+    }
 
             /**
              * Returns an array or a string containing usage information for this module's Console commands.
@@ -363,21 +381,21 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
              * @param AdapterInterface $console
              * @return array|string|null
              */
-            public function getConsoleUsage(AdapterInterface $console) {
-                return [
-                    'openstore:schema-core:create [--dump-sql]' => 'Create core database schema',
-                    ['--dump-sql', '(optional) output SQL to console instead of applying to database'],
-                    'openstore:schema-core:recreate-extra' => 'Create or recreate core db extras (procedures, triggers,...)',
-                    ['--dump-sql', '(optional) output SQL to console instead of applying to database'],
-                    
-                    'openstore recreatedb' => 'Recreate database schema.',
-                    'openstore build-all-reload' => 'Recreate database schema and load initial fixtures.',
-                    'openstore updatedb' => 'Update database schema and reload initial fixtures.',
-                    'openstore relocategroupcateg' => 'Replace product categories by product groups',
-                    'openstore clearcache' => 'Clear all system caches.',
-                    'openstore clearmediacache' => 'Clear media cache.',
-                ];
-            }
+    public function getConsoleUsage(AdapterInterface $console)
+    {
+        return [
+            'openstore:schema-core:create [--dump-sql]' => 'Create core database schema',
+            ['--dump-sql', '(optional) output SQL to console instead of applying to database'],
+            'openstore:schema-core:update [--dump-sql]' => 'Update database schema against latest entities',
+            ['--dump-sql', '(optional) output SQL to console instead of applying to database'],
+            'openstore:schema-core:recreate-extra' => 'Create or recreate core db extras (procedures, triggers,...)',
+            ['--dump-sql', '(optional) output SQL to console instead of applying to database'],
 
-        }
-        
+            'openstore recreatedb' => 'Recreate database schema.',
+            'openstore build-all-reload' => 'Recreate database schema and load initial fixtures.',
+            'openstore relocategroupcateg' => 'Replace product categories by product groups',
+            'openstore clearcache' => 'Clear all system caches.',
+            'openstore clearmediacache' => 'Clear media cache.',
+        ];
+    }
+}

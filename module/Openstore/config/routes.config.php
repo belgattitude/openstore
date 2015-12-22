@@ -34,16 +34,26 @@ return array(
                         )
                     )
                 ),
-                
-                'openstore-recreatedbextra' => array(
+                'openstore:schema-core:update' => array(
                     'options' => array(
-                        'route' => 'openstore recreatedbextra',
+                        'route' => 'openstore:schema-core:update [--dump-sql]',
                         'defaults' => array(
                             'controller' => 'Openstore\Controller\Console',
-                            'action' => 'recreatedbextra'
+                            'action' => 'schema-core-update'
                         )
                     )
                 ),
+                'openstore:schema-core:load' => array(
+                    'options' => array(
+                        'route' => 'openstore:schema-core:load [--dump-sql]',
+                        'defaults' => array(
+                            'controller' => 'Openstore\Controller\Console',
+                            'action' => 'schema-core-load'
+                        )
+                    )
+                ),
+                
+
                 'openstore-updateproductslug' => array(
                     'options' => array(
                         'route' => 'openstore updateproductslug',

@@ -90,7 +90,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     protected $default_stock_id = 1;
 
     protected $default_unit_id = 1;
-    
+
     protected $default_status_id = 20; // regular
 
     protected $default_product_type_id = 1;
@@ -159,7 +159,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
     public function synchronizeAll()
     {
-        
+
         $this->synchronizeCountry();
         $this->synchronizeCustomer();
         $this->synchronizeApi();
@@ -178,7 +178,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->synchronizeProductPackaging();
         $this->synchronizeDiscountCondition();
 
-        
+
         $this->rebuildCategoryBreadcrumbs();
         $this->rebuildProductSearch();
 
@@ -211,7 +211,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         return $this->getServiceLocator()->get('SolubleNormalist\TableManager');
     }
 
-    
+
     /**
      * Guess diameter
      * @return array associative with product_id => diameter
@@ -223,12 +223,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     where p.flag_active = 1
                     and title regexp '(([0-9\.]){1,5}\")'
                     ";
-        
+
         $result = $this->mysqli->query($query);
-        $affected_rows = $this->mysqli->affected_rows;        
+        $affected_rows = $this->mysqli->affected_rows;
         $errors = [];
         $products = [];
-        foreach($result as $row) {
+        foreach ($result as $row) {
             $product_id = $row['product_id'];
             $products[$product_id] = [
                 'diameter' => null,
@@ -248,7 +248,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     ];
                 }
             } elseif (substr_count($title, '"')  < 4) {
-
                 $match = preg_match_all('/(((([1-3]?[0-9](\.[1-9])?)\ ?")\ ?)X(\ ?(([1-3]?[0-9](\.[1-9])?)\ ?")))/', strtoupper($title), $matches);
                 if ($match) {
                     $format = str_replace(' ', '', strtolower($matches[1][0]));
@@ -260,22 +259,21 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         'title' => $title
                     ];
                 }
-                
+
             } else {
                 $errors[$product_id] = [
                     'reason' => 'More than 3 inches found',
                     'title' => $title
                 ];
-                
-                
+
+
             }
         }
-        
-        foreach ($products as $product_id => $infos) {
 
+        foreach ($products as $product_id => $infos) {
             $update = "update product set ";
             $values = [];
-            foreach($infos as $key => $value) {
+            foreach ($infos as $key => $value) {
                 $values[] ="$key = " . (($value === null) ? 'null' : $this->adapter->platform->quoteValue($value));
             }
 
@@ -284,10 +282,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
             $this->mysqli->query($update);
         }
-        
-        
+
+
     }
-    
+
     public function synchronizeProductMedia()
     {
         ini_set('memory_limit', "1G");
@@ -897,7 +895,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 $pricelists_clause = "and pl.legacy_mapping in (" . join(',', $pls) . ")";
                 $code_tarif_clause = "and c.code_tarif in (" . join(',', $pls) . ")";
             }
-            
+
             $replace = " 
                 insert into $db.product_pricelist_stat(
                     product_pricelist_stat_id,
@@ -934,7 +932,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 $pricelist_clause = '';
             }
 
-            
+
             $replace = "
                 insert into $db.product_pricelist_stat(
                     product_pricelist_stat_id,
@@ -988,7 +986,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     total_recorded_turnover = plstats.total_recorded_turnover,
                     legacy_synchro_at = '{$this->legacy_synchro_at}'
             ";
-                    
+
             $this->executeSQL("Replace product pricelist stats for pricelist sales [$key] ", $replace);
         }
 
@@ -1000,8 +998,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
         $this->executeSQL("Removing eventual product_pricelist_stat forecasts monthly sales", $update);
     }
-    
-    
+
+
     public function synchronizePricelist($use_akilia2 = true)
     {
         if ($use_akilia2) {
@@ -1452,8 +1450,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             $rep = "REPLACE($rep, ' - ', '\\n- ')";
         }
 
-        
-        
+
+
 
         $description = "if(trim(COALESCE(i.desc$default_lsfx, '')) = '', null, $rep)";
 
