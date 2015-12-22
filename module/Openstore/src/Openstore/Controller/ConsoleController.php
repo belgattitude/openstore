@@ -2,7 +2,7 @@
 
 namespace Openstore\Controller;
 
-use Openstore\Entity;
+use OpenstoreSchema\Core\Entity;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
@@ -197,9 +197,9 @@ class ConsoleController extends AbstractActionController
         $root_reference = 'ROOT';
 
         // If group categ does not exists
-        $rootCategory = $em->getRepository('Openstore\Entity\ProductCategory')->findOneBy(array('reference' => $root_reference));
+        $rootCategory = $em->getRepository('OpenstoreSchema\Core\Entity\ProductCategory')->findOneBy(array('reference' => $root_reference));
         if ($rootCategory === null) {
-            $rootCategory = new \Openstore\Entity\ProductCategory();
+            $rootCategory = new \OpenstoreSchema\Core\Entity\ProductCategory();
             $rootCategory->setReference($root_reference);
             $rootCategory->setTitle('ROOT');
             $em->persist($rootCategory);
@@ -222,9 +222,9 @@ class ConsoleController extends AbstractActionController
 
         foreach ($rows as $row) {
             if ($row['category_id'] === null) {
-                $pc = new \Openstore\Entity\ProductCategory;
+                $pc = new \OpenstoreSchema\Core\Entity\ProductCategory;
             } else {
-                $pc = $em->find('Openstore\Entity\ProductCategory', $row['category_id']);
+                $pc = $em->find('OpenstoreSchema\Core\Entity\ProductCategory', $row['category_id']);
             }
             $pc->setParent($rootCategory);
             $pc->setTitle($row['title']);

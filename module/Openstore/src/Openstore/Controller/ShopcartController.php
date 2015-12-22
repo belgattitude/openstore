@@ -62,7 +62,7 @@ class ShopcartController extends AbstractActionController
         // Get shopcart type
         //$st = new SyntheticTable($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
         $em = $this->getEntityManager();
-        $orderType = $em->getRepository('Openstore\Entity\OrderType');
+        $orderType = $em->getRepository('OpenstoreSchema\Core\Entity\OrderType');
         $shopcartType = $orderType->findOneBy(array('reference' => 'SHOPCART'));
 
         //$shopcart_order_type = $st->findOneBy('order_type', array('reference' => 'SHOPCART'));

@@ -5,7 +5,7 @@ namespace Openstore\Model;
 use Openstore\Core\Model\AbstractModel;
 use Openstore\Core\Model\BrowsableInterface;
 use Openstore\Model\Browser\UserBrowser;
-use Openstore\Entity;
+use OpenstoreSchema\Core\Entity;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 use Zend\Stdlib\Hydrator;

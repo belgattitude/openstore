@@ -30,7 +30,7 @@ class IndexController extends AbstractActionController
     {
         /*
         $em = $this->getEntityManager();
-        $user = $em->find('Openstore\Entity\User', 1);
+        $user = $em->find('OpenstoreSchema\Core\Entity\User', 1);
         var_dump(get_class($user));
         var_dump($user->getEmail());
         var_dump(gettype($user->getRoles()));

@@ -49,7 +49,7 @@ return array(
 
           'BjyAuthorize\Provider\Role\ObjectRepositoryProvider' => array(
           'object_manager'    => 'doctrine.entitymanager.orm_default',
-          'role_entity_class' => 'Openstore\Entity\Role',
+          'role_entity_class' => 'OpenstoreSchema\Core\Entity\Role',
           ),
          */
         // this will load roles from the 'BjyAuthorize\Provider\Role\Doctrine'

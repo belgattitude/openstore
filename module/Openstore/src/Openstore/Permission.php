@@ -25,7 +25,7 @@ class Permission implements ServiceLocatorAwareInterface
 
     /**
      * Return currenctly logged in identity
-     * @return \Openstore\Entity\User|false
+     * @return \OpenstoreSchema\Core\Entity\User|false
      */
     public function getIdentity()
     {

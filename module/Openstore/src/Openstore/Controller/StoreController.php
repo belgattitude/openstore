@@ -10,7 +10,7 @@
 
 namespace Openstore\Controller;
 
-use Openstore\Entity;
+use OpenstoreSchema\Core\Entity;
 use Openstore\Catalog\Browser\ProductFilter;
 use Openstore\Permission;
 use Zend\Mvc\Controller\AbstractActionController;

@@ -6,7 +6,7 @@
  */
 namespace Akilia;
 
-use Openstore\Entity;
+use OpenstoreSchema\Core\Entity;
 use Akilia\Utils\Akilia1Products;
 use MMan\Service\Manager as MManManager;
 use Zend\Db\Adapter\Adapter;
@@ -1117,11 +1117,11 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             ->fetchAll();
         $categs = array();
 
-        $rootCategory = $this->em->getRepository('Openstore\Entity\ProductCategory')->findOneBy(array(
+        $rootCategory = $this->em->getRepository('OpenstoreSchema\Core\Entity\ProductCategory')->findOneBy(array(
             'reference' => $root_reference
         ));
         if ($rootCategory === null) {
-            $rootCategory = new \Openstore\Entity\ProductCategory();
+            $rootCategory = new \OpenstoreSchema\Core\Entity\ProductCategory();
             $rootCategory->setReference($root_reference);
             $rootCategory->setTitle('ROOT');
             $this->em->persist($rootCategory);
@@ -1132,9 +1132,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
         foreach ($rows as $row) {
             if ($row['category_id'] === null) {
-                $pc = new \Openstore\Entity\ProductCategory();
+                $pc = new \OpenstoreSchema\Core\Entity\ProductCategory();
             } else {
-                $pc = $this->em->find('Openstore\Entity\ProductCategory', $row['category_id']);
+                $pc = $this->em->find('OpenstoreSchema\Core\Entity\ProductCategory', $row['category_id']);
             }
 
             if ($row['parent_categorie'] != null) {

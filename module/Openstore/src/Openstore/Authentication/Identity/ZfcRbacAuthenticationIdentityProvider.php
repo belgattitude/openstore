@@ -40,7 +40,7 @@ class ZfcRbacAuthenticationIdentityProvider implements IdentityProviderInterface
 
         if ($identity !== null) {
             $user_id = $identity->getId();
-            $user =  $this->em->find('Openstore\Entity\User', $user_id);
+            $user =  $this->em->find('OpenstoreSchema\Core\Entity\User', $user_id);
 
             return $user;
         } else {

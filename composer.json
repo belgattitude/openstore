@@ -10,9 +10,11 @@
     "homepage": "http://nuvolia.com",
     "require": {
         "php": ">=5.4.4",
+        "openstore/schema-core": "dev-master",
+        "soluble/japha": "dev-master",
+        
         "zendframework/zendframework": "2.5.*",
         "soluble/solublecomponents": "dev-master",
-	"Soluble/japha": "dev-master",
         "doctrine/orm": "2.5.*",
         "doctrine/dbal": "2.5.*",
         "doctrine/common": "2.5.*",

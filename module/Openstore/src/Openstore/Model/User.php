@@ -4,7 +4,7 @@ namespace Openstore\Model;
 use Openstore\Core\Model\AbstractModel;
 use Openstore\Core\Model\BrowsableInterface;
 use Openstore\Model\Browser\UserBrowser;
-use Openstore\Entity;
+use OpenstoreSchema\Core\Entity;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 use Zend\Stdlib\Hydrator;
@@ -28,7 +28,7 @@ class User extends AbstractModel implements BrowsableInterface
             $entity = new Entity\User();
         } else {
             $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-            $entity = $em->getRepository('Openstore\Entity\User')->find($id);
+            $entity = $em->getRepository('OpenstoreSchema\Core\Entity\User')->find($id);
         }
         return $entity;
     }

@@ -2,6 +2,8 @@
 
 namespace Openstore;
 
+use OpenstoreSchema\Core\Configuration as SchemaCoreConfiguration;
+
 return array(
     'service_manager' => array(
         'factories' => array(
@@ -88,13 +90,14 @@ return array(
             __NAMESPACE__ . '_driver' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 //'cache' => 'array',
-                'paths' => array(__DIR__ . '/../src/' . __NAMESPACE__ . '/Entity')
+                //'paths' => array(__DIR__ . '/../src/OpenstoreSchema/Core/Entity')
+                'paths' => SchemaCoreConfiguration::getEntityPaths()
             ),
 // overriding zfc-user-doctrine-orm's config
             'zfcuser_entity' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 //'cache' => 'array',
-                'paths' => array(__DIR__ . '/../src/' . __NAMESPACE__ . '/Entity')
+                'paths' => SchemaCoreConfiguration::getEntityPaths()
             ),
             /**
               'translatable_metadata_driver' => array(
@@ -111,7 +114,7 @@ return array(
                 //'result_cache'      => 'my_memcache',
                 //'hydration_cache'   => 'my_memcache',
                 'drivers' => array(
-                    __NAMESPACE__ . '\Entity' => __NAMESPACE__ . '_driver',
+                    SchemaCoreConfiguration::getEntityNamespace() => __NAMESPACE__ . '_driver',
                 //'Gedmo\Translatable\Entity' => 'translatable_metadata_driver',
                 )
             )
@@ -139,13 +142,13 @@ return array(
       //should be the key you use to get doctrine's entity manager out of zf2's service locator
       'objectManager' => 'Doctrine\ORM\EntityManager',
       //fully qualified name of your user class
-      'identityClass' => 'Openstore\Entity\User',
+      'identityClass' => 'OpenstoreSchema\Core\Entity\User',
       //the identity property of your class
       'identityProperty' => 'email',
       //the password property of your class
       'credentialProperty' => 'password',
       //a callable function to hash the password with
-      'credentialCallable' => 'Openstore\Entity\User::hashPassword'
+      'credentialCallable' => 'OpenstoreSchema\Core\Entity\User::hashPassword'
       ),
       ), */
     ),
@@ -166,7 +169,7 @@ return array(
      */
     'zfcuser' => array(
         // telling ZfcUser to use our own class
-        'user_entity_class' => 'Openstore\Entity\User',
+        'user_entity_class' => 'OpenstoreSchema\Core\Entity\User',
         // telling ZfcUserDoctrineORM to skip the entities it defines
         'enable_default_entities' => false,
     ),
@@ -179,7 +182,7 @@ return array(
       // using an object repository (entity repository) to load all roles into our ACL
       'BjyAuthorize\Provider\Role\ObjectRepositoryProvider' => array(
       'object_manager'    => 'doctrine.entitymanager.orm_default',
-      'role_entity_class' => 'Openstore\Entity\Role',
+      'role_entity_class' => 'OpenstoreSchema\Core\Entity\Role',
       ),
       ),
       ),

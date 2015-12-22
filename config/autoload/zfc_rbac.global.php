@@ -116,7 +116,7 @@ return [
         'role_provider' => [
             'ZfcRbac\Role\ObjectRepositoryRoleProvider' => [
                 'object_manager' => 'doctrine.entitymanager.orm_default',
-                'class_name' => 'Openstore\Entity\Role',
+                'class_name' => 'OpenstoreSchema\Core\Entity\Role',
                 'role_name_property' => 'name'
             ]
         ],

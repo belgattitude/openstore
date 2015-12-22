@@ -2,7 +2,7 @@
 
 namespace Openstore;
 
-use Openstore\Entity;
+use OpenstoreSchema\Core\Entity;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Zend\Crypt\Password\Bcrypt;
@@ -291,9 +291,9 @@ class LoadUserData implements FixtureInterface
 
         $manager->getConnection()->executeUpdate("DELETE FROM pricelist where pricelist_id in (" . join(',', array_keys($pricelists)) . ')');
         foreach ($pricelists as $id => $infos) {
-            $stock = $manager->getRepository('Openstore\Entity\Stock')->find($infos['stock_id']);
+            $stock = $manager->getRepository('OpenstoreSchema\Core\Entity\Stock')->find($infos['stock_id']);
 
-            $currency = $manager->getRepository('Openstore\Entity\Currency')->find($infos['currency_id']);
+            $currency = $manager->getRepository('OpenstoreSchema\Core\Entity\Currency')->find($infos['currency_id']);
 
             $pricelist = new Entity\Pricelist();
             $pricelist->setPricelistId($id);
@@ -383,7 +383,7 @@ class LoadUserData implements FixtureInterface
 
             if (count($roles) > 0) {
                 foreach ($roles as $role_name) {
-                    $role = $manager->getRepository('Openstore\Entity\Role')->findOneBy(array('name' => $role_name));
+                    $role = $manager->getRepository('OpenstoreSchema\Core\Entity\Role')->findOneBy(array('name' => $role_name));
                     if ($role) {
                         $user->addRole($role);
                     }
@@ -400,7 +400,7 @@ class LoadUserData implements FixtureInterface
 
             if (count($pricelists) > 0) {
                 foreach ($pricelists as $pricelist_ref) {
-                    $pricelist = $manager->getRepository('Openstore\Entity\Pricelist')->findOneBy(array('reference' => $pricelist_ref));
+                    $pricelist = $manager->getRepository('OpenstoreSchema\Core\Entity\Pricelist')->findOneBy(array('reference' => $pricelist_ref));
                     if ($pricelist) {
                         //$user->addPricelist($pricelist);
 
