@@ -65,6 +65,7 @@ class ProductCatalogController extends AbstractRestfulController
                 $cm->includeOnly($limited_columns);
             }
         }
+        
         return $store;
     }
 }

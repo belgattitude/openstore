@@ -13,7 +13,6 @@ use Patchwork\Utf8 as u;
 
 class ProductBrowser extends AbstractBrowser
 {
-
     /**
      * @return array
      */
@@ -125,9 +124,12 @@ class ProductBrowser extends AbstractBrowser
 
         $select->from(array('p' => 'product'), array())
                 ->join(array('p18' => 'product_translation'), new Expression("p18.product_id = p.product_id and p18.lang = '$lang'"), array(), $select::JOIN_LEFT)
+                ->join(array('pstub' => 'product_stub'), new Expression('pstub.product_stub_id = p.product_stub_id'), array(), $select::JOIN_LEFT)
+                ->join(array('pstub18' => 'product_stub_translation'), new Expression("pstub.product_stub_id = pstub18.product_stub_id and pstub18.lang='$lang'"), array(), $select::JOIN_LEFT)
+                
                 // to remove when product_model is ready
-                ->join(array('p2' => 'product'), new Expression('p2.product_id = p.parent_id'), array(), $select::JOIN_LEFT)
-                ->join(array('p2_18' => 'product_translation'), new Expression("p2.product_id = p2_18.product_id and p2_18.lang='$lang'"), array(), $select::JOIN_LEFT)
+                //->join(array('p2' => 'product'), new Expression('p2.product_id = p.parent_id'), array(), $select::JOIN_LEFT)
+                //->join(array('p2_18' => 'product_translation'), new Expression("p2.product_id = p2_18.product_id and p2_18.lang='$lang'"), array(), $select::JOIN_LEFT)
                 // end of to remove
                 ->join(array('psi' => 'product_search'), new Expression("psi.product_id = p.product_id and psi.lang = '$lang'"), array(), $select::JOIN_LEFT)
                 ->join(array('ppl' => 'product_pricelist'), new Expression('ppl.product_id = p.product_id'), array())
@@ -186,8 +188,34 @@ class ProductBrowser extends AbstractBrowser
                 'category_breadcrumb' => new Expression('COALESCE(pc18.breadcrumb, pc.breadcrumb)'),
                 'title' => new Expression('COALESCE(p18.title, p.title, p18.invoice_title, p.invoice_title)'),
                 'invoice_title' => new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
-                //'description' => new Expression('COALESCE(p18.description, p.description)'),
-                'description' => new Expression('if(p2.product_id is null, COALESCE(p18.description, p.description), COALESCE(p2_18.description, p2.description, p.description) )'),
+                'description' => new Expression('COALESCE(p18.description, p.description)'),
+                //'description' => new Expression('if(p2.product_id is null, COALESCE(p18.description, p.description), COALESCE(p2_18.description, p2.description, p.description) )'),
+// @killparent, when the id_art_tete will be fully removed, use the second commented column instead of this one
+// This hack allows to not include twice the parent description            
+'description' => new Expression('
+        CONCAT_WS("\n",
+            pstub18.description_header,
+            if ((pstub.product_stub_id is not null and p.parent_id is null), 
+                    null, 
+                    if (p.product_stub_id is null,
+                        COALESCE(p18.description, p.description),
+                        p18.description
+                    )
+                ),
+            pstub18.description_footer
+        )    
+        '),                      
+/*            
+'description' => new Expression('
+        CONCAT_WS("\n",
+            pstub18.description_header,
+            COALESCE(p18.description, p.description)
+            pstub18.description_footer
+        )    
+        '),                      
+*/
+                'description_header' => new Expression('pstub18.description_header'),
+                'description_footer' => new Expression('pstub18.description_footer'),
                 'characteristic' => new Expression('COALESCE(p18.characteristic, p.characteristic)'),
                 'keywords' => new Expression('COALESCE(p18.keywords, p.keywords)'),
                 'price' => new Expression('ppl.price'),

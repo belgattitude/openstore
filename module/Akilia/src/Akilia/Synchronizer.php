@@ -180,9 +180,13 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
 
         $this->rebuildCategoryBreadcrumbs();
+        
+        $this->synchronizeProductStubFromArtTete();
+        
         $this->rebuildProductSearch();
 
         $this->processGuessedDiametersAndFormat();
+        
         /**
          * INSERT INTO `nuvolia`.`user_scope` (
          * `id` ,
@@ -904,7 +908,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 )
                 SELECT 
                     ppl.product_pricelist_id,
-                    t.moyenne_vente,
+                        t.moyenne_vente,
                     '{$this->legacy_synchro_at}' AS legacy_synchro_at
                 FROM
                     $akilia1Db.article a
@@ -924,15 +928,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     legacy_synchro_at = '{$this->legacy_synchro_at}'
             ";
 
-            $this->executeSQL("Replace product pricelist stats for foreacasted sales [$key] ", $replace);
+            $this->executeSQL("Replace product pricelist stats for forecasted sales [$key] ", $replace);
 
-            if ($element['pricelist'] != '') {
-                $pricelist_clause = "and pl.legacy_mapping  = '" . $element['pricelist'] . "'";
-            } else {
-                $pricelist_clause = '';
-            }
-
-
+           
             $replace = "
                 insert into $db.product_pricelist_stat(
                     product_pricelist_stat_id,
@@ -964,7 +962,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         max(c.date_commande) AS latest_sale_recorded_at,
                         count(distinct c.id_client) as nb_customers,
                         count(distinct c.id_representant) as nb_sale_reps,
-                        sum(distinct c.id_commande) as nb_orders,
+                        count(distinct c.id_commande) as nb_orders,
                         sum(l.qty_commande) as total_recorded_quantity,
                         sum(l.total_ht) as total_recorded_turnover
                     FROM
@@ -1649,6 +1647,180 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         ";
         //dump($update);
         $this->executeSQL("Update parent association...", $update);
+    }
+    
+    /**
+     * Create product stubs from cst_art_infos.id_art_tete link
+     */
+    protected function createProductStubFromArtTete()
+    {
+        
+        $akilia1db = $this->akilia1Db;
+        $db = $this->openstoreDb;
+        
+        $replace = "
+                INSERT INTO $db.product_stub (
+                        reference,
+                        created_by,
+                        legacy_mapping,
+                        legacy_synchro_at
+                ) 
+                (SELECT * FROM
+                        (
+                                SELECT 
+                                        CONCAT(CONVERT(get_searchable_reference(a_parent.reference) using 'utf8'), '_', REPLACE(a_parent.id_marque, ' ', ''), '_', a_parent.id_article) as stub_reference,
+                                        'akilia-sync' as created_by,
+                                        CONCAT(a_parent.reference,  ':', a_parent.id_marque, ':', a_parent.id_article, '_stub') as stub_legacy_mapping, 
+                                        '{$this->legacy_synchro_at}' as legacy_synchro_at
+                                FROM $akilia1db.cst_art_infos cai_parent
+                                INNER JOIN $akilia1db.article a_parent on a_parent.id_article = cai_parent.id_article
+                                LEFT OUTER JOIN $akilia1db.cst_art_infos cai_child on cai_child.id_art_tete = cai_parent.id_article
+                                LEFT OUTER JOIN $akilia1db.article a_child on a_child.id_article = cai_child.id_article
+                        WHERE (a_parent.flag_archive = 0 and a_child.flag_archive=0)
+                                GROUP BY stub_reference, stub_legacy_mapping
+                                HAVING count(a_child.reference) > 0
+                    ) as inner_tbl
+                )
+                ON DUPLICATE KEY UPDATE
+                    reference = inner_tbl.stub_reference,
+                    updated_by = 'akilia-sync',
+                    legacy_mapping = inner_tbl.stub_legacy_mapping,
+                    legacy_synchro_at = '{$this->legacy_synchro_at}'
+           ";
+                    
+        $this->executeSQL("Create product stubs ", $replace);                    
+        
+        
+        // 2. Deleting - old links in case it changes
+        $delete = "
+            delete from $db.product_stub 
+            where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+        
+        $this->executeSQL("Delete eventual removed product stubs", $delete);
+        
+    }
+
+    protected function createProductStubLinksFromAkilia()
+    {
+
+        $akilia1db = $this->akilia1Db;
+        $db = $this->openstoreDb;
+        
+        $update = "
+                UPDATE product  
+                inner join
+                (
+                        SELECT p.product_id, p.reference, stub.product_stub_id, stub.reference as stub_reference 
+                        FROM (
+                                (
+                                                -- all children
+                                                SELECT 
+                                                        p.product_id as product_id,
+                                                        CONCAT(a_parent.reference,  ':', a_parent.id_marque, ':', a_parent.id_article, '_stub') as stub_legacy_mapping, 
+                                                        COUNT(a_parent.reference) as nb_members
+                                                FROM emd00.cst_art_infos cai_parent
+                                                INNER JOIN emd00.article a_parent on a_parent.id_article = cai_parent.id_article
+                                                LEFT OUTER JOIN emd00.cst_art_infos cai_child on cai_child.id_art_tete = cai_parent.id_article
+                                                LEFT OUTER JOIN emd00.article a_child on (a_child.id_article = cai_child.id_article)
+                                                INNER JOIN $db.product p on p.legacy_mapping = a_child.id_article
+
+                                                WHERE (a_parent.flag_archive = 0 and a_child.flag_archive=0 )
+                                                GROUP BY product_id, stub_legacy_mapping
+
+                                )  union distinct (
+
+                                                -- all products being parent or out of family
+                                                SELECT 
+                                                        p.product_id as product_id,
+                                                        CONCAT(a_parent.reference,  ':', a_parent.id_marque, ':', a_parent.id_article, '_stub') as stub_legacy_mapping, 
+                                                        COUNT(a_child.reference) as nb_members
+                                                FROM emd00.cst_art_infos cai_parent
+                                                INNER JOIN emd00.article a_parent on a_parent.id_article = cai_parent.id_article
+                                                INNER JOIN $db.product p on p.legacy_mapping = a_parent.id_article
+                                                LEFT OUTER JOIN emd00.cst_art_infos cai_child on cai_child.id_art_tete = cai_parent.id_article
+                                                LEFT OUTER JOIN emd00.article a_child on (a_child.id_article = cai_child.id_article)
+                                                WHERE (a_parent.flag_archive = 0 and a_child.flag_archive=0 or a_child.reference is null)
+                                                GROUP BY product_id, stub_legacy_mapping
+
+                                ) 
+                        ) as linked_stubs
+                        inner join $db.product p on p.product_id = linked_stubs.product_id
+                        left outer join $db.product_stub stub on stub.legacy_mapping = linked_stubs.stub_legacy_mapping
+                        -- where linked_stubs.nb_members > 1
+                ) as tbl on tbl.product_id = product.product_id
+                set product.product_stub_id = tbl.product_stub_id        
+            ";
+            $this->executeSQL("Create product stubs ", $update);                    
+    }
+    
+    /**
+     * Create product stubs from cst_art_infos.id_art_tete link
+     */
+    protected function createProductStubTranslationsFromArtTete()
+    {
+        
+        $akilia1db = $this->akilia1Db;
+        $db = $this->openstoreDb;
+        
+        $replace = "
+            insert into $db.product_stub_translation 
+            (
+                product_stub_id,
+                lang,
+                description_header,
+                created_by,
+                updated_by,
+                created_at,
+                updated_at,
+                legacy_mapping,
+                legacy_synchro_at
+            )
+            select 
+                ps.product_stub_id,
+                p18.lang,
+                p18.description,
+                p18.created_by,
+                p18.updated_by,
+                p18.created_at,
+                p18.updated_at,
+                CONCAT(ps.product_stub_id, ':', p18.lang) as legacy_mapping,
+                '{$this->legacy_synchro_at}' as legacy_synchro_at
+            from $db.product p
+            inner join $db.product_translation p18 on p18.product_id = p.product_id
+            inner join $db.product_stub ps on ps.product_stub_id = p.product_stub_id
+            where p.parent_id is null and p18.description is not null
+            on duplicate key update
+                    product_stub_id = ps.product_stub_id,
+                    lang = p18.lang,
+                    description_header = p18.description,
+                    updated_by = p18.updated_by,
+                    updated_at = p18.updated_at,
+                    legacy_mapping = CONCAT(ps.product_stub_id, ':', p18.lang),
+                    legacy_synchro_at = '{$this->legacy_synchro_at}' 
+           ";
+                    
+        $this->executeSQL("Create product stubs translation ", $replace);                    
+        
+        
+        // 2. Deleting - old links in case it changes
+        $delete = "
+            delete from $db.product_stub_translation
+            where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+        
+        $this->executeSQL("Delete eventual removed product stubs translations", $delete);
+    }
+    
+    
+    /**
+     * Tranform parent association into a product stub
+     */
+    public function synchronizeProductStubFromArtTete()
+    {
+        if (true) {
+            $this->createProductStubFromArtTete();
+            $this->createProductStubLinksFromAkilia();
+            $this->createProductStubTranslationsFromArtTete();
+        }
     }
 
     /**
