@@ -7,4 +7,6 @@
     Header unset Last-Modified
     Header unset ETag
     FileETag None 
+    Header add Access-Control-Allow-Origin "*" 
+
 </FilesMatch>

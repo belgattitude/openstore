@@ -145,6 +145,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 
 
                 default:
+                    header("Access-Control-Allow-Origin: *");
                     throw new \Exception("Error '$format' format not supported");
             }
         }
