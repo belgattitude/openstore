@@ -25,24 +25,24 @@ class OpenstoreDb extends ZfcUserZendDb
         $authService = $this->userService->getAuthService();
 
         if (!$authService->hasIdentity()) {
-            return array($this->getDefaultRole());
+            return [$this->getDefaultRole()];
         }
 
         // get roles associated with the logged in user
         $sql = new Sql($this->adapter);
         $select = $sql->select()
-                ->from(array('ur' => 'user_role'), array())
-                ->join(array('r' => 'role'), new Expression('ur.role_id = r.role_id'), array())
-                ->columns(array(
+                ->from(['ur' => 'user_role'], [])
+                ->join(['r' => 'role'], new Expression('ur.role_id = r.role_id'), [])
+                ->columns([
             'reference' => new Expression('r.reference'),
             'role_id' => new Expression('ur.role_id')
-                ));
+                ]);
 
 
         $where = new Where();
         $where->equalTo('user_id', $authService->getIdentity()->getId());
         $results = $sql->prepareStatementForSqlObject($select->where($where))->execute();
-        $roles = array();
+        $roles = [];
         foreach ($results as $i) {
             $roles[] = $i['reference'];
         }

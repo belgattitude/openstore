@@ -6,7 +6,6 @@ use Zend\Db\Adapter\Adapter;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Db\Adapter\AdapterAwareInterface;
-use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
 use Soluble\FlexStore\Source\Zend\SqlSource;
@@ -43,14 +42,14 @@ class Akilia1Products implements ServiceLocatorAwareInterface, AdapterAwareInter
         $akilia1db  = $this->configuration['synchronizer']['db_akilia1'];
 
         $select = new Select();
-        $select->from(array("a" => new \Zend\Db\Sql\TableIdentifier('article', $akilia1db)), array())
+        $select->from(["a" => new \Zend\Db\Sql\TableIdentifier('article', $akilia1db)], [])
                ->where('a.flag_archive <> 1');
 
-        $select->columns(array(
+        $select->columns([
                 'id_article'    => new Expression('TRIM(a.id_article)'),
                 'reference'        => new Expression('a.reference'),
                 'id_marque'        => new Expression('a.id_marque')
-            ), true);
+            ], true);
 
         $store = $this->getStore($select);
 
@@ -81,7 +80,7 @@ class Akilia1Products implements ServiceLocatorAwareInterface, AdapterAwareInter
         $pcache = array_column($products, 'reference', 'id_article');
 
 
-        $images = array();
+        $images = [];
         foreach (glob("$image_path/*.jpg") as $filename) {
             $basename = basename($filename);
 
@@ -94,7 +93,7 @@ class Akilia1Products implements ServiceLocatorAwareInterface, AdapterAwareInter
                 $index = null;
             }
             $product_active = array_key_exists($product_id, $pcache);
-            $images[] = array(
+            $images[] = [
                 'product_id' => $product_id,
                 'filename' => $filename,
                 'basename' => $basename,
@@ -103,7 +102,7 @@ class Akilia1Products implements ServiceLocatorAwareInterface, AdapterAwareInter
                 'filemtime' => filemtime($filename),
                 'filesize' => filesize($filename),
                 'md5' => md5($filename)
-            );
+            ];
         }
 
         unset($pcache);

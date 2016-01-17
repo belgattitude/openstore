@@ -10,8 +10,6 @@
 
 namespace Openstore;
 
-use Openstore\Configuration;
-
 interface ConfigurationAwareInterface
 {
     /**

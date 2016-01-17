@@ -2,7 +2,6 @@
 
 namespace Openstore;
 
-use Openstore\Configuration;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 

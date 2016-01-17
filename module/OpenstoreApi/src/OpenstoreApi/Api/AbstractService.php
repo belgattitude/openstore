@@ -177,7 +177,7 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
         $customer_id = isset($params['customer_id']) ? $params['customer_id'] : null;
 
         //$currency
-        $localeMap = array(
+        $localeMap = [
             'BE' => 'fr_BE',
             'FR' => 'fr_FR',
             'GB' => 'en_GB',
@@ -185,7 +185,7 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
             'DE' => 'de_DE',
             'NL' => 'nl_NL',
             'ES' => 'es_ES',
-        );
+        ];
 
         if (array_key_exists($pricelist_reference, $localeMap)) {
             $locale = $localeMap[$pricelist_reference];
@@ -237,10 +237,10 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
     protected function getPricelistCurrency($pricelist_reference)
     {
         $select = $this->sql->select();
-        $select->from(array('pl' => 'pricelist'))
-               ->join(array('cu' => 'currency'), 'pl.currency_id = cu.currency_id', array('reference', 'symbol'))
-               ->columns(array('pricelist_id'))
-               ->where(array('pl.reference' => $pricelist_reference));
+        $select->from(['pl' => 'pricelist'])
+               ->join(['cu' => 'currency'], 'pl.currency_id = cu.currency_id', ['reference', 'symbol'])
+               ->columns(['pricelist_id'])
+               ->where(['pl.reference' => $pricelist_reference]);
         //$str = $this->sql->getSqlStringForSqlObject($select);
         //var_dump($str);
         //die();

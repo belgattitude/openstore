@@ -17,7 +17,7 @@ class LicenseManagerFactory implements FactoryInterface
     {
         $config = $serviceLocator->get('Config');
 
-        $config = isset($config['licenses']) ? $config['licenses'] : array();
+        $config = isset($config['licenses']) ? $config['licenses'] : [];
         if (empty($config)) {
             throw new \Exception("Cannot locate licenses configuration, please review your configuration.");
         }

@@ -18,14 +18,14 @@ class ProductBrowser extends AbstractBrowser
      */
     public function getSearchableParams()
     {
-        return array(
-            'language' => array('required' => true),
-            'pricelist' => array('required' => true),
-            'query' => array('required' => false),
-            'brands' => array('required' => false),
-            'categories' => array('required' => false),
-            'id' => array('required' => false)
-        );
+        return [
+            'language' => ['required' => true],
+            'pricelist' => ['required' => true],
+            'query' => ['required' => false],
+            'brands' => ['required' => false],
+            'categories' => ['required' => false],
+            'id' => ['required' => false]
+        ];
     }
 
     /**
@@ -34,7 +34,7 @@ class ProductBrowser extends AbstractBrowser
      */
     protected function getPackagingColumns()
     {
-        $columns = array(
+        $columns = [
             'pack_unit_qty' => new Expression("packs.pack_unit_qty"),
             'pack_unit_volume' => new Expression("packs.pack_unit_volume"),
             'pack_unit_weight' => new Expression("packs.pack_unit_weight"),
@@ -57,7 +57,7 @@ class ProductBrowser extends AbstractBrowser
             'pack_mastercarton_length' => new Expression("packs.pack_mastercarton_length"),
             'pack_mastercarton_width' => new Expression("packs.pack_mastercarton_width"),
             'pack_mastercarton_height' => new Expression("packs.pack_mastercarton_height")
-        );
+        ];
         return $columns;
     }
 
@@ -70,10 +70,10 @@ class ProductBrowser extends AbstractBrowser
     {
         // Step 1: Inner select packaging selection
         $packSelect = new Select();
-        $packSelect->from(array('pp' => 'product_packaging'), array())
-                ->join(array('pt' => 'packaging_type'), new Expression("pp.type_id = pt.type_id"), array());
+        $packSelect->from(['pp' => 'product_packaging'], [])
+                ->join(['pt' => 'packaging_type'], new Expression("pp.type_id = pt.type_id"), []);
         $packSelect->columns(
-            array(
+            [
             'product_id' => new Expression('pp.product_id'),
             'pack_unit_qty' => new Expression("MAX(if (pt.reference = 'UNIT', pp.quantity, 1))"),
             'pack_unit_barcode_ean' => new Expression("MAX(if (pt.reference = 'UNIT', pp.barcode_ean, null))"),
@@ -99,10 +99,10 @@ class ProductBrowser extends AbstractBrowser
             'pack_mastercarton_length' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.length, null))"),
             'pack_mastercarton_width' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.width, null))"),
             'pack_mastercarton_height' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.height, null))"),
-                ),
+                ],
             true
         );
-        $packSelect->group(array('product_id'));
+        $packSelect->group(['product_id']);
         return $packSelect;
     }
 
@@ -122,32 +122,32 @@ class ProductBrowser extends AbstractBrowser
         $select = new Select();
         $select->setDbAdapter($this->adapter);
 
-        $select->from(array('p' => 'product'), array())
-                ->join(array('p18' => 'product_translation'), new Expression("p18.product_id = p.product_id and p18.lang = '$lang'"), array(), $select::JOIN_LEFT)
-                ->join(array('pstub' => 'product_stub'), new Expression('pstub.product_stub_id = p.product_stub_id'), array(), $select::JOIN_LEFT)
-                ->join(array('pstub18' => 'product_stub_translation'), new Expression("pstub.product_stub_id = pstub18.product_stub_id and pstub18.lang='$lang'"), array(), $select::JOIN_LEFT)
-                
+        $select->from(['p' => 'product'], [])
+                ->join(['p18' => 'product_translation'], new Expression("p18.product_id = p.product_id and p18.lang = '$lang'"), [], $select::JOIN_LEFT)
+                ->join(['pstub' => 'product_stub'], new Expression('pstub.product_stub_id = p.product_stub_id'), [], $select::JOIN_LEFT)
+                ->join(['pstub18' => 'product_stub_translation'], new Expression("pstub.product_stub_id = pstub18.product_stub_id and pstub18.lang='$lang'"), [], $select::JOIN_LEFT)
+
                 // to remove when product_model is ready
                 //->join(array('p2' => 'product'), new Expression('p2.product_id = p.parent_id'), array(), $select::JOIN_LEFT)
                 //->join(array('p2_18' => 'product_translation'), new Expression("p2.product_id = p2_18.product_id and p2_18.lang='$lang'"), array(), $select::JOIN_LEFT)
                 // end of to remove
-                ->join(array('psi' => 'product_search'), new Expression("psi.product_id = p.product_id and psi.lang = '$lang'"), array(), $select::JOIN_LEFT)
-                ->join(array('ppl' => 'product_pricelist'), new Expression('ppl.product_id = p.product_id'), array())
-                ->join(array('pl' => 'pricelist'), new Expression('pl.pricelist_id = ppl.pricelist_id'), array())
-                ->join(array('pt' => 'product_type'), new Expression('p.type_id = pt.type_id'), array(), $select::JOIN_LEFT)
-                ->join(array('c' => 'currency'), new Expression('c.currency_id = pl.currency_id'), array(), $select::JOIN_LEFT)
-                ->join(array('pu' => 'product_unit'), new Expression('pu.unit_id = p.unit_id'), array(), $select::JOIN_LEFT)
-                ->join(array('ps' => 'product_stock'), new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'), array())
-                ->join(array('pb' => 'product_brand'), new Expression('pb.brand_id = p.brand_id'), array())
-                ->join(array('pg' => 'product_group'), new Expression('pg.group_id = p.group_id'), array(), $select::JOIN_LEFT)
-                ->join(array('pst' => 'product_status'), new Expression('p.status_id = pst.status_id'), array(), $select::JOIN_LEFT)
-                ->join(array('pc' => 'product_category'), new Expression('pc.category_id = p.category_id'), array())
-                ->join(array('pc18' => 'product_category_translation'), new Expression("pc.category_id = pc18.category_id and pc18.lang = '$lang'"), array(), $select::JOIN_LEFT)
-                ->join(array('pm' => 'product_media'), new Expression("pm.product_id = p.product_id"), array(), $select::JOIN_LEFT)
-                ->join(array('m' => 'media'), new Expression('pm.media_id = m.media_id'), array(), $select::JOIN_LEFT)
-                ->join(array('pmt' => 'product_media_type'), new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), array(), $select::JOIN_LEFT)
-                ->join(array('ppls' => 'product_pricelist_stat'), new Expression("ppls.product_pricelist_stat_id = ppl.product_pricelist_id"), array(), $select::JOIN_LEFT)
-                ->join(array('primary_color' => 'color'), new Expression("primary_color.color_id = p.primary_color_id"), array(), $select::JOIN_LEFT)
+                ->join(['psi' => 'product_search'], new Expression("psi.product_id = p.product_id and psi.lang = '$lang'"), [], $select::JOIN_LEFT)
+                ->join(['ppl' => 'product_pricelist'], new Expression('ppl.product_id = p.product_id'), [])
+                ->join(['pl' => 'pricelist'], new Expression('pl.pricelist_id = ppl.pricelist_id'), [])
+                ->join(['pt' => 'product_type'], new Expression('p.type_id = pt.type_id'), [], $select::JOIN_LEFT)
+                ->join(['c' => 'currency'], new Expression('c.currency_id = pl.currency_id'), [], $select::JOIN_LEFT)
+                ->join(['pu' => 'product_unit'], new Expression('pu.unit_id = p.unit_id'), [], $select::JOIN_LEFT)
+                ->join(['ps' => 'product_stock'], new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'), [])
+                ->join(['pb' => 'product_brand'], new Expression('pb.brand_id = p.brand_id'), [])
+                ->join(['pg' => 'product_group'], new Expression('pg.group_id = p.group_id'), [], $select::JOIN_LEFT)
+                ->join(['pst' => 'product_status'], new Expression('p.status_id = pst.status_id'), [], $select::JOIN_LEFT)
+                ->join(['pc' => 'product_category'], new Expression('pc.category_id = p.category_id'), [])
+                ->join(['pc18' => 'product_category_translation'], new Expression("pc.category_id = pc18.category_id and pc18.lang = '$lang'"), [], $select::JOIN_LEFT)
+                ->join(['pm' => 'product_media'], new Expression("pm.product_id = p.product_id"), [], $select::JOIN_LEFT)
+                ->join(['m' => 'media'], new Expression('pm.media_id = m.media_id'), [], $select::JOIN_LEFT)
+                ->join(['pmt' => 'product_media_type'], new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), [], $select::JOIN_LEFT)
+                ->join(['ppls' => 'product_pricelist_stat'], new Expression("ppls.product_pricelist_stat_id = ppl.product_pricelist_id"), [], $select::JOIN_LEFT)
+                ->join(['primary_color' => 'color'], new Expression("primary_color.color_id = p.primary_color_id"), [], $select::JOIN_LEFT)
                 ->where('p.flag_active = 1')
                 ->where('ppl.flag_active = 1')
                 ->where("pl.reference = '$pricelist'");
@@ -155,7 +155,7 @@ class ProductBrowser extends AbstractBrowser
 
         if ($enable_packaging_columns) {
             $packSelect = $this->getPackagingInnerSelect();
-            $select->join(array('packs' => $packSelect), new Expression("packs.product_id = p.product_id"), array(), $select::JOIN_LEFT);
+            $select->join(['packs' => $packSelect], new Expression("packs.product_id = p.product_id"), [], $select::JOIN_LEFT);
         }
 
         $this->assignFilters($select);
@@ -169,7 +169,7 @@ class ProductBrowser extends AbstractBrowser
         if ($this->columns !== null && is_array($this->columns)) {
             $columns = $this->columns;
         } else {
-            $columns = array(
+            $columns = [
                 'product_id' => new Expression('p.product_id'),
                 'status_id' => new Expression('pst.status_id'),
                 'status_reference' => new Expression('pst.reference'),
@@ -204,7 +204,7 @@ class ProductBrowser extends AbstractBrowser
                 ),
             pstub18.description_footer
         )    
-        '),                      
+        '),
 /*            
 'description' => new Expression('
         CONCAT_WS("\n",
@@ -264,7 +264,7 @@ class ProductBrowser extends AbstractBrowser
                 'primary_color_id' => new Expression('p.primary_color_id'),
                 'primary_color_name' => new Expression('primary_color.name'),
                 'primary_color_hex_code' => new Expression('primary_color.hex_code')
-            );
+            ];
 
             if ($enable_packaging_columns) {
                 $columns = array_merge($columns, $this->getPackagingColumns());
@@ -281,23 +281,23 @@ class ProductBrowser extends AbstractBrowser
 
         $brands = $params->get('brands');
         if (count($brands) > 0) {
-            $brand_clauses = array();
+            $brand_clauses = [];
             foreach ($brands as $brand_reference) {
                 $brand_clauses[] = "pb.reference = '$brand_reference'";
             }
-            $select->where('(' . join(' OR ', $brand_clauses) . ')');
+            $select->where('(' . implode(' OR ', $brand_clauses) . ')');
         }
 
         $categories = $params->get('categories');
         if ($categories !== null && count($categories) > 0) {
             $sql = new Sql($this->adapter);
-            $category_clauses = array();
+            $category_clauses = [];
 
             foreach ($categories as $category_reference) {
                 $spb = new Select();
                 $spb->from('product_category')
-                        ->columns(array('category_id', 'lft', 'rgt'))
-                        ->where(array('reference' => $category_reference))
+                        ->columns(['category_id', 'lft', 'rgt'])
+                        ->where(['reference' => $category_reference])
                         ->limit(1);
 
                 $sql_string = $sql->getSqlStringForSqlObject($spb);
@@ -307,7 +307,7 @@ class ProductBrowser extends AbstractBrowser
                 }
             }
             if (count($category_clauses) > 0) {
-                $select->where('(' . join(' or ', $category_clauses) . ')');
+                $select->where('(' . implode(' or ', $category_clauses) . ')');
             }
         }
 
@@ -322,7 +322,7 @@ class ProductBrowser extends AbstractBrowser
             // 1. TEST PART WITH
             // BARCODE, SEARCH_REFERENCE, PRODUCT_ID,
 
-            $matches = array();
+            $matches = [];
             if (is_numeric($query) && u::strlen($query) < 20) {
                 // Can be a barcode or a product_id,
                 $matches[1000000000] = "p.product_id = $query";
@@ -342,16 +342,16 @@ class ProductBrowser extends AbstractBrowser
             //echo "p.search_reference like CONCAT('%', get_searchable_reference($quoted), '%')";
             //die();
             if (u::strlen($query) > 3) {
-                $matches[1000000] = 'p18.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
-                $matches[1000001] = 'p18.keywords like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
-                $matches[100000] = '(p18.title is null and p.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%') . ")";
+                $matches[1000000] = 'p18.title like ' . $platform->quoteValue('%' . implode('%', $splitted) . '%');
+                $matches[1000001] = 'p18.keywords like ' . $platform->quoteValue('%' . implode('%', $splitted) . '%');
+                $matches[100000] = '(p18.title is null and p.title like ' . $platform->quoteValue('%' . implode('%', $splitted) . '%') . ")";
             }
 
             if (u::strlen($query) > 5) {
-                $matches[10000] = 'psi.keywords like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
+                $matches[10000] = 'psi.keywords like ' . $platform->quoteValue('%' . implode('%', $splitted) . '%');
             }
 
-            $matches[0] = 'MATCH (psi.keywords) AGAINST (' . $platform->quoteValue(join(' ', $splitted)) . ' IN NATURAL LANGUAGE MODE)';
+            $matches[0] = 'MATCH (psi.keywords) AGAINST (' . $platform->quoteValue(implode(' ', $splitted)) . ' IN NATURAL LANGUAGE MODE)';
 
             $relevance = '';
             $i = 0;
@@ -364,13 +364,13 @@ class ProductBrowser extends AbstractBrowser
             }
             $relevance .= str_repeat(')', count($matches) - 1);
 
-            $select->where("(" . join(' or ', array_values($matches)) . ")");
+            $select->where("(" . implode(' or ', array_values($matches)) . ")");
         } else {
             $relevance = "'A'";  // Constant to sort on;
         }
 
         // Automatically add relevance column
-        $columns = array_merge($select->getRawState(Select::COLUMNS), array('relevance' => new Expression($relevance)));
+        $columns = array_merge($select->getRawState(Select::COLUMNS), ['relevance' => new Expression($relevance)]);
 
         // Add medias id
 
@@ -383,7 +383,7 @@ class ProductBrowser extends AbstractBrowser
         $select->columns(array_merge($columns, $group_columns));
         $select->group(array_keys($columns));
 
-        $select->order(array('relevance desc', 'pc.global_sort_index', 'p.sort_index', 'p.display_reference'));
+        $select->order(['relevance desc', 'pc.global_sort_index', 'p.sort_index', 'p.display_reference']);
 
         return $select;
     }

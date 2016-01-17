@@ -2,7 +2,6 @@
 
 namespace Openstore;
 
-use Zend\Db\Adapter\Adapter;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Session\Container;
@@ -35,7 +34,7 @@ class UserContext implements ServiceLocatorAwareInterface
                 $userCap = new UserCapabilities($user_id);
                 $userCap->setServiceLocator($this->getServiceLocator());
 
-                $this->container['caps'] = array();
+                $this->container['caps'] = [];
                 $this->container['user_id'] = $user_id;
                 $this->container['caps']['roles'] = $userCap->getRoles();
                 $this->container['caps']['pricelists'] = $userCap->getPricelists();
@@ -52,10 +51,10 @@ class UserContext implements ServiceLocatorAwareInterface
 
                 // PUBLIC capabilitities
                 // TODO get pricelist from table
-                $this->container['caps'] = array();
-                $this->container['caps']['roles'] = array('guest');
+                $this->container['caps'] = [];
+                $this->container['caps']['roles'] = ['guest'];
                 $this->container['caps']['pricelists'] = $all_pricelists;
-                $this->container['caps']['customers'] = array();
+                $this->container['caps']['customers'] = [];
             }
             $this->container['is_initialized'] = true;
         }

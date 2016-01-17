@@ -80,7 +80,7 @@ class DoctrineEntity extends DoctrineORMModuleEntity
             ? $object->getFilter()
             : $this->filterComposite;
 
-        $data = array();
+        $data = [];
         foreach ($fieldNames as $fieldName) {
             if ($filter && !$filter->filter($fieldName)) {
                 continue;
@@ -124,7 +124,7 @@ class DoctrineEntity extends DoctrineORMModuleEntity
             ? $object->getFilter()
             : $this->filterComposite;
 
-        $data = array();
+        $data = [];
         foreach ($fieldNames as $fieldName) {
             if ($filter && !$filter->filter($fieldName)) {
                 continue;

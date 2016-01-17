@@ -26,9 +26,9 @@ class PromoProducts extends AbstractFilter
 
     public function addDefaultSortClause(Select $select)
     {
-        $select->order(array(
+        $select->order([
             'ppl.discount_1'    => $select::ORDER_DESCENDING,
-            'p.reference'        => $select::ORDER_ASCENDING));
+            'p.reference'        => $select::ORDER_ASCENDING]);
         return $this;
     }
 }

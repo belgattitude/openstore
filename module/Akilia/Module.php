@@ -2,7 +2,6 @@
 
 namespace Akilia;
 
-use Zend\Mvc\ModuleRouteListener;
 use Zend\ModuleManager\ModuleManager;
 use Zend\Mvc\MvcEvent;
 //use Openstore\Configuration;
@@ -58,14 +57,14 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
      */
     public function getServiceConfig()
     {
-        return array(
-            'aliases' => array(
+        return [
+            'aliases' => [
             //'ZendDeveloperTools\ReportInterface' => 'ZendDeveloperTools\Report',
-            ),
-            'factories' => array(
+            ],
+            'factories' => [
             //'Openstore\Configuration'	=> 'Openstore\ConfigurationFactory',
-            ),
-        );
+            ],
+        ];
     }
 
     public function getConfig()
@@ -79,13 +78,13 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 
     public function getAutoloaderConfig()
     {
-        return array(
-            'Zend\Loader\StandardAutoloader' => array(
-                'namespaces' => array(
+        return [
+            'Zend\Loader\StandardAutoloader' => [
+                'namespaces' => [
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -111,7 +110,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
      */
     public function getConsoleUsage(AdapterInterface $console)
     {
-        return array(
+        return [
             'akilia setup' => 'Dummy setup action.',
             'akilia syncdb' => 'Synchronize with akilia database.',
             'akilia syncmedia' => 'Synchronize product pictures with akilia.',
@@ -121,6 +120,6 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
             'akilia archiveproductpictures' => 'Move archived product pictures (prompt)',
             'akilia checksynchro' => 'Check synchronization for errors',
             'akilia geocodecustomers' => 'Geocode customers'
-        );
+        ];
     }
 }

@@ -5,9 +5,6 @@ namespace Openstore\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\View\Model\ViewModel;
-use Doctrine\ORM\Tools\Setup;
-use Doctrine\ORM\EntityManager;
 
 class AuthController extends AbstractActionController
 {
@@ -55,10 +52,10 @@ class AuthController extends AbstractActionController
 
         $form       = $this->getForm();
 
-        return array(
+        return [
             'form'      => $form,
             'messages'  => $this->flashmessenger()->getMessages()
-        );
+        ];
     }
 
     public function authenticateAction()

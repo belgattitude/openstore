@@ -3,7 +3,6 @@
 namespace Openstore\Authentication\Identity;
 
 use Zend\Authentication\AuthenticationService;
-use ZfcRbac\Exception;
 use ZfcRbac\Identity\IdentityProviderInterface;
 use Doctrine\ORM\EntityManager;
 
@@ -44,7 +43,7 @@ class ZfcRbacAuthenticationIdentityProvider implements IdentityProviderInterface
 
             return $user;
         } else {
-            return null;
+            return;
         }
     }
 }

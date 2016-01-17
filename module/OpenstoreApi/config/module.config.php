@@ -2,44 +2,44 @@
 
 namespace OpenstoreApi;
 
-return array(
-    'errors' => array(
-        'show_exceptions' => array(
+return [
+    'errors' => [
+        'show_exceptions' => [
             'message' => true,
             'trace' => true
-        )
-    ),
-    'service_manager' => array(
-        'factories' => array(
-        ),
-        'abstract_factories' => array(
+        ]
+    ],
+    'service_manager' => [
+        'factories' => [
+        ],
+        'abstract_factories' => [
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
             'Zend\Log\LoggerAbstractServiceFactory',
-        ),
-        'aliases' => array(
+        ],
+        'aliases' => [
             'translator' => 'MvcTranslator',
-        ),
-    ),
-    'translator' => array(
+        ],
+    ],
+    'translator' => [
         'locale' => 'en_GB',
-        'translation_file_patterns' => array(
-            array(
+        'translation_file_patterns' => [
+            [
                 'type' => 'gettext',
                 'base_dir' => __DIR__ . '/../language',
                 'pattern' => '%s.mo',
-            ),
-        ),
-    ),
-    'controllers' => array(
-        'invokables' => array(
+            ],
+        ],
+    ],
+    'controllers' => [
+        'invokables' => [
             'OpenstoreApi\Controller\ProductMedia' => 'OpenstoreApi\Controller\ProductMediaController',
             'OpenstoreApi\Controller\ProductCatalog' => 'OpenstoreApi\Controller\ProductCatalogController',
             'OpenstoreApi\Controller\ProductStock' => 'OpenstoreApi\Controller\ProductStockController',
             'OpenstoreApi\Controller\ProductBrand' => 'OpenstoreApi\Controller\ProductBrandController',
             'OpenstoreApi\Controller\NammProductCatalog' => 'OpenstoreApi\Controller\NammProductCatalogController',
             'OpenstoreApi\Controller\Generic' => 'OpenstoreApi\Controller\GenericController',
-        ),
-    ),
+        ],
+    ],
     /*
       'view_manager' => array(
       'display_not_found_reason' => true,
@@ -62,21 +62,21 @@ return array(
       )
       ),
      */
-    'view_manager' => array(
+    'view_manager' => [
         'display_not_found_reason' => true,
         'display_exceptions' => true,
-        'strategies' => array(
+        'strategies' => [
             'ViewJsonStrategy',
-        ),
+        ],
         /*
         'template_map' => array(
             'namm_item_v2011.1' => __DIR__ . '/../view/namm_b2b/namm_item_v2011.1.phtml',
             'test' => __DIR__ . '/../view/test.phtml',
         ),*/
-        'template_path_stack' => array(
+        'template_path_stack' => [
             //realpath(__DIR__ . '/../../public/themes'),
             realpath(__DIR__ . '/../view'),
 
-        ),
-    )
-);
+        ],
+    ]
+];

@@ -6,8 +6,7 @@ use Zend\Db\Adapter\Adapter;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Db\Adapter\AdapterAwareInterface;
-use Openstore\ConfigurationAwareInterface;
-use Openstore\Catalog\ProductFilters;
+
 
 class StockManager implements ServiceLocatorAwareInterface, AdapterAwareInterface, ConfigurationAwareInterface
 {

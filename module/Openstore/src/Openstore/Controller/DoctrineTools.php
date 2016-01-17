@@ -5,17 +5,17 @@ class DoctrineTools
     public function getDbConfig()
     {
         //An example configuration
-        return array(
+        return [
          'driver'   => 'pdo_mysql',
          'user'     => 'root',
          'password' => 'potatoes',
          'dbname'   => 'garden',
          'host'     => 'localhost',
          'charset' => 'utf8',
-               'driverOptions' => array(
+               'driverOptions' => [
                   1002=>'SET NAMES utf8'
-               )
-        );
+               ]
+        ];
     }
 
     public function bootstrapDoctrine()
@@ -27,10 +27,10 @@ class DoctrineTools
     public function getEntityFolders()
     {
         //An example configuration of two entity folders
-        return array(
+        return [
          '/full/path/to/App/Module1/Entities/yml' => '\\App\\Module1\\Entities',
          '/full/path/to/App/Module2/Entities/yml' => '\\App\\Module2\\Entities'
-        );
+        ];
     }
 
     public function setupDoctrine()
@@ -52,7 +52,7 @@ class DoctrineTools
         $driver = $em->getConfiguration()->getMetadataDriverImpl();
 
         $classes = $driver->getAllClassNames();
-        $metadata = array();
+        $metadata = [];
         foreach ($classes as $class) {
             //any unsupported table/schema could be handled here to exclude some classes
             if (true) {

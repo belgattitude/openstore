@@ -6,10 +6,7 @@ use Zend\Db\Adapter\Adapter;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Db\Adapter\AdapterAwareInterface;
-use Openstore\ConfigurationAwareInterface;
 use Openstore\Catalog\ProductFilters;
-use Openstore\UserContext;
-use Openstore\Permission;
 
 class Service implements ServiceLocatorAwareInterface, AdapterAwareInterface, ConfigurationAwareInterface
 {

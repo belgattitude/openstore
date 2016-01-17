@@ -2,7 +2,6 @@
 
 namespace Openstore\Catalog\Helper;
 
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 // SHOULD BE PAGEContext UserContext ?
@@ -137,7 +136,7 @@ class SearchParams
             return $this->params['categories'][0];
         }
 
-        return null;
+        return;
     }
 
     public function setBrands($brands)
@@ -162,7 +161,7 @@ class SearchParams
         if (is_array($this->params['brands']) && count($this->params['brands']) > 0) {
             return $this->params['brands'][0];
         }
-        return null;
+        return;
     }
 
     public function setFilter($filter)

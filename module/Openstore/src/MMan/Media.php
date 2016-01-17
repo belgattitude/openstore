@@ -2,7 +2,6 @@
 
 namespace MMan;
 
-use MMan\MediaManager;
 use ArrayObject;
 
 class Media

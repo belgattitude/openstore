@@ -7,9 +7,9 @@ use OpenstoreApi\Authorize\ApiKeyAccess;
 
 class ProductStockController extends AbstractRestfulController
 {
-    protected $collectionOptions = array('GET');
+    protected $collectionOptions = ['GET'];
     //protected $resourceOptions = array('GET');
-    protected $resourceOptions = array();
+    protected $resourceOptions = [];
 
     /**
      *

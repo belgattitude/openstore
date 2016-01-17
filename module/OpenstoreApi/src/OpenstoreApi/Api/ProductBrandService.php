@@ -4,7 +4,6 @@ namespace OpenstoreApi\Api;
 
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
-use Soluble\FlexStore\Store;
 
 class ProductBrandService extends AbstractService
 {
@@ -12,25 +11,25 @@ class ProductBrandService extends AbstractService
      * @param array $params [brands,pricelists]
      * @return \Soluble\FlexStore\Store
      */
-    public function getList(array $params = array())
+    public function getList(array $params = [])
     {
         $select = new Select();
 
-        $select->from(array('pb' => 'product_brand'), array())
-                ->join(array('p' => 'product'), new Expression('pb.brand_id = p.brand_id'), array())
-                ->join(array('ppl' => 'product_pricelist'), new Expression('ppl.product_id = p.product_id'), array(), $select::JOIN_LEFT)
-                ->join(array('pl' => 'pricelist'), new Expression('ppl.pricelist_id = pl.pricelist_id'), array(), $select::JOIN_LEFT);
+        $select->from(['pb' => 'product_brand'], [])
+                ->join(['p' => 'product'], new Expression('pb.brand_id = p.brand_id'), [])
+                ->join(['ppl' => 'product_pricelist'], new Expression('ppl.product_id = p.product_id'), [], $select::JOIN_LEFT)
+                ->join(['pl' => 'pricelist'], new Expression('ppl.pricelist_id = pl.pricelist_id'), [], $select::JOIN_LEFT);
 
-        $columns = array(
+        $columns = [
             'brand_id' => new Expression('pb.brand_id'),
             'brand_reference' => new Expression('pb.reference'),
             'title' => new Expression('pb.title'),
             'url' => new Expression('pb.url')
-        );
+        ];
 
-        $select->columns(array_merge($columns, array(
+        $select->columns(array_merge($columns, [
             'active_pricelists' => new Expression('GROUP_CONCAT(distinct pl.reference)'),
-                )), true);
+                ]), true);
 
         $select->group($columns);
 

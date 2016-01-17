@@ -1,24 +1,24 @@
 <?php
 
-return array(
-    'controllers' => array(
-        'invokables' => array(
+return [
+    'controllers' => [
+        'invokables' => [
             'SolubleNormalist\Controller\Console' => 'SolubleNormalist\Controller\ConsoleController'
-        )
-    ),
-    'console' => array(
-        'router' => array(
-            'routes' => array(
-                'normalist_generate_models' => array(
-                    'options' => array(
+        ]
+    ],
+    'console' => [
+        'router' => [
+            'routes' => [
+                'normalist_generate_models' => [
+                    'options' => [
                         'route' => 'normalist generate-models',
-                        'defaults' => array(
+                        'defaults' => [
                             'controller' => 'SolubleNormalist\Controller\Console',
                             'action' => 'generatemodels'
-                        )
-                    )
-                )
-            )
-        )
-    )
-);
+                        ]
+                    ]
+                ]
+            ]
+        ]
+    ]
+];

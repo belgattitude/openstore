@@ -43,7 +43,7 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
      *
      * @var array
      */
-    protected $columns = array(
+    protected $columns = [
         'source_price'      => 'price',
         'source_list_price' => 'list_price',
 
@@ -71,7 +71,7 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
         'target_price'      => 'my_price',
 
 
-    );
+    ];
 
     /**
      *
@@ -90,11 +90,11 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
     {
         if ($this->exclusions === null) {
             $this->exclusions = new ArrayObject();
-            $this->exclusions['product_type'] = array();
+            $this->exclusions['product_type'] = [];
             $select = new Select();
-            $select->from('product_type', array())
+            $select->from('product_type', [])
                    ->where->equalTo('flag_enable_discount_condition', 0);
-            $select->columns(array('type_id'), true);
+            $select->columns(['type_id'], true);
 
             $sql = new Sql($this->adapter);
             $sql_string = $sql->getSqlStringForSqlObject($select);
@@ -192,12 +192,12 @@ class CustomerDiscountRenderer implements RowRendererInterface, ServiceLocatorAw
             $status = $row[$this->columns['source_status_reference']];
 
             // Remove discount 2 (rep discount) when liquidation or surstock
-            if (in_array($status, array('L', 'S'))) {
+            if (in_array($status, ['L', 'S'])) {
                 $sd['discount_2'] = 0.0;
             }
 
             // Remove discount 1 (company discount) for all export pricelists
-            if (in_array($this->pricelist, array('100B', '120B', '100U', '120U'))) {
+            if (in_array($this->pricelist, ['100B', '120B', '100U', '120U'])) {
                 $sd['discount_1'] = 0.0;
             }
 

@@ -2,110 +2,110 @@
 
 namespace Akilia;
 
-return array(
-    'console' => array(
-        'router' => array(
-            'routes' => array(
-                'archiveproductpictures' => array(
-                    'options' => array(
+return [
+    'console' => [
+        'router' => [
+            'routes' => [
+                'archiveproductpictures' => [
+                    'options' => [
                         'route' => 'akilia archiveproductpictures',
-                        'defaults' => array(
+                        'defaults' => [
                             //'__NAMESPACE__' => 'Openstore\Controller',
                             'controller' => 'Akilia\Controller\Console',
                             'action' => 'archiveproductpictures'
-                        )
-                    )
-                ),
+                        ]
+                    ]
+                ],
 
-                'listproductpictures' => array(
-                    'options' => array(
+                'listproductpictures' => [
+                    'options' => [
                         'route' => 'akilia listproductpictures',
-                        'defaults' => array(
+                        'defaults' => [
                             //'__NAMESPACE__' => 'Openstore\Controller',
                             'controller' => 'Akilia\Controller\Console',
                             'action' => 'listproductpictures'
-                        )
-                    )
-                ),
-                'syncdb' => array(
-                    'options' => array(
+                        ]
+                    ]
+                ],
+                'syncdb' => [
+                    'options' => [
                         'route' => 'akilia syncdb',
-                        'defaults' => array(
+                        'defaults' => [
                             //'__NAMESPACE__' => 'Openstore\Controller',
                             'controller' => 'Akilia\Controller\Console',
                             'action' => 'syncdb'
-                        )
-                    )
-                ),
-                'geocodecustomers' => array(
-                    'options' => array(
+                        ]
+                    ]
+                ],
+                'geocodecustomers' => [
+                    'options' => [
                         'route' => 'akilia geocodecustomers',
-                        'defaults' => array(
+                        'defaults' => [
                             //'__NAMESPACE__' => 'Openstore\Controller',
                             'controller' => 'Akilia\Controller\Console',
                             'action' => 'geocodecustomers'
-                        )
-                    )
+                        ]
+                    ]
 
-                ),
-                'syncapi' => array(
-                    'options' => array(
+                ],
+                'syncapi' => [
+                    'options' => [
                         'route' => 'akilia syncapi',
-                        'defaults' => array(
+                        'defaults' => [
                             //'__NAMESPACE__' => 'Openstore\Controller',
                             'controller' => 'Akilia\Controller\Console',
                             'action' => 'syncapi'
-                        )
-                    )
-                ),
+                        ]
+                    ]
+                ],
 
-                'syncstock' => array(
-                    'options' => array(
+                'syncstock' => [
+                    'options' => [
                         'route' => 'akilia syncstock',
-                        'defaults' => array(
+                        'defaults' => [
                             //'__NAMESPACE__' => 'Openstore\Controller',
                             'controller' => 'Akilia\Controller\Console',
                             'action' => 'syncstock'
-                        )
-                    )
-                ),
+                        ]
+                    ]
+                ],
 
 
-                'syncmedia' => array(
-                    'options' => array(
+                'syncmedia' => [
+                    'options' => [
                         'route' => 'akilia syncmedia',
-                        'defaults' => array(
+                        'defaults' => [
                             //'__NAMESPACE__' => 'Openstore\Controller',
                             'controller' => 'Akilia\Controller\Console',
                             'action' => 'syncmedia'
-                        )
-                    )
-                ),
-                'checksynchro' => array(
-                    'options' => array(
+                        ]
+                    ]
+                ],
+                'checksynchro' => [
+                    'options' => [
                         'route' => 'akilia checksynchro',
-                        'defaults' => array(
+                        'defaults' => [
                             //'__NAMESPACE__' => 'Openstore\Controller',
                             'controller' => 'Akilia\Controller\Console',
                             'action' => 'checksynchro'
-                        )
-                    )
-                ),
-            )
-        )
-    ),
-    'router' => array(
-        'routes' => array(
-            'akilia' => array(
+                        ]
+                    ]
+                ],
+            ]
+        ]
+    ],
+    'router' => [
+        'routes' => [
+            'akilia' => [
                        'type' => 'Zend\Mvc\Router\Http\Literal',
-                       'options' => array(
+                       'options' => [
                            'route' => '/akilia',
-                           'defaults' => array(
+                           'defaults' => [
                                'controller' => 'Akilia\Controller\Index',
                                'action' => 'index',
-                           ),
-                       ),
-                   ),
-        )
-    )
-);
+                           ],
+                       ],
+                   ],
+        ]
+    ]
+];

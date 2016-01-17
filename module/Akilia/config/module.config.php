@@ -2,46 +2,46 @@
 
 namespace Akilia;
 
-return array(
-    'service_manager' => array(
-        'factories' => array(
-        ),
-        'abstract_factories' => array(
+return [
+    'service_manager' => [
+        'factories' => [
+        ],
+        'abstract_factories' => [
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
             'Zend\Log\LoggerAbstractServiceFactory',
-        ),
-        'aliases' => array(
+        ],
+        'aliases' => [
             'translator' => 'MvcTranslator',
-        ),
-    ),
-    'translator' => array(
+        ],
+    ],
+    'translator' => [
         'locale' => 'fr_FR',
-        'translation_file_patterns' => array(
-            array(
+        'translation_file_patterns' => [
+            [
                 'type' => 'gettext',
                 'base_dir' => __DIR__ . '/../language',
                 'pattern' => '%s.mo',
-            ),
-        ),
-    ),
-    'controllers' => array(
-        'invokables' => array(
+            ],
+        ],
+    ],
+    'controllers' => [
+        'invokables' => [
             'Akilia\Controller\Console' => 'Akilia\Controller\ConsoleController',
-        ),
-    ),
-    'view_manager' => array(
+        ],
+    ],
+    'view_manager' => [
         'display_not_found_reason' => true,
         'display_exceptions' => true,
         'doctype' => 'HTML5',
         'not_found_template' => 'error/404',
         'exception_template' => 'error/index',
-        'template_map' => array(
-        ),
-        'template_path_stack' => array(
+        'template_map' => [
+        ],
+        'template_path_stack' => [
             realpath(__DIR__ . '/../view'),
-        ),
-        'strategies' => array(
+        ],
+        'strategies' => [
             'ViewJsonStrategy',
-        )
-    ),
-);
+        ]
+    ],
+];

@@ -20,11 +20,11 @@ class CategoryBrowser extends AbstractBrowser
 
     public function getDefaultOptions()
     {
-        return array(
+        return [
             'expanded_category' => null,
             'depth' => 4,
             'include_empty_nodes' => false,
-        );
+        ];
     }
 
     /**
@@ -36,7 +36,7 @@ class CategoryBrowser extends AbstractBrowser
     public function setOption($key, $value)
     {
         if ($this->options === null) {
-            $this->options = array();
+            $this->options = [];
         }
         $this->options[$key] = $value;
         return $this;
@@ -55,14 +55,14 @@ class CategoryBrowser extends AbstractBrowser
      */
     public function getSearchableParams()
     {
-        return array(
-            'language' => array('required' => true),
-            'pricelist' => array('required' => true),
-            'query' => array('required' => false),
-            'brands' => array('required' => false),
-            'categories' => array('required' => false),
-            'id' => array('required' => false),
-        );
+        return [
+            'language' => ['required' => true],
+            'pricelist' => ['required' => true],
+            'query' => ['required' => false],
+            'brands' => ['required' => false],
+            'categories' => ['required' => false],
+            'id' => ['required' => false],
+        ];
     }
 
     /**
@@ -80,53 +80,53 @@ class CategoryBrowser extends AbstractBrowser
 
 
         $subselect = new Select();
-        $subselect->from(array('p' => 'product'), array())
-                ->join(array('ppl' => 'product_pricelist'), new Expression('ppl.product_id = p.product_id'), array())
-                ->join(array('pl' => 'pricelist'), new Expression('pl.pricelist_id = ppl.pricelist_id'), array())
-                ->join(array('ps' => 'product_stock'), new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'), array())
-                ->join(array('pb' => 'product_brand'), new Expression('pb.brand_id = p.brand_id'), array())
+        $subselect->from(['p' => 'product'], [])
+                ->join(['ppl' => 'product_pricelist'], new Expression('ppl.product_id = p.product_id'), [])
+                ->join(['pl' => 'pricelist'], new Expression('pl.pricelist_id = ppl.pricelist_id'), [])
+                ->join(['ps' => 'product_stock'], new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'), [])
+                ->join(['pb' => 'product_brand'], new Expression('pb.brand_id = p.brand_id'), [])
                 ->where('p.flag_active = 1')
                 ->where('ppl.flag_active = 1')
                 ->where("pl.reference = '$pricelist'")
-                ->columns(array(
+                ->columns([
                     'product_id' => new Expression('p.product_id'),
                     'category_id' => new Expression('p.category_id'),
-                ))
-                ->group(array('p.product_id', 'p.category_id'));
+                ])
+                ->group(['p.product_id', 'p.category_id']);
 
         $this->assignFilters($subselect);
 
         $brands = $params->get('brands');
         if ($brands != '' && count($brands) > 0) {
-            $brand_clauses = array();
+            $brand_clauses = [];
             foreach ($brands as $brand_reference) {
                 $brand_clauses[] = "pb.reference = '$brand_reference'";
             }
 
-            $subselect->where('(' . join(' OR ', $brand_clauses) . ')');
+            $subselect->where('(' . implode(' OR ', $brand_clauses) . ')');
         }
 
         $select = new Select();
 
         if (($expanded_category = $options['expanded_category']) !== null) {
-            $open_categories = array();
+            $open_categories = [];
             $ancestors = $this->model->getAncestors($expanded_category, $lang);
             foreach ($ancestors as $ancestor) {
                 $open_categories[$ancestor['category_id']] = $ancestor['reference'];
             }
-            $open_categories = "(" . join(',', array_keys($open_categories)) . ")";
+            $open_categories = "(" . implode(',', array_keys($open_categories)) . ")";
         } else {
             $open_categories = '(null)';
         }
 
 
-        $select->from(array('parent' => 'product_category'), array())
-                ->join(array('node' => 'product_category'), new Expression("node.lft BETWEEN parent.lft AND parent.rgt"), array(), $select::JOIN_LEFT)
-                ->join(array('pc18' => 'product_category_translation'), new Expression("pc18.category_id = parent.category_id and pc18.lang = '$lang'"), array(), $select::JOIN_LEFT)
-                ->join(array('p' => $subselect), new Expression("node.category_id = p.category_id"), array(), $select::JOIN_LEFT);
+        $select->from(['parent' => 'product_category'], [])
+                ->join(['node' => 'product_category'], new Expression("node.lft BETWEEN parent.lft AND parent.rgt"), [], $select::JOIN_LEFT)
+                ->join(['pc18' => 'product_category_translation'], new Expression("pc18.category_id = parent.category_id and pc18.lang = '$lang'"), [], $select::JOIN_LEFT)
+                ->join(['p' => $subselect], new Expression("node.category_id = p.category_id"), [], $select::JOIN_LEFT);
 
 
-        $columns = array(
+        $columns = [
             'id' => new Expression('parent.category_id'),
             'reference' => new Expression('parent.reference'),
             'title' => new Expression('COALESCE(pc18.title, parent.title)'),
@@ -139,13 +139,13 @@ class CategoryBrowser extends AbstractBrowser
             'rgt' => new Expression('parent.rgt'),
             'is_expanded' => new Expression("parent.category_id in $open_categories"),
             'sort_index' => new Expression('parent.sort_index')
-        );
+        ];
 
         $select->columns(
-            array_merge($columns, array(
+            array_merge($columns, [
             'count_product' => new Expression('COUNT(p.product_id)'),
             'count_subcategs' => new Expression('GROUP_CONCAT(distinct if(node.lvl = parent.lvl+1, node.reference, null))')
-                )),
+                ]),
             true
         );
 
@@ -155,13 +155,13 @@ class CategoryBrowser extends AbstractBrowser
             if ($expanded_category != '') {
                 $ancestors = $this->model->getAncestors($expanded_category, $lang)->toArray();
 
-                $clauses = array('parent.lvl = 1');
+                $clauses = ['parent.lvl = 1'];
                 foreach ($ancestors as $idx => $ancestor) {
                     //if ($idx < 4) {
                     $clauses[$ancestor['reference']] = "(parent.lft between " . $ancestor['lft'] . " and " . $ancestor['rgt'] . ' and parent.lvl = ' . ($ancestor['lvl'] + 1) . ')';
                     //}
                 }
-                $select->where('(' . join(' or ', $clauses) . ')');
+                $select->where('(' . implode(' or ', $clauses) . ')');
             } else {
                 $select->where("(parent.lvl <= $depth)");
             }
@@ -173,7 +173,7 @@ class CategoryBrowser extends AbstractBrowser
         }
 
 
-        $select->order(array('parent.lft' => $select::ORDER_ASCENDING, 'parent.sort_index' => $select::ORDER_ASCENDING));
+        $select->order(['parent.lft' => $select::ORDER_ASCENDING, 'parent.sort_index' => $select::ORDER_ASCENDING]);
 
         $adapter = $this->adapter;
         $sql = new Sql($adapter);

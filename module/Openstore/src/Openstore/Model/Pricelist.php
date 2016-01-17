@@ -17,15 +17,15 @@ class Pricelist extends AbstractModel
         $sql = new Sql($adapter);
         $select = $sql->select();
 
-        $select->from(array('pl' => 'pricelist'), array());
+        $select->from(['pl' => 'pricelist'], []);
 
-        $select->columns(array(
+        $select->columns([
             'pricelist_id'    => new Expression('pl.pricelist_id'),
             'reference'        => new Expression('pl.reference')
-        ));
+        ]);
 
         $sql_string = $sql->getSqlStringForSqlObject($select);
-        $results = $adapter->query($sql_string, array());
+        $results = $adapter->query($sql_string, []);
 
         return $results->toArray();
     }
@@ -43,17 +43,17 @@ class Pricelist extends AbstractModel
 
         $select = $sql->select();
 
-        $select->from(array('u' => 'user'), array())
+        $select->from(['u' => 'user'], [])
                 ->join(
-                    array('us' => 'user_scope'),
+                    ['us' => 'user_scope'],
                     new Expression("u.user_id = us.user_id"),
-                    array(),
+                    [],
                     $select::JOIN_LEFT
                 );
-        $select->columns(array(
+        $select->columns([
             'user_id'        => new Expression('u.user_id'),
             'customer_id'    => new Expression('us.customer_id'),
-        ));
+        ]);
 
         $select->where('user_id = ?', $user_id);
         $sql_string = $sql->getSqlStringForSqlObject($select);

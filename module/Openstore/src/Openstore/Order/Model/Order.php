@@ -2,10 +2,8 @@
 namespace Openstore\Order\Model;
 
 use Openstore\Core\Model\AbstractModel;
-use Zend\Db\Adapter\AdapterAwareInterface;
 use Soluble\Normalist\SyntheticTable;
 use Soluble\Normalist\Exception as NormalistException;
-use Soluble\Normalist\SyntheticRecord;
 use ArrayObject;
 
 class Order extends AbstractModel
@@ -49,7 +47,7 @@ class Order extends AbstractModel
         $d = $st->getRecordCleanedData('order', $data);
 
         if (!$d->offsetExists('status_id')) {
-            $default_status = $st->findOneBy('order_status', array('flag_default' => 1));
+            $default_status = $st->findOneBy('order_status', ['flag_default' => 1]);
             $d['status_id'] = $default_status['status_id'];
         }
 
@@ -125,7 +123,7 @@ class Order extends AbstractModel
             $d['updated_at'] = $now;
         }
         if (!$d->offsetExists('status_id')) {
-            $default_line_status = $st->findOneBy('order_line_status', array('flag_default' => 1));
+            $default_line_status = $st->findOneBy('order_line_status', ['flag_default' => 1]);
             $d['status_id'] = $default_line_status['status_id'];
         }
 

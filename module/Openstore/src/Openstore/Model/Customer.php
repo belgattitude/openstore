@@ -3,12 +3,8 @@
 namespace Openstore\Model;
 
 use Openstore\Core\Model\AbstractModel;
-use Openstore\Core\Model\BrowsableInterface;
-use Openstore\Model\Browser\UserBrowser;
-use OpenstoreSchema\Core\Entity;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
-use Zend\Stdlib\Hydrator;
 
 class Customer extends AbstractModel
 {
@@ -23,20 +19,20 @@ class Customer extends AbstractModel
         $sql = new Sql($adapter);
         $select = $sql->select();
 
-        $select->from(array('c' => 'customer'), array())
-                ->join(array('cpl' => 'customer_pricelist'), new Expression("c.customer_id = cpl.user_id"), array())
-                ->join(array('pl' => 'pricelist'), new Expression('pl.pricelist_id = cpl.pricelist_id'), array());
+        $select->from(['c' => 'customer'], [])
+                ->join(['cpl' => 'customer_pricelist'], new Expression("c.customer_id = cpl.user_id"), [])
+                ->join(['pl' => 'pricelist'], new Expression('pl.pricelist_id = cpl.pricelist_id'), []);
 
-        $select->columns(array(
+        $select->columns([
             //'user_id'     => new Expression('u.user_id'),
             'pricelist_id' => new Expression('pl.pricelist_id'),
             'reference' => new Expression('pl.reference')
-        ));
+        ]);
 
-        $select->where(array("u.customer_id" => $customer_id));
+        $select->where(["u.customer_id" => $customer_id]);
 
         $sql_string = $sql->getSqlStringForSqlObject($select);
-        $results = $adapter->query($sql_string, array());
+        $results = $adapter->query($sql_string, []);
         return $results->toArray();
     }
 
@@ -51,20 +47,20 @@ class Customer extends AbstractModel
         $sql = new Sql($adapter);
         $select = $sql->select();
 
-        $select->from(array('u' => 'user'), array())
-                ->join(array('ur' => 'user_role'), new Expression("u.user_id = ur.user_id"), array())
-                ->join(array('r' => 'role'), new Expression('r.role_id = ur.role_id'), array());
+        $select->from(['u' => 'user'], [])
+                ->join(['ur' => 'user_role'], new Expression("u.user_id = ur.user_id"), [])
+                ->join(['r' => 'role'], new Expression('r.role_id = ur.role_id'), []);
 
-        $select->columns(array(
+        $select->columns([
             //'user_id'     => new Expression('u.user_id'),
             'role_id' => new Expression('r.role_id'),
             'reference' => new Expression('r.reference')
-        ));
+        ]);
 
-        $select->where(array("u.user_id" => $user_id));
+        $select->where(["u.user_id" => $user_id]);
 
         $sql_string = $sql->getSqlStringForSqlObject($select);
-        $results = $adapter->query($sql_string, array());
+        $results = $adapter->query($sql_string, []);
         return $results->toArray();
     }
 
@@ -80,12 +76,12 @@ class Customer extends AbstractModel
 
         $select = $sql->select();
 
-        $select->from(array('u' => 'user'), array())
-                ->join(array('us' => 'user_scope'), new Expression("u.user_id = us.user_id"), array(), $select::JOIN_LEFT);
-        $select->columns(array(
+        $select->from(['u' => 'user'], [])
+                ->join(['us' => 'user_scope'], new Expression("u.user_id = us.user_id"), [], $select::JOIN_LEFT);
+        $select->columns([
             'user_id' => new Expression('u.user_id'),
             'customer_id' => new Expression('us.customer_id'),
-        ));
+        ]);
 
         $select->where('user_id = ?', $user_id);
         $sql_string = $sql->getSqlStringForSqlObject($select);

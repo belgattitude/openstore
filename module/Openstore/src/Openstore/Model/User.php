@@ -7,7 +7,6 @@ use Openstore\Model\Browser\UserBrowser;
 use OpenstoreSchema\Core\Entity;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
-use Zend\Stdlib\Hydrator;
 
 class User extends AbstractModel implements BrowsableInterface
 {
@@ -52,28 +51,28 @@ class User extends AbstractModel implements BrowsableInterface
         $sql = new Sql($adapter);
         $select = $sql->select();
 
-        $select->from(array('u' => 'user'), array())
+        $select->from(['u' => 'user'], [])
                 ->join(
-                    array('upl' => 'user_pricelist'),
+                    ['upl' => 'user_pricelist'],
                     new Expression("u.user_id = upl.user_id"),
-                    array()
+                    []
                 )
                 ->join(
-                    array('pl' => 'pricelist'),
+                    ['pl' => 'pricelist'],
                     new Expression('pl.pricelist_id = upl.pricelist_id'),
-                    array()
+                    []
                 );
 
-        $select->columns(array(
+        $select->columns([
             //'user_id'     => new Expression('u.user_id'),
             'pricelist_id'    => new Expression('upl.pricelist_id'),
             'reference'        => new Expression('pl.reference')
-        ));
+        ]);
 
-        $select->where(array("u.user_id" => $user_id));
+        $select->where(["u.user_id" => $user_id]);
 
         $sql_string = $sql->getSqlStringForSqlObject($select);
-        $results = $adapter->query($sql_string, array());
+        $results = $adapter->query($sql_string, []);
         return $results->toArray();
     }
 
@@ -89,28 +88,28 @@ class User extends AbstractModel implements BrowsableInterface
         $sql = new Sql($adapter);
         $select = $sql->select();
 
-        $select->from(array('u' => 'user'), array())
+        $select->from(['u' => 'user'], [])
                 ->join(
-                    array('ur' => 'user_role'),
+                    ['ur' => 'user_role'],
                     new Expression("u.user_id = ur.user_id"),
-                    array()
+                    []
                 )
                 ->join(
-                    array('r' => 'role'),
+                    ['r' => 'role'],
                     new Expression('r.role_id = ur.role_id'),
-                    array()
+                    []
                 );
 
-        $select->columns(array(
+        $select->columns([
             //'user_id'     => new Expression('u.user_id'),
             'role_id'    => new Expression('r.role_id'),
             'reference'        => new Expression('r.reference')
-        ));
+        ]);
 
-        $select->where(array("u.user_id" => $user_id));
+        $select->where(["u.user_id" => $user_id]);
 
         $sql_string = $sql->getSqlStringForSqlObject($select);
-        $results = $adapter->query($sql_string, array());
+        $results = $adapter->query($sql_string, []);
         return $results->toArray();
     }
 
@@ -126,17 +125,17 @@ class User extends AbstractModel implements BrowsableInterface
 
         $select = $sql->select();
 
-        $select->from(array('u' => 'user'), array())
+        $select->from(['u' => 'user'], [])
                 ->join(
-                    array('us' => 'user_scope'),
+                    ['us' => 'user_scope'],
                     new Expression("u.user_id = us.user_id"),
-                    array(),
+                    [],
                     $select::JOIN_LEFT
                 );
-        $select->columns(array(
+        $select->columns([
             'user_id'        => new Expression('u.user_id'),
             'customer_id'    => new Expression('us.customer_id'),
-        ));
+        ]);
 
         $select->where('user_id = ?', $user_id);
         $sql_string = $sql->getSqlStringForSqlObject($select);

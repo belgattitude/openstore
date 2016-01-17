@@ -22,7 +22,7 @@ class ProductFilters implements ServiceLocatorAwareInterface
 
     public function __construct(ServiceLocatorInterface $serviceLocator)
     {
-        $this->filters = array();
+        $this->filters = [];
         $this->setServiceLocator($serviceLocator);
     }
 

@@ -2,7 +2,7 @@
 
 namespace Openstore;
 
-$supported_languages = array('en', 'nl', 'fr', 'zh', 'de', 'es', 'it');
+$supported_languages = ['en', 'nl', 'fr', 'zh', 'de', 'es', 'it'];
 $default_language = 'en';
 $default_pricelist = 'FR';
 
@@ -12,218 +12,218 @@ if (array_key_exists('HTTP_ACCEPT_LANGUAGE', $_SERVER)) {
     $browser_language = $default_language;
 }
 
-return array(
-    'console' => array(
-        'router' => array(
-            'routes' => array(
-                'openstore:schema-core:create' => array(
-                    'options' => array(
+return [
+    'console' => [
+        'router' => [
+            'routes' => [
+                'openstore:schema-core:create' => [
+                    'options' => [
                         'route' => 'openstore:schema-core:create [--dump-sql]',
-                        'defaults' => array(
+                        'defaults' => [
                             'controller' => 'Openstore\Controller\Console',
                             'action' => 'schema-core-create'
-                        )
-                    )
-                ),
-                'openstore:schema-core:recreate-extra' => array(
-                    'options' => array(
+                        ]
+                    ]
+                ],
+                'openstore:schema-core:recreate-extra' => [
+                    'options' => [
                         'route' => 'openstore:schema-core:recreate-extra [--dump-sql]',
-                        'defaults' => array(
+                        'defaults' => [
                             'controller' => 'Openstore\Controller\Console',
                             'action' => 'schema-core-recreate-extra'
-                        )
-                    )
-                ),
-                'openstore:schema-core:update' => array(
-                    'options' => array(
+                        ]
+                    ]
+                ],
+                'openstore:schema-core:update' => [
+                    'options' => [
                         'route' => 'openstore:schema-core:update [--dump-sql]',
-                        'defaults' => array(
+                        'defaults' => [
                             'controller' => 'Openstore\Controller\Console',
                             'action' => 'schema-core-update'
-                        )
-                    )
-                ),
-                'openstore:schema-core:load' => array(
-                    'options' => array(
+                        ]
+                    ]
+                ],
+                'openstore:schema-core:load' => [
+                    'options' => [
                         'route' => 'openstore:schema-core:load [--dump-sql]',
-                        'defaults' => array(
+                        'defaults' => [
                             'controller' => 'Openstore\Controller\Console',
                             'action' => 'schema-core-load'
-                        )
-                    )
-                ),
-                
+                        ]
+                    ]
+                ],
 
-                'openstore-updateproductslug' => array(
-                    'options' => array(
+
+                'openstore-updateproductslug' => [
+                    'options' => [
                         'route' => 'openstore updateproductslug',
-                        'defaults' => array(
+                        'defaults' => [
                             'controller' => 'Openstore\Controller\Console',
                             'action' => 'updateproductslug'
-                        )
-                    )
-                ),
-                'openstore-build-all-reload' => array(
-                    'options' => array(
+                        ]
+                    ]
+                ],
+                'openstore-build-all-reload' => [
+                    'options' => [
                         'route' => 'openstore build-all-reload',
-                        'defaults' => array(
+                        'defaults' => [
                             //'__NAMESPACE__' => 'Openstore\Controller',
                             'controller' => 'Openstore\Controller\Console',
                             'action' => 'buildallreload'
-                        )
-                    )
-                ),
-                'openstore-relocategroupcateg' => array(
-                    'options' => array(
+                        ]
+                    ]
+                ],
+                'openstore-relocategroupcateg' => [
+                    'options' => [
                         'route' => 'openstore relocategroupcateg',
-                        'defaults' => array(
+                        'defaults' => [
                             //'__NAMESPACE__' => 'Openstore\Controller',
                             'controller' => 'Openstore\Controller\Console',
                             'action' => 'relocategroupcateg'
-                        )
-                    )
-                ),
-                'openstore-clearcache' => array(
-                    'options' => array(
+                        ]
+                    ]
+                ],
+                'openstore-clearcache' => [
+                    'options' => [
                         'route' => 'openstore clearcache',
-                        'defaults' => array(
+                        'defaults' => [
                             //'__NAMESPACE__' => 'Openstore\Controller',
                             'controller' => 'Openstore\Controller\Console',
                             'action' => 'clearcache'
-                        )
-                    )
-                ),
-                'openstore-clearmediacache' => array(
-                    'options' => array(
+                        ]
+                    ]
+                ],
+                'openstore-clearmediacache' => [
+                    'options' => [
                         'route' => 'openstore clearmediacache',
-                        'defaults' => array(
+                        'defaults' => [
                             //'__NAMESPACE__' => 'Openstore\Controller',
                             'controller' => 'Openstore\Controller\Console',
                             'action' => 'clearmediacache'
-                        )
-                    )
-                ),
-            )
-        )
-    ),
-    'router' => array(
-        'routes' => array(
-            'home' => array(
+                        ]
+                    ]
+                ],
+            ]
+        ]
+    ],
+    'router' => [
+        'routes' => [
+            'home' => [
                 'type' => 'Zend\Mvc\Router\Http\Literal',
-                'options' => array(
+                'options' => [
                     'route' => '/',
-                    'defaults' => array(
+                    'defaults' => [
                         'controller' => 'Openstore\Controller\Index',
                         'action' => 'index',
-                    ),
-                ),
-            ),
-            'media' => array(
+                    ],
+                ],
+            ],
+            'media' => [
                 'type' => 'Zend\Mvc\Router\Http\Segment',
-                'options' => array(
+                'options' => [
                     'route' => '/media',
-                    'defaults' => array(
+                    'defaults' => [
                         'controller' => 'Openstore\Controller\Media',
-                    ),
-                ),
+                    ],
+                ],
                 'may_terminate' => true,
-                'child_routes' => array(
-                    'preview' => array(
+                'child_routes' => [
+                    'preview' => [
                         'type' => 'regex',
-                        'options' => array(
+                        'options' => [
                             // i.e: /public/media/preview/picture/<media_id>_800x800-95.png
                             //'regex' => '/preview/((<type>(picture|sound))/)((<resolution>([0-9]+x[0-9]+)))(\-(<quality>([0-9]+))/)(?<id>[0-9]+)?(\.(?<format>(jpg|png|gif)))?',
                             'regex' => '/preview/((?<type>(picture|productpicture|sound))/)((?<options>([0-9A-Za-z-_]+))/)((?<prefix>[0-9]{1,2})/)(?<media_id>[0-9]+)(\_(?<filemtime>[0-9]+))?(\.(?<format>(jpg|png|gif|flv)))?',
                             'spec' => '/preview/%type%/%options%/%prefix%/%media_id%%filemtime%.%format%',
-                            'defaults' => array(
+                            'defaults' => [
                                 'action' => 'preview',
                                 'filemtime' => null,
                                 'format' => 'jpg'
-                            )
-                        )
-                    ),
-                    'dynamic' => array(
+                            ]
+                        ]
+                    ],
+                    'dynamic' => [
                         'type' => 'regex',
-                        'options' => array(
+                        'options' => [
                             // i.e: /public/media/dynamic/product/170x200/12722.jpg
                             'regex' => '/dynamic/((?<type>(product|brand|serie))/)?((?<resolution>([0-9]+x[0-9]+))/)?(?<id>[0-9]+)(\.(?<format>(jpg|png)))?',
                             'spec' => '/dynamic/%type%/%resolution%/%id%.%format%',
-                            'defaults' => array(
+                            'defaults' => [
                                 'action' => 'picture',
                                 'resolution' => '1024x768',
                                 'quality' => '90',
                                 'format' => 'jpg'
-                            )
-                        )
-                    ),
-                    'picture' => array(
+                            ]
+                        ]
+                    ],
+                    'picture' => [
                         'type' => 'regex',
-                        'options' => array(
+                        'options' => [
                             // i.e: /public/media/picture/product/14555_800x800-95.png
                             'regex' => '/picture/((?<type>(product|brand|serie))/)?(?<id>[0-9]+)(\_(?<resolution>([0-9]+x[0-9]+)))?(\-(?<quality>([0-9]+)))?(\.(?<format>(jpg|png|gif)))?',
                             'spec' => '/picture/%type%/%id%_%resolution%-%quality%.%format%',
-                            'defaults' => array(
+                            'defaults' => [
                                 'action' => 'picture',
                                 'resolution' => '1024x768',
                                 'quality' => '90',
                                 'format' => 'jpg'
-                            )
-                        )
-                    ),
-                ),
-            ),
-            'store' => array(
+                            ]
+                        ]
+                    ],
+                ],
+            ],
+            'store' => [
                 'type' => 'Zend\Mvc\Router\Http\Segment',
-                'options' => array(
+                'options' => [
                     //'route'        => '/store[:language[/store[/:pricelist]]]',
                     'route' => '[/:ui_language]/store[/pricelist/:pricelist]',
                     //'route'       => '/[:lang]/store[:pricelist]',
-                    'constraints' => array(
-                        'ui_language' => '(' . join('|', $supported_languages) . ')',
+                    'constraints' => [
+                        'ui_language' => '(' . implode('|', $supported_languages) . ')',
                         'pricelist' => '[A-Za-z0-9]{0,5}',
-                    ),
-                    'defaults' => array(
+                    ],
+                    'defaults' => [
                         '__NAMESPACE__' => 'Openstore\Controller',
                         'controller' => 'Store',
                         'action' => 'index',
                         'ui_language' =>
                         in_array($browser_language, $supported_languages) ? $browser_language : $default_language,
                         'pricelist' => $default_pricelist
-                    ),
-                ),
+                    ],
+                ],
                 'may_terminate' => true,
-                'child_routes' => array(
-                    'search' => array(
+                'child_routes' => [
+                    'search' => [
                         'type' => 'segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/search[/:action]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'controller' => 'Api',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 //'module' => 'Front',
                                 //'controller' => 'Front\Controller\Index',
                                 //'action' => 'index'
                                 //'__NAMESPACE__' => 'Openstore\Controller',
                                 'controller' => 'Search',
-                            )
-                        )
-                    ),
-                    'product' => array(
+                            ]
+                        ]
+                    ],
+                    'product' => [
                         'type' => 'segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/product/:product_id',
-                            'defaults' => array(
+                            'defaults' => [
                                 'action' => 'product',
-                            )
-                        ),
-                    ),
-                    'browse' => array(
+                            ]
+                        ],
+                    ],
+                    'browse' => [
                         'type' => 'segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/browse[/filter/:filter][/brands/:brands][/categories/:categories][/page/:page][/limit/:limit][/sortBy/:sortBy][/sortDir/:sortDir]',
-                            'defaults' => array(
+                            'defaults' => [
                                 'action' => 'browse',
                                 //'query'        => null,
                                 'filter' => null,
@@ -233,9 +233,9 @@ return array(
                                 //'limit'    => 10, // better in the controller
                                 'sortBy' => "test",
                                 'sortDir' => "ASC",
-                            ),
-                        ),
-                    ),
+                            ],
+                        ],
+                    ],
                 /*
                   'category' => array(
                   'type' => 'segment',
@@ -255,100 +255,100 @@ return array(
                   )
                   ),
                   ), */
-                ),
-            ),
-            'shopcart' => array(
+                ],
+            ],
+            'shopcart' => [
                 'type' => 'Segment',
-                'options' => array(
+                'options' => [
                     'route' => '/shopcart',
-                    'defaults' => array(
+                    'defaults' => [
                         '__NAMESPACE__' => 'Openstore\Controller',
                         'controller' => 'Shopcart',
                         'action' => 'index',
-                    ),
-                ),
+                    ],
+                ],
                 'may_terminate' => true,
-                'child_routes' => array(
-                    'actions' => array(
+                'child_routes' => [
+                    'actions' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/[:action]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
-                            )
-                        )
-                    ),
-                )
-            ),
+                            ]
+                        ]
+                    ],
+                ]
+            ],
             /**
              * BJYAuthorize
              */
-            'zfcuser' => array(
+            'zfcuser' => [
                 'type' => 'Zend\Mvc\Router\Http\Literal',
-                'options' => array(
+                'options' => [
                     'route' => '', // the route is void isntead of default 'user'
-                ),
-            ),
-            'zfcuser/login' => array(
+                ],
+            ],
+            'zfcuser/login' => [
                 'type' => 'Literal',
-                'options' => array(
+                'options' => [
                     'route' => '/login',
-                    'defaults' => array(
+                    'defaults' => [
                         'controller' => 'zfcuser',
                         'action' => 'login',
-                    ),
-                ),
-            ),
-            'zfcuser/authenticate' => array(
+                    ],
+                ],
+            ],
+            'zfcuser/authenticate' => [
                 'type' => 'Literal',
-                'options' => array(
+                'options' => [
                     'route' => '/authenticate',
-                    'defaults' => array(
+                    'defaults' => [
                         'controller' => 'zfcuser',
                         'action' => 'authenticate',
-                    ),
-                ),
-            ),
-            'zfcuser/logout' => array(
+                    ],
+                ],
+            ],
+            'zfcuser/logout' => [
                 'type' => 'Literal',
-                'options' => array(
+                'options' => [
                     'route' => '/logout',
-                    'defaults' => array(
+                    'defaults' => [
                         'controller' => 'zfcuser',
                         'action' => 'logout',
-                    ),
-                ),
-            ),
-            'zfcuser/register' => array(
+                    ],
+                ],
+            ],
+            'zfcuser/register' => [
                 'type' => 'Literal',
-                'options' => array(
+                'options' => [
                     'route' => '/register',
-                    'defaults' => array(
+                    'defaults' => [
                         'controller' => 'zfcuser',
                         'action' => 'register',
-                    ),
-                ),
-            ),
-            'zfcuser/changepassword' => array(
+                    ],
+                ],
+            ],
+            'zfcuser/changepassword' => [
                 'type' => 'Literal',
-                'options' => array(
+                'options' => [
                     'route' => '/change-password',
-                    'defaults' => array(
+                    'defaults' => [
                         'controller' => 'zfcuser',
                         'action' => 'changepassword',
-                    ),
-                ),
-            ),
-            'zfcuser/changeemail' => array(
+                    ],
+                ],
+            ],
+            'zfcuser/changeemail' => [
                 'type' => 'Literal',
-                'options' => array(
+                'options' => [
                     'route' => '/change-email',
-                    'defaults' => array(
+                    'defaults' => [
                         'controller' => 'zfcuser',
                         'action' => 'changeemail',
-                    ),
-                ),
-            ),
-        ),
-    )
-);
+                    ],
+                ],
+            ],
+        ],
+    ]
+];

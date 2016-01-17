@@ -3,9 +3,9 @@ namespace Openstore;
 
 class TestObject
 {
-    protected $data = array(
+    protected $data = [
         'cool' => 'pasbon'
-    );
+    ];
 
     public function __construct()
     {

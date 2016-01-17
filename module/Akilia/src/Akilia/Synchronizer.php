@@ -6,25 +6,22 @@
  */
 namespace Akilia;
 
-use OpenstoreSchema\Core\Entity;
 use Akilia\Utils\Akilia1Products;
-use MMan\Service\Manager as MManManager;
 use Zend\Db\Adapter\Adapter;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Db\Adapter\AdapterAwareInterface;
-use Gaufrette\Exception as GException;
 
 function convertMemorySize($size)
 {
-    $unit = array(
+    $unit = [
         'b',
         'kb',
         'mb',
         'gb',
         'tb',
         'pb'
-    );
+    ];
     return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
 };
 
@@ -159,7 +156,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
     public function synchronizeAll()
     {
-
         $this->synchronizeCountry();
         $this->synchronizeCustomer();
         $this->synchronizeApi();
@@ -180,13 +176,13 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
 
         $this->rebuildCategoryBreadcrumbs();
-        
+
         $this->synchronizeProductStubFromArtTete();
-        
+
         $this->rebuildProductSearch();
 
         $this->processGuessedDiametersAndFormat();
-        
+
         /**
          * INSERT INTO `nuvolia`.`user_scope` (
          * `id` ,
@@ -263,14 +259,11 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         'title' => $title
                     ];
                 }
-
             } else {
                 $errors[$product_id] = [
                     'reason' => 'More than 3 inches found',
                     'title' => $title
                 ];
-
-
             }
         }
 
@@ -282,12 +275,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             }
 
 
-            $update .= join(',', $values) . " where product_id = " . $product_id;
+            $update .= implode(',', $values) . " where product_id = " . $product_id;
 
             $this->mysqli->query($update);
         }
-
-
     }
 
     public function synchronizeProductMedia()
@@ -311,17 +302,17 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
         $tm = $this->getTableManager();
         $mcTable = $tm->table('media_container');
-        $container = $mcTable->findOneBy(array(
+        $container = $mcTable->findOneBy([
             'reference' => 'PRODUCT_MEDIAS'
-        ));
+        ]);
         if (! $container) {
             throw new \Exception("Cannot find media container 'PRODUCT_MEDIAS'");
         }
 
         $pmtTable = $tm->table('product_media_type');
-        $media_type_id = $pmtTable->findOneBy(array(
+        $media_type_id = $pmtTable->findOneBy([
             'reference' => 'PICTURE'
-        ))->type_id;
+        ])->type_id;
 
         if ($media_type_id == '') {
             throw new \Exception("Cannot find PICTURE product media type in your database");
@@ -332,9 +323,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $productTable = $tm->table('product');
         $mediaTable = $tm->table('product_media');
         $product_ids = $productTable->search()
-            ->columns(array(
+            ->columns([
             'product_id'
-            ))
+            ])
             ->toArrayColumn('product_id', 'product_id');
         for ($i = 0; ($i < $limit_to_import && $i < $count); $i ++) {
             $infos = $list[$i];
@@ -357,17 +348,17 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                  * die();
                  */
                 // unset($product_ids[$infos['product_id']]);
-                $data = array(
+                $data = [
                     'media_id' => $media_id,
                     'product_id' => $infos['product_id'],
                     'flag_primary' => $infos['alternate_index'] == '' ? 1 : null,
                     'sort_index' => $infos['alternate_index'] == '' ? 0 : $infos['alternate_index'],
                     'type_id' => $media_type_id,
                     'updated_at' => date('Y-m-d H:i:s')
-                );
+                ];
                 try {
                     echo "[+] Importing product " . $infos['product_id'] . " as media_id $media_id [" . ($i + 1) . "/$count]\n";
-                    $productMedia = $mediaTable->insertOnDuplicateKey($data, $duplicate_exclude = array());
+                    $productMedia = $mediaTable->insertOnDuplicateKey($data, $duplicate_exclude = []);
                 } catch (\Exception $e) {
                     echo "[Error] Cannot insert : \n";
                     var_dump($data);
@@ -655,12 +646,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         if (is_array($this->configuration['options']['product_stock']['elements'])) {
             $elements = $this->configuration['options']['product_stock']['elements'];
         } else {
-            $elements = array(
-                'DEFAULT' => array(
+            $elements = [
+                'DEFAULT' => [
                     'akilia1db' => $this->akilia1Db,
                     'pricelist' => null
-                )
-            );
+                ]
+            ];
         }
 
         $db = $this->openstoreDb;
@@ -732,12 +723,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         if (is_array($this->configuration['options']['product_pricelist']['elements'])) {
             $elements = $this->configuration['options']['product_pricelist']['elements'];
         } else {
-            $elements = array(
-                'DEFAULT' => array(
+            $elements = [
+                'DEFAULT' => [
                     'akilia1db' => $this->akilia1Db,
                     'pricelists' => []
-                )
-            );
+                ]
+            ];
         }
 
         $db = $this->openstoreDb;
@@ -748,14 +739,14 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
             $pricelists_clause = "";
             if (count($element['pricelists']) > 0) {
-                $pls = array();
+                $pls = [];
                 foreach ($element['pricelists'] as $pricelist) {
                     $pls[] = $this->adapter->getPlatform()->quoteValue($pricelist);
                 }
-                $pricelists_clause = "and t.id_pays in (" . join(',', $pls) . ")";
+                $pricelists_clause = "and t.id_pays in (" . implode(',', $pls) . ")";
             }
 
-            $this->log("Product pricelist [$key] sync: taking prices " .  join(',', $pls). " from database '$akilia1Db'");
+            $this->log("Product pricelist [$key] sync: taking prices " .  implode(',', $pls). " from database '$akilia1Db'");
 
             $replace = " 
                 insert into $db.product_pricelist(
@@ -876,12 +867,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         if (is_array($this->configuration['options']['product_pricelist']['elements'])) {
             $elements = $this->configuration['options']['product_pricelist']['elements'];
         } else {
-            $elements = array(
-                'DEFAULT' => array(
+            $elements = [
+                'DEFAULT' => [
                     'akilia1db' => $this->akilia1Db,
                     'pricelists' => []
-                )
-            );
+                ]
+            ];
         }
 
         $db = $this->openstoreDb;
@@ -892,12 +883,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             $pricelists_clause = "";
             $code_tarif_clause = '';
             if (count($element['pricelists']) > 0) {
-                $pls = array();
+                $pls = [];
                 foreach ($element['pricelists'] as $pricelist) {
                     $pls[] = $this->adapter->getPlatform()->quoteValue($pricelist);
                 }
-                $pricelists_clause = "and pl.legacy_mapping in (" . join(',', $pls) . ")";
-                $code_tarif_clause = "and c.code_tarif in (" . join(',', $pls) . ")";
+                $pricelists_clause = "and pl.legacy_mapping in (" . implode(',', $pls) . ")";
+                $code_tarif_clause = "and c.code_tarif in (" . implode(',', $pls) . ")";
             }
 
             $replace = " 
@@ -930,7 +921,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
             $this->executeSQL("Replace product pricelist stats for forecasted sales [$key] ", $replace);
 
-           
+
             $replace = "
                 insert into $db.product_pricelist_stat(
                     product_pricelist_stat_id,
@@ -1111,11 +1102,11 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $rows = $this->em->getConnection()
             ->query($select)
             ->fetchAll();
-        $categs = array();
+        $categs = [];
 
-        $rootCategory = $this->em->getRepository('OpenstoreSchema\Core\Entity\ProductCategory')->findOneBy(array(
+        $rootCategory = $this->em->getRepository('OpenstoreSchema\Core\Entity\ProductCategory')->findOneBy([
             'reference' => $root_reference
-        ));
+        ]);
         if ($rootCategory === null) {
             $rootCategory = new \OpenstoreSchema\Core\Entity\ProductCategory();
             $rootCategory->setReference($root_reference);
@@ -1648,16 +1639,15 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         //dump($update);
         $this->executeSQL("Update parent association...", $update);
     }
-    
+
     /**
      * Create product stubs from cst_art_infos.id_art_tete link
      */
     protected function createProductStubFromArtTete()
     {
-        
         $akilia1db = $this->akilia1Db;
         $db = $this->openstoreDb;
-        
+
         $replace = "
                 INSERT INTO $db.product_stub (
                         reference,
@@ -1687,25 +1677,23 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     legacy_mapping = inner_tbl.stub_legacy_mapping,
                     legacy_synchro_at = '{$this->legacy_synchro_at}'
            ";
-                    
-        $this->executeSQL("Create product stubs ", $replace);                    
-        
-        
+
+        $this->executeSQL("Create product stubs ", $replace);
+
+
         // 2. Deleting - old links in case it changes
         $delete = "
             delete from $db.product_stub 
             where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-        
+
         $this->executeSQL("Delete eventual removed product stubs", $delete);
-        
     }
 
     protected function createProductStubLinksFromAkilia()
     {
-
         $akilia1db = $this->akilia1Db;
         $db = $this->openstoreDb;
-        
+
         $update = "
                 UPDATE product  
                 inner join
@@ -1750,18 +1738,17 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 ) as tbl on tbl.product_id = product.product_id
                 set product.product_stub_id = tbl.product_stub_id        
             ";
-            $this->executeSQL("Create product stubs ", $update);                    
+        $this->executeSQL("Create product stubs ", $update);
     }
-    
+
     /**
      * Create product stubs from cst_art_infos.id_art_tete link
      */
     protected function createProductStubTranslationsFromArtTete()
     {
-        
         $akilia1db = $this->akilia1Db;
         $db = $this->openstoreDb;
-        
+
         $replace = "
             insert into $db.product_stub_translation 
             (
@@ -1798,19 +1785,19 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     legacy_mapping = CONCAT(ps.product_stub_id, ':', p18.lang),
                     legacy_synchro_at = '{$this->legacy_synchro_at}' 
            ";
-                    
-        $this->executeSQL("Create product stubs translation ", $replace);                    
-        
-        
+
+        $this->executeSQL("Create product stubs translation ", $replace);
+
+
         // 2. Deleting - old links in case it changes
         $delete = "
             delete from $db.product_stub_translation
             where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
-        
+
         $this->executeSQL("Delete eventual removed product stubs translations", $delete);
     }
-    
-    
+
+
     /**
      * Tranform parent association into a product stub
      */
@@ -1838,10 +1825,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
         if ($product_ids !== null) {
             $product_clause = " and ("
-                    . "i.id_article in (" . join(',', $product_ids) . ') or '
-                    . "i.id_art_tete in (" . join(',', $product_ids) . ') or '
-                    . "i2.id_article in (" . join(',', $product_ids) . ') or '
-                    . "i2.id_art_tete in (". join(',', $product_ids) . ') )';
+                    . "i.id_article in (" . implode(',', $product_ids) . ') or '
+                    . "i.id_art_tete in (" . implode(',', $product_ids) . ') or '
+                    . "i2.id_article in (" . implode(',', $product_ids) . ') or '
+                    . "i2.id_art_tete in (". implode(',', $product_ids) . ') )';
         } else {
             $product_clause = "";
         }

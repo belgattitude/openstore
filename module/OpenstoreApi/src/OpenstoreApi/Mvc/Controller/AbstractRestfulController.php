@@ -3,7 +3,6 @@
 namespace OpenstoreApi\Mvc\Controller;
 
 use Zend\Mvc\Controller\AbstractRestfulController as ZendAbstractRestfulController;
-use OpenstoreApi\Authorize\ApiKeyAccess;
 
 abstract class AbstractRestfulController extends ZendAbstractRestfulController
 {

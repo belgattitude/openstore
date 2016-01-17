@@ -2,7 +2,6 @@
 
 namespace Openstore\Core\Model\Browser\Filter;
 
-use Openstore\Core\Model\Browser\Filter\FilterInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 

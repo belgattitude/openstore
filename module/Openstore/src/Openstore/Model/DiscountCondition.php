@@ -2,7 +2,6 @@
 
 namespace Openstore\Model;
 
-use Openstore\Core\Model\AbstractModel;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Db\Sql\Sql;
@@ -32,19 +31,19 @@ class DiscountCondition implements AdapterAwareInterface
      *
      * @param array $params
      */
-    public function getDiscountStore(array $params = array())
+    public function getDiscountStore(array $params = [])
     {
         $select = new Select();
-        $select->from(array('dc' => 'discount_condition'), array())
-                ->join(array('c' => 'customer'), 'c.customer_id = dc.customer_id', array(), Select::JOIN_LEFT)
-                ->join(array('pl' => 'pricelist'), 'pl.pricelist_id = dc.pricelist_id', array(), Select::JOIN_LEFT)
-                ->join(array('pb' => 'product_brand'), 'pb.brand_id = dc.brand_id', array(), Select::JOIN_LEFT)
-                ->join(array('pg' => 'product_group'), 'pg.group_id = dc.customer_group_id', array(), Select::JOIN_LEFT)
-                ->join(array('pm' => 'product_model'), 'pm.model_id = dc.model_id', array(), Select::JOIN_LEFT)
-                ->join(array('cg' => 'customer_group'), 'cg.group_id = dc.customer_group_id', array(), Select::JOIN_LEFT)
-                ->join(array('p' => 'product'), 'p.product_id = dc.product_id', array(), Select::JOIN_LEFT);
+        $select->from(['dc' => 'discount_condition'], [])
+                ->join(['c' => 'customer'], 'c.customer_id = dc.customer_id', [], Select::JOIN_LEFT)
+                ->join(['pl' => 'pricelist'], 'pl.pricelist_id = dc.pricelist_id', [], Select::JOIN_LEFT)
+                ->join(['pb' => 'product_brand'], 'pb.brand_id = dc.brand_id', [], Select::JOIN_LEFT)
+                ->join(['pg' => 'product_group'], 'pg.group_id = dc.customer_group_id', [], Select::JOIN_LEFT)
+                ->join(['pm' => 'product_model'], 'pm.model_id = dc.model_id', [], Select::JOIN_LEFT)
+                ->join(['cg' => 'customer_group'], 'cg.group_id = dc.customer_group_id', [], Select::JOIN_LEFT)
+                ->join(['p' => 'product'], 'p.product_id = dc.product_id', [], Select::JOIN_LEFT);
 
-        $select->columns(array(
+        $select->columns([
             'id' => new Expression('dc.id'),
             'pricelist_id' => new Expression('pl.pricelist_id'),
             'pricelist_reference' => new Expression('pl.reference'),
@@ -62,18 +61,18 @@ class DiscountCondition implements AdapterAwareInterface
             'fixed_price' => new Expression('dc.fixed_price'),
             'valid_from' => new Expression('dc.valid_from'),
             'valid_till' => new Expression('dc.valid_till'),
-        ), true);
+        ], true);
 
         if (isset($params['customer_id'])) {
-            $select->where(array('dc.customer_id' => $params['customer_id']));
+            $select->where(['dc.customer_id' => $params['customer_id']]);
         }
 
         if (isset($params['pricelist_id'])) {
-            $select->where(array('dc.pricelist_id' => $params['pricelist_id']));
+            $select->where(['dc.pricelist_id' => $params['pricelist_id']]);
         }
 
         if (isset($params['pricelist_reference'])) {
-            $select->where(array('dc.pricelist_reference' => $params['pricelist_reference']));
+            $select->where(['dc.pricelist_reference' => $params['pricelist_reference']]);
         }
 
         $sqlSource = new SqlSource($this->adapter, $select);
@@ -92,14 +91,14 @@ class DiscountCondition implements AdapterAwareInterface
         // Step 1: get pricelist information
 
         $select = new Select();
-        $select->from(array('pl' => 'pricelist'), array())
-               ->where(array('pl.reference' => $pricelist))
-               ->columns(array(
+        $select->from(['pl' => 'pricelist'], [])
+               ->where(['pl.reference' => $pricelist])
+               ->columns([
                    'pricelist_id' => new Expression('pl.pricelist_id'),
                    'pricelist_reference' => new Expression('pl.reference'),
                    'flag_enable_discount_condition' => new Expression('pl.flag_enable_discount_condition'),
                    'discount_condition_pricelist_id' => new Expression('pl.discount_condition_pricelist_id')
-               ), false);
+               ], false);
 
         $sql = new Sql($this->adapter);
         $results = $this->adapter->query($sql->getSqlStringForSqlObject($select))->execute();
@@ -118,7 +117,7 @@ class DiscountCondition implements AdapterAwareInterface
 
             $store = $this->getDiscountStore();
             $select = $store->getSource()->getSelect();
-            $select->where(array('dc.customer_id' => $customer_id));
+            $select->where(['dc.customer_id' => $customer_id]);
             if ($pricelist_id === null) {
                 $select->where->isNull('dc.pricelist_id');
             } else {
@@ -126,15 +125,15 @@ class DiscountCondition implements AdapterAwareInterface
             }
             $conditions = $store->getData();
 
-            $tmp = array();
+            $tmp = [];
             foreach ($conditions as $c) {
-                $discounts = array(
+                $discounts = [
                     'discount_1'  => $c['discount_1'],
                     'discount_2'  => $c['discount_2'],
                     'discount_3'  => $c['discount_3'],
                     'discount_4'  => $c['discount_4'],
                     'fixed_price' => $c['fixed_price']
-                );
+                ];
 
                 $product_id         = $c['product_id'];
                 $brand_id           = $c['brand_id'];

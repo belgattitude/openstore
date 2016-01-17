@@ -63,27 +63,27 @@ class ShopcartController extends AbstractActionController
         //$st = new SyntheticTable($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
         $em = $this->getEntityManager();
         $orderType = $em->getRepository('OpenstoreSchema\Core\Entity\OrderType');
-        $shopcartType = $orderType->findOneBy(array('reference' => 'SHOPCART'));
+        $shopcartType = $orderType->findOneBy(['reference' => 'SHOPCART']);
 
         //$shopcart_order_type = $st->findOneBy('order_type', array('reference' => 'SHOPCART'));
 
         $product_id = $this->params()->fromPost('product_id');
         $order_id = $this->params()->fromPost('order_id');
         if ($order_id === null) {
-            $data = new \ArrayObject(array(
+            $data = new \ArrayObject([
                 'pricelist_id' => 1,
                 'customer_id' => 3521,
                 'type_id' => $shopcartType->type_id
-            ));
+            ]);
             $order = $this->shopcart->create($data);
             $order_id = $order['order_id'];
         }
 
-        $line_data = new \ArrayObject(array(
+        $line_data = new \ArrayObject([
             'product_id' => $this->params()->fromPost('product_id'),
             'quantity' => $this->params()->fromPost('quantity'),
             'discount_1' => $this->params()->fromPost('discount_1'),
-        ));
+        ]);
 
 
         $request = $this->getRequest();
@@ -91,24 +91,24 @@ class ShopcartController extends AbstractActionController
         if ($request->isXmlHttpRequest()) { // If it's ajax call
             try {
                 $line = $this->shopcart->addOrderLine($order_id, $line_data);
-                $response = array(
+                $response = [
                     'success' => true,
                     'message' => 'Success',
                     'data' => $line->toArray()
-                );
+                ];
                 return new JsonModel($response);
             } catch (OrderException\ExceptionInterface $e) {
-                $response = array(
+                $response = [
                     'success' => false,
                     'message' => 'Error',
-                    'errors' => array(
+                    'errors' => [
                         'exception' => get_class($e),
                         'message' => $e->getMessage(),
-                        'fields' => array(
+                        'fields' => [
                             'fieldname' => 'message'
-                        )
-                    )
-                );
+                        ]
+                    ]
+                ];
                 return new JsonModel($response);
             }
         }

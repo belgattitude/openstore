@@ -1,11 +1,11 @@
 <?php
 
-return array(
-    'openstore' => array(
+return [
+    'openstore' => [
         /**
          * General Profiler settings
          */
-        'profiler' => array(
+        'profiler' => [
             /**
              * Enables or disables the profiler.
              *
@@ -14,6 +14,6 @@ return array(
              */
             'enabled' => false,
             'cool' => 'u',
-        )
-    ),
-);
+        ]
+    ],
+];

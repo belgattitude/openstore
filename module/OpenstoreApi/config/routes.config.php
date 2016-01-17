@@ -2,36 +2,36 @@
 
 namespace OpenstoreApi;
 
-return array(
-    'router' => array(
-        'routes' => array(
-            'api' => array(
+return [
+    'router' => [
+        'routes' => [
+            'api' => [
                 'type' => 'Literal',
-                'options' => array(
+                'options' => [
                     'route' => '/api',
-                    'defaults' => array(
+                    'defaults' => [
                         '__NAMESPACE__' => 'OpenstoreApi/Controller'
-                    )
-                ),
+                    ]
+                ],
                 'may_terminate' => true,
-                'child_routes' => array(
-                    'restful' => array(
+                'child_routes' => [
+                    'restful' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route'       => '/:controller[.:format][/:id]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]+',
                                 'format' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[a-zA-Z0-9_-]*'
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'format'    => 'json',
-                            )
-                        ),
-                    )
+                            ]
+                        ],
+                    ]
 
-                ),
-            )
-        )
-    )
-);
+                ],
+            ]
+        ]
+    ]
+];

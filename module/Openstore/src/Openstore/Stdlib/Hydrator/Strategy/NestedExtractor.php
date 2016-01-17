@@ -12,7 +12,7 @@ class NestedExtractor extends AllowRemoveByValue
     public function extract($value)
     {
         if ($value instanceof Collection) {
-            $return = array();
+            $return = [];
             foreach ($value as $entity) {
                 $return[] = $entity->getId();
             }

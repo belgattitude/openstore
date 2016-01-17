@@ -18,9 +18,9 @@ class ProductCatalogService extends AbstractService
      */
     protected function checkListParams(array $params)
     {
-        $required_params = array(
+        $required_params = [
             'pricelist',
-            'language');
+            'language'];
         foreach ($required_params as $param) {
             if (!array_key_exists($param, $params)) {
                 throw new \Exception("Missing required '$param' parameter");
@@ -35,13 +35,12 @@ class ProductCatalogService extends AbstractService
      * @param array $params [brands,pricelists]
      * @return \Soluble\FlexStore\Store
      */
-    public function getList(array $params = array())
+    public function getList(array $params = [])
     {
-        
         if (false || isset($_REQUEST['old'])) {
             return $this->getListOld($params);
         }
-        
+
         $this->checkListParams($params);
 
         $select = new Select();
@@ -54,10 +53,10 @@ class ProductCatalogService extends AbstractService
         if (!$disable_packaging) {
             // Step 1: Inner select packaging selection
             $packSelect = new Select();
-            $packSelect->from(array('pp' => 'product_packaging'), array())
-                    ->join(array('pt' => 'packaging_type'), new Expression("pp.type_id = pt.type_id"), array());
+            $packSelect->from(['pp' => 'product_packaging'], [])
+                    ->join(['pt' => 'packaging_type'], new Expression("pp.type_id = pt.type_id"), []);
             $packSelect->columns(
-                array(
+                [
                 'product_id' => new Expression('pp.product_id'),
                 'pack_unit_qty' => new Expression("MAX(if (pt.reference = 'UNIT', pp.quantity, null))"),
                 'pack_unit_barcode_ean' => new Expression("MAX(if (pt.reference = 'UNIT', pp.barcode_ean, null))"),
@@ -83,59 +82,59 @@ class ProductCatalogService extends AbstractService
                 'pack_mastercarton_length' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.length, null))"),
                 'pack_mastercarton_width' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.width, null))"),
                 'pack_mastercarton_height' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.height, null))"),
-                    ),
+                    ],
                 true
             );
-                    $packSelect->group(array('product_id'));
+            $packSelect->group(['product_id']);
             //echo $packSelect->getSqlString($this->adapter->getPlatform());
             //die();
         }
 
 
-        $select->from(array('p' => 'product'), array())
-                ->join(array('p18' => 'product_translation'), new Expression("p18.product_id = p.product_id and p18.lang='$lang'"), array(), $select::JOIN_LEFT)
-                ->join(array('psi' => 'product_search'), new Expression("psi.product_id = p.product_id and psi.lang = '$lang'"), array(), $select::JOIN_LEFT)
-                ->join(array('pb' => 'product_brand'), new Expression('pb.brand_id = p.brand_id'), array())
-                ->join(array('pstub' => 'product_stub'), new Expression('pstub.product_stub_id = p.product_stub_id'), array(), $select::JOIN_LEFT)
-                ->join(array('pstub18' => 'product_stub_translation'), new Expression("pstub.product_stub_id = pstub18.product_stub_id and pstub18.lang='$lang'"), array(), $select::JOIN_LEFT)
-                
+        $select->from(['p' => 'product'], [])
+                ->join(['p18' => 'product_translation'], new Expression("p18.product_id = p.product_id and p18.lang='$lang'"), [], $select::JOIN_LEFT)
+                ->join(['psi' => 'product_search'], new Expression("psi.product_id = p.product_id and psi.lang = '$lang'"), [], $select::JOIN_LEFT)
+                ->join(['pb' => 'product_brand'], new Expression('pb.brand_id = p.brand_id'), [])
+                ->join(['pstub' => 'product_stub'], new Expression('pstub.product_stub_id = p.product_stub_id'), [], $select::JOIN_LEFT)
+                ->join(['pstub18' => 'product_stub_translation'], new Expression("pstub.product_stub_id = pstub18.product_stub_id and pstub18.lang='$lang'"), [], $select::JOIN_LEFT)
+
                 //->join(array('p2' => 'product'), new Expression('p2.product_id = p.parent_id'), array(), $select::JOIN_LEFT)
                 //->join(array('p2_18' => 'product_translation'), new Expression("p2.product_id = p2_18.product_id and p2_18.lang='$lang'"), array(), $select::JOIN_LEFT)
-                ->join(array('pu' => 'product_unit'), new Expression('p.unit_id = pu.unit_id'), array(), $select::JOIN_LEFT)
-                ->join(array('pm' => 'product_model'), new Expression('pm.model_id = p.model_id'), array(), $select::JOIN_LEFT)
-                ->join(array('pc' => 'product_category'), new Expression('p.category_id = pc.category_id'), array(), $select::JOIN_LEFT)
-                ->join(array('pc18' => 'product_category_translation'), new Expression("pc.category_id = pc18.category_id and pc18.lang='$lang'"), array(), $select::JOIN_LEFT)
-                ->join(array('pg' => 'product_group'), new Expression('pg.group_id = p.group_id'), array(), $select::JOIN_LEFT)
-                ->join(array('pg18' => 'product_group_translation'), new Expression("pg18.group_id = pg.group_id and pg18.lang='$lang'"), array(), $select::JOIN_LEFT)
+                ->join(['pu' => 'product_unit'], new Expression('p.unit_id = pu.unit_id'), [], $select::JOIN_LEFT)
+                ->join(['pm' => 'product_model'], new Expression('pm.model_id = p.model_id'), [], $select::JOIN_LEFT)
+                ->join(['pc' => 'product_category'], new Expression('p.category_id = pc.category_id'), [], $select::JOIN_LEFT)
+                ->join(['pc18' => 'product_category_translation'], new Expression("pc.category_id = pc18.category_id and pc18.lang='$lang'"), [], $select::JOIN_LEFT)
+                ->join(['pg' => 'product_group'], new Expression('pg.group_id = p.group_id'), [], $select::JOIN_LEFT)
+                ->join(['pg18' => 'product_group_translation'], new Expression("pg18.group_id = pg.group_id and pg18.lang='$lang'"), [], $select::JOIN_LEFT)
                 ->join(
-                    array('ppl' => 'product_pricelist'),
+                    ['ppl' => 'product_pricelist'],
                     new Expression("ppl.product_id = p.product_id"),
-                    array(),
+                    [],
                     //$select::JOIN_LEFT)
                     $select::JOIN_INNER
                 )
                 ->join(
-                    array('pl' => 'pricelist'),
+                    ['pl' => 'pricelist'],
                     new Expression("ppl.pricelist_id = pl.pricelist_id and pl.reference = '$pricelist_reference'"),
-                    array(),
+                    [],
                     //$select::JOIN_LEFT)
                     $select::JOIN_INNER
                 )
-                ->join(array('pt' => 'product_type'), new Expression('p.type_id = pt.type_id'), array(), $select::JOIN_LEFT)
-                ->join(array('c' => 'currency'), new Expression('c.currency_id = pl.currency_id'), array(), $select::JOIN_LEFT)
+                ->join(['pt' => 'product_type'], new Expression('p.type_id = pt.type_id'), [], $select::JOIN_LEFT)
+                ->join(['c' => 'currency'], new Expression('c.currency_id = pl.currency_id'), [], $select::JOIN_LEFT)
                 ->join(
-                    array('ps' => 'product_stock'),
+                    ['ps' => 'product_stock'],
                     new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'),
-                    array(),
+                    [],
                     $select::JOIN_LEFT
                 )
-                ->join(array('pst' => 'product_status'), new Expression('pst.status_id = ppl.status_id'), array(), $select::JOIN_LEFT)
-                ->join(array('pmed' => 'product_media'), new Expression("pmed.product_id = p.product_id and pmed.flag_primary=1"), array(), $select::JOIN_LEFT)
-                ->join(array('pmt' => 'product_media_type'), new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), array(), $select::JOIN_LEFT)
-                ->join(array('m' => 'media'), new Expression('pmed.media_id = m.media_id'), array(), $select::JOIN_LEFT);
+                ->join(['pst' => 'product_status'], new Expression('pst.status_id = ppl.status_id'), [], $select::JOIN_LEFT)
+                ->join(['pmed' => 'product_media'], new Expression("pmed.product_id = p.product_id and pmed.flag_primary=1"), [], $select::JOIN_LEFT)
+                ->join(['pmt' => 'product_media_type'], new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), [], $select::JOIN_LEFT)
+                ->join(['m' => 'media'], new Expression('pmed.media_id = m.media_id'), [], $select::JOIN_LEFT);
 
         if (!$disable_packaging) {
-            $select->join(array('packs' => $packSelect), new Expression("packs.product_id = p.product_id"), array(), $select::JOIN_LEFT);
+            $select->join(['packs' => $packSelect], new Expression("packs.product_id = p.product_id"), [], $select::JOIN_LEFT);
         }
 
         $max_stock = 30;
@@ -144,12 +143,12 @@ class ProductCatalogService extends AbstractService
           Liquidation
           DateCreation
          */
-        $columns = array(
+        $columns = [
             'product_id' => new Expression('p.product_id'),
             'product_reference' => new Expression('p.reference'),
             'product_title' => new Expression('COALESCE(p18.title, p18.invoice_title, p.title, p.invoice_title)'),
             'product_invoice_title' => new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
-            
+
 // @killparent, when the id_art_tete will be fully removed, use the second commented column instead of this one
 // This hack allows to not include twice the parent description            
 'product_description' => new Expression('
@@ -164,7 +163,7 @@ class ProductCatalogService extends AbstractService
                 ),
             pstub18.description_footer
         )    
-        '),                      
+        '),
 /*            
 'product_description' => new Expression('
         CONCAT_WS("\n",
@@ -230,9 +229,9 @@ class ProductCatalogService extends AbstractService
             'picture_media_id' => new Expression('pmed.media_id'),
             'picture_media_filemtime' => new Expression('m.filemtime'),
             'product_stub_reference' => new Expression('pstub.reference')
-        );
+        ];
         if (!$disable_packaging) {
-            $columns = array_merge($columns, array(
+            $columns = array_merge($columns, [
                 'pack_unit_volume' => new Expression("packs.pack_unit_volume"),
                 'pack_unit_weight' => new Expression("packs.pack_unit_weight"),
                 'pack_unit_length' => new Expression("packs.pack_unit_length"),
@@ -254,10 +253,10 @@ class ProductCatalogService extends AbstractService
                 'pack_mastercarton_length' => new Expression("packs.pack_mastercarton_length"),
                 'pack_mastercarton_width' => new Expression("packs.pack_mastercarton_width"),
                 'pack_mastercarton_height' => new Expression("packs.pack_mastercarton_height")
-            ));
+            ]);
         }
 
-        $columns = array_merge($columns, array(
+        $columns = array_merge($columns, [
             'category_breadcrumb' => new Expression('if (pc18.breadcrumb is null, pc.breadcrumb, pc18.breadcrumb)'),
             'flag_till_end_of_stock' => new Expression('pst.flag_till_end_of_stock'),
             'flag_end_of_lifecycle' => new Expression('pst.flag_end_of_lifecycle'),
@@ -267,7 +266,7 @@ class ProductCatalogService extends AbstractService
             'trade_code_intrastat' => new Expression('p.trade_code_intrastat'),
             'trade_code_hts' => new Expression('p.trade_code_hts'),
             'map_price' => new Expression('ppl.map_price')
-        ));
+        ]);
 
         $select->columns($columns, true);
         /*
@@ -298,7 +297,7 @@ class ProductCatalogService extends AbstractService
                 // 1. TEST PART WITH
                 // BARCODE, SEARCH_REFERENCE, PRODUCT_ID,
 
-                $matches = array();
+                $matches = [];
                 if (is_numeric($query) && strlen($query) < 20) {
                     // Can be a barcode or a product_id,
                     $matches[1000000000] = "p.product_id = $query";
@@ -318,14 +317,14 @@ class ProductCatalogService extends AbstractService
                 //echo "p.search_reference like CONCAT('%', get_searchable_reference($quoted), '%')";
                 //die();
                 if (strlen($query) > 3) {
-                    $matches[1000000] = 'p18.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
-                    $matches[100000] = '(p18.title is null and p.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%') . ')';
+                    $matches[1000000] = 'p18.title like ' . $platform->quoteValue('%' . implode('%', $splitted) . '%');
+                    $matches[100000] = '(p18.title is null and p.title like ' . $platform->quoteValue('%' . implode('%', $splitted) . '%') . ')';
                 }
                 if (strlen($query) > 5) {
-                    $matches[10000] = 'psi.keywords like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
+                    $matches[10000] = 'psi.keywords like ' . $platform->quoteValue('%' . implode('%', $splitted) . '%');
                 }
 
-                $matches[0] = 'MATCH (psi.keywords) AGAINST (' . $platform->quoteValue(join(' ', $splitted)) . ' IN NATURAL LANGUAGE MODE)';
+                $matches[0] = 'MATCH (psi.keywords) AGAINST (' . $platform->quoteValue(implode(' ', $splitted)) . ' IN NATURAL LANGUAGE MODE)';
 
                 $relevance = '';
                 $i = 0;
@@ -338,7 +337,7 @@ class ProductCatalogService extends AbstractService
                 }
                 $relevance .= str_repeat(')', count($matches) - 1);
 
-                $select->where("(" . join(' or ', array_values($matches)) . ")");
+                $select->where("(" . implode(' or ', array_values($matches)) . ")");
             }
         }
 
@@ -392,7 +391,7 @@ class ProductCatalogService extends AbstractService
 
         //$select->order(array('p.product_id' => $select::ORDER_ASCENDING));
 
-        $select->order(array(new Expression($relevance . ' desc'), 'pb.reference', 'pc.global_sort_index', 'p.sort_index', 'p.display_reference'));
+        $select->order([new Expression($relevance . ' desc'), 'pb.reference', 'pc.global_sort_index', 'p.sort_index', 'p.display_reference']);
 
         $store = $this->getStore($select);
 
@@ -406,7 +405,7 @@ class ProductCatalogService extends AbstractService
 
         // Remove unwanted columns, that are included just because
         // required for row renderers
-        $store->getColumnModel()->exclude(array('status_reference', 'currency_symbol', 'picture_media_filemtime'));
+        $store->getColumnModel()->exclude(['status_reference', 'currency_symbol', 'picture_media_filemtime']);
 
         if (isset($params['customer_id'])) {
             $customer_id = $params['customer_id'];
@@ -419,16 +418,16 @@ class ProductCatalogService extends AbstractService
         $this->addNextAvailableStockAtRenderer($store, 'next_available_stock_at');
         $this->addStorePriceRenderer($store, $customer_id, $pricelist_reference, 'picture_thumbnail_url');
         $this->initStoreFormatters($store, $params);
-        
+
         return $store;
     }
-    
-    
+
+
     /**
      * @param array $params [brands,pricelists]
      * @return \Soluble\FlexStore\Store
      */
-    public function getListOld(array $params = array())
+    public function getListOld(array $params = [])
     {
         $this->checkListParams($params);
 
@@ -442,10 +441,10 @@ class ProductCatalogService extends AbstractService
         if (!$disable_packaging) {
             // Step 1: Inner select packaging selection
             $packSelect = new Select();
-            $packSelect->from(array('pp' => 'product_packaging'), array())
-                    ->join(array('pt' => 'packaging_type'), new Expression("pp.type_id = pt.type_id"), array());
+            $packSelect->from(['pp' => 'product_packaging'], [])
+                    ->join(['pt' => 'packaging_type'], new Expression("pp.type_id = pt.type_id"), []);
             $packSelect->columns(
-                array(
+                [
                 'product_id' => new Expression('pp.product_id'),
                 'pack_unit_qty' => new Expression("MAX(if (pt.reference = 'UNIT', pp.quantity, null))"),
                 'pack_unit_barcode_ean' => new Expression("MAX(if (pt.reference = 'UNIT', pp.barcode_ean, null))"),
@@ -471,56 +470,56 @@ class ProductCatalogService extends AbstractService
                 'pack_mastercarton_length' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.length, null))"),
                 'pack_mastercarton_width' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.width, null))"),
                 'pack_mastercarton_height' => new Expression("MAX(if (pt.reference = 'MASTERCARTON', pp.height, null))"),
-                    ),
+                    ],
                 true
             );
-                    $packSelect->group(array('product_id'));
+            $packSelect->group(['product_id']);
             //echo $packSelect->getSqlString($this->adapter->getPlatform());
             //die();
         }
 
 
-        $select->from(array('p' => 'product'), array())
-                ->join(array('p18' => 'product_translation'), new Expression("p18.product_id = p.product_id and p18.lang='$lang'"), array(), $select::JOIN_LEFT)
-                ->join(array('psi' => 'product_search'), new Expression("psi.product_id = p.product_id and psi.lang = '$lang'"), array(), $select::JOIN_LEFT)
-                ->join(array('pb' => 'product_brand'), new Expression('pb.brand_id = p.brand_id'), array())
-                ->join(array('p2' => 'product'), new Expression('p2.product_id = p.parent_id'), array(), $select::JOIN_LEFT)
-                ->join(array('p2_18' => 'product_translation'), new Expression("p2.product_id = p2_18.product_id and p2_18.lang='$lang'"), array(), $select::JOIN_LEFT)
-                ->join(array('pu' => 'product_unit'), new Expression('p.unit_id = pu.unit_id'), array(), $select::JOIN_LEFT)
-                ->join(array('pm' => 'product_model'), new Expression('pm.model_id = p.model_id'), array(), $select::JOIN_LEFT)
-                ->join(array('pc' => 'product_category'), new Expression('p.category_id = pc.category_id'), array(), $select::JOIN_LEFT)
-                ->join(array('pc18' => 'product_category_translation'), new Expression("pc.category_id = pc18.category_id and pc18.lang='$lang'"), array(), $select::JOIN_LEFT)
-                ->join(array('pg' => 'product_group'), new Expression('pg.group_id = p.group_id'), array(), $select::JOIN_LEFT)
-                ->join(array('pg18' => 'product_group_translation'), new Expression("pg18.group_id = pg.group_id and pg18.lang='$lang'"), array(), $select::JOIN_LEFT)
+        $select->from(['p' => 'product'], [])
+                ->join(['p18' => 'product_translation'], new Expression("p18.product_id = p.product_id and p18.lang='$lang'"), [], $select::JOIN_LEFT)
+                ->join(['psi' => 'product_search'], new Expression("psi.product_id = p.product_id and psi.lang = '$lang'"), [], $select::JOIN_LEFT)
+                ->join(['pb' => 'product_brand'], new Expression('pb.brand_id = p.brand_id'), [])
+                ->join(['p2' => 'product'], new Expression('p2.product_id = p.parent_id'), [], $select::JOIN_LEFT)
+                ->join(['p2_18' => 'product_translation'], new Expression("p2.product_id = p2_18.product_id and p2_18.lang='$lang'"), [], $select::JOIN_LEFT)
+                ->join(['pu' => 'product_unit'], new Expression('p.unit_id = pu.unit_id'), [], $select::JOIN_LEFT)
+                ->join(['pm' => 'product_model'], new Expression('pm.model_id = p.model_id'), [], $select::JOIN_LEFT)
+                ->join(['pc' => 'product_category'], new Expression('p.category_id = pc.category_id'), [], $select::JOIN_LEFT)
+                ->join(['pc18' => 'product_category_translation'], new Expression("pc.category_id = pc18.category_id and pc18.lang='$lang'"), [], $select::JOIN_LEFT)
+                ->join(['pg' => 'product_group'], new Expression('pg.group_id = p.group_id'), [], $select::JOIN_LEFT)
+                ->join(['pg18' => 'product_group_translation'], new Expression("pg18.group_id = pg.group_id and pg18.lang='$lang'"), [], $select::JOIN_LEFT)
                 ->join(
-                    array('ppl' => 'product_pricelist'),
+                    ['ppl' => 'product_pricelist'],
                     new Expression("ppl.product_id = p.product_id"),
-                    array(),
+                    [],
                     //$select::JOIN_LEFT)
                     $select::JOIN_INNER
                 )
                 ->join(
-                    array('pl' => 'pricelist'),
+                    ['pl' => 'pricelist'],
                     new Expression("ppl.pricelist_id = pl.pricelist_id and pl.reference = '$pricelist_reference'"),
-                    array(),
+                    [],
                     //$select::JOIN_LEFT)
                     $select::JOIN_INNER
                 )
-                ->join(array('pt' => 'product_type'), new Expression('p.type_id = pt.type_id'), array(), $select::JOIN_LEFT)
-                ->join(array('c' => 'currency'), new Expression('c.currency_id = pl.currency_id'), array(), $select::JOIN_LEFT)
+                ->join(['pt' => 'product_type'], new Expression('p.type_id = pt.type_id'), [], $select::JOIN_LEFT)
+                ->join(['c' => 'currency'], new Expression('c.currency_id = pl.currency_id'), [], $select::JOIN_LEFT)
                 ->join(
-                    array('ps' => 'product_stock'),
+                    ['ps' => 'product_stock'],
                     new Expression('ps.stock_id = pl.stock_id and ps.product_id = p.product_id'),
-                    array(),
+                    [],
                     $select::JOIN_LEFT
                 )
-                ->join(array('pst' => 'product_status'), new Expression('pst.status_id = ppl.status_id'), array(), $select::JOIN_LEFT)
-                ->join(array('pmed' => 'product_media'), new Expression("pmed.product_id = p.product_id and pmed.flag_primary=1"), array(), $select::JOIN_LEFT)
-                ->join(array('pmt' => 'product_media_type'), new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), array(), $select::JOIN_LEFT)
-                ->join(array('m' => 'media'), new Expression('pmed.media_id = m.media_id'), array(), $select::JOIN_LEFT);
+                ->join(['pst' => 'product_status'], new Expression('pst.status_id = ppl.status_id'), [], $select::JOIN_LEFT)
+                ->join(['pmed' => 'product_media'], new Expression("pmed.product_id = p.product_id and pmed.flag_primary=1"), [], $select::JOIN_LEFT)
+                ->join(['pmt' => 'product_media_type'], new Expression("pmt.type_id = p.type_id and pmt.reference = 'PICTURE'"), [], $select::JOIN_LEFT)
+                ->join(['m' => 'media'], new Expression('pmed.media_id = m.media_id'), [], $select::JOIN_LEFT);
 
         if (!$disable_packaging) {
-            $select->join(array('packs' => $packSelect), new Expression("packs.product_id = p.product_id"), array(), $select::JOIN_LEFT);
+            $select->join(['packs' => $packSelect], new Expression("packs.product_id = p.product_id"), [], $select::JOIN_LEFT);
         }
 
         $max_stock = 30;
@@ -529,7 +528,7 @@ class ProductCatalogService extends AbstractService
           Liquidation
           DateCreation
          */
-        $columns = array(
+        $columns = [
             'product_id' => new Expression('p.product_id'),
             'product_reference' => new Expression('p.reference'),
             'product_title' => new Expression('COALESCE(p18.title, p18.invoice_title, p.title, p.invoice_title)'),
@@ -589,9 +588,9 @@ class ProductCatalogService extends AbstractService
             'pack_qty_master_carton' => new Expression('p.pack_qty_master_carton'),
             'picture_media_id' => new Expression('pmed.media_id'),
             'picture_media_filemtime' => new Expression('m.filemtime')
-        );
+        ];
         if (!$disable_packaging) {
-            $columns = array_merge($columns, array(
+            $columns = array_merge($columns, [
                 'pack_unit_volume' => new Expression("packs.pack_unit_volume"),
                 'pack_unit_weight' => new Expression("packs.pack_unit_weight"),
                 'pack_unit_length' => new Expression("packs.pack_unit_length"),
@@ -613,10 +612,10 @@ class ProductCatalogService extends AbstractService
                 'pack_mastercarton_length' => new Expression("packs.pack_mastercarton_length"),
                 'pack_mastercarton_width' => new Expression("packs.pack_mastercarton_width"),
                 'pack_mastercarton_height' => new Expression("packs.pack_mastercarton_height")
-            ));
+            ]);
         }
 
-        $columns = array_merge($columns, array(
+        $columns = array_merge($columns, [
             'category_breadcrumb' => new Expression('if (pc18.breadcrumb is null, pc.breadcrumb, pc18.breadcrumb)'),
             'flag_till_end_of_stock' => new Expression('pst.flag_till_end_of_stock'),
             'flag_end_of_lifecycle' => new Expression('pst.flag_end_of_lifecycle'),
@@ -626,7 +625,7 @@ class ProductCatalogService extends AbstractService
             'trade_code_intrastat' => new Expression('p.trade_code_intrastat'),
             'trade_code_hts' => new Expression('p.trade_code_hts'),
             'map_price' => new Expression('ppl.map_price')
-        ));
+        ]);
 
         $select->columns($columns, true);
         /*
@@ -657,7 +656,7 @@ class ProductCatalogService extends AbstractService
                 // 1. TEST PART WITH
                 // BARCODE, SEARCH_REFERENCE, PRODUCT_ID,
 
-                $matches = array();
+                $matches = [];
                 if (is_numeric($query) && strlen($query) < 20) {
                     // Can be a barcode or a product_id,
                     $matches[1000000000] = "p.product_id = $query";
@@ -677,14 +676,14 @@ class ProductCatalogService extends AbstractService
                 //echo "p.search_reference like CONCAT('%', get_searchable_reference($quoted), '%')";
                 //die();
                 if (strlen($query) > 3) {
-                    $matches[1000000] = 'p18.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
-                    $matches[100000] = '(p18.title is null and p.title like ' . $platform->quoteValue('%' . join('%', $splitted) . '%') . ')';
+                    $matches[1000000] = 'p18.title like ' . $platform->quoteValue('%' . implode('%', $splitted) . '%');
+                    $matches[100000] = '(p18.title is null and p.title like ' . $platform->quoteValue('%' . implode('%', $splitted) . '%') . ')';
                 }
                 if (strlen($query) > 5) {
-                    $matches[10000] = 'psi.keywords like ' . $platform->quoteValue('%' . join('%', $splitted) . '%');
+                    $matches[10000] = 'psi.keywords like ' . $platform->quoteValue('%' . implode('%', $splitted) . '%');
                 }
 
-                $matches[0] = 'MATCH (psi.keywords) AGAINST (' . $platform->quoteValue(join(' ', $splitted)) . ' IN NATURAL LANGUAGE MODE)';
+                $matches[0] = 'MATCH (psi.keywords) AGAINST (' . $platform->quoteValue(implode(' ', $splitted)) . ' IN NATURAL LANGUAGE MODE)';
 
                 $relevance = '';
                 $i = 0;
@@ -697,7 +696,7 @@ class ProductCatalogService extends AbstractService
                 }
                 $relevance .= str_repeat(')', count($matches) - 1);
 
-                $select->where("(" . join(' or ', array_values($matches)) . ")");
+                $select->where("(" . implode(' or ', array_values($matches)) . ")");
             }
         }
 
@@ -751,7 +750,7 @@ class ProductCatalogService extends AbstractService
 
         //$select->order(array('p.product_id' => $select::ORDER_ASCENDING));
 
-        $select->order(array(new Expression($relevance . ' desc'), 'pb.reference', 'pc.global_sort_index', 'p.sort_index', 'p.display_reference'));
+        $select->order([new Expression($relevance . ' desc'), 'pb.reference', 'pc.global_sort_index', 'p.sort_index', 'p.display_reference']);
 
         $store = $this->getStore($select);
 
@@ -765,7 +764,7 @@ class ProductCatalogService extends AbstractService
 
         // Remove unwanted columns, that are included just because
         // required for row renderers
-        $store->getColumnModel()->exclude(array('status_reference', 'currency_symbol', 'picture_media_filemtime'));
+        $store->getColumnModel()->exclude(['status_reference', 'currency_symbol', 'picture_media_filemtime']);
 
         if (isset($params['customer_id'])) {
             $customer_id = $params['customer_id'];
@@ -781,8 +780,8 @@ class ProductCatalogService extends AbstractService
 
         return $store;
     }
-    
-    
+
+
     /**
      *
      * @param Store $store
@@ -800,19 +799,19 @@ class ProductCatalogService extends AbstractService
             $insert_mode = ColumnModel::ADD_COLUMN_AFTER;
         }
 
-        if (!in_array($insert_mode, array(ColumnModel::ADD_COLUMN_AFTER,
-                                          ColumnModel::ADD_COLUMN_BEFORE))) {
+        if (!in_array($insert_mode, [ColumnModel::ADD_COLUMN_AFTER,
+                                          ColumnModel::ADD_COLUMN_BEFORE])) {
             throw new \InvalidArgumentException(__METHOD__ . " unsupported insert_mode parameter ($insert_mode)");
         }
 
         $cdr = $this->serviceLocator->get('Store\Renderer\CustomerDiscount');
         $cdr->setParams($customer_id, $pricelist_reference);
 
-        $my_price = new Column('my_price', array('type' => ColumnType::TYPE_DECIMAL, 'virtual' => true));
-        $my_discount_1 = new Column('my_discount_1', array('type' => ColumnType::TYPE_DECIMAL, 'virtual' => true));
-        $my_discount_2 = new Column('my_discount_2', array('type' => ColumnType::TYPE_DECIMAL, 'virtual' => true));
-        $my_discount_3 = new Column('my_discount_3', array('type' => ColumnType::TYPE_DECIMAL, 'virtual' => true));
-        $my_discount_4 = new Column('my_discount_4', array('type' => ColumnType::TYPE_DECIMAL, 'virtual' => true));
+        $my_price = new Column('my_price', ['type' => ColumnType::TYPE_DECIMAL, 'virtual' => true]);
+        $my_discount_1 = new Column('my_discount_1', ['type' => ColumnType::TYPE_DECIMAL, 'virtual' => true]);
+        $my_discount_2 = new Column('my_discount_2', ['type' => ColumnType::TYPE_DECIMAL, 'virtual' => true]);
+        $my_discount_3 = new Column('my_discount_3', ['type' => ColumnType::TYPE_DECIMAL, 'virtual' => true]);
+        $my_discount_4 = new Column('my_discount_4', ['type' => ColumnType::TYPE_DECIMAL, 'virtual' => true]);
 
 
         switch ($insert_mode) {

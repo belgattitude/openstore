@@ -63,7 +63,7 @@ class CustomerDiscountRendererTest extends \PHPUnit_Framework_TestCase
         )
                         ->setLimit($limit);
 
-                        return $browser->getStore();
+        return $browser->getStore();
     }
 
 
@@ -76,23 +76,23 @@ class CustomerDiscountRendererTest extends \PHPUnit_Framework_TestCase
         $cdr->setParams($customer_id, $pricelist);
         $store = $this->getCatalogStore($pricelist, $customer_id, 'en', 30);
 
-        $store->getSource()->getSelect()->where->in('p.product_id', array(17436, 16978));
+        $store->getSource()->getSelect()->where->in('p.product_id', [17436, 16978]);
         var_dump($store->getSource()->__toString());
         die();
 
         $cm = $store->getColumnModel();
 
-        $cm->add(new Column('my_price', array('type' => ColumnType::TYPE_DECIMAL)));
-        $cm->add(new Column('my_discount_1', array('type' => ColumnType::TYPE_DECIMAL)));
-        $cm->add(new Column('my_discount_2', array('type' => ColumnType::TYPE_DECIMAL)));
-        $cm->add(new Column('my_discount_3', array('type' => ColumnType::TYPE_DECIMAL)));
-        $cm->add(new Column('my_discount_4', array('type' => ColumnType::TYPE_DECIMAL)));
+        $cm->add(new Column('my_price', ['type' => ColumnType::TYPE_DECIMAL]));
+        $cm->add(new Column('my_discount_1', ['type' => ColumnType::TYPE_DECIMAL]));
+        $cm->add(new Column('my_discount_2', ['type' => ColumnType::TYPE_DECIMAL]));
+        $cm->add(new Column('my_discount_3', ['type' => ColumnType::TYPE_DECIMAL]));
+        $cm->add(new Column('my_discount_4', ['type' => ColumnType::TYPE_DECIMAL]));
 
         $cm->addRowRenderer($cdr);
 
         $data = $store->getData()->toArray();
         foreach ($data as $row) {
-            $arr = array(
+            $arr = [
                'product_id' => $row['product_id'],
                'list_price' => $row['list_price'],
                'discount_1' => $row['discount_1'],
@@ -101,8 +101,8 @@ class CustomerDiscountRendererTest extends \PHPUnit_Framework_TestCase
                'my_discount_1' => $row['my_discount_1'],
                'my_discount_2' => $row['my_discount_2'],
                'my_price'      => $row['my_price'],
-            );
-            echo join("\t", $arr);
+            ];
+            echo implode("\t", $arr);
             echo "\n";
         }
 

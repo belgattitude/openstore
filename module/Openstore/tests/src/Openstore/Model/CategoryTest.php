@@ -1,7 +1,6 @@
 <?php
 namespace Openstore\Model;
 
-use Openstore\Model\Category;
 use ModulesTests\ServiceManagerGrabber;
 use Zend\ServiceManager\ServiceManager;
 

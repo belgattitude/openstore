@@ -3,11 +3,7 @@
 namespace MMan;
 
 use MMan\Service\Storage;
-use MMan\Media;
 use MMan\Import\Element as ImportElement;
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Sql\Sql;
-use Zend\Stdlib;
 use Soluble\Normalist\Synthetic\TableManager;
 
 class MediaManager
@@ -36,16 +32,16 @@ class MediaManager
     {
         $tm = $this->getTableManager();
         $select = $tm->select();
-        $select->from(array('m' => 'media'))
-                ->join(array('mc' => 'media_container'), 'm.container_id = mc.container_id', array(
+        $select->from(['m' => 'media'])
+                ->join(['mc' => 'media_container'], 'm.container_id = mc.container_id', [
                     'folder'
-                ))
-                ->columns(array(
+                ])
+                ->columns([
                     'filename', 'filesize', 'mimetype', 'location',
                     'title', 'description', 'filemtime', 'created_at',
                     'updated_at', 'container_id'
-                ))
-                ->where(array('media_id' => $media_id));
+                ])
+                ->where(['media_id' => $media_id]);
         $resultset = $select->execute();
         if ($resultset->count() != 1) {
             throw new \Exception("Cannot locate media '$media_id'");
@@ -72,7 +68,7 @@ class MediaManager
         $tm = $this->getTableManager();
         $mediaTable = $tm->table('media');
 
-        $media = $mediaTable->findOneBy(array('legacy_mapping' => $element->getLegacyMapping()));
+        $media = $mediaTable->findOneBy(['legacy_mapping' => $element->getLegacyMapping()]);
 
         $unchanged = false;
         if ($media !== false) {
@@ -90,16 +86,16 @@ class MediaManager
 
 
             $filename = $element->getFilename();
-            $data = array(
+            $data = [
                 'filename' => basename($filename),
                 'filemtime' => $element->getFilemtime(),
                 'filesize' => $element->getFilesize(),
                 'container_id' => $container_id,
                 'legacy_mapping' => $element->getLegacyMapping()
-            );
+            ];
 
 
-            $media = $mediaTable->insertOnDuplicateKey($data, $duplicate_exclude = array('legacy_mapping'));
+            $media = $mediaTable->insertOnDuplicateKey($data, $duplicate_exclude = ['legacy_mapping']);
             $media_id = $media['media_id'];
 
             // Step 3 : Generate media manager filename
@@ -164,10 +160,10 @@ class MediaManager
         $media_location = $media_directory . '/' . "$media_id-" . substr($qf, 0, 40) . $ext;
         $media_filename = $container_folder . '/' . $media_location;
 
-        $location = array(
+        $location = [
             'filename' => $media_filename,
             'location' => $media_location
-        );
+        ];
 
         return $location;
     }
@@ -179,10 +175,10 @@ class MediaManager
      */
     protected function getMediaDirectory($media_id)
     {
-        $dirs = array();
+        $dirs = [];
         $dirs[] = str_pad(substr($media_id, 0, 2), 2, 0, STR_PAD_LEFT);
         $dirs[] = str_pad(substr($media_id, 2, 4), 2, 0, STR_PAD_LEFT);
-        $dir = join('/', $dirs);
+        $dir = implode('/', $dirs);
         return $dir;
     }
 

@@ -9,7 +9,6 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 use Soluble\Normalist\Synthetic\TableManager;
 use Soluble\Normalist\Synthetic\Record;
-use Soluble\Normalist\Exception as NormalistException;
 
 class ApiKeyAccess implements ServiceLocatorAwareInterface
 {
@@ -62,7 +61,7 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface
 
         $tm = $this->getTableManager();
         $apiTable = $tm->table('api_key');
-        $record = $apiTable->findOneBy(array('api_key' => $this->api_key));
+        $record = $apiTable->findOneBy(['api_key' => $this->api_key]);
         if ($record === false) {
             throw new Exception\AuthorizationException("Api key '{$this->api_key}' does not exists.");
         }
@@ -84,18 +83,18 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface
     {
         $tm = $this->getTableManager();
 
-        $service = $tm->table('api_service')->findOneBy(array('reference' => $service_reference));
+        $service = $tm->table('api_service')->findOneBy(['reference' => $service_reference]);
         if (!$service) {
             throw new Exception\ServiceUnavailableException("Service '$service_reference' unavailable or not exists");
         }
 
-        $data = array(
+        $data = [
             'api_id' => $this->api_id,
             'service_id' => $service->service_id,
             'remote_ip' => $_SERVER['REMOTE_ADDR'],
             'message' => $_SERVER['REQUEST_URI'],
             'created_at' => date('Y-m-d H:i:s'),
-        );
+        ];
 
         $api_key_log = $tm->table('api_key_log')->insert($data);
 
@@ -116,7 +115,7 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface
         $api_key = $this->api_key;
         $tm = $this->getTableManager();
         $serviceTable = $tm->table('api_service');
-        $service = $serviceTable->findOneBy(array('reference' => $service_reference));
+        $service = $serviceTable->findOneBy(['reference' => $service_reference]);
         if (!$service) {
             throw new Exception\ServiceUnavailableException("Service '$service_reference' unavailable or not exists");
         }
@@ -125,7 +124,7 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface
 
 
         $apiServiceTable = $tm->table('api_key_service');
-        $access = $apiServiceTable->findOneBy(array('service_id' => $service_id, 'api_id' => $api_id));
+        $access = $apiServiceTable->findOneBy(['service_id' => $service_id, 'api_id' => $api_id]);
         if (!$access) {
             throw new Exception\ForbiddenServiceException("Not allowed, api key '$api_key' does not provide access to service '$service_reference'.");
         }
@@ -146,7 +145,7 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface
         $api_key = $this->api_key;
         $tm = $this->getTableManager();
         $acTable = $tm->table('api_key_customer');
-        $customers = $acTable->select('api_key_customer')->where(array('api_id' => $api_id))->execute();
+        $customers = $acTable->select('api_key_customer')->where(['api_id' => $api_id])->execute();
         $customers = array_column($customers->toArray(), 'customer_id');
         return $customers;
     }
@@ -173,17 +172,17 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface
     public function getPricelists()
     {
         $customers = $this->getCustomers();
-        $pricelists = array();
+        $pricelists = [];
         foreach ($customers as $customer_id) {
             $sql = new Sql($this->adapter);
             $select = $sql->select();
-            $select->from(array('cp' => 'customer_pricelist'), array())
-                    ->join(array('pl' => 'pricelist'), new Expression('cp.pricelist_id = pl.pricelist_id'), array())
-                    ->where(array('customer_id' => $customer_id))
+            $select->from(['cp' => 'customer_pricelist'], [])
+                    ->join(['pl' => 'pricelist'], new Expression('cp.pricelist_id = pl.pricelist_id'), [])
+                    ->where(['customer_id' => $customer_id])
                     ->quantifier('DISTINCT')
-                    ->columns(array(
+                    ->columns([
                         'pricelist' => new Expression('pl.reference')
-                            ), false);
+                            ], false);
             $sql_string = $sql->getSqlStringForSqlObject($select);
             $result = array_column($this->adapter->query($sql_string, Adapter::QUERY_MODE_EXECUTE)->toArray(), 'pricelist');
             $pricelists = array_merge($pricelists, $result);
@@ -199,7 +198,7 @@ class ApiKeyAccess implements ServiceLocatorAwareInterface
     public function isValidApi($api_key)
     {
         $table = new SyntheticTable($this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'));
-        $record = $table->findOneBy('api_key', array('api_key' => $api_key));
+        $record = $table->findOneBy('api_key', ['api_key' => $api_key]);
         if ($record === false) {
             return false;
         }

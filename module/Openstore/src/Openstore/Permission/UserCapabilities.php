@@ -90,7 +90,7 @@ class UserCapabilities implements ServiceLocatorAwareInterface
      */
     public function getPricelists()
     {
-        $pricelists = array();
+        $pricelists = [];
 
         $user_id = $this->getUserId();
 
@@ -126,17 +126,17 @@ class UserCapabilities implements ServiceLocatorAwareInterface
      */
     public function getCustomers()
     {
-        $customers = array();
+        $customers = [];
         if ($this->hasRole('admin')) {
-            $customers = array();
+            $customers = [];
         } elseif ($this->hasRole('customer')) {
             $customerModel = $this->getService()->getModel('Model\Customer');
             $userModel = $this->getService()->getModel('Model\User');
-            return array($userModel->getCustomerId());
+            return [$userModel->getCustomerId()];
         } elseif ($this->hasRole('user')) {
-            $customers = array(); // TODO FIX IT
+            $customers = []; // TODO FIX IT
         } elseif ($this->hasRole('guest')) {
-            $customers = array();
+            $customers = [];
         }
         return $customers;
     }

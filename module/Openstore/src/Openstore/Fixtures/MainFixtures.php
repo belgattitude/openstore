@@ -47,17 +47,17 @@ class LoadUserData implements FixtureInterface
     {
 
         // step 1 adding order statuses
-        $statuses = array(
-            100 => array('reference' => 'CREATED', 'title' => 'Initial status / order created', 'flag_default' => true, 'flag_readonly' => false),
-            200 => array('reference' => 'CONFIRMED', 'title' => 'Confirmed order', 'flag_default' => null, 'flag_readonly' => false),
-            400 => array('reference' => 'IMPORTED', 'title' => 'Imported in legacy system', 'flag_default' => null, 'flag_readonly' => false),
-            500 => array('reference' => 'WAITING_APPROVAL', 'title' => 'Waiting approval', 'flag_default' => null, 'flag_readonly' => false),
-            600 => array('reference' => 'APPROVED', 'title' => 'Approved', 'flag_default' => null, 'flag_readonly' => false),
-            1000 => array('reference' => 'FULLY_DELIVERED', 'title' => 'Fully delivered', 'flag_default' => null, 'flag_readonly' => true),
-            2000 => array('reference' => 'FULLY_INVOICED', 'title' => 'Fully invoiced', 'flag_default' => null, 'flag_readonly' => true),
-            5000 => array('reference' => 'COMPLETE', 'title' => 'Complete', 'flag_default' => null, 'flag_readonly' => true),
-            9000 => array('reference' => 'CANCELLED', 'title' => 'Cancelled', 'flag_default' => null, 'flag_readonly' => true),
-        );
+        $statuses = [
+            100 => ['reference' => 'CREATED', 'title' => 'Initial status / order created', 'flag_default' => true, 'flag_readonly' => false],
+            200 => ['reference' => 'CONFIRMED', 'title' => 'Confirmed order', 'flag_default' => null, 'flag_readonly' => false],
+            400 => ['reference' => 'IMPORTED', 'title' => 'Imported in legacy system', 'flag_default' => null, 'flag_readonly' => false],
+            500 => ['reference' => 'WAITING_APPROVAL', 'title' => 'Waiting approval', 'flag_default' => null, 'flag_readonly' => false],
+            600 => ['reference' => 'APPROVED', 'title' => 'Approved', 'flag_default' => null, 'flag_readonly' => false],
+            1000 => ['reference' => 'FULLY_DELIVERED', 'title' => 'Fully delivered', 'flag_default' => null, 'flag_readonly' => true],
+            2000 => ['reference' => 'FULLY_INVOICED', 'title' => 'Fully invoiced', 'flag_default' => null, 'flag_readonly' => true],
+            5000 => ['reference' => 'COMPLETE', 'title' => 'Complete', 'flag_default' => null, 'flag_readonly' => true],
+            9000 => ['reference' => 'CANCELLED', 'title' => 'Cancelled', 'flag_default' => null, 'flag_readonly' => true],
+        ];
 
         foreach ($statuses as $id => $infos) {
             $orderstatus = new Entity\SaleOrderStatus();
@@ -74,13 +74,13 @@ class LoadUserData implements FixtureInterface
 
 
         // step 2 adding line statuses
-        $line_statuses = array(
-            100 => array('reference' => 'CREATED', 'title' => 'Created', 'flag_default' => true, 'flag_readonly' => false),
-            120 => array('reference' => 'PICKED', 'title' => 'Picked, ready for delivery', 'flag_default' => null, 'flag_readonly' => false),
-            200 => array('reference' => 'DELIVERED', 'title' => 'Delivered', 'flag_default' => null, 'flag_readonly' => true),
-            300 => array('reference' => 'INVOICED', 'title' => 'Invoiced', 'flag_default' => null, 'flag_readonly' => true),
-            900 => array('reference' => 'CANCELLED', 'title' => 'Cancelled', 'flag_default' => null, 'flag_readonly' => true)
-        );
+        $line_statuses = [
+            100 => ['reference' => 'CREATED', 'title' => 'Created', 'flag_default' => true, 'flag_readonly' => false],
+            120 => ['reference' => 'PICKED', 'title' => 'Picked, ready for delivery', 'flag_default' => null, 'flag_readonly' => false],
+            200 => ['reference' => 'DELIVERED', 'title' => 'Delivered', 'flag_default' => null, 'flag_readonly' => true],
+            300 => ['reference' => 'INVOICED', 'title' => 'Invoiced', 'flag_default' => null, 'flag_readonly' => true],
+            900 => ['reference' => 'CANCELLED', 'title' => 'Cancelled', 'flag_default' => null, 'flag_readonly' => true]
+        ];
 
         foreach ($line_statuses as $id => $infos) {
             $orderline = new Entity\SaleOrderLineStatus();
@@ -98,13 +98,13 @@ class LoadUserData implements FixtureInterface
 
 
         // step 3 adding order types
-        $types = array(
-            1000 => array('reference' => 'QUOTE', 'title' => 'Quote'),
-            2000 => array('reference' => 'REGULAR', 'title' => 'Regular order'),
-            5000 => array('reference' => 'WEB', 'title' => 'Web order'),
-            9000 => array('reference' => 'SHOPCART', 'title' => 'Shopcart in progress'),
-            20000 => array('reference' => 'DEPOSIT', 'title' => 'Deposit')
-        );
+        $types = [
+            1000 => ['reference' => 'QUOTE', 'title' => 'Quote'],
+            2000 => ['reference' => 'REGULAR', 'title' => 'Regular order'],
+            5000 => ['reference' => 'WEB', 'title' => 'Web order'],
+            9000 => ['reference' => 'SHOPCART', 'title' => 'Shopcart in progress'],
+            20000 => ['reference' => 'DEPOSIT', 'title' => 'Deposit']
+        ];
 
         foreach ($types as $id => $infos) {
             $ordertype = new Entity\SaleOrderType();
@@ -120,10 +120,10 @@ class LoadUserData implements FixtureInterface
 
     public function importMediaContainers(ObjectManager $manager)
     {
-        $containers = array(
-            1 => array('reference' => 'PRODUCT_MEDIAS', 'folder' => '/product_medias', 'title' => 'Catalog product medias container'),
-            2 => array('reference' => 'PRIVATE', 'folder' => '/private', 'title' => 'Private media container'),
-        );
+        $containers = [
+            1 => ['reference' => 'PRODUCT_MEDIAS', 'folder' => '/product_medias', 'title' => 'Catalog product medias container'],
+            2 => ['reference' => 'PRIVATE', 'folder' => '/private', 'title' => 'Private media container'],
+        ];
 
 
 
@@ -145,13 +145,13 @@ class LoadUserData implements FixtureInterface
 
     public function importProductMediaTypes(ObjectManager $manager)
     {
-        $product_media_types = array(
-            1 => array('reference' => 'PICTURE', 'title' => 'Official picture'),
-            2 => array('reference' => 'ALTERNATE_PICTURE', 'title' => 'Alternate pictures'),
-            3 => array('reference' => 'VIDEO', 'title' => 'Video'),
-            4 => array('reference' => 'SOUND', 'title' => 'Sounds and recordings'),
-            5 => array('reference' => 'DOCUMENT', 'title' => 'Documents'),
-        );
+        $product_media_types = [
+            1 => ['reference' => 'PICTURE', 'title' => 'Official picture'],
+            2 => ['reference' => 'ALTERNATE_PICTURE', 'title' => 'Alternate pictures'],
+            3 => ['reference' => 'VIDEO', 'title' => 'Video'],
+            4 => ['reference' => 'SOUND', 'title' => 'Sounds and recordings'],
+            5 => ['reference' => 'DOCUMENT', 'title' => 'Documents'],
+        ];
 
 
 
@@ -172,13 +172,13 @@ class LoadUserData implements FixtureInterface
 
     public function importProductType(ObjectManager $manager)
     {
-        $product_types = array(
-            1 => array('reference' => 'REGULAR', 'title' => 'Regular product', 'description' => 'Regular product', 'flag_active' => 1, 'fedc' => 1, 'flag_default' => 1),
-            2 => array('reference' => 'SPAREPART', 'title' => 'Spare part', 'description' => 'Spare part', 'flag_active' => null, 'fedc' => 1),
-            3 => array('reference' => 'VIRTUAL', 'title' => 'Virtual product', 'description' => 'Virtual/digital asset product/license, generally with no stock', 'flag_active' => null, 'fedc' => 0),
-            4 => array('reference' => 'COMPOSED', 'title' => 'Composed product', 'description' => 'Composed product', 'flag_active' => null, 'fedc' => 0),
-            5 => array('reference' => 'OFFER', 'title' => 'Offer', 'description' => 'Generated product from a combination of products, having a special price', 'flag_active' => null, 'fedc' => 0),
-        );
+        $product_types = [
+            1 => ['reference' => 'REGULAR', 'title' => 'Regular product', 'description' => 'Regular product', 'flag_active' => 1, 'fedc' => 1, 'flag_default' => 1],
+            2 => ['reference' => 'SPAREPART', 'title' => 'Spare part', 'description' => 'Spare part', 'flag_active' => null, 'fedc' => 1],
+            3 => ['reference' => 'VIRTUAL', 'title' => 'Virtual product', 'description' => 'Virtual/digital asset product/license, generally with no stock', 'flag_active' => null, 'fedc' => 0],
+            4 => ['reference' => 'COMPOSED', 'title' => 'Composed product', 'description' => 'Composed product', 'flag_active' => null, 'fedc' => 0],
+            5 => ['reference' => 'OFFER', 'title' => 'Offer', 'description' => 'Generated product from a combination of products, having a special price', 'flag_active' => null, 'fedc' => 0],
+        ];
 
 
 
@@ -206,13 +206,13 @@ class LoadUserData implements FixtureInterface
 
     public function importPackagingType(ObjectManager $manager)
     {
-        $pack_types = array(
-            1 => array('reference' => 'UNIT', 'title' => 'Unit', 'description' => 'Unit'),
-            2 => array('reference' => 'BOX', 'title' => 'Box', 'description' => 'Box'),
-            3 => array('reference' => 'CARTON', 'title' => 'Carton', 'description' => 'Carton'),
-            4 => array('reference' => 'MASTERCARTON', 'title' => 'Mastercarton', 'description' => 'Mastercarton'),
-            5 => array('reference' => 'PALET', 'title' => 'Palet', 'description' => 'Palet'),
-        );
+        $pack_types = [
+            1 => ['reference' => 'UNIT', 'title' => 'Unit', 'description' => 'Unit'],
+            2 => ['reference' => 'BOX', 'title' => 'Box', 'description' => 'Box'],
+            3 => ['reference' => 'CARTON', 'title' => 'Carton', 'description' => 'Carton'],
+            4 => ['reference' => 'MASTERCARTON', 'title' => 'Mastercarton', 'description' => 'Mastercarton'],
+            5 => ['reference' => 'PALET', 'title' => 'Palet', 'description' => 'Palet'],
+        ];
 
         foreach ($pack_types as $id => $infos) {
             $type = new Entity\PackagingType();
@@ -231,13 +231,13 @@ class LoadUserData implements FixtureInterface
 
     public function importProductStatus(ObjectManager $manager)
     {
-        $statuses = array(
-            10 => array('reference' => 'IN_DEVELOPMENT', 'teos' => null, 'eol' => null, 'title' => 'In development', 'description' => 'In development', 'flag_default' => null),
-            20 => array('reference' => 'NORMAL', 'teos' => null, 'eol' => null, 'title' => 'Normal', 'description' => 'Regular sellable product', 'flag_default' => 1),
-            30 => array('reference' => 'END_LIFECYCLE', 'teos' => true, 'eol' => true, 'title' => 'End of lyfecycle', 'description' => 'End of lyfecycle', 'flag_default' => null),
-            40 => array('reference' => 'OBSOLETE', 'teos' => null, 'eol' => null, 'title' => 'Obsolete', 'description' => 'Obsolete or replaced by another one', 'flag_default' => null),
-            40 => array('reference' => 'ARCHIVE', 'teos' => null, 'eol' => null, 'title' => 'Archive', 'description' => 'Archived product', 'flag_product_archived' => 1, 'flag_default' => null),
-        );
+        $statuses = [
+            10 => ['reference' => 'IN_DEVELOPMENT', 'teos' => null, 'eol' => null, 'title' => 'In development', 'description' => 'In development', 'flag_default' => null],
+            20 => ['reference' => 'NORMAL', 'teos' => null, 'eol' => null, 'title' => 'Normal', 'description' => 'Regular sellable product', 'flag_default' => 1],
+            30 => ['reference' => 'END_LIFECYCLE', 'teos' => true, 'eol' => true, 'title' => 'End of lyfecycle', 'description' => 'End of lyfecycle', 'flag_default' => null],
+            40 => ['reference' => 'OBSOLETE', 'teos' => null, 'eol' => null, 'title' => 'Obsolete', 'description' => 'Obsolete or replaced by another one', 'flag_default' => null],
+            40 => ['reference' => 'ARCHIVE', 'teos' => null, 'eol' => null, 'title' => 'Archive', 'description' => 'Archived product', 'flag_product_archived' => 1, 'flag_default' => null],
+        ];
 
 
         foreach ($statuses as $id => $infos) {
@@ -283,13 +283,13 @@ class LoadUserData implements FixtureInterface
     {
         $stock_id = $this->default_stock_id;
         $currency_id = $this->default_currency_id;
-        $pricelists = array(
-            1 => array('reference' => 'BE', 'title' => 'Belgium Pricelist', 'stock_id' => $stock_id, 'currency_id' => $currency_id),
-            2 => array('reference' => 'FR', 'title' => 'French Pricelist', 'stock_id' => $stock_id, 'currency_id' => $currency_id),
-            3 => array('reference' => 'NL', 'title' => 'NL Pricelist', 'stock_id' => $stock_id, 'currency_id' => $currency_id),
-        );
+        $pricelists = [
+            1 => ['reference' => 'BE', 'title' => 'Belgium Pricelist', 'stock_id' => $stock_id, 'currency_id' => $currency_id],
+            2 => ['reference' => 'FR', 'title' => 'French Pricelist', 'stock_id' => $stock_id, 'currency_id' => $currency_id],
+            3 => ['reference' => 'NL', 'title' => 'NL Pricelist', 'stock_id' => $stock_id, 'currency_id' => $currency_id],
+        ];
 
-        $manager->getConnection()->executeUpdate("DELETE FROM pricelist where pricelist_id in (" . join(',', array_keys($pricelists)) . ')');
+        $manager->getConnection()->executeUpdate("DELETE FROM pricelist where pricelist_id in (" . implode(',', array_keys($pricelists)) . ')');
         foreach ($pricelists as $id => $infos) {
             $stock = $manager->getRepository('OpenstoreSchema\Core\Entity\Stock')->find($infos['stock_id']);
 
@@ -319,20 +319,20 @@ class LoadUserData implements FixtureInterface
 
     public function importRoles(ObjectManager $manager)
     {
-        $roles = array(
-            'guest' => array('parent_id' => null),
-            'member' => array('parent_id' => null),
-            'customer' => array('parent_id' => 'member'),
-            'moderator' => array('parent_id' => 'member'),
-            'sales_affiliate' => array('parent_id' => 'member'),
-            'sales_rep' => array('parent_id' => 'member'),
-            'sales_manager' => array('parent_id' => 'sales_rep'),
-            'content_editor' => array('parent_id' => 'member'),
-            'content_admin' => array('parent_id' => 'content_editor'),
-            'product_editor' => array('parent_id' => 'member'),
-            'product_manager' => array('parent_id' => 'member'),
-            'admin' => array('parent_id' => 'member')
-        );
+        $roles = [
+            'guest' => ['parent_id' => null],
+            'member' => ['parent_id' => null],
+            'customer' => ['parent_id' => 'member'],
+            'moderator' => ['parent_id' => 'member'],
+            'sales_affiliate' => ['parent_id' => 'member'],
+            'sales_rep' => ['parent_id' => 'member'],
+            'sales_manager' => ['parent_id' => 'sales_rep'],
+            'content_editor' => ['parent_id' => 'member'],
+            'content_admin' => ['parent_id' => 'content_editor'],
+            'product_editor' => ['parent_id' => 'member'],
+            'product_manager' => ['parent_id' => 'member'],
+            'admin' => ['parent_id' => 'member']
+        ];
         foreach ($roles as $name => $infos) {
             $role = new Entity\Role();
             $role->setName($name);
@@ -348,25 +348,25 @@ class LoadUserData implements FixtureInterface
 
     public function importUser(ObjectManager $manager)
     {
-        $users = array(
-            1 => array('username' => 'admin', 'email' => 's.vanvelthem@gmail.com', 'password' => 'changeme',
-                'roles' => array(
+        $users = [
+            1 => ['username' => 'admin', 'email' => 's.vanvelthem@gmail.com', 'password' => 'changeme',
+                'roles' => [
                     'admin'
-                ),
-                'pricelists' => array(
+                ],
+                'pricelists' => [
                     'BE', 'FR', 'NL'
-                )),
-                2 => array('username' => 'testcustomer', 'email' => 'sebastien@nuvolia.com', 'password' => 'changeme',
-                'roles' => array(
+                ]],
+                2 => ['username' => 'testcustomer', 'email' => 'sebastien@nuvolia.com', 'password' => 'changeme',
+                'roles' => [
                     'customer'
-                ),
-                'pricelists' => array(
+                ],
+                'pricelists' => [
                     'BE'
-                )),
-        );
+                ]],
+        ];
 
-        $manager->getConnection()->executeUpdate("DELETE FROM user_role where user_id in (" . join(',', array_keys($users)) . ')');
-        $manager->getConnection()->executeUpdate("DELETE FROM user where user_id in (" . join(',', array_keys($users)) . ')');
+        $manager->getConnection()->executeUpdate("DELETE FROM user_role where user_id in (" . implode(',', array_keys($users)) . ')');
+        $manager->getConnection()->executeUpdate("DELETE FROM user where user_id in (" . implode(',', array_keys($users)) . ')');
 
         $bcrypt = new Bcrypt();
         $bcrypt->setCost(14); // Needs to match password cost in ZfcUser options
@@ -383,7 +383,7 @@ class LoadUserData implements FixtureInterface
 
             if (count($roles) > 0) {
                 foreach ($roles as $role_name) {
-                    $role = $manager->getRepository('OpenstoreSchema\Core\Entity\Role')->findOneBy(array('name' => $role_name));
+                    $role = $manager->getRepository('OpenstoreSchema\Core\Entity\Role')->findOneBy(['name' => $role_name]);
                     if ($role) {
                         $user->addRole($role);
                     }
@@ -400,7 +400,7 @@ class LoadUserData implements FixtureInterface
 
             if (count($pricelists) > 0) {
                 foreach ($pricelists as $pricelist_ref) {
-                    $pricelist = $manager->getRepository('OpenstoreSchema\Core\Entity\Pricelist')->findOneBy(array('reference' => $pricelist_ref));
+                    $pricelist = $manager->getRepository('OpenstoreSchema\Core\Entity\Pricelist')->findOneBy(['reference' => $pricelist_ref]);
                     if ($pricelist) {
                         //$user->addPricelist($pricelist);
 
@@ -422,10 +422,10 @@ class LoadUserData implements FixtureInterface
 
     public function importCountries(ObjectManager $manager)
     {
-        $countries = array(
-            1 => array('reference' => 'BE', 'name' => 'Belgium')
-        );
-        $manager->getConnection()->executeUpdate("DELETE FROM country where country_id in (" . join(',', array_keys($countries)) . ')');
+        $countries = [
+            1 => ['reference' => 'BE', 'name' => 'Belgium']
+        ];
+        $manager->getConnection()->executeUpdate("DELETE FROM country where country_id in (" . implode(',', array_keys($countries)) . ')');
 
         foreach ($countries as $id => $infos) {
             $country = new Entity\Country();
@@ -444,15 +444,15 @@ class LoadUserData implements FixtureInterface
 
     public function importCurrencies(ObjectManager $manager)
     {
-        $currencies = array(
-            $this->default_currency_id => array('reference' => 'EUR', 'title' => 'Euro', 'symbol' => '€'),
-            2 => array('reference' => 'USD', 'title' => 'US Dollar', 'symbol' => '$', 'display_decimals' => 2),
-            3 => array('reference' => 'GBP', 'title' => 'British pound', 'symbol' => '£', 'display_decimals' => 2),
-            4 => array('reference' => 'CAD', 'title' => 'Canadian dollar', 'symbol' => 'C$', 'display_decimals' => 2),
-            5 => array('reference' => 'CNY', 'title' => 'Chinese Yuan', 'symbol' => '¥', 'display_decimals' => 2),
-        );
+        $currencies = [
+            $this->default_currency_id => ['reference' => 'EUR', 'title' => 'Euro', 'symbol' => '€'],
+            2 => ['reference' => 'USD', 'title' => 'US Dollar', 'symbol' => '$', 'display_decimals' => 2],
+            3 => ['reference' => 'GBP', 'title' => 'British pound', 'symbol' => '£', 'display_decimals' => 2],
+            4 => ['reference' => 'CAD', 'title' => 'Canadian dollar', 'symbol' => 'C$', 'display_decimals' => 2],
+            5 => ['reference' => 'CNY', 'title' => 'Chinese Yuan', 'symbol' => '¥', 'display_decimals' => 2],
+        ];
 
-        $manager->getConnection()->executeUpdate("DELETE FROM currency where currency_id in (" . join(',', array_keys($currencies)) . ')');
+        $manager->getConnection()->executeUpdate("DELETE FROM currency where currency_id in (" . implode(',', array_keys($currencies)) . ')');
 
         foreach ($currencies as $id => $infos) {
             $currency = new Entity\Currency();
@@ -472,14 +472,14 @@ class LoadUserData implements FixtureInterface
 
     public function importProductUnit(ObjectManager $manager)
     {
-        $units = array(
-            $this->default_unit_id => array('reference' => 'PC', 'title' => 'Piece', 'display_decimals' => 0, 'symbol' => ''),
-            2 => array('reference' => 'M', 'title' => 'Meter', 'display_decimals' => 2, 'symbol' => 'm'),
-            3 => array('reference' => 'M2', 'title' => 'Square meter', 'display_decimals' => 2, 'symbol' => 'm²'),
-            4 => array('reference' => 'M3', 'title' => 'Square meter', 'display_decimals' => 2, 'symbol' => 'm³'),
-            5 => array('reference' => 'KG', 'title' => 'Kilogram', 'display_decimals' => 1, 'symbol' => 'kg'),
-            6 => array('reference' => 'T', 'title' => 'Ton', 'display_decimals' => 3, 'symbol' => 'T'),
-        );
+        $units = [
+            $this->default_unit_id => ['reference' => 'PC', 'title' => 'Piece', 'display_decimals' => 0, 'symbol' => ''],
+            2 => ['reference' => 'M', 'title' => 'Meter', 'display_decimals' => 2, 'symbol' => 'm'],
+            3 => ['reference' => 'M2', 'title' => 'Square meter', 'display_decimals' => 2, 'symbol' => 'm²'],
+            4 => ['reference' => 'M3', 'title' => 'Square meter', 'display_decimals' => 2, 'symbol' => 'm³'],
+            5 => ['reference' => 'KG', 'title' => 'Kilogram', 'display_decimals' => 1, 'symbol' => 'kg'],
+            6 => ['reference' => 'T', 'title' => 'Ton', 'display_decimals' => 3, 'symbol' => 'T'],
+        ];
 
         foreach ($units as $unit_id => $infos) {
             $unit = new Entity\ProductUnit();
@@ -500,15 +500,15 @@ class LoadUserData implements FixtureInterface
     public function importLanguages(ObjectManager $manager)
     {
         // Languages
-        $langs = array(
-            'en' => array('title' => 'English'),
-            'fr' => array('title' => 'Français'),
-            'nl' => array('title' => 'Nederlands'),
-            'de' => array('title' => 'German'),
-            'it' => array('title' => 'Italiano'),
-            'es' => array('title' => 'Spanish'),
-            'zh' => array('title' => 'Chinese'),
-        );
+        $langs = [
+            'en' => ['title' => 'English'],
+            'fr' => ['title' => 'Français'],
+            'nl' => ['title' => 'Nederlands'],
+            'de' => ['title' => 'German'],
+            'it' => ['title' => 'Italiano'],
+            'es' => ['title' => 'Spanish'],
+            'zh' => ['title' => 'Chinese'],
+        ];
 
         foreach ($langs as $code => $infos) {
             $lang = new Entity\Language();

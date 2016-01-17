@@ -1,7 +1,6 @@
 <?php
 namespace Openstore\Model;
 
-use Openstore\Model\DiscountCondition;
 use ModulesTests\ServiceManagerGrabber;
 use Zend\ServiceManager\ServiceManager;
 
@@ -47,13 +46,13 @@ class DiscountConditionTest extends \PHPUnit_Framework_TestCase
 
         $source = $store->getSource();
         $select = $store->getSource()->getSelect();
-        $select->where(array('dc.customer_id' => 3521));
+        $select->where(['dc.customer_id' => 3521]);
         $select->where->nest
                         ->equalTo('pl.reference', 'FR')
                         ->or
                         ->isNull('pl.reference')
                        ->unnest;
-        $select->order(array('pl.reference desc'));
+        $select->order(['pl.reference desc']);
 
         $data = $store->getData();
         $this->assertInstanceOf('Soluble\FlexStore\ResultSet\ResultSet', $data);

@@ -5,8 +5,6 @@ namespace SolubleNormalist\Service;
 use Soluble\Normalist\Synthetic\TableManager;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use SolubleNormalist\Service\Exception;
-
 class TableManagerFactory implements FactoryInterface
 {
     /**

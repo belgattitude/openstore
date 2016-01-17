@@ -4,20 +4,15 @@ namespace Openstore;
 
 use Zend\Mvc\ModuleRouteListener;
 use Zend\ModuleManager\ModuleManager;
-use Zend\Mvc\MvcEvent;
-use Openstore\Configuration;
-use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Zend\Mvc\MvcEvent; use Zend\ModuleManager\Feature\ConfigProviderInterface;
 //use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\Console\Adapter\AdapterInterface;
 use Zend\Console\Console;
 use Zend\Session\SessionManager;
-use Zend\Session\Config\SessionConfig;
-use Zend\Session\Config\StandardConfig;
 use Zend\Session\Container;
 use HTMLPurifier;
-use Openstore\View\Helper;
 
 //use Zend\Console\Console;
 
@@ -75,7 +70,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
             $this->configureZfcUser($e);
             $this->configureUnauthorizedStrategy($e);
         }
-        $eventManager->attach(MvcEvent::EVENT_DISPATCH, array($this, 'onPreDispatch'), 100);
+        $eventManager->attach(MvcEvent::EVENT_DISPATCH, [$this, 'onPreDispatch'], 100);
         //$eventManager->attach(MvcEvent::EVENT_FINISH, array($this, 'onFinish'), 100);
         //$translator = $e->getApplication()->getServiceManager()->get('translator');
         //$translator->setLocale('en_US');
@@ -157,12 +152,12 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 
         // TODO
         $language = $e->getRouteMatch()->getParam('ui_language');
-        $supported_langs = array(
+        $supported_langs = [
             'fr' => 'fr_FR',
             'en' => 'en_US',
             'nl' => 'nl_NL',
             'de' => 'de_DE'
-        );
+        ];
         if ($language != '' && array_key_exists($language, $supported_langs)) {
             $serviceManager = $app->getServiceManager();
             $serviceManager->get('translator')->setLocale($supported_langs[$language]);
@@ -174,11 +169,11 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
      */
     public function getServiceConfig()
     {
-        return array(
-            'aliases' => array(
+        return [
+            'aliases' => [
             //'ZendDeveloperTools\ReportInterface' => 'ZendDeveloperTools\Report',
-            ),
-            'invokables' => array(
+            ],
+            'invokables' => [
                 'Model\Order' => 'Openstore\Order\Model\Order',
                 'Model\Product' => 'Openstore\Model\Product',
                 'Model\Category' => 'Openstore\Model\Category',
@@ -191,8 +186,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
                 'Model\ProductTranslation' => 'Openstore\Model\ProductTranslation',
                 // Various renderers
                 'Store\Renderer\CustomerDiscount' => 'Openstore\Store\Renderer\CustomerDiscountRenderer',
-            ),
-            'factories' => array(
+            ],
+            'factories' => [
                 //'MyCustomAuthenticationIdentityProvider' => 'Openstore\Authentication\Factory\ZfcRbacAuthenticationIdentityFactory',
                 'MyCustomAuthenticationIdentityProvider' => function ($sm) {
                     $authenticationService = $sm->get('Zend\Authentication\AuthenticationService');
@@ -222,7 +217,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
                         $sessionConfig = null;
                         if (isset($session['config'])) {
                             $class = isset($session['config']['class']) ? $session['config']['class'] : 'Zend\Session\Config\SessionConfig';
-                            $options = isset($session['config']['options']) ? $session['config']['options'] : array();
+                            $options = isset($session['config']['options']) ? $session['config']['options'] : [];
                             $sessionConfig = new $class();
                             $sessionConfig->setOptions($options);
                         }
@@ -245,7 +240,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
                             $chain = $sessionManager->getValidatorChain();
                             foreach ($session['validator'] as $validator) {
                                 $validator = new $validator();
-                                $chain->attach('session.validate', array($validator, 'isValid'));
+                                $chain->attach('session.validate', [$validator, 'isValid']);
                             }
                         }
                     } else {
@@ -254,8 +249,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
                     Container::setDefaultManager($sessionManager);
                     return $sessionManager;
                 },
-                    )
-                );
+                    ]
+                ];
     }
 
             /*
@@ -333,21 +328,21 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
              */
     public function getAutoloaderConfig()
     {
-        return array(
+        return [
             /*
               'Zend\Loader\ClassMapAutoloader' => array(
               __DIR__ . '/autoload_classmap.php',
               ), */
-            'Zend\Loader\StandardAutoloader' => array(
-                'namespaces' => array(
+            'Zend\Loader\StandardAutoloader' => [
+                'namespaces' => [
                     //'OpenstoreSchema\Core\Entity' => ''
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
                     'MMan' => __DIR__ . '/src/MMan',
                     //'Soluble' => '/web/www/solublecomponents/src/Soluble'
                     'License' => __DIR__ . '/src/License',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
             /**

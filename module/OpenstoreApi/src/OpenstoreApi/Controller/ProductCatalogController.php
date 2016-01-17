@@ -7,9 +7,9 @@ use OpenstoreApi\Authorize\ApiKeyAccess;
 
 class ProductCatalogController extends AbstractRestfulController
 {
-    protected $collectionOptions = array('GET');
+    protected $collectionOptions = ['GET'];
     //protected $resourceOptions = array('GET');
-    protected $resourceOptions = array();
+    protected $resourceOptions = [];
 
     /**
      *
@@ -65,7 +65,7 @@ class ProductCatalogController extends AbstractRestfulController
                 $cm->includeOnly($limited_columns);
             }
         }
-        
+
         return $store;
     }
 }

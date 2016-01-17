@@ -93,6 +93,6 @@ class DateMinRenderer implements RowRendererInterface
      */
     public function getRequiredColumns()
     {
-        return array($this->date_column);
+        return [$this->date_column];
     }
 }

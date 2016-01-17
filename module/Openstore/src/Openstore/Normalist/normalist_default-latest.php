@@ -1,10 +1,10 @@
 <?php
-return array(
-    'tables' => array(
-        'api_key' => array(
+return [
+    'tables' => [
+        'api_key' => [
             'name' => 'api_key',
-            'columns' => array(
-                'api_id' => array(
+            'columns' => [
+                'api_id' => [
                     'type' => 'int',
                     'primary' => true,
                     'nullable' => false,
@@ -12,103 +12,103 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'api_key' => array(
+                ],
+                'api_key' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '192',
                     'length' => '64',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'api_id',
-            ),
-            'unique_keys' => array(
-                'unique_api_key_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_api_key_idx' => [
                     0 => 'api_key',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(),
-            'references' => array(
-                'api_key' => array(
-                    0 => array(
+                ],
+            ],
+            'foreign_keys' => [],
+            'references' => [
+                'api_key' => [
+                    0 => [
                         'column' => 'api_id',
                         'referenced_column' => 'api_id',
                         'constraint_name' => 'FK_4A509C2B54963938',
-                    ),
-                    1 => array(
+                    ],
+                    1 => [
                         'column' => 'api_id',
                         'referenced_column' => 'api_id',
                         'constraint_name' => 'FK_B608017254963938',
-                    ),
-                    2 => array(
+                    ],
+                    2 => [
                         'column' => 'api_id',
                         'referenced_column' => 'api_id',
                         'constraint_name' => 'FK_E93C346254963938',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'api_key_customer' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'api_key_customer' => [
             'name' => 'api_key_customer',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -116,97 +116,97 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'api_id' => array(
+                ],
+                'api_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'customer_id' => array(
+                ],
+                'customer_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_api_cutomer_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_api_cutomer_idx' => [
                     0 => 'api_id',
                     1 => 'customer_id',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'api_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'api_id' => [
                     'referenced_table' => 'api_key',
                     'referenced_column' => 'api_id',
                     'constraint_name' => 'FK_4A509C2B54963938',
-                ),
-                'customer_id' => array(
+                ],
+                'customer_id' => [
                     'referenced_table' => 'customer',
                     'referenced_column' => 'customer_id',
                     'constraint_name' => 'FK_4A509C2B9395C3F3',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'api_key_log' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'api_key_log' => [
             'name' => 'api_key_log',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -214,93 +214,93 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'api_id' => array(
+                ],
+                'api_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'service_id' => array(
+                ],
+                'service_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'remote_ip' => array(
+                ],
+                'remote_ip' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '96',
                     'length' => '32',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'message' => array(
+                ],
+                'message' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '765',
                     'length' => '255',
-                ),
-                'execution_time' => array(
+                ],
+                'execution_time' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'network_usage' => array(
+                ],
+                'network_usage' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'usage_count' => array(
+                ],
+                'usage_count' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(),
-            'foreign_keys' => array(
-                'api_id' => array(
+            ],
+            'unique_keys' => [],
+            'foreign_keys' => [
+                'api_id' => [
                     'referenced_table' => 'api_key',
                     'referenced_column' => 'api_id',
                     'constraint_name' => 'FK_B608017254963938',
-                ),
-                'service_id' => array(
+                ],
+                'service_id' => [
                     'referenced_table' => 'api_service',
                     'referenced_column' => 'service_id',
                     'constraint_name' => 'FK_B6080172ED5CA9E6',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'api_key_service' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'api_key_service' => [
             'name' => 'api_key_service',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -308,111 +308,111 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'api_id' => array(
+                ],
+                'api_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'service_id' => array(
+                ],
+                'service_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'activated_at' => array(
+                ],
+                'activated_at' => [
                     'type' => 'date',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_api_service_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_api_service_idx' => [
                     0 => 'api_id',
                     1 => 'service_id',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'api_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'api_id' => [
                     'referenced_table' => 'api_key',
                     'referenced_column' => 'api_id',
                     'constraint_name' => 'FK_E93C346254963938',
-                ),
-                'service_id' => array(
+                ],
+                'service_id' => [
                     'referenced_table' => 'api_service',
                     'referenced_column' => 'service_id',
                     'constraint_name' => 'FK_E93C3462ED5CA9E6',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'api_service' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'api_service' => [
             'name' => 'api_service',
-            'columns' => array(
-                'service_id' => array(
+            'columns' => [
+                'service_id' => [
                     'type' => 'int',
                     'primary' => true,
                     'nullable' => false,
@@ -420,106 +420,106 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '765',
                     'length' => '255',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'service_id',
-            ),
-            'unique_keys' => array(
-                'unique_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_reference_idx' => [
                     0 => 'reference',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(),
-            'references' => array(
-                'api_service' => array(
-                    0 => array(
+                ],
+            ],
+            'foreign_keys' => [],
+            'references' => [
+                'api_service' => [
+                    0 => [
                         'column' => 'service_id',
                         'referenced_column' => 'service_id',
                         'constraint_name' => 'FK_B6080172ED5CA9E6',
-                    ),
-                    1 => array(
+                    ],
+                    1 => [
                         'column' => 'service_id',
                         'referenced_column' => 'service_id',
                         'constraint_name' => 'FK_E93C3462ED5CA9E6',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'country' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'country' => [
             'name' => 'country',
-            'columns' => array(
-                'country_id' => array(
+            'columns' => [
+                'country_id' => [
                     'type' => 'smallint',
                     'primary' => true,
                     'nullable' => false,
@@ -527,109 +527,109 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '6',
                     'length' => '2',
-                ),
-                'name' => array(
+                ],
+                'name' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'icon_class' => array(
+                ],
+                'icon_class' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'country_id',
-            ),
-            'unique_keys' => array(
-                'unique_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_reference_idx' => [
                     0 => 'reference',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(),
-            'references' => array(
-                'country' => array(
-                    0 => array(
+                ],
+            ],
+            'foreign_keys' => [],
+            'references' => [
+                'country' => [
+                    0 => [
                         'column' => 'country_id',
                         'referenced_column' => 'country_id',
                         'constraint_name' => 'FK_81398E09F92F3E70',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'currency' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'currency' => [
             'name' => 'currency',
-            'columns' => array(
-                'currency_id' => array(
+            'columns' => [
+                'currency_id' => [
                     'type' => 'int',
                     'primary' => true,
                     'nullable' => false,
@@ -637,117 +637,117 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'symbol' => array(
+                ],
+                'symbol' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '12',
                     'length' => '4',
-                ),
-                'display_decimals' => array(
+                ],
+                'display_decimals' => [
                     'type' => 'smallint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => '2',
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'icon_class' => array(
+                ],
+                'icon_class' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'currency_id',
-            ),
-            'unique_keys' => array(
-                'unique_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_reference_idx' => [
                     0 => 'reference',
-                ),
-                'unique_title_idx' => array(
+                ],
+                'unique_title_idx' => [
                     0 => 'title',
-                ),
-            ),
-            'foreign_keys' => array(),
-            'references' => array(
-                'currency' => array(
-                    0 => array(
+                ],
+            ],
+            'foreign_keys' => [],
+            'references' => [
+                'currency' => [
+                    0 => [
                         'column' => 'currency_id',
                         'referenced_column' => 'currency_id',
                         'constraint_name' => 'FK_5CCFEA6D38248176',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'customer' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'customer' => [
             'name' => 'customer',
-            'columns' => array(
-                'customer_id' => array(
+            'columns' => [
+                'customer_id' => [
                     'type' => 'int',
                     'primary' => true,
                     'nullable' => false,
@@ -755,268 +755,268 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'group_id' => array(
+                ],
+                'group_id' => [
                     'type' => 'smallint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'country_id' => array(
+                ],
+                'country_id' => [
                     'type' => 'smallint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'name' => array(
+                ],
+                'name' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'first_name' => array(
+                ],
+                'first_name' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'street' => array(
+                ],
+                'street' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'street_2' => array(
+                ],
+                'street_2' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'street_number' => array(
+                ],
+                'street_number' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '30',
                     'length' => '10',
-                ),
-                'po_box' => array(
+                ],
+                'po_box' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '30',
                     'length' => '10',
-                ),
-                'zipcode' => array(
+                ],
+                'zipcode' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '60',
                     'length' => '20',
-                ),
-                'city' => array(
+                ],
+                'city' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'phone' => array(
+                ],
+                'phone' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '60',
                     'length' => '20',
-                ),
-                'phone_2' => array(
+                ],
+                'phone_2' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '60',
                     'length' => '20',
-                ),
-                'mobile' => array(
+                ],
+                'mobile' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '60',
                     'length' => '20',
-                ),
-                'mobile_2' => array(
+                ],
+                'mobile_2' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '60',
                     'length' => '20',
-                ),
-                'fax' => array(
+                ],
+                'fax' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '60',
                     'length' => '20',
-                ),
-                'fax_2' => array(
+                ],
+                'fax_2' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '60',
                     'length' => '20',
-                ),
-                'email' => array(
+                ],
+                'email' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '150',
                     'length' => '50',
-                ),
-                'email_2' => array(
+                ],
+                'email_2' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '150',
                     'length' => '50',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'customer_id',
-            ),
-            'unique_keys' => array(
-                'unique_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_reference_idx' => [
                     0 => 'reference',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'group_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'group_id' => [
                     'referenced_table' => 'customer_group',
                     'referenced_column' => 'group_id',
                     'constraint_name' => 'FK_81398E09FE54D947',
-                ),
-                'country_id' => array(
+                ],
+                'country_id' => [
                     'referenced_table' => 'country',
                     'referenced_column' => 'country_id',
                     'constraint_name' => 'FK_81398E09F92F3E70',
-                ),
-            ),
-            'references' => array(
-                'customer' => array(
-                    0 => array(
+                ],
+            ],
+            'references' => [
+                'customer' => [
+                    0 => [
                         'column' => 'customer_id',
                         'referenced_column' => 'customer_id',
                         'constraint_name' => 'FK_4A509C2B9395C3F3',
-                    ),
-                    1 => array(
+                    ],
+                    1 => [
                         'column' => 'customer_id',
                         'referenced_column' => 'customer_id',
                         'constraint_name' => 'FK_F73212779395C3F3',
-                    ),
-                    2 => array(
+                    ],
+                    2 => [
                         'column' => 'customer_id',
                         'referenced_column' => 'customer_id',
                         'constraint_name' => 'FK_DD0C00BE9395C3F3',
-                    ),
-                    3 => array(
+                    ],
+                    3 => [
                         'column' => 'customer_id',
                         'referenced_column' => 'customer_id',
                         'constraint_name' => 'FK_25F5CB1B9395C3F3',
-                    ),
-                    4 => array(
+                    ],
+                    4 => [
                         'column' => 'customer_id',
                         'referenced_column' => 'customer_id',
                         'constraint_name' => 'FK_E26DAE8B9395C3F3',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'customer_group' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'customer_group' => [
             'name' => 'customer_group',
-            'columns' => array(
-                'group_id' => array(
+            'columns' => [
+                'group_id' => [
                     'type' => 'smallint',
                     'primary' => true,
                     'nullable' => false,
@@ -1024,122 +1024,122 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '45000',
                     'length' => '15000',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'icon_class' => array(
+                ],
+                'icon_class' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'group_id',
-            ),
-            'unique_keys' => array(
-                'unique_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_reference_idx' => [
                     0 => 'reference',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(),
-            'references' => array(
-                'customer_group' => array(
-                    0 => array(
+                ],
+            ],
+            'foreign_keys' => [],
+            'references' => [
+                'customer_group' => [
+                    0 => [
                         'column' => 'group_id',
                         'referenced_column' => 'group_id',
                         'constraint_name' => 'FK_81398E09FE54D947',
-                    ),
-                    1 => array(
+                    ],
+                    1 => [
                         'column' => 'customer_group_id',
                         'referenced_column' => 'group_id',
                         'constraint_name' => 'FK_DD0C00BED2919A68',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'customer_pricelist' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'customer_pricelist' => [
             'name' => 'customer_pricelist',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -1147,111 +1147,111 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'pricelist_id' => array(
+                ],
+                'pricelist_id' => [
                     'type' => 'smallint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'customer_id' => array(
+                ],
+                'customer_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'activated_at' => array(
+                ],
+                'activated_at' => [
                     'type' => 'date',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_user_pricelist_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_user_pricelist_idx' => [
                     0 => 'pricelist_id',
                     1 => 'customer_id',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'pricelist_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'pricelist_id' => [
                     'referenced_table' => 'pricelist',
                     'referenced_column' => 'pricelist_id',
                     'constraint_name' => 'FK_F732127789045958',
-                ),
-                'customer_id' => array(
+                ],
+                'customer_id' => [
                     'referenced_table' => 'customer',
                     'referenced_column' => 'customer_id',
                     'constraint_name' => 'FK_F73212779395C3F3',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'discount_condition' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'discount_condition' => [
             'name' => 'discount_condition',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -1259,223 +1259,223 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'pricelist_id' => array(
+                ],
+                'pricelist_id' => [
                     'type' => 'smallint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'customer_group_id' => array(
+                ],
+                'customer_group_id' => [
                     'type' => 'smallint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'customer_id' => array(
+                ],
+                'customer_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'brand_id' => array(
+                ],
+                'brand_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'product_group_id' => array(
+                ],
+                'product_group_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'model_id' => array(
+                ],
+                'model_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'category_id' => array(
+                ],
+                'category_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'product_id' => array(
+                ],
+                'product_id' => [
                     'type' => 'bigint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'discount_1' => array(
+                ],
+                'discount_1' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '0.000000',
                     'precision' => '9',
                     'scale' => '6',
-                ),
-                'discount_2' => array(
+                ],
+                'discount_2' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '0.000000',
                     'precision' => '9',
                     'scale' => '6',
-                ),
-                'discount_3' => array(
+                ],
+                'discount_3' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '0.000000',
                     'precision' => '9',
                     'scale' => '6',
-                ),
-                'discount_4' => array(
+                ],
+                'discount_4' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '0.000000',
                     'precision' => '9',
                     'scale' => '6',
-                ),
-                'fixed_price' => array(
+                ],
+                'fixed_price' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
-                ),
-                'valid_from' => array(
+                ],
+                'valid_from' => [
                     'type' => 'date',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'valid_till' => array(
+                ],
+                'valid_till' => [
                     'type' => 'date',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_legacy_mapping_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'pricelist_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'pricelist_id' => [
                     'referenced_table' => 'pricelist',
                     'referenced_column' => 'pricelist_id',
                     'constraint_name' => 'FK_DD0C00BE89045958',
-                ),
-                'customer_group_id' => array(
+                ],
+                'customer_group_id' => [
                     'referenced_table' => 'customer_group',
                     'referenced_column' => 'group_id',
                     'constraint_name' => 'FK_DD0C00BED2919A68',
-                ),
-                'customer_id' => array(
+                ],
+                'customer_id' => [
                     'referenced_table' => 'customer',
                     'referenced_column' => 'customer_id',
                     'constraint_name' => 'FK_DD0C00BE9395C3F3',
-                ),
-                'brand_id' => array(
+                ],
+                'brand_id' => [
                     'referenced_table' => 'product_brand',
                     'referenced_column' => 'brand_id',
                     'constraint_name' => 'FK_DD0C00BE44F5D008',
-                ),
-                'product_group_id' => array(
+                ],
+                'product_group_id' => [
                     'referenced_table' => 'product_group',
                     'referenced_column' => 'group_id',
                     'constraint_name' => 'FK_DD0C00BE35E4B3D0',
-                ),
-                'model_id' => array(
+                ],
+                'model_id' => [
                     'referenced_table' => 'product_model',
                     'referenced_column' => 'model_id',
                     'constraint_name' => 'FK_DD0C00BE7975B7E7',
-                ),
-                'category_id' => array(
+                ],
+                'category_id' => [
                     'referenced_table' => 'product_category',
                     'referenced_column' => 'category_id',
                     'constraint_name' => 'FK_DD0C00BE12469DE2',
-                ),
-                'product_id' => array(
+                ],
+                'product_id' => [
                     'referenced_table' => 'product',
                     'referenced_column' => 'product_id',
                     'constraint_name' => 'FK_DD0C00BE4584665A',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'language' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'language' => [
             'name' => 'language',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'smallint',
                     'primary' => true,
                     'nullable' => false,
@@ -1483,165 +1483,165 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '6',
                     'length' => '2',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'flag_default' => array(
+                ],
+                'flag_default' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'icon_class' => array(
+                ],
+                'icon_class' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_lang_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_lang_idx' => [
                     0 => 'lang',
-                ),
-                'unique_flag_default_idx' => array(
+                ],
+                'unique_flag_default_idx' => [
                     0 => 'flag_default',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(),
-            'references' => array(
-                'language' => array(
-                    0 => array(
+                ],
+            ],
+            'foreign_keys' => [],
+            'references' => [
+                'language' => [
+                    0 => [
                         'column' => 'lang',
                         'referenced_column' => 'lang',
                         'constraint_name' => 'FK_61BD57C931098462',
-                    ),
-                    1 => array(
+                    ],
+                    1 => [
                         'column' => 'lang',
                         'referenced_column' => 'lang',
                         'constraint_name' => 'FK_1DAAB48731098462',
-                    ),
-                    2 => array(
+                    ],
+                    2 => [
                         'column' => 'lang',
                         'referenced_column' => 'lang',
                         'constraint_name' => 'FK_255468FD31098462',
-                    ),
-                    3 => array(
+                    ],
+                    3 => [
                         'column' => 'lang',
                         'referenced_column' => 'lang',
                         'constraint_name' => 'FK_6EEE4ED031098462',
-                    ),
-                    4 => array(
+                    ],
+                    4 => [
                         'column' => 'lang',
                         'referenced_column' => 'lang',
                         'constraint_name' => 'FK_1846DB7031098462',
-                    ),
-                    5 => array(
+                    ],
+                    5 => [
                         'column' => 'lang',
                         'referenced_column' => 'lang',
                         'constraint_name' => 'FK_A1824BB531098462',
-                    ),
-                    6 => array(
+                    ],
+                    6 => [
                         'column' => 'lang',
                         'referenced_column' => 'lang',
                         'constraint_name' => 'FK_F4D5EE4B31098462',
-                    ),
-                    7 => array(
+                    ],
+                    7 => [
                         'column' => 'lang',
                         'referenced_column' => 'lang',
                         'constraint_name' => 'FK_7017D8531098462',
-                    ),
-                    8 => array(
+                    ],
+                    8 => [
                         'column' => 'lang',
                         'referenced_column' => 'lang',
                         'constraint_name' => 'FK_EEA9D8B731098462',
-                    ),
-                    9 => array(
+                    ],
+                    9 => [
                         'column' => 'lang',
                         'referenced_column' => 'lang',
                         'constraint_name' => 'FK_8D93D64931098462',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'media' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'media' => [
             'name' => 'media',
-            'columns' => array(
-                'media_id' => array(
+            'columns' => [
+                'media_id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -1649,150 +1649,150 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'container_id' => array(
+                ],
+                'container_id' => [
                     'type' => 'bigint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'mimetype' => array(
+                ],
+                'mimetype' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'filename' => array(
+                ],
+                'filename' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '360',
                     'length' => '120',
-                ),
-                'location' => array(
+                ],
+                'location' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '765',
                     'length' => '255',
-                ),
-                'filesize' => array(
+                ],
+                'filesize' => [
                     'type' => 'bigint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'filemtime' => array(
+                ],
+                'filemtime' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '300',
                     'length' => '100',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '765',
                     'length' => '255',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'deleted_at' => array(
+                ],
+                'deleted_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'media_id',
-            ),
-            'unique_keys' => array(
-                'unique_legacy_mapping_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'container_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'container_id' => [
                     'referenced_table' => 'media_container',
                     'referenced_column' => 'container_id',
                     'constraint_name' => 'FK_6A2CA10CBC21F742',
-                ),
-            ),
-            'references' => array(
-                'media' => array(
-                    0 => array(
+                ],
+            ],
+            'references' => [
+                'media' => [
+                    0 => [
                         'column' => 'media_id',
                         'referenced_column' => 'media_id',
                         'constraint_name' => 'FK_CB70DA50EA9FDD75',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'media_container' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'media_container' => [
             'name' => 'media_container',
-            'columns' => array(
-                'container_id' => array(
+            'columns' => [
+                'container_id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -1800,118 +1800,118 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '150',
                     'length' => '50',
-                ),
-                'folder' => array(
+                ],
+                'folder' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '765',
                     'length' => '255',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '300',
                     'length' => '100',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '765',
                     'length' => '255',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'deleted_at' => array(
+                ],
+                'deleted_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'container_id',
-            ),
-            'unique_keys' => array(
-                'unique_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_reference_idx' => [
                     0 => 'reference',
-                ),
-                'unique_folder_idx' => array(
+                ],
+                'unique_folder_idx' => [
                     0 => 'folder',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(),
-            'references' => array(
-                'media_container' => array(
-                    0 => array(
+                ],
+            ],
+            'foreign_keys' => [],
+            'references' => [
+                'media_container' => [
+                    0 => [
                         'column' => 'container_id',
                         'referenced_column' => 'container_id',
                         'constraint_name' => 'FK_6A2CA10CBC21F742',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'packaging_type' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'packaging_type' => [
             'name' => 'packaging_type',
-            'columns' => array(
-                'type_id' => array(
+            'columns' => [
+                'type_id' => [
                     'type' => 'smallint',
                     'primary' => true,
                     'nullable' => false,
@@ -1919,117 +1919,117 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '45000',
                     'length' => '15000',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'icon_class' => array(
+                ],
+                'icon_class' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'type_id',
-            ),
-            'unique_keys' => array(
-                'unique_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_reference_idx' => [
                     0 => 'reference',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(),
-            'references' => array(
-                'packaging_type' => array(
-                    0 => array(
+                ],
+            ],
+            'foreign_keys' => [],
+            'references' => [
+                'packaging_type' => [
+                    0 => [
                         'column' => 'type_id',
                         'referenced_column' => 'type_id',
                         'constraint_name' => 'FK_D12BBB08C54C8C93',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'permission' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'permission' => [
             'name' => 'permission',
-            'columns' => array(
-                'permission_id' => array(
+            'columns' => [
+                'permission_id' => [
                     'type' => 'int',
                     'primary' => true,
                     'nullable' => false,
@@ -2037,40 +2037,40 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'name' => array(
+                ],
+                'name' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '384',
                     'length' => '128',
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'permission_id',
-            ),
-            'unique_keys' => array(
-                'unique_name_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_name_idx' => [
                     0 => 'name',
-                ),
-            ),
-            'foreign_keys' => array(),
-            'references' => array(
-                'permission' => array(
-                    0 => array(
+                ],
+            ],
+            'foreign_keys' => [],
+            'references' => [
+                'permission' => [
+                    0 => [
                         'column' => 'permission_id',
                         'referenced_column' => 'permission_id',
                         'constraint_name' => 'FK_6F7DF886FED90CCA',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'pricelist' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'pricelist' => [
             'name' => 'pricelist',
-            'columns' => array(
-                'pricelist_id' => array(
+            'columns' => [
+                'pricelist_id' => [
                     'type' => 'smallint',
                     'primary' => true,
                     'nullable' => false,
@@ -2078,215 +2078,215 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'stock_id' => array(
+                ],
+                'stock_id' => [
                     'type' => 'smallint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'currency_id' => array(
+                ],
+                'currency_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'discount_condition_pricelist_id' => array(
+                ],
+                'discount_condition_pricelist_id' => [
                     'type' => 'smallint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '45000',
                     'length' => '15000',
-                ),
-                'flag_enable_discount_condition' => array(
+                ],
+                'flag_enable_discount_condition' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'flag_default' => array(
+                ],
+                'flag_default' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'flag_public' => array(
+                ],
+                'flag_public' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'new_product_min_date' => array(
+                ],
+                'new_product_min_date' => [
                     'type' => 'date',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'icon_class' => array(
+                ],
+                'icon_class' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'pricelist_id',
-            ),
-            'unique_keys' => array(
-                'unique_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_reference_idx' => [
                     0 => 'reference',
-                ),
-                'unique_flag_default_idx' => array(
+                ],
+                'unique_flag_default_idx' => [
                     0 => 'flag_default',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'stock_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'stock_id' => [
                     'referenced_table' => 'stock',
                     'referenced_column' => 'stock_id',
                     'constraint_name' => 'FK_5CCFEA6DDCD6110',
-                ),
-                'currency_id' => array(
+                ],
+                'currency_id' => [
                     'referenced_table' => 'currency',
                     'referenced_column' => 'currency_id',
                     'constraint_name' => 'FK_5CCFEA6D38248176',
-                ),
-                'discount_condition_pricelist_id' => array(
+                ],
+                'discount_condition_pricelist_id' => [
                     'referenced_table' => 'pricelist',
                     'referenced_column' => 'pricelist_id',
                     'constraint_name' => 'FK_5CCFEA6D2E5F6947',
-                ),
-            ),
-            'references' => array(
-                'pricelist' => array(
-                    0 => array(
+                ],
+            ],
+            'references' => [
+                'pricelist' => [
+                    0 => [
                         'column' => 'pricelist_id',
                         'referenced_column' => 'pricelist_id',
                         'constraint_name' => 'FK_F732127789045958',
-                    ),
-                    1 => array(
+                    ],
+                    1 => [
                         'column' => 'pricelist_id',
                         'referenced_column' => 'pricelist_id',
                         'constraint_name' => 'FK_DD0C00BE89045958',
-                    ),
-                    2 => array(
+                    ],
+                    2 => [
                         'column' => 'discount_condition_pricelist_id',
                         'referenced_column' => 'pricelist_id',
                         'constraint_name' => 'FK_5CCFEA6D2E5F6947',
-                    ),
-                    3 => array(
+                    ],
+                    3 => [
                         'column' => 'pricelist_id',
                         'referenced_column' => 'pricelist_id',
                         'constraint_name' => 'FK_326F5CE089045958',
-                    ),
-                    4 => array(
+                    ],
+                    4 => [
                         'column' => 'pricelist_id',
                         'referenced_column' => 'pricelist_id',
                         'constraint_name' => 'FK_25F5CB1B89045958',
-                    ),
-                    5 => array(
+                    ],
+                    5 => [
                         'column' => 'pricelist_id',
                         'referenced_column' => 'pricelist_id',
                         'constraint_name' => 'FK_5C2F678989045958',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'product' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'product' => [
             'name' => 'product',
-            'columns' => array(
-                'product_id' => array(
+            'columns' => [
+                'product_id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -2294,424 +2294,424 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'parent_id' => array(
+                ],
+                'parent_id' => [
                     'type' => 'bigint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'brand_id' => array(
+                ],
+                'brand_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'group_id' => array(
+                ],
+                'group_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'model_id' => array(
+                ],
+                'model_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'category_id' => array(
+                ],
+                'category_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'type_id' => array(
+                ],
+                'type_id' => [
                     'type' => 'smallint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'status_id' => array(
+                ],
+                'status_id' => [
                     'type' => 'smallint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'unit_id' => array(
+                ],
+                'unit_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'display_reference' => array(
+                ],
+                'display_reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'search_reference' => array(
+                ],
+                'search_reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'slug' => array(
+                ],
+                'slug' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '765',
                     'length' => '255',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '450',
                     'length' => '150',
-                ),
-                'invoice_title' => array(
+                ],
+                'invoice_title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '300',
                     'length' => '100',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '45000',
                     'length' => '15000',
-                ),
-                'characteristic' => array(
+                ],
+                'characteristic' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '450',
                     'length' => '150',
-                ),
-                'keywords' => array(
+                ],
+                'keywords' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '765',
                     'length' => '255',
-                ),
-                'volume' => array(
+                ],
+                'volume' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
-                ),
-                'weight' => array(
+                ],
+                'weight' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
-                ),
-                'length' => array(
+                ],
+                'length' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
-                ),
-                'height' => array(
+                ],
+                'height' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
-                ),
-                'width' => array(
+                ],
+                'width' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
-                ),
-                'pack_qty_box' => array(
+                ],
+                'pack_qty_box' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'precision' => '15',
                     'scale' => '6',
-                ),
-                'pack_qty_carton' => array(
+                ],
+                'pack_qty_carton' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'precision' => '15',
                     'scale' => '6',
-                ),
-                'pack_qty_master_carton' => array(
+                ],
+                'pack_qty_master_carton' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'precision' => '15',
                     'scale' => '6',
-                ),
-                'pack_qty_palet' => array(
+                ],
+                'pack_qty_palet' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'precision' => '15',
                     'scale' => '6',
-                ),
-                'barcode_ean13' => array(
+                ],
+                'barcode_ean13' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '39',
                     'length' => '13',
-                ),
-                'barcode_upca' => array(
+                ],
+                'barcode_upca' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '60',
                     'length' => '20',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'sort_index' => array(
+                ],
+                'sort_index' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => false,
                     'precision' => '10',
-                ),
-                'available_at' => array(
+                ],
+                'available_at' => [
                     'type' => 'date',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'unavailable_at' => array(
+                ],
+                'unavailable_at' => [
                     'type' => 'date',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'icon_class' => array(
+                ],
+                'icon_class' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'deleted_at' => array(
+                ],
+                'deleted_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'product_id',
-            ),
-            'unique_keys' => array(
-                'unique_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_reference_idx' => [
                     0 => 'brand_id',
                     1 => 'reference',
                     2 => 'flag_active',
-                ),
-                'unique_slug_idx' => array(
+                ],
+                'unique_slug_idx' => [
                     0 => 'slug',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'parent_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'parent_id' => [
                     'referenced_table' => 'product',
                     'referenced_column' => 'product_id',
                     'constraint_name' => 'FK_D34A04AD727ACA70',
-                ),
-                'brand_id' => array(
+                ],
+                'brand_id' => [
                     'referenced_table' => 'product_brand',
                     'referenced_column' => 'brand_id',
                     'constraint_name' => 'FK_D34A04AD44F5D008',
-                ),
-                'group_id' => array(
+                ],
+                'group_id' => [
                     'referenced_table' => 'product_group',
                     'referenced_column' => 'group_id',
                     'constraint_name' => 'FK_D34A04ADFE54D947',
-                ),
-                'model_id' => array(
+                ],
+                'model_id' => [
                     'referenced_table' => 'product_model',
                     'referenced_column' => 'model_id',
                     'constraint_name' => 'FK_D34A04AD7975B7E7',
-                ),
-                'category_id' => array(
+                ],
+                'category_id' => [
                     'referenced_table' => 'product_category',
                     'referenced_column' => 'category_id',
                     'constraint_name' => 'FK_D34A04AD12469DE2',
-                ),
-                'type_id' => array(
+                ],
+                'type_id' => [
                     'referenced_table' => 'product_type',
                     'referenced_column' => 'type_id',
                     'constraint_name' => 'FK_D34A04ADC54C8C93',
-                ),
-                'status_id' => array(
+                ],
+                'status_id' => [
                     'referenced_table' => 'product_status',
                     'referenced_column' => 'status_id',
                     'constraint_name' => 'FK_D34A04AD6BF700BD',
-                ),
-                'unit_id' => array(
+                ],
+                'unit_id' => [
                     'referenced_table' => 'product_unit',
                     'referenced_column' => 'unit_id',
                     'constraint_name' => 'FK_D34A04ADF8BD700D',
-                ),
-            ),
-            'references' => array(
-                'product' => array(
-                    0 => array(
+                ],
+            ],
+            'references' => [
+                'product' => [
+                    0 => [
                         'column' => 'product_id',
                         'referenced_column' => 'product_id',
                         'constraint_name' => 'FK_DD0C00BE4584665A',
-                    ),
-                    1 => array(
+                    ],
+                    1 => [
                         'column' => 'parent_id',
                         'referenced_column' => 'product_id',
                         'constraint_name' => 'FK_D34A04AD727ACA70',
-                    ),
-                    2 => array(
+                    ],
+                    2 => [
                         'column' => 'product_id',
                         'referenced_column' => 'product_id',
                         'constraint_name' => 'FK_CB70DA504584665A',
-                    ),
-                    3 => array(
+                    ],
+                    3 => [
                         'column' => 'product_id',
                         'referenced_column' => 'product_id',
                         'constraint_name' => 'FK_D12BBB084584665A',
-                    ),
-                    4 => array(
+                    ],
+                    4 => [
                         'column' => 'product_id',
                         'referenced_column' => 'product_id',
                         'constraint_name' => 'FK_326F5CE04584665A',
-                    ),
-                    5 => array(
+                    ],
+                    5 => [
                         'column' => 'product_id',
                         'referenced_column' => 'product_id',
                         'constraint_name' => 'FK_EA6A2D3C4584665A',
-                    ),
-                    6 => array(
+                    ],
+                    6 => [
                         'column' => 'product_id',
                         'referenced_column' => 'product_id',
                         'constraint_name' => 'FK_1846DB704584665A',
-                    ),
-                    7 => array(
+                    ],
+                    7 => [
                         'column' => 'product_id',
                         'referenced_column' => 'product_id',
                         'constraint_name' => 'FK_61B16AA54584665A',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'product_brand' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'product_brand' => [
             'name' => 'product_brand',
-            'columns' => array(
-                'brand_id' => array(
+            'columns' => [
+                'brand_id' => [
                     'type' => 'int',
                     'primary' => true,
                     'nullable' => false,
@@ -2719,154 +2719,154 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'slug' => array(
+                ],
+                'slug' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '192',
                     'length' => '64',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '45000',
                     'length' => '15000',
-                ),
-                'url' => array(
+                ],
+                'url' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'icon_class' => array(
+                ],
+                'icon_class' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'brand_id',
-            ),
-            'unique_keys' => array(
-                'unique_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_reference_idx' => [
                     0 => 'reference',
-                ),
-                'unique_slug_idx' => array(
+                ],
+                'unique_slug_idx' => [
                     0 => 'slug',
-                ),
-                'unique_title_idx' => array(
+                ],
+                'unique_title_idx' => [
                     0 => 'title',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(),
-            'references' => array(
-                'product_brand' => array(
-                    0 => array(
+                ],
+            ],
+            'foreign_keys' => [],
+            'references' => [
+                'product_brand' => [
+                    0 => [
                         'column' => 'brand_id',
                         'referenced_column' => 'brand_id',
                         'constraint_name' => 'FK_DD0C00BE44F5D008',
-                    ),
-                    1 => array(
+                    ],
+                    1 => [
                         'column' => 'brand_id',
                         'referenced_column' => 'brand_id',
                         'constraint_name' => 'FK_D34A04AD44F5D008',
-                    ),
-                    2 => array(
+                    ],
+                    2 => [
                         'column' => 'brand_id',
                         'referenced_column' => 'brand_id',
                         'constraint_name' => 'FK_61BD57C944F5D008',
-                    ),
-                    3 => array(
+                    ],
+                    3 => [
                         'column' => 'brand_id',
                         'referenced_column' => 'brand_id',
                         'constraint_name' => 'FK_76C9098544F5D008',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'product_brand_translation' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'product_brand_translation' => [
             'name' => 'product_brand_translation',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -2874,121 +2874,121 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'brand_id' => array(
+                ],
+                'brand_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '6',
                     'length' => '2',
-                ),
-                'slug' => array(
+                ],
+                'slug' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '192',
                     'length' => '64',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '45000',
                     'length' => '15000',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_translation_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_translation_idx' => [
                     0 => 'brand_id',
                     1 => 'lang',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'brand_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'brand_id' => [
                     'referenced_table' => 'product_brand',
                     'referenced_column' => 'brand_id',
                     'constraint_name' => 'FK_61BD57C944F5D008',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'referenced_table' => 'language',
                     'referenced_column' => 'lang',
                     'constraint_name' => 'FK_61BD57C931098462',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'product_category' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'product_category' => [
             'name' => 'product_category',
-            'columns' => array(
-                'category_id' => array(
+            'columns' => [
+                'category_id' => [
                     'type' => 'int',
                     'primary' => true,
                     'nullable' => false,
@@ -2996,213 +2996,213 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'parent_id' => array(
+                ],
+                'parent_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '150',
                     'length' => '50',
-                ),
-                'slug' => array(
+                ],
+                'slug' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '192',
                     'length' => '64',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '192',
                     'length' => '64',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '765',
                     'length' => '255',
-                ),
-                'breadcrumb' => array(
+                ],
+                'breadcrumb' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '4500',
                     'length' => '1500',
-                ),
-                'sort_index' => array(
+                ],
+                'sort_index' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'global_sort_index' => array(
+                ],
+                'global_sort_index' => [
                     'type' => 'bigint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'icon_class' => array(
+                ],
+                'icon_class' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'lft' => array(
+                ],
+                'lft' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'rgt' => array(
+                ],
+                'rgt' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'root' => array(
+                ],
+                'root' => [
                     'type' => 'bigint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'lvl' => array(
+                ],
+                'lvl' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'alt_mapping_reference' => array(
+                ],
+                'alt_mapping_reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '30',
                     'length' => '10',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'category_id',
-            ),
-            'unique_keys' => array(
-                'unique_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_reference_idx' => [
                     0 => 'reference',
-                ),
-                'UNIQ_CDFC7356989D9B62' => array(
+                ],
+                'UNIQ_CDFC7356989D9B62' => [
                     0 => 'slug',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'parent_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'parent_id' => [
                     'referenced_table' => 'product_category',
                     'referenced_column' => 'category_id',
                     'constraint_name' => 'FK_CDFC7356727ACA70',
-                ),
-            ),
-            'references' => array(
-                'product_category' => array(
-                    0 => array(
+                ],
+            ],
+            'references' => [
+                'product_category' => [
+                    0 => [
                         'column' => 'category_id',
                         'referenced_column' => 'category_id',
                         'constraint_name' => 'FK_DD0C00BE12469DE2',
-                    ),
-                    1 => array(
+                    ],
+                    1 => [
                         'column' => 'category_id',
                         'referenced_column' => 'category_id',
                         'constraint_name' => 'FK_D34A04AD12469DE2',
-                    ),
-                    2 => array(
+                    ],
+                    2 => [
                         'column' => 'parent_id',
                         'referenced_column' => 'category_id',
                         'constraint_name' => 'FK_CDFC7356727ACA70',
-                    ),
-                    3 => array(
+                    ],
+                    3 => [
                         'column' => 'category_id',
                         'referenced_column' => 'category_id',
                         'constraint_name' => 'FK_1DAAB48712469DE2',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'product_category_translation' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'product_category_translation' => [
             'name' => 'product_category_translation',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -3210,129 +3210,129 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'category_id' => array(
+                ],
+                'category_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '6',
                     'length' => '2',
-                ),
-                'slug' => array(
+                ],
+                'slug' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '192',
                     'length' => '64',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '192',
                     'length' => '64',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '765',
                     'length' => '255',
-                ),
-                'breadcrumb' => array(
+                ],
+                'breadcrumb' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '4500',
                     'length' => '1500',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_translation_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_translation_idx' => [
                     0 => 'category_id',
                     1 => 'lang',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'category_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'category_id' => [
                     'referenced_table' => 'product_category',
                     'referenced_column' => 'category_id',
                     'constraint_name' => 'FK_1DAAB48712469DE2',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'referenced_table' => 'language',
                     'referenced_column' => 'lang',
                     'constraint_name' => 'FK_1DAAB48731098462',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'product_group' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'product_group' => [
             'name' => 'product_group',
-            'columns' => array(
-                'group_id' => array(
+            'columns' => [
+                'group_id' => [
                     'type' => 'int',
                     'primary' => true,
                     'nullable' => false,
@@ -3340,138 +3340,138 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'slug' => array(
+                ],
+                'slug' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '192',
                     'length' => '64',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '45000',
                     'length' => '15000',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'icon_class' => array(
+                ],
+                'icon_class' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'group_id',
-            ),
-            'unique_keys' => array(
-                'unique_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_reference_idx' => [
                     0 => 'reference',
-                ),
-                'unique_slug_idx' => array(
+                ],
+                'unique_slug_idx' => [
                     0 => 'slug',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(),
-            'references' => array(
-                'product_group' => array(
-                    0 => array(
+                ],
+            ],
+            'foreign_keys' => [],
+            'references' => [
+                'product_group' => [
+                    0 => [
                         'column' => 'product_group_id',
                         'referenced_column' => 'group_id',
                         'constraint_name' => 'FK_DD0C00BE35E4B3D0',
-                    ),
-                    1 => array(
+                    ],
+                    1 => [
                         'column' => 'group_id',
                         'referenced_column' => 'group_id',
                         'constraint_name' => 'FK_D34A04ADFE54D947',
-                    ),
-                    2 => array(
+                    ],
+                    2 => [
                         'column' => 'group_id',
                         'referenced_column' => 'group_id',
                         'constraint_name' => 'FK_255468FDFE54D947',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'product_group_translation' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'product_group_translation' => [
             'name' => 'product_group_translation',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -3479,121 +3479,121 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'group_id' => array(
+                ],
+                'group_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '6',
                     'length' => '2',
-                ),
-                'slug' => array(
+                ],
+                'slug' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '192',
                     'length' => '64',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '45000',
                     'length' => '15000',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_translation_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_translation_idx' => [
                     0 => 'group_id',
                     1 => 'lang',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'group_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'group_id' => [
                     'referenced_table' => 'product_group',
                     'referenced_column' => 'group_id',
                     'constraint_name' => 'FK_255468FDFE54D947',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'referenced_table' => 'language',
                     'referenced_column' => 'lang',
                     'constraint_name' => 'FK_255468FD31098462',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'product_media' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'product_media' => [
             'name' => 'product_media',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -3601,129 +3601,129 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'product_id' => array(
+                ],
+                'product_id' => [
                     'type' => 'bigint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'media_id' => array(
+                ],
+                'media_id' => [
                     'type' => 'bigint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'type_id' => array(
+                ],
+                'type_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'flag_primary' => array(
+                ],
+                'flag_primary' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'sort_index' => array(
+                ],
+                'sort_index' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_product_media_type_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_product_media_type_idx' => [
                     0 => 'product_id',
                     1 => 'media_id',
                     2 => 'type_id',
-                ),
-                'unique_product_type_flag_primary_idx' => array(
+                ],
+                'unique_product_type_flag_primary_idx' => [
                     0 => 'product_id',
                     1 => 'type_id',
                     2 => 'flag_primary',
-                ),
-            ),
-            'foreign_keys' => array(
-                'product_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'product_id' => [
                     'referenced_table' => 'product',
                     'referenced_column' => 'product_id',
                     'constraint_name' => 'FK_CB70DA504584665A',
-                ),
-                'media_id' => array(
+                ],
+                'media_id' => [
                     'referenced_table' => 'media',
                     'referenced_column' => 'media_id',
                     'constraint_name' => 'FK_CB70DA50EA9FDD75',
-                ),
-                'type_id' => array(
+                ],
+                'type_id' => [
                     'referenced_table' => 'product_media_type',
                     'referenced_column' => 'type_id',
                     'constraint_name' => 'FK_CB70DA50C54C8C93',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'product_media_type' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'product_media_type' => [
             'name' => 'product_media_type',
-            'columns' => array(
-                'type_id' => array(
+            'columns' => [
+                'type_id' => [
                     'type' => 'int',
                     'primary' => true,
                     'nullable' => false,
@@ -3731,109 +3731,109 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '45000',
                     'length' => '15000',
-                ),
-                'icon_class' => array(
+                ],
+                'icon_class' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'type_id',
-            ),
-            'unique_keys' => array(
-                'unique_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_reference_idx' => [
                     0 => 'reference',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(),
-            'references' => array(
-                'product_media_type' => array(
-                    0 => array(
+                ],
+            ],
+            'foreign_keys' => [],
+            'references' => [
+                'product_media_type' => [
+                    0 => [
                         'column' => 'type_id',
                         'referenced_column' => 'type_id',
                         'constraint_name' => 'FK_CB70DA50C54C8C93',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'product_model' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'product_model' => [
             'name' => 'product_model',
-            'columns' => array(
-                'model_id' => array(
+            'columns' => [
+                'model_id' => [
                     'type' => 'int',
                     'primary' => true,
                     'nullable' => false,
@@ -3841,161 +3841,161 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'brand_id' => array(
+                ],
+                'brand_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'slug' => array(
+                ],
+                'slug' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '192',
                     'length' => '64',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '30000',
                     'length' => '10000',
-                ),
-                'specs' => array(
+                ],
+                'specs' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '30000',
                     'length' => '10000',
-                ),
-                'revision' => array(
+                ],
+                'revision' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => '1',
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'model_id',
-            ),
-            'unique_keys' => array(
-                'unique_brand_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_brand_reference_idx' => [
                     0 => 'brand_id',
                     1 => 'reference',
-                ),
-                'unique_slug_idx' => array(
+                ],
+                'unique_slug_idx' => [
                     0 => 'slug',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'brand_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'brand_id' => [
                     'referenced_table' => 'product_brand',
                     'referenced_column' => 'brand_id',
                     'constraint_name' => 'FK_76C9098544F5D008',
-                ),
-            ),
-            'references' => array(
-                'product_model' => array(
-                    0 => array(
+                ],
+            ],
+            'references' => [
+                'product_model' => [
+                    0 => [
                         'column' => 'model_id',
                         'referenced_column' => 'model_id',
                         'constraint_name' => 'FK_DD0C00BE7975B7E7',
-                    ),
-                    1 => array(
+                    ],
+                    1 => [
                         'column' => 'model_id',
                         'referenced_column' => 'model_id',
                         'constraint_name' => 'FK_D34A04AD7975B7E7',
-                    ),
-                    2 => array(
+                    ],
+                    2 => [
                         'column' => 'model_id',
                         'referenced_column' => 'model_id',
                         'constraint_name' => 'FK_6EEE4ED07975B7E7',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'product_model_translation' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'product_model_translation' => [
             'name' => 'product_model_translation',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -4003,121 +4003,121 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'model_id' => array(
+                ],
+                'model_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '6',
                     'length' => '2',
-                ),
-                'slug' => array(
+                ],
+                'slug' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '192',
                     'length' => '64',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '45000',
                     'length' => '15000',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_translation_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_translation_idx' => [
                     0 => 'model_id',
                     1 => 'lang',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'model_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'model_id' => [
                     'referenced_table' => 'product_model',
                     'referenced_column' => 'model_id',
                     'constraint_name' => 'FK_6EEE4ED07975B7E7',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'referenced_table' => 'language',
                     'referenced_column' => 'lang',
                     'constraint_name' => 'FK_6EEE4ED031098462',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'product_packaging' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'product_packaging' => [
             'name' => 'product_packaging',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -4125,133 +4125,133 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'type_id' => array(
+                ],
+                'type_id' => [
                     'type' => 'smallint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'product_id' => array(
+                ],
+                'product_id' => [
                     'type' => 'bigint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'quantity' => array(
+                ],
+                'quantity' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
-                ),
-                'volume' => array(
+                ],
+                'volume' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
-                ),
-                'weight' => array(
+                ],
+                'weight' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
-                ),
-                'length' => array(
+                ],
+                'length' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
-                ),
-                'height' => array(
+                ],
+                'height' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
-                ),
-                'width' => array(
+                ],
+                'width' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
-                ),
-                'barcode_ean' => array(
+                ],
+                'barcode_ean' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '60',
                     'length' => '20',
-                ),
-                'barcode_upc' => array(
+                ],
+                'barcode_upc' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '60',
                     'length' => '20',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_product_packaging_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_product_packaging_idx' => [
                     0 => 'type_id',
                     1 => 'product_id',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'type_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'type_id' => [
                     'referenced_table' => 'packaging_type',
                     'referenced_column' => 'type_id',
                     'constraint_name' => 'FK_D12BBB08C54C8C93',
-                ),
-                'product_id' => array(
+                ],
+                'product_id' => [
                     'referenced_table' => 'product',
                     'referenced_column' => 'product_id',
                     'constraint_name' => 'FK_D12BBB084584665A',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'product_pricelist' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'product_pricelist' => [
             'name' => 'product_pricelist',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -4259,268 +4259,268 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'pricelist_id' => array(
+                ],
+                'pricelist_id' => [
                     'type' => 'smallint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'product_id' => array(
+                ],
+                'product_id' => [
                     'type' => 'bigint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'status_id' => array(
+                ],
+                'status_id' => [
                     'type' => 'smallint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'price' => array(
+                ],
+                'price' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
-                ),
-                'list_price' => array(
+                ],
+                'list_price' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
-                ),
-                'public_price' => array(
+                ],
+                'public_price' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
-                ),
-                'sale_minimum_qty' => array(
+                ],
+                'sale_minimum_qty' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'precision' => '16',
                     'scale' => '6',
-                ),
-                'sale_multiple_qty' => array(
+                ],
+                'sale_multiple_qty' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'precision' => '16',
                     'scale' => '6',
-                ),
-                'discount_1' => array(
+                ],
+                'discount_1' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '0.000000',
                     'precision' => '9',
                     'scale' => '6',
-                ),
-                'discount_2' => array(
+                ],
+                'discount_2' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '0.000000',
                     'precision' => '9',
                     'scale' => '6',
-                ),
-                'discount_3' => array(
+                ],
+                'discount_3' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '0.000000',
                     'precision' => '9',
                     'scale' => '6',
-                ),
-                'discount_4' => array(
+                ],
+                'discount_4' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '0.000000',
                     'precision' => '9',
                     'scale' => '6',
-                ),
-                'is_liquidation' => array(
+                ],
+                'is_liquidation' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'is_new' => array(
+                ],
+                'is_new' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'is_bestseller' => array(
+                ],
+                'is_bestseller' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'is_bestvalue' => array(
+                ],
+                'is_bestvalue' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'is_hot' => array(
+                ],
+                'is_hot' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'is_promotional' => array(
+                ],
+                'is_promotional' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'promo_start_at' => array(
+                ],
+                'promo_start_at' => [
                     'type' => 'date',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'promo_end_at' => array(
+                ],
+                'promo_end_at' => [
                     'type' => 'date',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'available_at' => array(
+                ],
+                'available_at' => [
                     'type' => 'date',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'unavailable_at' => array(
+                ],
+                'unavailable_at' => [
                     'type' => 'date',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'deleted_at' => array(
+                ],
+                'deleted_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_product_price_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_product_price_idx' => [
                     0 => 'pricelist_id',
                     1 => 'product_id',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'pricelist_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'pricelist_id' => [
                     'referenced_table' => 'pricelist',
                     'referenced_column' => 'pricelist_id',
                     'constraint_name' => 'FK_326F5CE089045958',
-                ),
-                'product_id' => array(
+                ],
+                'product_id' => [
                     'referenced_table' => 'product',
                     'referenced_column' => 'product_id',
                     'constraint_name' => 'FK_326F5CE04584665A',
-                ),
-                'status_id' => array(
+                ],
+                'status_id' => [
                     'referenced_table' => 'product_status',
                     'referenced_column' => 'status_id',
                     'constraint_name' => 'FK_326F5CE06BF700BD',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'product_search' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'product_search' => [
             'name' => 'product_search',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -4528,63 +4528,63 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'product_id' => array(
+                ],
+                'product_id' => [
                     'type' => 'bigint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '6',
                     'length' => '2',
-                ),
-                'keywords' => array(
+                ],
+                'keywords' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '4500',
                     'length' => '1500',
-                ),
-                'tags' => array(
+                ],
+                'tags' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '2100',
                     'length' => '700',
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_translation_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_translation_idx' => [
                     0 => 'product_id',
                     1 => 'lang',
-                ),
-            ),
-            'foreign_keys' => array(),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'product_status' => array(
+                ],
+            ],
+            'foreign_keys' => [],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'product_status' => [
             'name' => 'product_status',
-            'columns' => array(
-                'status_id' => array(
+            'columns' => [
+                'status_id' => [
                     'type' => 'smallint',
                     'primary' => true,
                     'nullable' => false,
@@ -4592,157 +4592,157 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '45000',
                     'length' => '15000',
-                ),
-                'flag_product_archived' => array(
+                ],
+                'flag_product_archived' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => '0',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'flag_default' => array(
+                ],
+                'flag_default' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'flag_till_end_of_stock' => array(
+                ],
+                'flag_till_end_of_stock' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => '0',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'flag_end_of_lifecycle' => array(
+                ],
+                'flag_end_of_lifecycle' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => '0',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'icon_class' => array(
+                ],
+                'icon_class' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'status_id',
-            ),
-            'unique_keys' => array(
-                'unique_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_reference_idx' => [
                     0 => 'reference',
-                ),
-                'unique_flag_default_idx' => array(
+                ],
+                'unique_flag_default_idx' => [
                     0 => 'flag_default',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(),
-            'references' => array(
-                'product_status' => array(
-                    0 => array(
+                ],
+            ],
+            'foreign_keys' => [],
+            'references' => [
+                'product_status' => [
+                    0 => [
                         'column' => 'status_id',
                         'referenced_column' => 'status_id',
                         'constraint_name' => 'FK_D34A04AD6BF700BD',
-                    ),
-                    1 => array(
+                    ],
+                    1 => [
                         'column' => 'status_id',
                         'referenced_column' => 'status_id',
                         'constraint_name' => 'FK_326F5CE06BF700BD',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'product_stock' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'product_stock' => [
             'name' => 'product_stock',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -4750,105 +4750,105 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'stock_id' => array(
+                ],
+                'stock_id' => [
                     'type' => 'smallint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'product_id' => array(
+                ],
+                'product_id' => [
                     'type' => 'bigint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'available_stock' => array(
+                ],
+                'available_stock' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
-                ),
-                'theoretical_stock' => array(
+                ],
+                'theoretical_stock' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
-                ),
-                'next_available_stock_at' => array(
+                ],
+                'next_available_stock_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'next_available_stock' => array(
+                ],
+                'next_available_stock' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_product_price_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_product_price_idx' => [
                     0 => 'stock_id',
                     1 => 'product_id',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'stock_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'stock_id' => [
                     'referenced_table' => 'stock',
                     'referenced_column' => 'stock_id',
                     'constraint_name' => 'FK_EA6A2D3CDCD6110',
-                ),
-                'product_id' => array(
+                ],
+                'product_id' => [
                     'referenced_table' => 'product',
                     'referenced_column' => 'product_id',
                     'constraint_name' => 'FK_EA6A2D3C4584665A',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'product_translation' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'product_translation' => [
             'name' => 'product_translation',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -4856,161 +4856,161 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'product_id' => array(
+                ],
+                'product_id' => [
                     'type' => 'bigint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '6',
                     'length' => '2',
-                ),
-                'slug' => array(
+                ],
+                'slug' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '765',
                     'length' => '255',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '450',
                     'length' => '150',
-                ),
-                'invoice_title' => array(
+                ],
+                'invoice_title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '300',
                     'length' => '100',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '30000',
                     'length' => '10000',
-                ),
-                'characteristic' => array(
+                ],
+                'characteristic' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '450',
                     'length' => '150',
-                ),
-                'specs' => array(
+                ],
+                'specs' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '30000',
                     'length' => '10000',
-                ),
-                'keywords' => array(
+                ],
+                'keywords' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '765',
                     'length' => '255',
-                ),
-                'revision' => array(
+                ],
+                'revision' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => '1',
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_translation_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_translation_idx' => [
                     0 => 'product_id',
                     1 => 'lang',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'product_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'product_id' => [
                     'referenced_table' => 'product',
                     'referenced_column' => 'product_id',
                     'constraint_name' => 'FK_1846DB704584665A',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'referenced_table' => 'language',
                     'referenced_column' => 'lang',
                     'constraint_name' => 'FK_1846DB7031098462',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'product_type' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'product_type' => [
             'name' => 'product_type',
-            'columns' => array(
-                'type_id' => array(
+            'columns' => [
+                'type_id' => [
                     'type' => 'smallint',
                     'primary' => true,
                     'nullable' => false,
@@ -5018,152 +5018,152 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '45000',
                     'length' => '15000',
-                ),
-                'flag_enable_discount_condition' => array(
+                ],
+                'flag_enable_discount_condition' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'flag_excluded_catalog' => array(
+                ],
+                'flag_excluded_catalog' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => '0',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'flag_excluded_export' => array(
+                ],
+                'flag_excluded_export' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => '0',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'flag_default' => array(
+                ],
+                'flag_default' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'icon_class' => array(
+                ],
+                'icon_class' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'type_id',
-            ),
-            'unique_keys' => array(
-                'unique_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_reference_idx' => [
                     0 => 'reference',
-                ),
-                'unique_flag_default_idx' => array(
+                ],
+                'unique_flag_default_idx' => [
                     0 => 'flag_default',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(),
-            'references' => array(
-                'product_type' => array(
-                    0 => array(
+                ],
+            ],
+            'foreign_keys' => [],
+            'references' => [
+                'product_type' => [
+                    0 => [
                         'column' => 'type_id',
                         'referenced_column' => 'type_id',
                         'constraint_name' => 'FK_D34A04ADC54C8C93',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'product_unit' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'product_unit' => [
             'name' => 'product_unit',
-            'columns' => array(
-                'unit_id' => array(
+            'columns' => [
+                'unit_id' => [
                     'type' => 'int',
                     'primary' => true,
                     'nullable' => false,
@@ -5171,138 +5171,138 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '30',
                     'length' => '10',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'symbol' => array(
+                ],
+                'symbol' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '12',
                     'length' => '4',
-                ),
-                'display_decimals' => array(
+                ],
+                'display_decimals' => [
                     'type' => 'smallint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => '2',
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '765',
                     'length' => '255',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'icon_class' => array(
+                ],
+                'icon_class' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'unit_id',
-            ),
-            'unique_keys' => array(
-                'unique_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_reference_idx' => [
                     0 => 'reference',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(),
-            'references' => array(
-                'product_unit' => array(
-                    0 => array(
+                ],
+            ],
+            'foreign_keys' => [],
+            'references' => [
+                'product_unit' => [
+                    0 => [
                         'column' => 'unit_id',
                         'referenced_column' => 'unit_id',
                         'constraint_name' => 'FK_D34A04ADF8BD700D',
-                    ),
-                    1 => array(
+                    ],
+                    1 => [
                         'column' => 'unit_id',
                         'referenced_column' => 'unit_id',
                         'constraint_name' => 'FK_A1824BB5F8BD700D',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'product_unit_translation' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'product_unit_translation' => [
             'name' => 'product_unit_translation',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -5310,121 +5310,121 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'unit_id' => array(
+                ],
+                'unit_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '6',
                     'length' => '2',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '30',
                     'length' => '10',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '765',
                     'length' => '255',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_translation_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_translation_idx' => [
                     0 => 'unit_id',
                     1 => 'lang',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'unit_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'unit_id' => [
                     'referenced_table' => 'product_unit',
                     'referenced_column' => 'unit_id',
                     'constraint_name' => 'FK_A1824BB5F8BD700D',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'referenced_table' => 'language',
                     'referenced_column' => 'lang',
                     'constraint_name' => 'FK_A1824BB531098462',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'role' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'role' => [
             'name' => 'role',
-            'columns' => array(
-                'role_id' => array(
+            'columns' => [
+                'role_id' => [
                     'type' => 'int',
                     'primary' => true,
                     'nullable' => false,
@@ -5432,136 +5432,136 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'parent_id' => array(
+                ],
+                'parent_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'name' => array(
+                ],
+                'name' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '144',
                     'length' => '48',
-                ),
-                'lft' => array(
+                ],
+                'lft' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'rgt' => array(
+                ],
+                'rgt' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'root' => array(
+                ],
+                'root' => [
                     'type' => 'bigint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'lvl' => array(
+                ],
+                'lvl' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'role_id',
-            ),
-            'unique_keys' => array(
-                'unique_name_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_name_idx' => [
                     0 => 'name',
-                ),
-            ),
-            'foreign_keys' => array(
-                'parent_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'parent_id' => [
                     'referenced_table' => 'role',
                     'referenced_column' => 'role_id',
                     'constraint_name' => 'FK_57698A6A727ACA70',
-                ),
-            ),
-            'references' => array(
-                'role' => array(
-                    0 => array(
+                ],
+            ],
+            'references' => [
+                'role' => [
+                    0 => [
                         'column' => 'parent_id',
                         'referenced_column' => 'role_id',
                         'constraint_name' => 'FK_57698A6A727ACA70',
-                    ),
-                    1 => array(
+                    ],
+                    1 => [
                         'column' => 'role_id',
                         'referenced_column' => 'role_id',
                         'constraint_name' => 'FK_6F7DF886D60322AC',
-                    ),
-                    2 => array(
+                    ],
+                    2 => [
                         'column' => 'role_id',
                         'referenced_column' => 'role_id',
                         'constraint_name' => 'FK_2DE8C6A3D60322AC',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'role_permission' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'role_permission' => [
             'name' => 'role_permission',
-            'columns' => array(
-                'role_id' => array(
+            'columns' => [
+                'role_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'permission_id' => array(
+                ],
+                'permission_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'role_id',
                 1 => 'permission_id',
-            ),
-            'unique_keys' => array(),
-            'foreign_keys' => array(
-                'role_id' => array(
+            ],
+            'unique_keys' => [],
+            'foreign_keys' => [
+                'role_id' => [
                     'referenced_table' => 'role',
                     'referenced_column' => 'role_id',
                     'constraint_name' => 'FK_6F7DF886D60322AC',
-                ),
-                'permission_id' => array(
+                ],
+                'permission_id' => [
                     'referenced_table' => 'permission',
                     'referenced_column' => 'permission_id',
                     'constraint_name' => 'FK_6F7DF886FED90CCA',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'sale_order' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'sale_order' => [
             'name' => 'sale_order',
-            'columns' => array(
-                'order_id' => array(
+            'columns' => [
+                'order_id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -5569,182 +5569,182 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'type_id' => array(
+                ],
+                'type_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'status_id' => array(
+                ],
+                'status_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'user_id' => array(
+                ],
+                'user_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'customer_id' => array(
+                ],
+                'customer_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'pricelist_id' => array(
+                ],
+                'pricelist_id' => [
                     'type' => 'smallint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'customer_reference' => array(
+                ],
+                'customer_reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'customer_comment' => array(
+                ],
+                'customer_comment' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '765',
                     'length' => '255',
-                ),
-                'document_date' => array(
+                ],
+                'document_date' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'expires_at' => array(
+                ],
+                'expires_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'deleted_at' => array(
+                ],
+                'deleted_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'order_id',
-            ),
-            'unique_keys' => array(
-                'unique_legacy_mapping_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'type_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'type_id' => [
                     'referenced_table' => 'sale_order_type',
                     'referenced_column' => 'type_id',
                     'constraint_name' => 'FK_25F5CB1BC54C8C93',
-                ),
-                'status_id' => array(
+                ],
+                'status_id' => [
                     'referenced_table' => 'sale_order_status',
                     'referenced_column' => 'status_id',
                     'constraint_name' => 'FK_25F5CB1B6BF700BD',
-                ),
-                'user_id' => array(
+                ],
+                'user_id' => [
                     'referenced_table' => 'user',
                     'referenced_column' => 'user_id',
                     'constraint_name' => 'FK_25F5CB1BA76ED395',
-                ),
-                'customer_id' => array(
+                ],
+                'customer_id' => [
                     'referenced_table' => 'customer',
                     'referenced_column' => 'customer_id',
                     'constraint_name' => 'FK_25F5CB1B9395C3F3',
-                ),
-                'pricelist_id' => array(
+                ],
+                'pricelist_id' => [
                     'referenced_table' => 'pricelist',
                     'referenced_column' => 'pricelist_id',
                     'constraint_name' => 'FK_25F5CB1B89045958',
-                ),
-            ),
-            'references' => array(
-                'sale_order' => array(
-                    0 => array(
+                ],
+            ],
+            'references' => [
+                'sale_order' => [
+                    0 => [
                         'column' => 'order_id',
                         'referenced_column' => 'order_id',
                         'constraint_name' => 'FK_61B16AA58D9F6D38',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'sale_order_line' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'sale_order_line' => [
             'name' => 'sale_order_line',
-            'columns' => array(
-                'line_id' => array(
+            'columns' => [
+                'line_id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -5752,190 +5752,190 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'order_id' => array(
+                ],
+                'order_id' => [
                     'type' => 'bigint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'status_id' => array(
+                ],
+                'status_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'product_id' => array(
+                ],
+                'product_id' => [
                     'type' => 'bigint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'quantity' => array(
+                ],
+                'quantity' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
-                ),
-                'price' => array(
+                ],
+                'price' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'precision' => '12',
                     'scale' => '6',
-                ),
-                'discount_1' => array(
+                ],
+                'discount_1' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '0.000000',
                     'precision' => '9',
                     'scale' => '6',
-                ),
-                'discount_2' => array(
+                ],
+                'discount_2' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '0.000000',
                     'precision' => '9',
                     'scale' => '6',
-                ),
-                'discount_3' => array(
+                ],
+                'discount_3' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '0.000000',
                     'precision' => '9',
                     'scale' => '6',
-                ),
-                'discount_4' => array(
+                ],
+                'discount_4' => [
                     'type' => 'decimal',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '0.000000',
                     'precision' => '9',
                     'scale' => '6',
-                ),
-                'customer_reference' => array(
+                ],
+                'customer_reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'customer_comment' => array(
+                ],
+                'customer_comment' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '765',
                     'length' => '255',
-                ),
-                'expires_at' => array(
+                ],
+                'expires_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'deleted_at' => array(
+                ],
+                'deleted_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'line_id',
-            ),
-            'unique_keys' => array(
-                'unique_legacy_mapping_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'order_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'order_id' => [
                     'referenced_table' => 'sale_order',
                     'referenced_column' => 'order_id',
                     'constraint_name' => 'FK_61B16AA58D9F6D38',
-                ),
-                'status_id' => array(
+                ],
+                'status_id' => [
                     'referenced_table' => 'sale_order_line_status',
                     'referenced_column' => 'status_id',
                     'constraint_name' => 'FK_61B16AA56BF700BD',
-                ),
-                'product_id' => array(
+                ],
+                'product_id' => [
                     'referenced_table' => 'product',
                     'referenced_column' => 'product_id',
                     'constraint_name' => 'FK_61B16AA54584665A',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'sale_order_line_status' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'sale_order_line_status' => [
             'name' => 'sale_order_line_status',
-            'columns' => array(
-                'status_id' => array(
+            'columns' => [
+                'status_id' => [
                     'type' => 'int',
                     'primary' => true,
                     'nullable' => false,
@@ -5943,125 +5943,125 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'flag_default' => array(
+                ],
+                'flag_default' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'flag_readonly' => array(
+                ],
+                'flag_readonly' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '0',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'status_id',
-            ),
-            'unique_keys' => array(
-                'unique_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_reference_idx' => [
                     0 => 'reference',
-                ),
-                'unique_flag_default_idx' => array(
+                ],
+                'unique_flag_default_idx' => [
                     0 => 'flag_default',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(),
-            'references' => array(
-                'sale_order_line_status' => array(
-                    0 => array(
+                ],
+            ],
+            'foreign_keys' => [],
+            'references' => [
+                'sale_order_line_status' => [
+                    0 => [
                         'column' => 'status_id',
                         'referenced_column' => 'status_id',
                         'constraint_name' => 'FK_61B16AA56BF700BD',
-                    ),
-                    1 => array(
+                    ],
+                    1 => [
                         'column' => 'status_id',
                         'referenced_column' => 'status_id',
                         'constraint_name' => 'FK_F4D5EE4B6BF700BD',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'sale_order_line_status_translation' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'sale_order_line_status_translation' => [
             'name' => 'sale_order_line_status_translation',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -6069,105 +6069,105 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'status_id' => array(
+                ],
+                'status_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '6',
                     'length' => '2',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_translation_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_translation_idx' => [
                     0 => 'status_id',
                     1 => 'lang',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'status_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'status_id' => [
                     'referenced_table' => 'sale_order_line_status',
                     'referenced_column' => 'status_id',
                     'constraint_name' => 'FK_F4D5EE4B6BF700BD',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'referenced_table' => 'language',
                     'referenced_column' => 'lang',
                     'constraint_name' => 'FK_F4D5EE4B31098462',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'sale_order_status' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'sale_order_status' => [
             'name' => 'sale_order_status',
-            'columns' => array(
-                'status_id' => array(
+            'columns' => [
+                'status_id' => [
                     'type' => 'int',
                     'primary' => true,
                     'nullable' => false,
@@ -6175,125 +6175,125 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'flag_default' => array(
+                ],
+                'flag_default' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'flag_readonly' => array(
+                ],
+                'flag_readonly' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '0',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'status_id',
-            ),
-            'unique_keys' => array(
-                'unique_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_reference_idx' => [
                     0 => 'reference',
-                ),
-                'unique_flag_default_idx' => array(
+                ],
+                'unique_flag_default_idx' => [
                     0 => 'flag_default',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(),
-            'references' => array(
-                'sale_order_status' => array(
-                    0 => array(
+                ],
+            ],
+            'foreign_keys' => [],
+            'references' => [
+                'sale_order_status' => [
+                    0 => [
                         'column' => 'status_id',
                         'referenced_column' => 'status_id',
                         'constraint_name' => 'FK_25F5CB1B6BF700BD',
-                    ),
-                    1 => array(
+                    ],
+                    1 => [
                         'column' => 'status_id',
                         'referenced_column' => 'status_id',
                         'constraint_name' => 'FK_7017D856BF700BD',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'sale_order_status_translation' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'sale_order_status_translation' => [
             'name' => 'sale_order_status_translation',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -6301,105 +6301,105 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'status_id' => array(
+                ],
+                'status_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '6',
                     'length' => '2',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_translation_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_translation_idx' => [
                     0 => 'status_id',
                     1 => 'lang',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'status_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'status_id' => [
                     'referenced_table' => 'sale_order_status',
                     'referenced_column' => 'status_id',
                     'constraint_name' => 'FK_7017D856BF700BD',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'referenced_table' => 'language',
                     'referenced_column' => 'lang',
                     'constraint_name' => 'FK_7017D8531098462',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'sale_order_type' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'sale_order_type' => [
             'name' => 'sale_order_type',
-            'columns' => array(
-                'type_id' => array(
+            'columns' => [
+                'type_id' => [
                     'type' => 'int',
                     'primary' => true,
                     'nullable' => false,
@@ -6407,106 +6407,106 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'type_id',
-            ),
-            'unique_keys' => array(
-                'unique_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_reference_idx' => [
                     0 => 'reference',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(),
-            'references' => array(
-                'sale_order_type' => array(
-                    0 => array(
+                ],
+            ],
+            'foreign_keys' => [],
+            'references' => [
+                'sale_order_type' => [
+                    0 => [
                         'column' => 'type_id',
                         'referenced_column' => 'type_id',
                         'constraint_name' => 'FK_25F5CB1BC54C8C93',
-                    ),
-                    1 => array(
+                    ],
+                    1 => [
                         'column' => 'type_id',
                         'referenced_column' => 'type_id',
                         'constraint_name' => 'FK_EEA9D8B7C54C8C93',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'sale_order_type_translation' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'sale_order_type_translation' => [
             'name' => 'sale_order_type_translation',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -6514,105 +6514,105 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'type_id' => array(
+                ],
+                'type_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '6',
                     'length' => '2',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_translation_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_translation_idx' => [
                     0 => 'type_id',
                     1 => 'lang',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'type_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'type_id' => [
                     'referenced_table' => 'sale_order_type',
                     'referenced_column' => 'type_id',
                     'constraint_name' => 'FK_EEA9D8B7C54C8C93',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'referenced_table' => 'language',
                     'referenced_column' => 'lang',
                     'constraint_name' => 'FK_EEA9D8B731098462',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'stock' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'stock' => [
             'name' => 'stock',
-            'columns' => array(
-                'stock_id' => array(
+            'columns' => [
+                'stock_id' => [
                     'type' => 'smallint',
                     'primary' => true,
                     'nullable' => false,
@@ -6620,122 +6620,122 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'reference' => array(
+                ],
+                'reference' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '180',
                     'length' => '60',
-                ),
-                'title' => array(
+                ],
+                'title' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '240',
                     'length' => '80',
-                ),
-                'description' => array(
+                ],
+                'description' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '45000',
                     'length' => '15000',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'icon_class' => array(
+                ],
+                'icon_class' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'stock_id',
-            ),
-            'unique_keys' => array(
-                'unique_reference_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_reference_idx' => [
                     0 => 'reference',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(),
-            'references' => array(
-                'stock' => array(
-                    0 => array(
+                ],
+            ],
+            'foreign_keys' => [],
+            'references' => [
+                'stock' => [
+                    0 => [
                         'column' => 'stock_id',
                         'referenced_column' => 'stock_id',
                         'constraint_name' => 'FK_5CCFEA6DDCD6110',
-                    ),
-                    1 => array(
+                    ],
+                    1 => [
                         'column' => 'stock_id',
                         'referenced_column' => 'stock_id',
                         'constraint_name' => 'FK_EA6A2D3CDCD6110',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'user' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'user' => [
             'name' => 'user',
-            'columns' => array(
-                'user_id' => array(
+            'columns' => [
+                'user_id' => [
                     'type' => 'int',
                     'primary' => true,
                     'nullable' => false,
@@ -6743,96 +6743,96 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'lang' => array(
+                ],
+                'lang' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '6',
                     'length' => '2',
-                ),
-                'username' => array(
+                ],
+                'username' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '765',
                     'length' => '255',
-                ),
-                'email' => array(
+                ],
+                'email' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '765',
                     'length' => '255',
-                ),
-                'displayName' => array(
+                ],
+                'displayName' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '150',
                     'length' => '50',
-                ),
-                'password' => array(
+                ],
+                'password' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'octet_length' => '384',
                     'length' => '128',
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'user_id',
-            ),
-            'unique_keys' => array(
-                'UNIQ_8D93D649F85E0677' => array(
+            ],
+            'unique_keys' => [
+                'UNIQ_8D93D649F85E0677' => [
                     0 => 'username',
-                ),
-                'UNIQ_8D93D649E7927C74' => array(
+                ],
+                'UNIQ_8D93D649E7927C74' => [
                     0 => 'email',
-                ),
-            ),
-            'foreign_keys' => array(
-                'lang' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'lang' => [
                     'referenced_table' => 'language',
                     'referenced_column' => 'lang',
                     'constraint_name' => 'FK_8D93D64931098462',
-                ),
-            ),
-            'references' => array(
-                'user' => array(
-                    0 => array(
+                ],
+            ],
+            'references' => [
+                'user' => [
+                    0 => [
                         'column' => 'user_id',
                         'referenced_column' => 'user_id',
                         'constraint_name' => 'FK_25F5CB1BA76ED395',
-                    ),
-                    1 => array(
+                    ],
+                    1 => [
                         'column' => 'user_id',
                         'referenced_column' => 'user_id',
                         'constraint_name' => 'FK_5C2F6789A76ED395',
-                    ),
-                    2 => array(
+                    ],
+                    2 => [
                         'column' => 'user_id',
                         'referenced_column' => 'user_id',
                         'constraint_name' => 'FK_2DE8C6A3A76ED395',
-                    ),
-                    3 => array(
+                    ],
+                    3 => [
                         'column' => 'user_id',
                         'referenced_column' => 'user_id',
                         'constraint_name' => 'FK_E26DAE8BA76ED395',
-                    ),
-                ),
-            ),
-            'indexes' => array(),
-        ),
-        'user_pricelist' => array(
+                    ],
+                ],
+            ],
+            'indexes' => [],
+        ],
+        'user_pricelist' => [
             'name' => 'user_pricelist',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -6840,151 +6840,151 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'pricelist_id' => array(
+                ],
+                'pricelist_id' => [
                     'type' => 'smallint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '5',
-                ),
-                'user_id' => array(
+                ],
+                'user_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'activated_at' => array(
+                ],
+                'activated_at' => [
                     'type' => 'date',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_user_pricelist_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_user_pricelist_idx' => [
                     0 => 'pricelist_id',
                     1 => 'user_id',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'pricelist_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'pricelist_id' => [
                     'referenced_table' => 'pricelist',
                     'referenced_column' => 'pricelist_id',
                     'constraint_name' => 'FK_5C2F678989045958',
-                ),
-                'user_id' => array(
+                ],
+                'user_id' => [
                     'referenced_table' => 'user',
                     'referenced_column' => 'user_id',
                     'constraint_name' => 'FK_5C2F6789A76ED395',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'user_role' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'user_role' => [
             'name' => 'user_role',
-            'columns' => array(
-                'user_id' => array(
+            'columns' => [
+                'user_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'role_id' => array(
+                ],
+                'role_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'user_id',
                 1 => 'role_id',
-            ),
-            'unique_keys' => array(),
-            'foreign_keys' => array(
-                'user_id' => array(
+            ],
+            'unique_keys' => [],
+            'foreign_keys' => [
+                'user_id' => [
                     'referenced_table' => 'user',
                     'referenced_column' => 'user_id',
                     'constraint_name' => 'FK_2DE8C6A3A76ED395',
-                ),
-                'role_id' => array(
+                ],
+                'role_id' => [
                     'referenced_table' => 'role',
                     'referenced_column' => 'role_id',
                     'constraint_name' => 'FK_2DE8C6A3D60322AC',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-        'user_scope' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+        'user_scope' => [
             'name' => 'user_scope',
-            'columns' => array(
-                'id' => array(
+            'columns' => [
+                'id' => [
                     'type' => 'bigint',
                     'primary' => true,
                     'nullable' => false,
@@ -6992,103 +6992,103 @@ return array(
                     'autoincrement' => true,
                     'unsigned' => true,
                     'precision' => '20',
-                ),
-                'user_id' => array(
+                ],
+                'user_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'customer_id' => array(
+                ],
+                'customer_id' => [
                     'type' => 'int',
                     'primary' => false,
                     'nullable' => false,
                     'default' => null,
                     'unsigned' => true,
                     'precision' => '10',
-                ),
-                'flag_active' => array(
+                ],
+                'flag_active' => [
                     'type' => 'tinyint',
                     'primary' => false,
                     'nullable' => false,
                     'default' => '1',
                     'unsigned' => false,
                     'precision' => '3',
-                ),
-                'created_at' => array(
+                ],
+                'created_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'updated_at' => array(
+                ],
+                'updated_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-                'created_by' => array(
+                ],
+                'created_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'updated_by' => array(
+                ],
+                'updated_by' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_mapping' => array(
+                ],
+                'legacy_mapping' => [
                     'type' => 'varchar',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
                     'octet_length' => '120',
                     'length' => '40',
-                ),
-                'legacy_synchro_at' => array(
+                ],
+                'legacy_synchro_at' => [
                     'type' => 'datetime',
                     'primary' => false,
                     'nullable' => true,
                     'default' => null,
-                ),
-            ),
-            'primary_keys' => array(
+                ],
+            ],
+            'primary_keys' => [
                 0 => 'id',
-            ),
-            'unique_keys' => array(
-                'unique_user_customer_idx' => array(
+            ],
+            'unique_keys' => [
+                'unique_user_customer_idx' => [
                     0 => 'user_id',
                     1 => 'customer_id',
-                ),
-                'unique_legacy_mapping_idx' => array(
+                ],
+                'unique_legacy_mapping_idx' => [
                     0 => 'legacy_mapping',
-                ),
-            ),
-            'foreign_keys' => array(
-                'user_id' => array(
+                ],
+            ],
+            'foreign_keys' => [
+                'user_id' => [
                     'referenced_table' => 'user',
                     'referenced_column' => 'user_id',
                     'constraint_name' => 'FK_E26DAE8BA76ED395',
-                ),
-                'customer_id' => array(
+                ],
+                'customer_id' => [
                     'referenced_table' => 'customer',
                     'referenced_column' => 'customer_id',
                     'constraint_name' => 'FK_E26DAE8B9395C3F3',
-                ),
-            ),
-            'references' => array(),
-            'indexes' => array(),
-        ),
-    ),
-    'normalist' => array(
+                ],
+            ],
+            'references' => [],
+            'indexes' => [],
+        ],
+    ],
+    'normalist' => [
         'model_version' => '1.0',
-    ),
-);
+    ],
+];

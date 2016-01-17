@@ -7,8 +7,6 @@ use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Openstore\Core\Model\AbstractModel;
-use Openstore\Core\Model\Browser\SearchableInterface;
-use Openstore\Core\Model\Browser\FilterableInterface;
 use Openstore\Core\Model\Browser\Filter\FilterInterface;
 use Openstore\Core\Model\Browser\Search\Params;
 use Zend\Db\Sql\Select;
@@ -80,7 +78,7 @@ abstract class AbstractBrowser implements SearchableInterface, FilterableInterfa
             throw new \Exception('Params must be array or Core\Model\Browser\Params');
         }
 
-        $missing_params = array();
+        $missing_params = [];
         $searchable = $this->getSearchableParams();
         foreach ($searchable as $name => $options) {
             if ($searchParams->offsetExists($name)) {
@@ -90,7 +88,7 @@ abstract class AbstractBrowser implements SearchableInterface, FilterableInterfa
             }
         }
         if (count($missing_params) > 0) {
-            throw new \Exception("method setSearchParams() requires (" . join(',', $missing_params) . ')');
+            throw new \Exception("method setSearchParams() requires (" . implode(',', $missing_params) . ')');
         }
         $this->searchParams = $searchParams;
         return $this;
@@ -128,7 +126,7 @@ abstract class AbstractBrowser implements SearchableInterface, FilterableInterfa
     public function getFilters()
     {
         if ($this->filters === null) {
-            $this->filters = array();
+            $this->filters = [];
         }
         return $this->filters;
     }
@@ -153,7 +151,7 @@ abstract class AbstractBrowser implements SearchableInterface, FilterableInterfa
     public function addFilter(FilterInterface $filter)
     {
         if ($this->filters === null) {
-            $this->filters = array();
+            $this->filters = [];
         }
         $this->filters[] = $filter;
         return $this;

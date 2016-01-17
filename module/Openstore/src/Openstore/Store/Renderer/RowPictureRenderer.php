@@ -104,6 +104,6 @@ class RowPictureRenderer implements RowRendererInterface
      */
     public function getRequiredColumns()
     {
-        return array($this->source_column, $this->target_column);
+        return [$this->source_column, $this->target_column];
     }
 }

@@ -19,13 +19,13 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
 
     public function getAutoloaderConfig()
     {
-        return array(
-            'Zend\Loader\StandardAutoloader' => array(
-                'namespaces' => array(
+        return [
+            'Zend\Loader\StandardAutoloader' => [
+                'namespaces' => [
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -33,18 +33,18 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
      */
     public function getServiceConfig()
     {
-        return array(
-            'factories' => array(
+        return [
+            'factories' => [
                 'SolubleNormalist\Driver' => 'SolubleNormalist\Service\NormalistDriverFactory',
                 'SolubleNormalist\TableManager' => 'SolubleNormalist\Service\TableManagerFactory',
-            )
-        );
+            ]
+        ];
     }
 
     public function getConsoleUsage(AdapterInterface $console)
     {
-        return array(
+        return [
             'normalist generate-models' => 'Regenerate normalist models',
-        );
+        ];
     }
 }

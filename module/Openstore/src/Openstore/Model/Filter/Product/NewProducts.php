@@ -33,10 +33,10 @@ class NewProducts extends AbstractFilter
      */
     public function addDefaultSortClause(Select $select)
     {
-        $select->order(array(
+        $select->order([
             'ppl.available_at'    => $select::ORDER_DESCENDING,
             'p.available_at'    => $select::ORDER_DESCENDING,
-            'p.reference'        => $select::ORDER_ASCENDING));
+            'p.reference'        => $select::ORDER_ASCENDING]);
         return $this;
     }
 }

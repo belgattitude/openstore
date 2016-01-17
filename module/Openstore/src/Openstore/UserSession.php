@@ -2,7 +2,6 @@
 
 namespace Openstore;
 
-use Zend\Db\Adapter\Adapter;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Session\Container;

@@ -2,12 +2,8 @@
 
 namespace Openstore\Controller;
 
-use OpenstoreSchema\Core\Entity;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use Zend\View\Model\JsonModel;
 use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Expression;
 use Zend\Db\Adapter\Adapter;
 use Zend\Console\Request as ConsoleRequest;
 use Zend\Console\Console;
@@ -58,13 +54,12 @@ class ConsoleController extends AbstractActionController
      * # Schema core actions #
      * #######################
      */
- 
+
     /**
      * Create the database
      */
     public function schemaCoreCreateAction()
     {
-
         $request = $this->getRequest();
 
         if (!$request instanceof ConsoleRequest) {
@@ -85,7 +80,6 @@ class ConsoleController extends AbstractActionController
             foreach ($ddls as $ddl) {
                 $this->console->writeLine($ddl);
             }
-
         } else {
             $warning = 'ATTENTION: This operation should not be executed in a production environment.';
             $this->console->writeLine($warning, ColorInterface::RED);
@@ -151,7 +145,6 @@ class ConsoleController extends AbstractActionController
             foreach ($ddls as $ddl) {
                 $this->console->writeLine($ddl);
             }
-
         } else {
             $warning = 'ATTENTION: This operation should not be executed in a production environment.';
             $this->console->writeLine($warning, ColorInterface::RED);
@@ -169,7 +162,7 @@ class ConsoleController extends AbstractActionController
         }
     }
 
-    
+
     /**
      * recreate db and load data fixtures
      */
@@ -180,12 +173,12 @@ class ConsoleController extends AbstractActionController
         $php = "/usr/local/bin/php";
 
 
-        $commands = array(
+        $commands = [
             "$php $dir/public/index.php orm:schema-tool:drop --force",
             "$php $dir/public/index.php orm:schema-tool:create",
             "$php $dir/public/index.php data-fixture:import",
             "$php $dir/public/index.php openstore recreatedbextra",
-        );
+        ];
 
         foreach ($commands as $command) {
             echo "Executing $command\n";
@@ -194,8 +187,8 @@ class ConsoleController extends AbstractActionController
 
         $this->adapter->query("ALTER TABLE `product_search` ADD FULLTEXT(`keywords`)")->execute();
     }
-    
-    
+
+
     /**
      * #######################
      * # Cache actions       #
@@ -223,17 +216,17 @@ class ConsoleController extends AbstractActionController
             //$cache->clearByNamespace('Cache\SolubleMediaConverter');
         }
     }
-    
+
     /**
      * #######################
      * # Utilities #
      * #######################
      */
-    
+
     public function updateproductslugAction()
     {
         $console = Console::getInstance();
-        $queries = array();
+        $queries = [];
         $queries[] = "
 						update product_translation p18
 						inner join product p on p18.product_id = p.product_id
@@ -269,7 +262,7 @@ class ConsoleController extends AbstractActionController
         }
     }
 
- 
+
 
     public function relocategroupcategAction()
     {
@@ -280,7 +273,7 @@ class ConsoleController extends AbstractActionController
         $root_reference = 'ROOT';
 
         // If group categ does not exists
-        $rootCategory = $em->getRepository('OpenstoreSchema\Core\Entity\ProductCategory')->findOneBy(array('reference' => $root_reference));
+        $rootCategory = $em->getRepository('OpenstoreSchema\Core\Entity\ProductCategory')->findOneBy(['reference' => $root_reference]);
         if ($rootCategory === null) {
             $rootCategory = new \OpenstoreSchema\Core\Entity\ProductCategory();
             $rootCategory->setReference($root_reference);
@@ -328,7 +321,7 @@ class ConsoleController extends AbstractActionController
 
         $result = $em->getConnection()->query($update);
     }
-    
+
     /**
      * Recreate database extras
      */
@@ -342,5 +335,4 @@ class ConsoleController extends AbstractActionController
             $ret = $conn->exec($ddl);
         }
     }
-    
 }

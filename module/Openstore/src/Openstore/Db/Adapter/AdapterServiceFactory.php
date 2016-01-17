@@ -18,11 +18,11 @@ class AdapterServiceFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $dbParams = array(
+        $dbParams = [
             // buffer_results - only for mysqli buffered queries, skip for others
-            'options' => array('buffer_results' => true),
+            'options' => ['buffer_results' => true],
             'charset' => 'UTF8'
-        );
+        ];
 
         $dbal = $serviceLocator->get('doctrine.connection.orm_default');
         $mysqli = $dbal->getWrappedConnection()->getWrappedResourceHandle();
@@ -55,7 +55,7 @@ class AdapterServiceFactory implements FactoryInterface
         if (isset($dbParams['options']) && is_array($dbParams['options'])) {
             $options = $dbParams['options'];
         } else {
-            $options = array();
+            $options = [];
         }
         $adapter->injectProfilingStatementPrototype($options);
 

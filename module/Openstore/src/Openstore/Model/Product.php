@@ -45,6 +45,6 @@ class Product extends AbstractModel implements BrowsableInterface
                                 ]
         )
                                 ->getStore()->getData()->current();
-                                return $product;
+        return $product;
     }
 }

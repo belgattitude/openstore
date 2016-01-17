@@ -3,11 +3,9 @@
 namespace Openstore\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 use Openstore\Catalog\Helper\SearchParams;
 use Soluble\FlexStore\Writer\JsonWriter;
-use Openstore\Model\Product;
 
 class SearchController extends AbstractActionController
 {
@@ -53,7 +51,7 @@ class SearchController extends AbstractActionController
         )
                             ->setLimit(20, $offset = 0)
                             ->setColumns(
-                                array(
+                                [
                                     'product_id'        => new Expression('p.product_id'),
                                     'reference'        => new Expression('p.reference'),
                                     'display_reference'     => new Expression('COALESCE(p.display_reference, p.reference)'),
@@ -63,7 +61,7 @@ class SearchController extends AbstractActionController
                                     'title'            => new Expression('COALESCE(p18.title, p.title)'),
                                     'invoice_title'        => new Expression('COALESCE(p18.invoice_title, p.invoice_title)'),
                                     'picture_media_id'    => new Expression('pm.media_id'),
-                                )
+                                ]
                             )
                         ->addFilter($searchParams->getFilter());
 
@@ -93,10 +91,10 @@ class SearchController extends AbstractActionController
                             ->setLimit(20, $offset = 0)
                             ->addFilter($searchParams->getFilter());
 
-                            $store = $browser->getStore();
+        $store = $browser->getStore();
 
-                            $writer = new JsonWriter($store);
-                            $json = $writer->send();
-                            die();
+        $writer = new JsonWriter($store);
+        $json = $writer->send();
+        die();
     }
 }

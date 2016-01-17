@@ -31,9 +31,9 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
         /** @var \Zend\EventManager\SharedEventManager $sharedEvents */
         $sharedEvents = $moduleManager->getEventManager()->getSharedManager();
         //$sharedEvents->attach('Zend\Mvc\Controller\AbstractRestfulController', MvcEvent::EVENT_DISPATCH, array($this, 'postProcess'), -100);
-        $sharedEvents->attach(__NAMESPACE__, MvcEvent::EVENT_DISPATCH, array($this, 'postProcess'), -100);
+        $sharedEvents->attach(__NAMESPACE__, MvcEvent::EVENT_DISPATCH, [$this, 'postProcess'], -100);
         //$sharedEvents->attach('Zend\Mvc\Application', MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'errorProcess'), 999);
-        $sharedEvents->attach('Zend\Mvc\Application', MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'errorProcess'), 999);
+        $sharedEvents->attach('Zend\Mvc\Application', MvcEvent::EVENT_DISPATCH_ERROR, [$this, 'errorProcess'], 999);
 
         //$eventManager = $moduleManager->getEventManager();
         //$eventManager        = $e->getApplication()->getEventManager();
@@ -98,7 +98,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                         $lm = $e->getApplication()->getServiceManager()->get('LicenseManager');
                         $lic = $lm->get('libxl');
 
-                        LibXL::setDefaultLicense(array('name' => $lic['license_name'], 'key' => $lic['license_key']));
+                        LibXL::setDefaultLicense(['name' => $lic['license_name'], 'key' => $lic['license_key']]);
                         //LibXLWriter::setDefaultLicense($lic['license_name'], $lic['license_key']);
 
                         $libxlWriter = new LibXLWriter($vars);
@@ -124,12 +124,12 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                         }
 
 
-                        $options = array(
+                        $options = [
                             'field_separator' => CSVWriter::SEPARATOR_TAB,
                             'line_separator' => CSVWriter::SEPARATOR_NEWLINE_UNIX,
                             'enclosure' => $enclosure,
                             'escape' => '"'
-                        );
+                        ];
 
                         $charset = trim($_GET['charset']);
                         if ($charset != '') {
@@ -170,13 +170,13 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 
             $error_type = $eventParams['error'];
 
-            $body = array(
+            $body = [
                 'message' => $error_message,
                 'success' => 0,
-                'error' => array(
+                'error' => [
                     'type' => $error_type,
-                )
-            );
+                ]
+            ];
 
 
             if (isset($eventParams['exception'])) {
@@ -255,8 +255,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 
     public function getServiceConfig()
     {
-        return array(
-            'initializers' => array(
+        return [
+            'initializers' => [
                 'db' => function ($service, $sm) {
                     if ($service instanceof AdapterAwareInterface) {
                         $service->setDbAdapter($sm->get('Zend\Db\Adapter\Adapter'));
@@ -267,34 +267,34 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                         $service->setServiceLocator($sm);
                     }
                 }
-            ),
-            'factories' => array(
+            ],
+            'factories' => [
                 //'License\LicenceManager' => 'License\Service\LicenseManagerFactory',
                 //'Test' => function ($sm) { return 'cool'; }
                 'LicenseManager' => 'License\Service\LicenseManagerFactory'
-            ),
-            'aliases' => array(
-            ),
-            'invokables' => array(
+            ],
+            'aliases' => [
+            ],
+            'invokables' => [
                 'Authorize\ApiKeyAccess' => 'OpenstoreApi\Authorize\ApiKeyAccess',
                 'Api\ProductMediaService' => 'OpenstoreApi\Api\ProductMediaService',
                 'Api\ProductCatalogService' => 'OpenstoreApi\Api\ProductCatalogService',
                 'Api\ProductStockService' => 'OpenstoreApi\Api\ProductStockService',
                 'Api\ProductBrandService' => 'OpenstoreApi\Api\ProductBrandService',
                 'Api\NammProductCatalogService' => 'OpenstoreApi\Api\NammProductCatalogService',
-            )
-        );
+            ]
+        ];
     }
 
     public function getAutoloaderConfig()
     {
-        return array(
-            'Zend\Loader\StandardAutoloader' => array(
-                'namespaces' => array(
+        return [
+            'Zend\Loader\StandardAutoloader' => [
+                'namespaces' => [
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
                     'License' => __DIR__ . '/../Openstore/src/License'
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

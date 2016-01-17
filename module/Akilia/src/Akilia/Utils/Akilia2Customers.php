@@ -6,7 +6,6 @@ use Zend\Db\Adapter\Adapter;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Db\Adapter\AdapterAwareInterface;
-use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
 use Zend\Db\Sql\Expression;
@@ -50,15 +49,15 @@ class Akilia2Customers implements ServiceLocatorAwareInterface, AdapterAwareInte
         $bco  = new \Zend\Db\Sql\TableIdentifier('base_country', $akilia2db);
         $so = new \Zend\Db\Sql\TableIdentifier('sal_order', $akilia2db);
         $sol = new \Zend\Db\Sql\TableIdentifier('sal_order_line', $akilia2db);
-        $select->from(array("bc" => $bc), array())
-                ->join(array('bcg' => $bcg), "bc.id = bcg.customer_id", array(), Select::JOIN_LEFT)
-                ->join(array('bs' => $bs), "bs.id = bc.state_id", array(), Select::JOIN_LEFT)
-                ->join(array('bco' => $bco), "bco.id = bc.country_id", array(), Select::JOIN_LEFT)
-                ->join(array('so' => $so), "bc.id = so.customer_id", array(), Select::JOIN_INNER)
-                ->join(array('sol' => $sol), "so.id = sol.order_id", array(), Select::JOIN_INNER)
+        $select->from(["bc" => $bc], [])
+                ->join(['bcg' => $bcg], "bc.id = bcg.customer_id", [], Select::JOIN_LEFT)
+                ->join(['bs' => $bs], "bs.id = bc.state_id", [], Select::JOIN_LEFT)
+                ->join(['bco' => $bco], "bco.id = bc.country_id", [], Select::JOIN_LEFT)
+                ->join(['so' => $so], "bc.id = so.customer_id", [], Select::JOIN_INNER)
+                ->join(['sol' => $sol], "so.id = sol.order_id", [], Select::JOIN_INNER)
                ->where('bc.flag_archived <> 1');
 
-        $columns = array(
+        $columns = [
                 'customer_id'    => new Expression('bc.id'),
                 'name'            => new Expression('bc.name'),
                 'street'        => new Expression('bc.street'),
@@ -73,11 +72,11 @@ class Akilia2Customers implements ServiceLocatorAwareInterface, AdapterAwareInte
                 'latitude'    => new Expression('bcg.latitude'),
                 'longitude'    => new Expression('bcg.longitude'),
 
-            );
+            ];
 
-        $select->columns(array_merge($columns, array(
+        $select->columns(array_merge($columns, [
             'total_net' => new Expression('sum(sol.price_total_net)')
-        )), true);
+        ]), true);
 
 
         $select->group($columns);

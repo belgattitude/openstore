@@ -2,8 +2,6 @@
 
 namespace MMan\Service;
 
-use MMan\Service\Storage;
-use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Gaufrette\Adapter as GAdapter;
@@ -18,7 +16,7 @@ class StorageFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $config = $serviceLocator->get('Config');
-        $config = isset($config['mediamanager']) ? $config['mediamanager'] : array();
+        $config = isset($config['mediamanager']) ? $config['mediamanager'] : [];
         if (empty($config)) {
             throw new \Exception("Cannot locate media manager configuration, please review your configuration.");
         }

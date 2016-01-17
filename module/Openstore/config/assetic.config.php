@@ -2,60 +2,60 @@
 
 //namespace Openstore;
 //die('cool');
-return array(
-    'assetic_configuration' => array(
+return [
+    'assetic_configuration' => [
         'debug' => true,
         'buildOnRequest' => false,
-        'default' => array(
-            'assets' => array(
+        'default' => [
+            'assets' => [
                 '@bootstrap_base_css',
                 '@bootstrap_base_js',
-            ),
-            'options' => array(
+            ],
+            'options' => [
                 'mixin' => true
-            ),
-        ),
-        'routes' => array(
-            'test' => array(
+            ],
+        ],
+        'routes' => [
+            'test' => [
                 '@base_js',
                 '@base_css',
-            ),
-        ),
+            ],
+        ],
         'webPath' => realpath('public/assets/builds'),
         'basePath' => 'assets',
-        'modules' => array(
-            'openstore' => array(
+        'modules' => [
+            'openstore' => [
                 //'root_path' => __DIR__ . '/../assets',
                 'root_path' => realpath('public/assets'),
-                'collections' => array(
-                    'bootstrap_base_js' => array(
-                        'assets' => array(
+                'collections' => [
+                    'bootstrap_base_js' => [
+                        'assets' => [
                             'vendor/bootstrap/dist/css/bootstrap.min.css',
                         //'css/base_style.css',
-                        ),
-                        'filters' => array(
-                            'CssRewriteFilter' => array(
+                        ],
+                        'filters' => [
+                            'CssRewriteFilter' => [
                                 'name' => 'Assetic\Filter\CssRewriteFilter'
-                            )
-                        ),
-                    ),
-                    'bootstrap_base_css' => array(
-                        'assets' => array(
+                            ]
+                        ],
+                    ],
+                    'bootstrap_base_css' => [
+                        'assets' => [
                             'vendor/jquery/dist/jquery.min.js',
                             'vendor/bootstrap/dist/js/bootstrap.min.js',
-                        )
-                    ),
-                    'base_images' => array(
-                        'assets' => array(
+                        ]
+                    ],
+                    'base_images' => [
+                        'assets' => [
                             'images/*.png',
                             'images/*.ico',
-                        ),
-                        'options' => array(
+                        ],
+                        'options' => [
                             'move_raw' => true,
-                        )
-                    ),
-                ),
-            ),
-        ),
-    ),
-);
+                        ]
+                    ],
+                ],
+            ],
+        ],
+    ],
+];

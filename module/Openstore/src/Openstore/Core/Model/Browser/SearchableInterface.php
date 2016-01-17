@@ -2,8 +2,6 @@
 
 namespace Openstore\Core\Model\Browser;
 
-use Openstore\Core\Model\Browser\Search\Params;
-
 interface SearchableInterface
 {
     /**

@@ -3,7 +3,6 @@
 namespace Akilia\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Console\Request as ConsoleRequest;
 use Zend\Console\Console;
 use Zend\Console\ColorInterface;
 use Zend\Db\Adapter\Adapter;
@@ -99,9 +98,9 @@ class ConsoleController extends AbstractActionController
             $nb_errors = count($result);
             if ($nb_errors > 0) {
                 echo " -> [Error] $nb_errors returned :\n";
-                echo "\t" . join("\t", array_keys($result[0])) . "\n";
+                echo "\t" . implode("\t", array_keys($result[0])) . "\n";
                 foreach ($result as $row) {
-                    echo "\t" . join("\t", $row) . "\n";
+                    echo "\t" . implode("\t", $row) . "\n";
                 }
                 echo " Check with query : " . preg_replace("/(\n)(\t)/", ' ', $query) . "\n";
             } else {
@@ -204,7 +203,7 @@ class ConsoleController extends AbstractActionController
 
                         $insert = $sql->insert($bcg);
                         $now = date('Y-m-d H:i:s');
-                        $newData = array(
+                        $newData = [
                             'customer_id' => $r['customer_id'],
                             'longitude' => $longitude,
                             'latitude' => $latitude,
@@ -213,7 +212,7 @@ class ConsoleController extends AbstractActionController
                             'geocoded_at' => $now,
                             'created_at' => $now,
                             'updated_at' => $now,
-                        );
+                        ];
                         //var_dump($newData);
                         $insert->values($newData);
                         $selectString = $sql->getSqlStringForSqlObject($insert);
@@ -270,7 +269,7 @@ class ConsoleController extends AbstractActionController
         }
 
 
-        $archivable = array();
+        $archivable = [];
         foreach ($list as $basename => $infos) {
             if (!$infos['product_active']) {
                 $archivable[] = $infos['filename'];
@@ -330,7 +329,7 @@ class ConsoleController extends AbstractActionController
         }
 
 
-        $archivable = array();
+        $archivable = [];
         foreach ($list as $basename => $infos) {
             if (!$infos['product_active']) {
                 $archivable[] = $infos['filename'];

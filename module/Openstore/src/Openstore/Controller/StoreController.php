@@ -10,14 +10,9 @@
 
 namespace Openstore\Controller;
 
-use OpenstoreSchema\Core\Entity;
-use Openstore\Catalog\Browser\ProductFilter;
 use Openstore\Permission;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Zend\View\Model\JsonModel;
-use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Expression;
 use Openstore\Catalog\Helper\SearchParams;
 
 class StoreController extends AbstractActionController
@@ -78,31 +73,31 @@ class StoreController extends AbstractActionController
                             ]
         );
 
-                            $product = $productBrowser->getStore()->getData()->current();
-                            $view->product = $product;
+        $product = $productBrowser->getStore()->getData()->current();
+        $view->product = $product;
 
 
         /**
          * Assign other items
          */
                             $searchParams = new SearchParams();
-                            $searchParams->setServiceLocator($this->getServiceLocator());
-                            $searchParams->setLanguage($language);
-                            $searchParams->setPricelist($pricelist);
-                            $searchParams->setBrands($product->brand_reference);
-                            $searchParams->setCategories($product->category_reference);
+        $searchParams->setServiceLocator($this->getServiceLocator());
+        $searchParams->setLanguage($language);
+        $searchParams->setPricelist($pricelist);
+        $searchParams->setBrands($product->brand_reference);
+        $searchParams->setCategories($product->category_reference);
 
-                            $browser_items = $this->getBrowserItems($searchParams);
-                            $view->categories = $browser_items['categories'];
-                            $view->brands = $browser_items['brands'];
+        $browser_items = $this->getBrowserItems($searchParams);
+        $view->categories = $browser_items['categories'];
+        $view->brands = $browser_items['brands'];
 
         // Setting other variables
                             $view->searchParams = $searchParams;
 
-                            $category = $this->service->getModel('Model\Category');
-                            $view->category_breadcrumb = $category->getAncestors($searchParams->getFirstCategory(), $language);
+        $category = $this->service->getModel('Model\Category');
+        $view->category_breadcrumb = $category->getAncestors($searchParams->getFirstCategory(), $language);
 
-                            return $view;
+        return $view;
     }
 
     /**
@@ -152,24 +147,24 @@ class StoreController extends AbstractActionController
                             ->setLimit($searchParams->getLimit(), $searchParams->getOffset())
                             ->addFilter($searchParams->getFilter());
 
-                            $view->products = $productBrowser->getStore()->getData();
+        $view->products = $productBrowser->getStore()->getData();
 
         /**
          * Breadcrumb
          */
                             $category = $this->service->getModel('Model\Category');
-                            $view->category_breadcrumb = $category->getAncestors($searchParams->getFirstCategory(), $language);
+        $view->category_breadcrumb = $category->getAncestors($searchParams->getFirstCategory(), $language);
 
         // Setting other variables
                             $view->searchParams = $searchParams;
 
-                            return $view;
+        return $view;
     }
 
 
     protected function getBrowserItems($searchParams)
     {
-        $items = array();
+        $items = [];
 
 
         $language = $searchParams->getLanguage();
@@ -192,13 +187,13 @@ class StoreController extends AbstractActionController
                             ->setOption('expanded_category', $searchParams->getFirstCategory())
                             ->addFilter($searchParams->getFilter());
 
-                            $items['categories'] = $categoryBrowser->getStore()->getData();
+        $items['categories'] = $categoryBrowser->getStore()->getData();
 
         /**
          * Brand browser
          */
                             $brand = $this->service->getModel('Model\Brand');
-                            $brandBrowser = $brand->getBrowser()->setSearchParams(
+        $brandBrowser = $brand->getBrowser()->setSearchParams(
                                 [
                                 'language'     => $language,
                                 'pricelist'  => $pricelist,
@@ -206,8 +201,8 @@ class StoreController extends AbstractActionController
                             )
                             ->addFilter($searchParams->getFilter());
 
-                            $items['brands'] = $brandBrowser->getStore()->getData();
+        $items['brands'] = $brandBrowser->getStore()->getData();
 
-                            return $items;
+        return $items;
     }
 }

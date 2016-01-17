@@ -4,15 +4,13 @@ namespace OpenstoreApi\Controller;
 
 //use OpenstoreApi\Api\MediaService;
 use OpenstoreApi\Mvc\Controller\AbstractRestfulController;
-use Zend\EventManager\EventManagerInterface;
 use Zend\View\Model\JsonModel;
-use Zend\Mvc\MvcEvent;
 
 class ProductBrandController extends AbstractRestfulController
 {
-    protected $collectionOptions = array('GET');
+    protected $collectionOptions = ['GET'];
     //protected $resourceOptions = array('GET');
-    protected $resourceOptions = array();
+    protected $resourceOptions = [];
 
     /**
      *

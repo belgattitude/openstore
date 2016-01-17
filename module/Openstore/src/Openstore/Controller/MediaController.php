@@ -43,7 +43,7 @@ class MediaController extends AbstractActionController
         }
 
         preg_match_all($regexp, $options, $matches);
-        $params = array();
+        $params = [];
         $params['width'] = $matches[2][0];
         $params['height'] = $matches[3][0];
         $params['quality'] = $matches[4][0];
@@ -92,19 +92,19 @@ class MediaController extends AbstractActionController
                     // test params;
                     $resolutions = $this->getAcceptedResolutions();
                     if (!in_array($params['resolution'], $resolutions)) {
-                        throw new \Exception("Invalid resolution requested, only supported: " . join(',', $resolutions));
+                        throw new \Exception("Invalid resolution requested, only supported: " . implode(',', $resolutions));
                     }
                     $formats = $this->getAcceptedFormats();
                     if (!in_array($format, $formats)) {
-                        throw new \Exception("Invalid format requested, only supported: " . join(',', $formats));
+                        throw new \Exception("Invalid format requested, only supported: " . implode(',', $formats));
                     }
                     $qualities = $this->getAcceptedQualities();
                     if (!in_array($params['quality'], $qualities)) {
-                        throw new \Exception("Invalid quality requested, only supported: " . join(',', $qualities));
+                        throw new \Exception("Invalid quality requested, only supported: " . implode(',', $qualities));
                     }
 
 
-                    $imageManager = new ImageManager(array('driver' => 'imagick'));
+                    $imageManager = new ImageManager(['driver' => 'imagick']);
                     //var_dump($params); die();
                     $media = $mediaManager->get($id);
                     $filename = $media->getPath();
@@ -134,8 +134,8 @@ class MediaController extends AbstractActionController
 
 
                         // Check if there's already some previews in the directory
-                        $obsolete_previews = array();
-                        $links_to_create = array();
+                        $obsolete_previews = [];
+                        $links_to_create = [];
 
                     if (is_dir($cache_path)) {
                         $finder = new Finder();
@@ -219,7 +219,7 @@ class MediaController extends AbstractActionController
             }
         } catch (\Exception $e) {
             $this->notFoundAction();
-            return array('message' => $e->getMessage());
+            return ['message' => $e->getMessage()];
         }
     }
 
@@ -264,12 +264,12 @@ class MediaController extends AbstractActionController
         $tm = $this->getTableManager();
         $pmTable = $tm->table('product_media');
         $search = $pmTable->search('pm')
-                    ->join(array('pmt' => 'product_media_type'), 'pmt.type_id = pm.type_id')
-                    ->where(array(
+                    ->join(['pmt' => 'product_media_type'], 'pmt.type_id = pm.type_id')
+                    ->where([
                                     'pm.product_id' => $product_id,
                                     'pm.flag_primary' => 1,
                                     'pmt.reference' => 'PICTURE'
-                      ))->execute();
+                      ])->execute();
         if ($search->count() > 0) {
             $media_id = $search->current()->media_id;
         } else {
@@ -290,12 +290,12 @@ class MediaController extends AbstractActionController
             case 'product':
                 $pmTable = $tm->table('product_media');
                 $search = $pmTable->search('pm')
-                    ->join(array('pmt' => 'product_media_type'), 'pmt.type_id = pm.type_id')
-                    ->where(array(
+                    ->join(['pmt' => 'product_media_type'], 'pmt.type_id = pm.type_id')
+                    ->where([
                                 'pm.product_id' => $id,
                                 'pm.flag_primary' => 1,
                                 'pmt.reference' => 'PICTURE'
-                            ))
+                            ])
                     ->execute();
                 if ($search->count() > 0) {
                     $media_id = $search->current()->media_id;
@@ -325,7 +325,7 @@ class MediaController extends AbstractActionController
             if ($resolution == '') {
                 $resolution = '1200x1200';
             } elseif (!in_array($resolution, $this->getAcceptedResolutions())) {
-                $valid = join(',', $this->getAcceptedResolutions());
+                $valid = implode(',', $this->getAcceptedResolutions());
                 throw new \Exception("Requested resolution '$resolution' is forbidden, supported: '$valid'.");
             }
             // Quality
@@ -333,7 +333,7 @@ class MediaController extends AbstractActionController
             if ($quality == '') {
                 $quality = 90;
             } elseif (!in_array($quality, $this->getAcceptedQualities())) {
-                $valid = join(',', $this->getAcceptedQualities());
+                $valid = implode(',', $this->getAcceptedQualities());
                 throw new \Exception("Requested quality '$quality' is forbidden, supported: '$valid'.");
             }
             // Format
@@ -341,7 +341,7 @@ class MediaController extends AbstractActionController
             if ($format == '') {
                 $format = 'jpg';
             } elseif (!in_array($format, $this->getAcceptedFormats())) {
-                $valid = join(',', $this->getAcceptedFormats());
+                $valid = implode(',', $this->getAcceptedFormats());
                 throw new \Exception("Requested format '$quality' is forbidden, supported: '$valid'.");
             }
         } catch (\Exception $e) {
@@ -388,22 +388,22 @@ class MediaController extends AbstractActionController
     protected function getImageConverter()
     {
         $converter = $this->getServiceLocator()->get('Soluble\Media\Converter');
-        $params = array('backend' => 'imagick');
+        $params = ['backend' => 'imagick'];
         $imageConverter = $converter->createConverter('image', $params);
         return $imageConverter;
     }
 
     protected function getAcceptedFormats()
     {
-        $accepted = array(
+        $accepted = [
         'jpg', 'png'
-        );
+        ];
         return $accepted;
     }
 
     protected function getAcceptedResolutions()
     {
-        $accepted =  array(
+        $accepted =  [
         '30x30',        // for typeahead
         '40x40',        // for emdmusic.com typeahed (mini)
         '65x90',        // for old emdmusic.com website 'small pictures' and browse
@@ -414,15 +414,15 @@ class MediaController extends AbstractActionController
         '1280x1024',    // for emdmusic.com info page
         '1200x1200',
         '3000x3000'        // for printing in high resolution
-        );
+        ];
         return $accepted;
     }
 
     protected function getAcceptedQualities()
     {
-        $accepted = array(
+        $accepted = [
         80, 85, 90, 95
-        );
+        ];
         return $accepted;
     }
 }

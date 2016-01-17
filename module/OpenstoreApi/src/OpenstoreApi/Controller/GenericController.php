@@ -5,13 +5,12 @@ namespace OpenstoreApi\Controller;
 use OpenstoreApi\Mvc\Controller\AbstractRestfulController;
 use OpenstoreApi\Authorize\ApiKeyAccess;
 use Zend\View\Model\ViewModel;
-use Soluble\FlexStore\Options;
 
 class GenericController extends AbstractRestfulController
 {
-    protected $collectionOptions = array('GET');
+    protected $collectionOptions = ['GET'];
     //protected $resourceOptions = array('GET');
-    protected $resourceOptions = array();
+    protected $resourceOptions = [];
 
     /**
      *
@@ -99,10 +98,10 @@ class GenericController extends AbstractRestfulController
         $view_renderer = $this->getViewRenderer();
 
 
-        $view = new ViewModel(array(
+        $view = new ViewModel([
             //'data' => $store->getSource()->getData(),
             'store' => $store,
-        ));
+        ]);
 
         $view->setTemplate($view_template);
 
@@ -167,9 +166,9 @@ class GenericController extends AbstractRestfulController
     protected function getViewRenderer()
     {
         $renderer = new \Zend\View\Renderer\PhpRenderer();
-        $resolver = new \Zend\View\Resolver\TemplatePathStack(array(
-            'script_paths' => array(
-                $this->view_directory)));
+        $resolver = new \Zend\View\Resolver\TemplatePathStack([
+            'script_paths' => [
+                $this->view_directory]]);
         $renderer->setResolver($resolver);
         return $renderer;
     }
@@ -182,36 +181,36 @@ class GenericController extends AbstractRestfulController
      */
     protected function getRegisteredTemplates()
     {
-        $templates = array(
-            'namm_item_v2007.1' => array(
-                'view' => array(
+        $templates = [
+            'namm_item_v2007.1' => [
+                'view' => [
                     'list' => 'namm_b2b/namm_item_v2007.1.phtml'
-                ),
-                'validate' => array(
+                ],
+                'validate' => [
                     'list' => 'namm_b2b/xsd/item_v2007.1.xsd'
-                ),
-                'filename' => array(
+                ],
+                'filename' => [
                     'list' => 'namm_item_v2007.1.xml'
-                ),
-                'check_service_access' => array(
+                ],
+                'check_service_access' => [
                     '2000-ProductCatalog'
-                )
-            ),
-            'namm_item_v2011.1' => array(
-                'view' => array(
+                ]
+            ],
+            'namm_item_v2011.1' => [
+                'view' => [
                     'list' => 'namm_b2b/namm_item_v2011.1.phtml'
-                ),
-                'validate' => array(
+                ],
+                'validate' => [
                     'list' => 'namm_b2b/xsd/item_v2011.1.xsd'
-                ),
-                'filename' => array(
+                ],
+                'filename' => [
                     'list' => 'namm_item_v2011.1.xml'
-                ),
-                'check_service_access' => array(
+                ],
+                'check_service_access' => [
                     '2000-ProductCatalog'
-                )
-            )
-        );
+                ]
+            ]
+        ];
         return $templates;
     }
 }
