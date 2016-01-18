@@ -173,7 +173,7 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
      */
     protected function initStoreFormatters(Store $store, array $params)
     {
-        $pricelist_reference = $params['pricelist'];
+        $pricelist_reference = isset($params['pricelist']) ? $params['pricelist'] : '';
         $customer_id = isset($params['customer_id']) ? $params['customer_id'] : null;
 
         //$currency
