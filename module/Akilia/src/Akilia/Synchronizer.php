@@ -761,6 +761,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     discount_2,
                     discount_3,
                     discount_4,
+                    maximum_discount_1,                    
                     sale_minimum_qty,
                     is_promotional,
                     is_liquidation,
@@ -789,6 +790,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     COALESCE(t.remise2, 0) as discount_2,
                     COALESCE(t.remise3, 0) as discount_3,
                     COALESCE(t.remise4, 0) as discount_4,
+                    t.max_discount_1 as maximum_discount_1,
 
                     if(t.sale_min_qty > 0, t.sale_min_qty, null) as sale_minimum_qty,
                     if(t.flag_promo = 1 and (t.remise1 > 0 or t.remise2 > 0), 1, 0) as is_promotional,
@@ -831,7 +833,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     discount_2 = COALESCE(t.remise2, 0),
                     discount_3 = COALESCE(t.remise3, 0),
                     discount_4 = COALESCE(t.remise4, 0),
-
+                    maximum_discount_1 = t.max_discount_1,
                     sale_minimum_qty = if(t.sale_min_qty > 0, t.sale_min_qty, null),
                     is_promotional = if(t.flag_promo = 1 and (t.remise1 > 0 or t.remise2 > 0), 1, 0),
                     is_liquidation = if(t.flag_liquidation = 1 and (t.remise1 > 0 or t.remise2 > 0), 1, 0),
@@ -1816,6 +1818,13 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
      */
     public function synchronizeProductTranslation(array $product_ids = null)
     {
+        
+        if (!$this->configuration['options']['product_translation']['enabled']) {
+            $this->log("Skipping product translation synchro [disabled by config]");
+            return;
+        }
+        
+        
         $akilia1db = $this->akilia1Db;
         $db = $this->openstoreDb;
         $intelaccessDb = $this->intelaccessDb;

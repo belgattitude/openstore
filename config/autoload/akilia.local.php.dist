@@ -68,6 +68,9 @@ return array(
                          * 
                          */
                 ]
+                'product_translation' => [
+                        'enabled' => true
+                ]
             ),
             
             
