@@ -156,6 +156,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
     public function synchronizeAll()
     {
+        
         $this->synchronizeCountry();
         $this->synchronizeCustomer();
         $this->synchronizeApi();
@@ -735,8 +736,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
         foreach ($elements as $key => $element) {
             $akilia1Db = $element['akilia1db'];
-
-
             $pricelists_clause = "";
             if (count($element['pricelists']) > 0) {
                 $pls = [];
@@ -813,7 +812,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 where 
                     t.prix_unit_ht > 0
                     $pricelists_clause
-
+                        
                 on duplicate key update
                     product_id = p.product_id,
                     pricelist_id = pl.pricelist_id, 

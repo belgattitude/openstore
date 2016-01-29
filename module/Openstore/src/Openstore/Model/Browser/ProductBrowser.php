@@ -115,6 +115,7 @@ class ProductBrowser extends AbstractBrowser
         $params = $this->getSearchParams();
 
         $enable_packaging_columns = ($params['enable_packaging_columns'] === true);
+        $enable_stat_columns = ($params['enable_stat_columns'] === true);
 
         $lang = $params->get('language');
         $pricelist = $params->get('pricelist');
@@ -269,8 +270,19 @@ class ProductBrowser extends AbstractBrowser
             if ($enable_packaging_columns) {
                 $columns = array_merge($columns, $this->getPackagingColumns());
             }
+            
+            if ($enable_stat_columns) {
+                $columns = array_merge($columns, [
+                   'first_sale_recorded_at' => new Expression('ppls.first_sale_recorded_at'),
+                   'latest_sale_recorded_at' => new Expression('ppls.latest_sale_recorded_at'), 
+                   'nb_customers'           => new Expression('ppls.nb_customers'),
+                   'nb_sale_reps'           => new Expression('ppls.nb_sale_reps'),
+                   'nb_orders'              => new Expression('ppls.nb_orders'),
+                   'total_recorded_quantity' => new Expression('ppls.total_recorded_quantity'),
+                   'total_recorded_turnover' => new Expression('ppls.total_recorded_turnover')
+                ]);
+            }
         }
-
 
         $select->columns($columns, true);
 
