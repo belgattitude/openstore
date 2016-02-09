@@ -11,6 +11,7 @@ use Zend\Db\Adapter\Adapter;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Db\Adapter\AdapterAwareInterface;
+use Carbon\Carbon;
 
 function convertMemorySize($size)
 {
@@ -157,6 +158,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     public function synchronizeAll()
     {
         
+                
         $this->synchronizeCountry();
         $this->synchronizeCustomer();
         $this->synchronizeApi();
@@ -183,6 +185,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->rebuildProductSearch();
 
         $this->processGuessedDiametersAndFormat();
+        
+        
+        $this->synchronizeProductStatTrend();
 
         /**
          * INSERT INTO `nuvolia`.`user_scope` (
@@ -856,6 +861,143 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->executeSQL("Delete eventual removed product_pricelist", $delete);
     }
 
+    public function synchronizeProductStatTrend() {
+
+        
+        
+        if (!$this->configuration['options']['product_stat_trend']['enabled']) {
+            $this->log("Skipping product_stat_trend synchro [disabled by config]");
+            return;
+        } else {
+            $this->log("Creating product_stat_trend (may take a while)");
+        }
+        
+        
+        $akilia1db = $this->configuration['options']['product_stat_trend']['akilia1db'];
+        
+        $db = $this->openstoreDb;
+        
+        $date_column = 'c.date_commande';
+        $trend_columns = [
+            'nb_customers' => "COUNT(DISTINCT IF($date_column %period%, c.id_client, null))",
+            'nb_sale_reps' => "COUNT(DISTINCT IF($date_column %period%, c.id_representant, null))",
+            'nb_orders'    => "COUNT(DISTINCT IF($date_column %period%, c.id_commande, null))",
+            'total_recorded_quantity' => "SUM(IF($date_column %period%, l.qty_commande, 0))",
+            'total_recorded_turnover' => "SUM(IF($date_column %period%, l.total_ht, 0))"
+        ];
+        
+        $now = Carbon::now(new \DateTimeZone('Europe/Brussels'));
+        $today = $now->format('Y-m-d');
+        
+        $periods = [
+            'last_month' => "BETWEEN '" . $now->copy()->subMonth(1)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_2_months' => "BETWEEN '" . $now->copy()->subMonth(2)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_3_months' => "BETWEEN '" . $now->copy()->subMonth(3)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_4_months' => "BETWEEN '" . $now->copy()->subMonth(4)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_5_months' => "BETWEEN '" . $now->copy()->subMonth(5)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_6_months' => "BETWEEN '" . $now->copy()->subMonth(6)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_12_months' => "BETWEEN '" . $now->copy()->subMonth(12)->format('Y-m-d') . "' AND '" . $today . "'",
+        ];
+        
+        $columns = [];
+        foreach($periods as $suffix => $period) {
+            foreach($trend_columns as $name => $cond) {
+                $condition = str_replace('%period%', $period, $cond);
+                $new_column = $name . '_' .  $suffix;
+                $columns[$new_column] = $condition . ' AS ' . $new_column;
+            }
+        }
+
+        $plstats_columns = join(",\n", array_map(function($col) { return "plstats.$col"; }, array_keys($columns)));
+        $inner_columns = join(",\n", array_values($columns));
+        $stat_columns = join(",\n", array_keys($columns));
+        $update_columns = join(",\n", array_map(function($col) { return "$col = plstats.$col"; }, array_keys($columns)));
+
+        
+        $replace = "
+
+                INSERT into $db.product_stat_trend(
+                    product_id,
+                    pricelist_id,
+                    first_sale_recorded_at,
+                    latest_sale_recorded_at,
+                    nb_customers,
+                    nb_sale_reps,
+                    nb_orders,
+                    total_recorded_quantity,
+                    total_recorded_turnover,
+                    $stat_columns,
+                    legacy_synchro_at
+                )
+                (
+                 SELECT 
+                    p.product_id,
+                    pl.pricelist_id,
+
+                    plstats.first_sale_recorded_at,
+                    plstats.latest_sale_recorded_at,
+
+                    plstats.nb_customers,
+                    plstats.nb_sale_reps,
+                    plstats.nb_orders,
+                    plstats.total_recorded_quantity,
+                    plstats.total_recorded_turnover,
+
+                    $plstats_columns,
+
+                    '{$this->legacy_synchro_at}' AS legacy_synchro_at
+                 FROM
+                    (SELECT 
+                        l.id_article,
+                        c.code_tarif,
+                        MIN(c.date_commande) AS first_sale_recorded_at,
+                        MAX(c.date_commande) AS latest_sale_recorded_at,
+                        COUNT(DISTINCT c.id_client) AS nb_customers,
+                        COUNT(DISTINCT c.id_representant) AS nb_sale_reps,
+                        COUNT(DISTINCT c.id_commande) AS nb_orders,
+                        SUM(l.qty_commande) AS total_recorded_quantity,
+                        SUM(l.total_ht) AS total_recorded_turnover,
+
+                        $inner_columns
+
+
+                    FROM
+                        $akilia1db.commande c
+                    INNER JOIN $akilia1db.ligne_commande l ON c.id_commande = l.id_commande
+                    WHERE
+                        1 = 1 
+                    GROUP BY 1 , 2
+                ) AS plstats
+
+                
+               INNER JOIN $db.product p ON p.legacy_mapping = plstats.id_article
+               INNER JOIN $db.pricelist pl ON pl.legacy_mapping = plstats.code_tarif
+               ORDER BY p.product_id, pl.pricelist_id
+            )    
+            ON DUPLICATE KEY UPDATE
+                first_sale_recorded_at = plstats.first_sale_recorded_at,
+                latest_sale_recorded_at = plstats.latest_sale_recorded_at,
+                nb_customers = plstats.nb_customers,
+                nb_sale_reps = plstats.nb_sale_reps,
+                nb_orders = plstats.nb_orders,
+                total_recorded_quantity = plstats.total_recorded_quantity,
+                total_recorded_turnover = plstats.total_recorded_turnover,
+                $update_columns,
+                legacy_synchro_at = '{$this->legacy_synchro_at}'
+        ";
+        
+        $this->executeSQL("Replace product stat trend ", $replace);                
+
+        $delete = "
+            delete from $db.product_pricelist_stat
+            where legacy_synchro_at < '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+
+        $this->executeSQL("Removing eventual product stat trends", $delete);
+        
+        
+        
+    }
+    
     public function synchronizeProductPricelistStat()
     {
         if (!isset($this->configuration['options']['product_pricelist'])) {
@@ -979,6 +1121,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
             $this->executeSQL("Replace product pricelist stats for pricelist sales [$key] ", $replace);
         }
+        
 
         // 2. Deleting - old forecasted monthly sales (only !!!)
         $update = "

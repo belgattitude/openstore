@@ -67,9 +67,13 @@ return array(
                         ]
                          * 
                          */
-                ]
+                ],
                 'product_translation' => [
                         'enabled' => true
+                ],
+                'product_stat_trend' => [
+                    'enabled' => false,
+                    'akilia1db' => 'emd10'
                 ]
             ),
             
