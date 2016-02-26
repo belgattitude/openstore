@@ -1343,7 +1343,17 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     inner join product_category pc2 on pc2.reference = 
                             IF(SUBSTRING(pc.reference FROM 1 FOR 4) in ('PIAC'), SUBSTRING(pc.reference FROM 1 FOR 8),
                                     -- categories on level 8 (only pianos)
-                                    IF(SUBSTRING(pc.reference FROM 1 FOR 4) IN ('ACCB','DRCG','DRRH','ACST','PIAC','ACCA','GTAC','GTAT','ACBG','GTEL'), 
+                                    IF(SUBSTRING(pc.reference FROM 1 FOR 4) IN (
+                                            'ACCB',
+                                            'DRCG',
+                                            'ACCA',
+                                            'ACBG',
+                                            'DRRH',
+                                            'ACST',
+                                            'PIAC',
+                                            'GTAC',
+                                            'GTAT',
+                                            'GTEL'), 
                                             -- categories on level 6
                                             SUBSTRING(pc.reference FROM 1 FOR 6),
 
@@ -1351,7 +1361,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                                             SUBSTRING(pc.reference FROM 1 FOR 4))
 
                             )
-                    inner join product p on p.category_id = pc2.category_id
+                    inner join product p on p.category_id = pc.category_id
             ) as rankable_category on product_category.category_id = rankable_category.category_id			
             set product_category.flag_rankable = if (rankable_category.category_id is null, null, 1)
 

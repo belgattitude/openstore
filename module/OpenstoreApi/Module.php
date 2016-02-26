@@ -8,7 +8,7 @@ use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Soluble\FlexStore\FlexStoreInterface;
+use Soluble\FlexStore\Store\StoreInterface;
 use Soluble\FlexStore\Writer\Zend\JsonWriter;
 use Soluble\FlexStore\Writer\CSVWriter;
 use Soluble\FlexStore\Writer\Excel\LibXLWriter;
