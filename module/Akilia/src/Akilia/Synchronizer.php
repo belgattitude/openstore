@@ -187,10 +187,11 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
         
         
+        // This is emd
+        $this->flagRankableCategories();         
         $this->synchronizeProductStatTrend();
 
-        // This is emd
-        $this->flagRankableCategories();             
+                    
         $this->processGuessedDiametersAndFormat();
         
         
