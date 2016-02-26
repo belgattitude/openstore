@@ -159,7 +159,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     {
         
 
-
         $this->synchronizeCountry();
         $this->synchronizeCustomer();
         $this->synchronizeApi();
@@ -972,7 +971,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         1 = 1 
                     GROUP BY 1 , 2
                 ) AS plstats
-
                 
                INNER JOIN $db.product p ON p.legacy_mapping = plstats.id_article
                INNER JOIN $db.pricelist pl ON pl.legacy_mapping = plstats.code_tarif
@@ -989,7 +987,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 $update_columns,
                 legacy_synchro_at = '{$this->legacy_synchro_at}'
         ";
-        
+echo $replace;
+die();
         $this->executeSQL("Replace product stat trend ", $replace);                
 
         $delete = "

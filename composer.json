@@ -17,6 +17,7 @@
         
         "zendframework/zendframework": "^2.5",
         
+        
         "doctrine/orm": "^2.5.4",
         "doctrine/dbal": "^2.5.4",
         "doctrine/common": "^2.5 || ^2.6",
