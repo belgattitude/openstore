@@ -9,7 +9,7 @@ class ProductBrandService extends AbstractService
 {
     /**
      * @param array $params [brands,pricelists]
-     * @return \Soluble\FlexStore\Store
+     * @return \Soluble\FlexStore\FlexStore
      */
     public function getList(array $params = [])
     {

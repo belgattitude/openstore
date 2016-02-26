@@ -9,7 +9,7 @@ class ProductMediaService extends AbstractService
 {
     /**
      * @param array $params [types,brands,pricelists]
-     * @return \Soluble\FlexStore\Store
+     * @return \Soluble\FlexStore\FlexStore
      */
     public function getList(array $params = [])
     {

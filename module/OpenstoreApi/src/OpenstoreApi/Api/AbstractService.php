@@ -8,7 +8,7 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Soluble\FlexStore\Store;
+use Soluble\FlexStore\FlexStore;
 use Soluble\FlexStore\Source\Zend\SqlSource;
 use Openstore\Store\Renderer\RowPictureRenderer;
 use Openstore\Store\Renderer\DateMinRenderer;
@@ -102,16 +102,16 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
      */
     public function getStore(Select $select = null)
     {
-        return new Store(new SqlSource($this->getDbAdapter(), $select));
+        return new FlexStore(new SqlSource($this->getDbAdapter(), $select));
     }
 
 
     /**
      * Prevent next_available_stock_at to be in the past
      *
-     * @param Store $store
+     * @param FlexStore $store
      */
-    protected function addNextAvailableStockAtRenderer(Store $store, $date_column = 'next_available_stock_at')
+    protected function addNextAvailableStockAtRenderer(FlexStore $store, $date_column = 'next_available_stock_at')
     {
         $cm = $store->getColumnModel();
 
@@ -125,12 +125,12 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
 
     /**
      *
-     * @param Store $store
+     * @param FlexStore $store
      * @param string $media_column column name containing the media_id
      * @param string $insert_after insert after column name
      * @param string $filemtime_column column containing the file modification time of the picture
      */
-    protected function addStorePictureRenderer(Store $store, $media_column, $insert_after, $filemtime_column = null)
+    protected function addStorePictureRenderer(FlexStore $store, $media_column, $insert_after, $filemtime_column = null)
     {
         $cm = $store->getColumnModel();
 
@@ -167,11 +167,11 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
 
     /**
      * Initialize column model
-     * @param Store $store
+     * @param FlexStore $store
      * @param array $params
      * @return void
      */
-    protected function initStoreFormatters(Store $store, array $params)
+    protected function initStoreFormatters(FlexStore $store, array $params)
     {
         $pricelist_reference = isset($params['pricelist']) ? $params['pricelist'] : '';
         $customer_id = isset($params['customer_id']) ? $params['customer_id'] : null;

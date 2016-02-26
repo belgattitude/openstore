@@ -158,7 +158,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     public function synchronizeAll()
     {
         
-                
+
+
         $this->synchronizeCountry();
         $this->synchronizeCustomer();
         $this->synchronizeApi();
@@ -168,6 +169,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->synchronizeProductGroup();
         $this->synchronizeProductBrand();
         $this->synchronizeProductCategory();
+        
         $this->synchronizeProductModel();
         $this->synchronizeProduct();
         $this->synchronizeProductTranslation();
@@ -184,11 +186,15 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
         $this->rebuildProductSearch();
 
-        $this->processGuessedDiametersAndFormat();
         
         
         $this->synchronizeProductStatTrend();
 
+        // This is emd
+        $this->flagRankableCategories();             
+        $this->processGuessedDiametersAndFormat();
+        
+        
         /**
          * INSERT INTO `nuvolia`.`user_scope` (
          * `id` ,
@@ -957,9 +963,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         COUNT(DISTINCT c.id_commande) AS nb_orders,
                         SUM(l.qty_commande) AS total_recorded_quantity,
                         SUM(l.total_ht) AS total_recorded_turnover,
-
                         $inner_columns
-
 
                     FROM
                         $akilia1db.commande c
@@ -1225,6 +1229,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             select upper(c.id_categorie) as id_categorie, 
                 substring( upper(c.id_categorie), 1, (length( c.id_categorie ) -2 )) AS parent_categorie, 
                 c.sort_index, 
+                c.global_sort_index,
                 CONVERT(IF(c.libelle_1 is null OR c.libelle_1 = '', c.libelle$default_lsfx, c.libelle_1) USING utf8) as libelle_1,
                 CONVERT(IF(c.libelle_2 is null OR c.libelle_2 = '', c.libelle$default_lsfx, c.libelle_2) USING utf8) as libelle_2,
                 CONVERT(IF(c.libelle_3 is null OR c.libelle_3 = '', c.libelle$default_lsfx, c.libelle_3) USING utf8) as libelle_3,
@@ -1258,8 +1263,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             $this->em->persist($rootCategory);
             $this->em->flush();
         }
-
-
 
         foreach ($rows as $row) {
             if ($row['category_id'] === null) {
@@ -1326,6 +1329,38 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
         $this->executeSQL("Delete eventual removed categories translations", $delete);
+    }
+    
+    /**
+     * Utility method to set rankable product categories
+     */
+    public function flagRankableCategories()
+    {
+        
+        $update = "
+            
+            update product_category 
+            left outer join (
+                    select distinct pc2.category_id, pc2.reference from
+                    product_category pc
+                    inner join product_category pc2 on pc2.reference = 
+                            IF(SUBSTRING(pc.reference FROM 1 FOR 4) in ('PIAC'), SUBSTRING(pc.reference FROM 1 FOR 8),
+                                    -- categories on level 8 (only pianos)
+                                    IF(SUBSTRING(pc.reference FROM 1 FOR 4) IN ('ACCB','DRCG','DRRH','ACST','PIAC','ACCA','GTAC','GTAT','ACBG','GTEL'), 
+                                            -- categories on level 6
+                                            SUBSTRING(pc.reference FROM 1 FOR 6),
+
+                                            -- by default all categories on level 2
+                                            SUBSTRING(pc.reference FROM 1 FOR 4))
+
+                            )
+                    inner join product p on p.category_id = pc2.category_id
+            ) as rankable_category on product_category.category_id = rankable_category.category_id			
+            set product_category.flag_rankable = if (rankable_category.category_id is null, null, 1)
+
+        ";
+        $this->executeSQL("Create product category rank", $update);
+        
     }
 
     public function synchronizeProductModel()

@@ -11,7 +11,7 @@ use Openstore\Core\Model\Browser\Filter\FilterInterface;
 use Openstore\Core\Model\Browser\Search\Params;
 use Zend\Db\Sql\Select;
 use Soluble\FlexStore\Source\Zend\SqlSource;
-use Soluble\FlexStore\Store;
+use Soluble\FlexStore\FlexStore;
 
 abstract class AbstractBrowser implements SearchableInterface, FilterableInterface, ServiceLocatorAwareInterface, AdapterAwareInterface
 {
@@ -201,7 +201,7 @@ abstract class AbstractBrowser implements SearchableInterface, FilterableInterfa
     {
         $select = $this->getSelect();
 
-        $store = new Store(new SqlSource($this->adapter, $select));
+        $store = new FlexStore(new SqlSource($this->adapter, $select));
         if ($this->limit !== null) {
             $options = $store->getSource()->getOptions();
             $options->setLimit($this->limit, $this->offset);

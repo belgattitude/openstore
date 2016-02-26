@@ -4,7 +4,7 @@ namespace OpenstoreApi\Api;
 
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
-use Soluble\FlexStore\Store;
+use Soluble\FlexStore\FlexStore;
 use Soluble\FlexStore\Column\Column;
 use Soluble\FlexStore\Column\ColumnModel;
 use Soluble\FlexStore\Column\ColumnType;
@@ -33,7 +33,7 @@ class ProductCatalogService extends AbstractService
 
     /**
      * @param array $params [brands,pricelists]
-     * @return \Soluble\FlexStore\Store
+     * @return \Soluble\FlexStore\FlexStore
      */
     public function getList(array $params = [])
     {
@@ -422,14 +422,14 @@ class ProductCatalogService extends AbstractService
 
     /**
      *
-     * @param Store $store
+     * @param FlexStore $store
      * @param integer|null $customer_id
      * @param string $pricelist_reference
      * @param string $insert_reference_column column name reference from which to insert.
      * @param string $insert_mode default ColumnModel::ADD_COLUMN_AFTER
      * @return void
      */
-    protected function addStorePriceRenderer(Store $store, $customer_id, $pricelist_reference, $insert_reference_column, $insert_mode = null)
+    protected function addStorePriceRenderer(FlexStore $store, $customer_id, $pricelist_reference, $insert_reference_column, $insert_mode = null)
     {
         $cm = $store->getColumnModel();
 

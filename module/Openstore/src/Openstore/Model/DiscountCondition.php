@@ -7,7 +7,7 @@ use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
-use Soluble\FlexStore\Store;
+use Soluble\FlexStore\FlexStore;
 use Soluble\FlexStore\Source\Zend\SqlSource;
 use ArrayObject;
 
@@ -76,7 +76,7 @@ class DiscountCondition implements AdapterAwareInterface
         }
 
         $sqlSource = new SqlSource($this->adapter, $select);
-        $store = new Store($sqlSource);
+        $store = new FlexStore($sqlSource);
         return $store;
     }
 

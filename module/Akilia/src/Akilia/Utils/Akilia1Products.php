@@ -9,7 +9,7 @@ use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
 use Soluble\FlexStore\Source\Zend\SqlSource;
-use Soluble\FlexStore\Store;
+use Soluble\FlexStore\FlexStore;
 
 class Akilia1Products implements ServiceLocatorAwareInterface, AdapterAwareInterface
 {
@@ -64,7 +64,7 @@ class Akilia1Products implements ServiceLocatorAwareInterface, AdapterAwareInter
          */
     protected function getStore(Select $select = null)
     {
-        return new Store(new SqlSource($this->getDbAdapter(), $select));
+        return new FlexStore(new SqlSource($this->getDbAdapter(), $select));
     }
 
 

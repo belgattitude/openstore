@@ -40,7 +40,7 @@
         "intervention/image": "^2.3.5",
         "patchwork/utf8": "^1.3.0",
         "nesbot/carbon": "^1.21.0",
-        "coduo/php-humanizer": "~1.0.8"
+        "coduo/php-humanizer": "^1.0.9"
    },
     "require-dev": {
         "zfcampus/zf-apigility-admin": "~1.3",
