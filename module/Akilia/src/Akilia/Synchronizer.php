@@ -987,8 +987,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 $update_columns,
                 legacy_synchro_at = '{$this->legacy_synchro_at}'
         ";
-echo $replace;
-die();
         $this->executeSQL("Replace product stat trend ", $replace);                
 
         $delete = "
