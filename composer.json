@@ -15,7 +15,7 @@
         "soluble/japha": "dev-master",
         "soluble/solublecomponents": "dev-master",
         
-        "zendframework/zendframework": "^2.5",
+        "zendframework/zendframework": "2.5.2",
         
         
         "doctrine/orm": "^2.5.4",
