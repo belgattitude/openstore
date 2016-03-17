@@ -902,6 +902,11 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             'last_4_months' => "BETWEEN '" . $now->copy()->subMonth(4)->format('Y-m-d') . "' AND '" . $today . "'",
             'last_5_months' => "BETWEEN '" . $now->copy()->subMonth(5)->format('Y-m-d') . "' AND '" . $today . "'",
             'last_6_months' => "BETWEEN '" . $now->copy()->subMonth(6)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_7_months' => "BETWEEN '" . $now->copy()->subMonth(7)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_8_months' => "BETWEEN '" . $now->copy()->subMonth(8)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_9_months' => "BETWEEN '" . $now->copy()->subMonth(9)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_10_months' => "BETWEEN '" . $now->copy()->subMonth(10)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_11_months' => "BETWEEN '" . $now->copy()->subMonth(11)->format('Y-m-d') . "' AND '" . $today . "'",
             'last_12_months' => "BETWEEN '" . $now->copy()->subMonth(12)->format('Y-m-d') . "' AND '" . $today . "'",
         ];
         
@@ -1349,6 +1354,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                                             'DRCG',
                                             'ACCA',
                                             'ACBG',
+                                            'GTSG',
                                             'DRRH',
                                             'ACST',
                                             'PIAC',
@@ -1616,6 +1622,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $akilia2db = $this->akilia2Db;
         $db = $this->openstoreDb;
 
+        $default_lang = $this->default_language;
         $default_lsfx = $this->default_language_sfx;
 
         $rep = "REPLACE(REPLACE(i.desc$default_lsfx, '–', '-'), '\\n ', '\\n')";
@@ -1728,6 +1735,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         
                     
                 from $akilia1db.article as a
+                left outer join $db.product p on p.legacy_mapping = a.id_article
                 left outer join $akilia1db.cst_art_infos i on i.id_article = a.id_article    
                 left outer join $db.product_brand as brand on brand.legacy_mapping = a.id_marque
                 left outer join $db.product_group as product_group on product_group.legacy_mapping = a.id_famille
@@ -1735,6 +1743,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 left outer join $db.product_model as pm on pm.legacy_mapping = a.id_modele
                 left outer join $db.product_status ps on ps.legacy_mapping = a.code_suivi
                 left outer join $db.product_type pt on pt.legacy_mapping = a.product_type COLLATE 'utf8_general_ci'
+                left outer join $db.product_translation p18 on p18.product_id = p.product_id and p18.lang = '$default_lang'
+                
                 
                 where a.flag_archive = 0
                 order by i.id_art_tete desc, a.id_article
@@ -1756,7 +1766,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                               CAST(CONV(hex(a.code_tri_marque_famille), 16, 10) as unsigned)
                             ) ,
                         type_id = COALESCE(pt.type_id, {$this->default_product_type_id}),
-                        title = if(trim(i.libelle$default_lsfx) = '', null, trim(i.libelle$default_lsfx)),
+                        title = if(trim(i.libelle$default_lsfx) = '', p18.title, trim(i.libelle$default_lsfx)),
                         invoice_title = if(trim(a.libelle$default_lsfx) = '', null, trim(a.libelle$default_lsfx)),
                         description = $description,
                         characteristic = if(trim(i.couleur$default_lsfx) = '', null, trim(i.couleur$default_lsfx)),
