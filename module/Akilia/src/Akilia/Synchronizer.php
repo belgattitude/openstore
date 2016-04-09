@@ -157,7 +157,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
     public function synchronizeAll()
     {
-        
+$this->synchronizeProductStatTrend();        
 
         $this->synchronizeCountry();
         $this->synchronizeCustomer();
@@ -869,8 +869,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
     public function synchronizeProductStatTrend() {
 
-        
-        
         if (!$this->configuration['options']['product_stat_trend']['enabled']) {
             $this->log("Skipping product_stat_trend synchro [disabled by config]");
             return;
@@ -909,6 +907,22 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             'last_11_months' => "BETWEEN '" . $now->copy()->subMonth(11)->format('Y-m-d') . "' AND '" . $today . "'",
             'last_12_months' => "BETWEEN '" . $now->copy()->subMonth(12)->format('Y-m-d') . "' AND '" . $today . "'",
         ];
+
+        $periods = [
+            'last_month' => "BETWEEN '" . $now->copy()->subMonth(1)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_2_months' => "BETWEEN '" . $now->copy()->subMonth(2)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_3_months' => "BETWEEN '" . $now->copy()->subMonth(3)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_4_months' => "BETWEEN '" . $now->copy()->subMonth(4)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_5_months' => "BETWEEN '" . $now->copy()->subMonth(5)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_6_months' => "BETWEEN '" . $now->copy()->subMonth(6)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_7_months' => "BETWEEN '" . $now->copy()->subMonth(7)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_8_months' => "BETWEEN '" . $now->copy()->subMonth(8)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_9_months' => "BETWEEN '" . $now->copy()->subMonth(9)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_10_months' => "BETWEEN '" . $now->copy()->subMonth(10)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_11_months' => "BETWEEN '" . $now->copy()->subMonth(11)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_12_months' => "BETWEEN '" . $now->copy()->subMonth(12)->format('Y-m-d') . "' AND '" . $today . "'",
+        ];
+
         
         $columns = [];
         foreach($periods as $suffix => $period) {
@@ -993,6 +1007,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 $update_columns,
                 legacy_synchro_at = '{$this->legacy_synchro_at}'
         ";
+                
+     echo $replace;
+     die();
         $this->executeSQL("Replace product stat trend ", $replace);                
 
         $delete = "
