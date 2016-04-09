@@ -157,7 +157,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
     public function synchronizeAll()
     {
-$this->synchronizeProductStatTrend();        
+        $this->synchronizeProductStatTrend();
 
         $this->synchronizeCountry();
         $this->synchronizeCustomer();
@@ -168,7 +168,7 @@ $this->synchronizeProductStatTrend();
         $this->synchronizeProductGroup();
         $this->synchronizeProductBrand();
         $this->synchronizeProductCategory();
-        
+
         $this->synchronizeProductModel();
         $this->synchronizeProduct();
         $this->synchronizeProductTranslation();
@@ -185,16 +185,16 @@ $this->synchronizeProductStatTrend();
 
         $this->rebuildProductSearch();
 
-        
-        
+
+
         // This is emd
-        $this->flagRankableCategories();         
+        $this->flagRankableCategories();
         $this->synchronizeProductStatTrend();
 
-                    
+
         $this->processGuessedDiametersAndFormat();
-        
-        
+
+
         /**
          * INSERT INTO `nuvolia`.`user_scope` (
          * `id` ,
@@ -867,20 +867,20 @@ $this->synchronizeProductStatTrend();
         $this->executeSQL("Delete eventual removed product_pricelist", $delete);
     }
 
-    public function synchronizeProductStatTrend() {
-
+    public function synchronizeProductStatTrend()
+    {
         if (!$this->configuration['options']['product_stat_trend']['enabled']) {
             $this->log("Skipping product_stat_trend synchro [disabled by config]");
             return;
         } else {
             $this->log("Creating product_stat_trend (may take a while)");
         }
-        
-        
+
+
         $akilia1db = $this->configuration['options']['product_stat_trend']['akilia1db'];
-        
+
         $db = $this->openstoreDb;
-        
+
         $date_column = 'c.date_commande';
         $trend_columns = [
             'nb_customers' => "COUNT(DISTINCT IF($date_column %period%, c.id_client, null))",
@@ -889,24 +889,9 @@ $this->synchronizeProductStatTrend();
             'total_recorded_quantity' => "SUM(IF($date_column %period%, l.qty_commande, 0))",
             'total_recorded_turnover' => "SUM(IF($date_column %period%, l.total_ht, 0))"
         ];
-        
+
         $now = Carbon::now(new \DateTimeZone('Europe/Brussels'));
         $today = $now->format('Y-m-d');
-        
-        $periods = [
-            'last_month' => "BETWEEN '" . $now->copy()->subMonth(1)->format('Y-m-d') . "' AND '" . $today . "'",
-            'last_2_months' => "BETWEEN '" . $now->copy()->subMonth(2)->format('Y-m-d') . "' AND '" . $today . "'",
-            'last_3_months' => "BETWEEN '" . $now->copy()->subMonth(3)->format('Y-m-d') . "' AND '" . $today . "'",
-            'last_4_months' => "BETWEEN '" . $now->copy()->subMonth(4)->format('Y-m-d') . "' AND '" . $today . "'",
-            'last_5_months' => "BETWEEN '" . $now->copy()->subMonth(5)->format('Y-m-d') . "' AND '" . $today . "'",
-            'last_6_months' => "BETWEEN '" . $now->copy()->subMonth(6)->format('Y-m-d') . "' AND '" . $today . "'",
-            'last_7_months' => "BETWEEN '" . $now->copy()->subMonth(7)->format('Y-m-d') . "' AND '" . $today . "'",
-            'last_8_months' => "BETWEEN '" . $now->copy()->subMonth(8)->format('Y-m-d') . "' AND '" . $today . "'",
-            'last_9_months' => "BETWEEN '" . $now->copy()->subMonth(9)->format('Y-m-d') . "' AND '" . $today . "'",
-            'last_10_months' => "BETWEEN '" . $now->copy()->subMonth(10)->format('Y-m-d') . "' AND '" . $today . "'",
-            'last_11_months' => "BETWEEN '" . $now->copy()->subMonth(11)->format('Y-m-d') . "' AND '" . $today . "'",
-            'last_12_months' => "BETWEEN '" . $now->copy()->subMonth(12)->format('Y-m-d') . "' AND '" . $today . "'",
-        ];
 
         $periods = [
             'last_month' => "BETWEEN '" . $now->copy()->subMonth(1)->format('Y-m-d') . "' AND '" . $today . "'",
@@ -923,22 +908,37 @@ $this->synchronizeProductStatTrend();
             'last_12_months' => "BETWEEN '" . $now->copy()->subMonth(12)->format('Y-m-d') . "' AND '" . $today . "'",
         ];
 
-        
+        $periods = [
+            'last_month' => "BETWEEN '" . $now->copy()->subMonth(1)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_2_months' => "BETWEEN '" . $now->copy()->subMonth(2)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_3_months' => "BETWEEN '" . $now->copy()->subMonth(3)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_4_months' => "BETWEEN '" . $now->copy()->subMonth(4)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_5_months' => "BETWEEN '" . $now->copy()->subMonth(5)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_6_months' => "BETWEEN '" . $now->copy()->subMonth(6)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_7_months' => "BETWEEN '" . $now->copy()->subMonth(7)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_8_months' => "BETWEEN '" . $now->copy()->subMonth(8)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_9_months' => "BETWEEN '" . $now->copy()->subMonth(9)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_10_months' => "BETWEEN '" . $now->copy()->subMonth(10)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_11_months' => "BETWEEN '" . $now->copy()->subMonth(11)->format('Y-m-d') . "' AND '" . $today . "'",
+            'last_12_months' => "BETWEEN '" . $now->copy()->subMonth(12)->format('Y-m-d') . "' AND '" . $today . "'",
+        ];
+
+
         $columns = [];
-        foreach($periods as $suffix => $period) {
-            foreach($trend_columns as $name => $cond) {
+        foreach ($periods as $suffix => $period) {
+            foreach ($trend_columns as $name => $cond) {
                 $condition = str_replace('%period%', $period, $cond);
                 $new_column = $name . '_' .  $suffix;
                 $columns[$new_column] = $condition . ' AS ' . $new_column;
             }
         }
 
-        $plstats_columns = join(",\n", array_map(function($col) { return "plstats.$col"; }, array_keys($columns)));
-        $inner_columns = join(",\n", array_values($columns));
-        $stat_columns = join(",\n", array_keys($columns));
-        $update_columns = join(",\n", array_map(function($col) { return "$col = plstats.$col"; }, array_keys($columns)));
+        $plstats_columns = implode(",\n", array_map(function ($col) { return "plstats.$col"; }, array_keys($columns)));
+        $inner_columns = implode(",\n", array_values($columns));
+        $stat_columns = implode(",\n", array_keys($columns));
+        $update_columns = implode(",\n", array_map(function ($col) { return "$col = plstats.$col"; }, array_keys($columns)));
 
-        
+
         $replace = "
 
                 INSERT into $db.product_stat_trend(
@@ -1007,21 +1007,18 @@ $this->synchronizeProductStatTrend();
                 $update_columns,
                 legacy_synchro_at = '{$this->legacy_synchro_at}'
         ";
-                
-     echo $replace;
-     die();
-        $this->executeSQL("Replace product stat trend ", $replace);                
+
+        echo $replace;
+        die();
+        $this->executeSQL("Replace product stat trend ", $replace);
 
         $delete = "
             delete from $db.product_pricelist_stat
             where legacy_synchro_at < '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
         $this->executeSQL("Removing eventual product stat trends", $delete);
-        
-        
-        
     }
-    
+
     public function synchronizeProductPricelistStat()
     {
         if (!isset($this->configuration['options']['product_pricelist'])) {
@@ -1145,7 +1142,7 @@ $this->synchronizeProductStatTrend();
 
             $this->executeSQL("Replace product pricelist stats for pricelist sales [$key] ", $replace);
         }
-        
+
 
         // 2. Deleting - old forecasted monthly sales (only !!!)
         $update = "
@@ -1350,13 +1347,12 @@ $this->synchronizeProductStatTrend();
 
         $this->executeSQL("Delete eventual removed categories translations", $delete);
     }
-    
+
     /**
      * Utility method to set rankable product categories
      */
     public function flagRankableCategories()
     {
-        
         $update = "
             
             update product_category 
@@ -1391,7 +1387,6 @@ $this->synchronizeProductStatTrend();
 
         ";
         $this->executeSQL("Create product category rank", $update);
-        
     }
 
     public function synchronizeProductModel()
@@ -2030,13 +2025,12 @@ $this->synchronizeProductStatTrend();
      */
     public function synchronizeProductTranslation(array $product_ids = null)
     {
-        
         if (!$this->configuration['options']['product_translation']['enabled']) {
             $this->log("Skipping product translation synchro [disabled by config]");
             return;
         }
-        
-        
+
+
         $akilia1db = $this->akilia1Db;
         $db = $this->openstoreDb;
         $intelaccessDb = $this->intelaccessDb;

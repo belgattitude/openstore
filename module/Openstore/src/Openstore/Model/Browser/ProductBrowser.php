@@ -270,11 +270,11 @@ class ProductBrowser extends AbstractBrowser
             if ($enable_packaging_columns) {
                 $columns = array_merge($columns, $this->getPackagingColumns());
             }
-            
+
             if ($enable_stat_columns) {
                 $columns = array_merge($columns, [
                    'first_sale_recorded_at' => new Expression('ppls.first_sale_recorded_at'),
-                   'latest_sale_recorded_at' => new Expression('ppls.latest_sale_recorded_at'), 
+                   'latest_sale_recorded_at' => new Expression('ppls.latest_sale_recorded_at'),
                    'nb_customers'           => new Expression('ppls.nb_customers'),
                    'nb_sale_reps'           => new Expression('ppls.nb_sale_reps'),
                    'nb_orders'              => new Expression('ppls.nb_orders'),

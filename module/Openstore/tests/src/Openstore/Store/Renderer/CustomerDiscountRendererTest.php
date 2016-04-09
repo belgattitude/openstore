@@ -4,7 +4,6 @@ namespace Openstore\Store\Renderer;
 
 use ModulesTests\ServiceManagerGrabber;
 use Zend\ServiceManager\ServiceManager;
-use Soluble\FlexStore\FlexStore;
 use Soluble\FlexStore\Column\Column;
 use Soluble\FlexStore\Column\ColumnType;
 

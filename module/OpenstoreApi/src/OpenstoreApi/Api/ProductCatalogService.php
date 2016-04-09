@@ -37,7 +37,6 @@ class ProductCatalogService extends AbstractService
      */
     public function getList(array $params = [])
     {
-
         $this->checkListParams($params);
 
         $select = new Select();
