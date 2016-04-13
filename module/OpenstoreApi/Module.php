@@ -128,12 +128,14 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                             'field_separator' => CSVWriter::SEPARATOR_TAB,
                             'line_separator' => CSVWriter::SEPARATOR_NEWLINE_UNIX,
                             'enclosure' => $enclosure,
-                            'escape' => '"'
+                            'escape' => '"',
+                            
                         ];
 
                         $charset = trim($_GET['charset']);
                         if ($charset != '') {
                             $options['charset'] = $charset;
+                            $options['ignore_translit_error'] = true;
                         }
 
                         $csvWriter = new CSVWriter($vars);
