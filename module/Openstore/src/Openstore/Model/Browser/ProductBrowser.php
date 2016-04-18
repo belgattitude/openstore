@@ -232,10 +232,14 @@ class ProductBrowser extends AbstractBrowser
                 'discount_4' => new Expression('ppl.discount_4'),
                 'is_promotional' => new Expression('ppl.is_promotional'),
                 'is_liquidation' => new Expression('ppl.is_liquidation'),
-                'is_bestseller' => new Expression('ppl.is_bestseller'),
-                'is_bestvalue' => new Expression('ppl.is_bestvalue'),
-                'is_hot' => new Expression('ppl.is_hot'),
                 'is_new' => new Expression('ppl.is_new'),
+                
+                'bestseller_rank' => new Expression('ppl.bestseller_rank'),
+                'trending_rank' => new Expression('ppl.trending_rank'),
+                'popular_rank' => new Expression('ppl.popular_rank'),
+                'deal_rank' => new Expression('ppl.deal_rank'),
+                'fresh_rank' => new Expression('ppl.fresh_rank'),
+                
                 'available_stock' => new Expression('ps.available_stock'),
                 'next_available_stock' => new Expression('ps.next_available_stock'),
                 'next_available_stock_at' => new Expression('ps.next_available_stock_at'),

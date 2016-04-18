@@ -179,9 +179,9 @@ class ProductCatalogService extends AbstractService
             'discount_4' => new Expression('ppl.discount_4'),
             'is_liquidation' => new Expression('ppl.is_liquidation'),
             'is_promotional' => new Expression('ppl.is_promotional'),
-            'is_bestseller' => new Expression('ppl.is_bestseller'),
-            'is_hot' => new Expression('ppl.is_hot'),
-            'is_bestvalue' => new Expression('ppl.is_bestvalue'),
+            'is_bestseller' => new Expression('if(ppl.bestseller_rank > 0, 1, 0)'),
+            'is_hot' => new Expression('if(1=1, 0, 1)'), // not supported anymore, trending is better
+            'is_bestvalue' => new Expression('if(1=1, 0, 1)'), // not supported anymore
             'is_new' => new Expression('ppl.is_new'),
             'sale_minimum_qty' => new Expression('ppl.sale_minimum_qty'),
             'on_stock' => new Expression('if (ps.available_stock > 0, 1, 0)'),
