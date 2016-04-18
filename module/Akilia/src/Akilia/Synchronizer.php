@@ -1392,10 +1392,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                                             'GTEL'), 
                                             -- categories on level 6
                                             SUBSTRING(pc.reference FROM 1 FOR 6),
-
                                             -- by default all categories on level 2
                                             SUBSTRING(pc.reference FROM 1 FOR 4))
-
                             )
                     inner join product p on p.category_id = pc.category_id
             ) as rankable_category on product_category.category_id = rankable_category.category_id			
