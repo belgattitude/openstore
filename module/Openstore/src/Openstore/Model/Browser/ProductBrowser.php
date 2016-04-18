@@ -123,15 +123,13 @@ class ProductBrowser extends AbstractBrowser
         $select = new Select();
         $select->setDbAdapter($this->adapter);
 
-        $select->from(['p' => 'product'], [])
+        $select->from(['p' => 'product'])
                 ->join(['p18' => 'product_translation'], new Expression("p18.product_id = p.product_id and p18.lang = '$lang'"), [], $select::JOIN_LEFT)
                 ->join(['pstub' => 'product_stub'], new Expression('pstub.product_stub_id = p.product_stub_id'), [], $select::JOIN_LEFT)
                 ->join(['pstub18' => 'product_stub_translation'], new Expression("pstub.product_stub_id = pstub18.product_stub_id and pstub18.lang='$lang'"), [], $select::JOIN_LEFT)
 
-                // to remove when product_model is ready
-                //->join(array('p2' => 'product'), new Expression('p2.product_id = p.parent_id'), array(), $select::JOIN_LEFT)
-                //->join(array('p2_18' => 'product_translation'), new Expression("p2.product_id = p2_18.product_id and p2_18.lang='$lang'"), array(), $select::JOIN_LEFT)
-                // end of to remove
+                ->join(['serie' => 'product_serie'], new Expression('serie.serie_id = p.serie_id'), [], $select::JOIN_LEFT)
+                
                 ->join(['psi' => 'product_search'], new Expression("psi.product_id = p.product_id and psi.lang = '$lang'"), [], $select::JOIN_LEFT)
                 ->join(['ppl' => 'product_pricelist'], new Expression('ppl.product_id = p.product_id'), [])
                 ->join(['pl' => 'pricelist'], new Expression('pl.pricelist_id = ppl.pricelist_id'), [])
@@ -183,6 +181,10 @@ class ProductBrowser extends AbstractBrowser
                 'brand_title' => new Expression('pb.title'),
                 'group_id' => new Expression('pg.group_id'),
                 'group_reference' => new Expression('pg.reference'),
+                
+                'serie_id' => new Expression('serie.serie_id'),
+                'serie_display_reference' => new Expression('COALESCE(serie.display_reference, serie.reference)'),
+                
                 'category_id' => new Expression('pc.category_id'),
                 'category_reference' => new Expression('pc.reference'),
                 //'category_title' => new Expression('COALESCE(pc18.title, pc.title)'),
