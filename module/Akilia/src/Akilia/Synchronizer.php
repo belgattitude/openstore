@@ -157,7 +157,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
     public function synchronizeAll()
     {
-        $this->synchronizeProductStatTrend();
+        
 
         $this->synchronizeCountry();
         $this->synchronizeCustomer();
@@ -167,10 +167,17 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
         $this->synchronizeProductGroup();
         $this->synchronizeProductBrand();
+        
+        
         $this->synchronizeProductCategory();
+        
+        // This is only for emd, must be before product
+        $this->flagRankableCategories();
+        
 
         $this->synchronizeProductModel();
         $this->synchronizeProduct();
+        
         $this->synchronizeProductTranslation();
         $this->synchronizeProductPricelist();
         $this->synchronizeProductPricelistStat();
@@ -187,8 +194,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
 
 
-        // This is emd
-        $this->flagRankableCategories();
+        
         $this->synchronizeProductStatTrend();
 
 
@@ -1008,12 +1014,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 legacy_synchro_at = '{$this->legacy_synchro_at}'
         ";
 
-        echo $replace;
-        die();
+        //echo $replace;
+        //die();
         $this->executeSQL("Replace product stat trend ", $replace);
 
         $delete = "
-            delete from $db.product_pricelist_stat
+            delete from $db.product_stat_trend
             where legacy_synchro_at < '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
         $this->executeSQL("Removing eventual product stat trends", $delete);
@@ -1054,17 +1060,19 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 $pricelists_clause = "and pl.legacy_mapping in (" . implode(',', $pls) . ")";
                 $code_tarif_clause = "and c.code_tarif in (" . implode(',', $pls) . ")";
             }
-
+            // Step 1: putting "moyenne vente" = "forecasted_monthly_sales"
             $replace = " 
                 insert into $db.product_pricelist_stat(
                     product_pricelist_stat_id,
                     forecasted_monthly_sales,
-                    legacy_synchro_at
+                    created_at,
+                    updated_at
                 )
                 SELECT 
                     ppl.product_pricelist_id,
                         t.moyenne_vente,
-                    '{$this->legacy_synchro_at}' AS legacy_synchro_at
+                    '{$this->legacy_synchro_at}' AS created_at,                        
+                    '{$this->legacy_synchro_at}' AS updated_at
                 FROM
                     $akilia1Db.article a
                         INNER JOIN
@@ -1080,12 +1088,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                       $pricelists_clause
                 on duplicate key update
                     forecasted_monthly_sales = t.moyenne_vente,
-                    legacy_synchro_at = '{$this->legacy_synchro_at}'
+                    updated_at = '{$this->legacy_synchro_at}'
             ";
 
             $this->executeSQL("Replace product pricelist stats for forecasted sales [$key] ", $replace);
 
-
+            // Step 2 : Setting pricelist stats
             $replace = "
                 insert into $db.product_pricelist_stat(
                     product_pricelist_stat_id,
@@ -1096,7 +1104,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     nb_orders,
                     total_recorded_quantity,
                     total_recorded_turnover,
-                    legacy_synchro_at
+                    created_at,
+                    updated_at
                 )
                 select 
                     ppl.product_pricelist_id, 
@@ -1107,7 +1116,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     plstats.nb_orders,
                     plstats.total_recorded_quantity,
                     plstats.total_recorded_turnover,
-                    '{$this->legacy_synchro_at}' AS legacy_synchro_at
+                    '{$this->legacy_synchro_at}' AS created_at,
+                    '{$this->legacy_synchro_at}' AS updated_at
 
                 from 
                     (SELECT 
@@ -1137,10 +1147,11 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     nb_orders = plstats.nb_orders,
                     total_recorded_quantity = plstats.total_recorded_quantity,
                     total_recorded_turnover = plstats.total_recorded_turnover,
-                    legacy_synchro_at = '{$this->legacy_synchro_at}'
+                    updated_at = '{$this->legacy_synchro_at}'
             ";
 
             $this->executeSQL("Replace product pricelist stats for pricelist sales [$key] ", $replace);
+ 
         }
 
 
@@ -1148,7 +1159,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $update = "
             update $db.product_pricelist_stat
             set forecasted_monthly_sales = null
-            where legacy_synchro_at < '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+            where updated_at < '{$this->legacy_synchro_at}' and updated_at is not null";
 
         $this->executeSQL("Removing eventual product_pricelist_stat forecasts monthly sales", $update);
     }
