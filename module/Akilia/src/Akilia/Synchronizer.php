@@ -165,20 +165,25 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->synchronizePricelist();
         $this->synchronizeCustomerPricelist();
 
+        
+        
         $this->synchronizeProductGroup();
         $this->synchronizeProductBrand();
         
         
         $this->synchronizeProductCategory();
-        
-        // This is only for emd, must be before product
-        $this->flagRankableCategories();
-        
-
         $this->synchronizeProductModel();
-        $this->synchronizeProduct();
+        $this->synchronizeProductSerie();
         
+        // Rankable categories are custom for EMD
+        // should be after product category
+        // and before Product and setProductCategoryBreadcrumbs
+        $this->flagRankableCategories();
+        $this->setProductCategoryRankBreadcrumbs();
+        
+        $this->synchronizeProduct();
         $this->synchronizeProductTranslation();
+        
         $this->synchronizeProductPricelist();
         $this->synchronizeProductPricelistStat();
         $this->synchronizeProductStock();
@@ -1398,6 +1403,26 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
         ";
         $this->executeSQL("Create product category rank", $update);
+        
+        
+        
+        
+    }
+    
+    public function setProductCategoryRankBreadcrumbs() {
+        
+        $update = "
+            update product_category pc
+            left outer join product_category pc_rank on (
+                    pc_rank.flag_rankable = 1 AND pc.lft BETWEEN pc_rank.lft AND pc_rank.rgt 
+
+            )
+            set pc.rankable_breadcrumb = pc_rank.breadcrumb            
+        ";
+        $this->executeSQL("Set ProductCategory rank breadcrumb", $update);        
+                
+                
+        
     }
 
     public function synchronizeProductModel()
@@ -1530,6 +1555,71 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
         $this->executeSQL("Delete eventual removed product group translations", $delete);
     }
+    
+    public function synchronizeProductSerie()
+    {
+        $akilia1Db = $this->akilia1Db;
+        $db = $this->openstoreDb;
+
+        $default_lsfx = $this->default_language_sfx;
+
+        
+        $replace = "insert into $db.product_serie
+                (serie_id, brand_id, reference, title, legacy_mapping, legacy_synchro_at)
+                select null, 
+                       pb.brand_id, 
+                       s.id_serie as reference,
+                       s.libelle$default_lsfx as title, 
+                       s.id_serie as legacy_mapping, 
+                       '{$this->legacy_synchro_at}'
+            from $akilia1Db.serie s
+            left outer join $akilia1Db.marque m on m.id_marque = s.id_marque
+            left outer join $db.product_brand pb on m.id_marque = pb.legacy_mapping    
+            
+            on duplicate key update
+                reference = s.id_serie,
+                title = s.libelle$default_lsfx, 
+                legacy_synchro_at = '{$this->legacy_synchro_at}'";
+        $this->executeSQL("Replace product series", $replace);
+
+        // 2. Deleting - old links in case it changes
+        $delete = "
+            delete from $db.product_serie where
+            legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+
+        $this->executeSQL("Delete eventual removed series", $delete);
+
+        // 3. Serie translations
+        $langs = $this->akilia1lang;
+        foreach ($langs as $lang => $sfx) {
+            $replace = "insert into product_serie_translation 
+                 ( serie_id,
+                   lang,
+                   title,
+                   legacy_synchro_at
+                   )
+                  
+                select 
+                        ps.serie_id,
+                        '$lang' as lang, 
+                        s.libelle$sfx as title, 
+                        '{$this->legacy_synchro_at}'
+                    from $akilia1Db.serie s
+                    inner join $db.product_serie ps on ps.legacy_mapping = s.id_serie
+                on duplicate key update
+                    title = s.libelle$sfx, 
+                    legacy_synchro_at = '{$this->legacy_synchro_at}'";
+
+            $this->executeSQL("Replace product series translations", $replace);
+        }
+        // 2. Deleting - old links in case it changes
+        $delete = "
+            delete from $db.product_serie_translation 
+            where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+
+        $this->executeSQL("Delete eventual removed product serie translations", $delete);
+    }
+    
 
     public function synchronizeProductPackaging()
     {
@@ -1665,6 +1755,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                      into $db.product
                     (product_id,
                     model_id,
+                    serie_id,
                     brand_id,
                     group_id,
                     category_id,
@@ -1712,6 +1803,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 select
                     a.id_article as product_id,
                     pm.model_id as model_id,
+                    pserie.serie_id as serie_id,
                     brand.brand_id as brand_id,
                     product_group.group_id as group_id,
                     category.category_id as category_id,
@@ -1764,16 +1856,17 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 left outer join $db.product_group as product_group on product_group.legacy_mapping = a.id_famille
                 left outer join $db.product_category as category on category.legacy_mapping = a.id_categorie
                 left outer join $db.product_model as pm on pm.legacy_mapping = a.id_modele
+                left outer join $db.product_serie as pserie on pserie.legacy_mapping = a.id_serie
                 left outer join $db.product_status ps on ps.legacy_mapping = a.code_suivi
                 left outer join $db.product_type pt on pt.legacy_mapping = a.product_type COLLATE 'utf8_general_ci'
                 left outer join $db.product_translation p18 on p18.product_id = p.product_id and p18.lang = '$default_lang'
-                
                 
                 where a.flag_archive = 0
                 order by i.id_art_tete desc, a.id_article
                 
                 on duplicate key update
                         model_id = pm.model_id,
+                        serie_id = pserie.serie_id,
                         brand_id = brand.brand_id,
                         type_id = {$this->default_product_type_id},
                         group_id = product_group.group_id,
