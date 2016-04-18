@@ -9,7 +9,6 @@
   text-align: center;
   opacity: 0.7;
   -webkit-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
   transform: rotate(-45deg);
   font-size: 24px;
   font-weight: 700;
@@ -54,7 +53,6 @@
   background-color: #BFDC7A;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#bfdc7a), to(#8ebf45));
   background-image: -webkit-linear-gradient(top, #bfdc7a, #8ebf45);
+  background-image: -o-linear-gradient(top, #bfdc7a, #8ebf45);
   color: #6a6340;
   box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3); }
-
-/*# sourceMappingURL=catalog.prefixed.css.map */

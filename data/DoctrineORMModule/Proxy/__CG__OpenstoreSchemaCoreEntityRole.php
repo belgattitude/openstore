@@ -36,7 +36,7 @@ class Role extends \OpenstoreSchema\Core\Entity\Role implements \Doctrine\ORM\Pr
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -64,10 +64,10 @@ class Role extends \OpenstoreSchema\Core\Entity\Role implements \Doctrine\ORM\Pr
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'role_id', 'name', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'lft', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'rgt', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'parent', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'root', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'level', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'children', 'permissions', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'users');
+            return ['__isInitialized__', 'role_id', 'name', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'lft', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'rgt', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'parent', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'root', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'level', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'children', 'permissions', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'users'];
         }
 
-        return array('__isInitialized__', 'role_id', 'name', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'lft', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'rgt', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'parent', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'root', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'level', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'children', 'permissions', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'users');
+        return ['__isInitialized__', 'role_id', 'name', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'lft', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'rgt', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'parent', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'root', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'level', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'children', 'permissions', '' . "\0" . 'OpenstoreSchema\\Core\\Entity\\Role' . "\0" . 'users'];
     }
 
     /**
@@ -97,7 +97,7 @@ class Role extends \OpenstoreSchema\Core\Entity\Role implements \Doctrine\ORM\Pr
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -105,7 +105,7 @@ class Role extends \OpenstoreSchema\Core\Entity\Role implements \Doctrine\ORM\Pr
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -179,7 +179,7 @@ class Role extends \OpenstoreSchema\Core\Entity\Role implements \Doctrine\ORM\Pr
     public function getId()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -190,7 +190,7 @@ class Role extends \OpenstoreSchema\Core\Entity\Role implements \Doctrine\ORM\Pr
     public function getRoleId()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRoleId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRoleId', []);
 
         return parent::getRoleId();
     }
@@ -201,7 +201,7 @@ class Role extends \OpenstoreSchema\Core\Entity\Role implements \Doctrine\ORM\Pr
     public function setName($name)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setName', array($name));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setName', [$name]);
 
         return parent::setName($name);
     }
@@ -212,7 +212,7 @@ class Role extends \OpenstoreSchema\Core\Entity\Role implements \Doctrine\ORM\Pr
     public function getName()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', []);
 
         return parent::getName();
     }
@@ -223,7 +223,7 @@ class Role extends \OpenstoreSchema\Core\Entity\Role implements \Doctrine\ORM\Pr
     public function addChild(\Rbac\Role\HierarchicalRoleInterface $child)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addChild', array($child));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addChild', [$child]);
 
         return parent::addChild($child);
     }
@@ -234,7 +234,7 @@ class Role extends \OpenstoreSchema\Core\Entity\Role implements \Doctrine\ORM\Pr
     public function addPermission($permission)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addPermission', array($permission));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addPermission', [$permission]);
 
         return parent::addPermission($permission);
     }
@@ -245,7 +245,7 @@ class Role extends \OpenstoreSchema\Core\Entity\Role implements \Doctrine\ORM\Pr
     public function hasPermission($permission)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'hasPermission', array($permission));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'hasPermission', [$permission]);
 
         return parent::hasPermission($permission);
     }
@@ -256,7 +256,7 @@ class Role extends \OpenstoreSchema\Core\Entity\Role implements \Doctrine\ORM\Pr
     public function setParent($parent)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setParent', array($parent));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setParent', [$parent]);
 
         return parent::setParent($parent);
     }
@@ -267,7 +267,7 @@ class Role extends \OpenstoreSchema\Core\Entity\Role implements \Doctrine\ORM\Pr
     public function getParent()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getParent', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getParent', []);
 
         return parent::getParent();
     }
@@ -278,7 +278,7 @@ class Role extends \OpenstoreSchema\Core\Entity\Role implements \Doctrine\ORM\Pr
     public function getRoot()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRoot', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRoot', []);
 
         return parent::getRoot();
     }
@@ -289,7 +289,7 @@ class Role extends \OpenstoreSchema\Core\Entity\Role implements \Doctrine\ORM\Pr
     public function getLevel()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLevel', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLevel', []);
 
         return parent::getLevel();
     }
@@ -300,7 +300,7 @@ class Role extends \OpenstoreSchema\Core\Entity\Role implements \Doctrine\ORM\Pr
     public function getChildren()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getChildren', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getChildren', []);
 
         return parent::getChildren();
     }
@@ -311,7 +311,7 @@ class Role extends \OpenstoreSchema\Core\Entity\Role implements \Doctrine\ORM\Pr
     public function getLeft()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLeft', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLeft', []);
 
         return parent::getLeft();
     }
@@ -322,7 +322,7 @@ class Role extends \OpenstoreSchema\Core\Entity\Role implements \Doctrine\ORM\Pr
     public function getRight()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRight', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRight', []);
 
         return parent::getRight();
     }
@@ -333,7 +333,7 @@ class Role extends \OpenstoreSchema\Core\Entity\Role implements \Doctrine\ORM\Pr
     public function hasChildren()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'hasChildren', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'hasChildren', []);
 
         return parent::hasChildren();
     }
@@ -344,7 +344,7 @@ class Role extends \OpenstoreSchema\Core\Entity\Role implements \Doctrine\ORM\Pr
     public function getUsers()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUsers', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUsers', []);
 
         return parent::getUsers();
     }
