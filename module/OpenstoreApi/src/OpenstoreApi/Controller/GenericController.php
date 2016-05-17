@@ -107,7 +107,7 @@ class GenericController extends AbstractRestfulController
 
         try {
             $output = $view_renderer->render($view);
-            if ($params['validate'] == 'true') {
+            if (array_key_exists('validare', $params) && $params['validate'] == 'true') {
                 $this->validateXml($output, $this->template['validate']['list']);
             }
             header('Content-Type: text/xml');
