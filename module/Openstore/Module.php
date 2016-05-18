@@ -385,6 +385,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
             ['--dump-sql', '(optional) output SQL to console instead of applying to database'],
             'openstore:schema-core:recreate-extra' => 'Create or recreate core db extras (procedures, triggers,...)',
             ['--dump-sql', '(optional) output SQL to console instead of applying to database'],
+            
 
             'openstore recreatedb' => 'Recreate database schema.',
             'openstore build-all-reload' => 'Recreate database schema and load initial fixtures.',
