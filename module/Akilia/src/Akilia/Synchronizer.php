@@ -1563,11 +1563,22 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
         
         $replace = "insert into $db.product_serie
-                (serie_id, brand_id, reference, title, legacy_mapping, legacy_synchro_at)
-                select null, 
-                       pb.brand_id, 
-                       s.id_serie as reference,
-                       s.libelle$default_lsfx as title, 
+                (serie_id, 
+                 brand_id,
+                 group_code,               
+                 reference,
+                 display_reference, 
+                 title, 
+                 flag_marketing_action,
+                 legacy_mapping, 
+                 legacy_synchro_at)
+                select null as serie_id, 
+                       pb.brand_id,
+                       s.marketing_code, 
+                       s.reference,
+                       s.display_reference,
+                       s.libelle$default_lsfx as title,
+                       if (s.marketing_code = 'M', 1, 0) as flag_marketing_action, 
                        s.id_serie as legacy_mapping, 
                        '{$this->legacy_synchro_at}'
             from $akilia1Db.serie s
@@ -1575,7 +1586,11 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             left outer join $db.product_brand pb on m.id_marque = pb.legacy_mapping    
             
             on duplicate key update
-                reference = s.id_serie,
+                reference = s.reference,
+                display_reference = s.display_reference,
+                brand_id = pb.brand_id,
+                group_code = s.marketing_code,
+                flag_marketing_action = if (s.marketing_code = 'M', 1, 0),
                 title = s.libelle$default_lsfx, 
                 legacy_synchro_at = '{$this->legacy_synchro_at}'";
         $this->executeSQL("Replace product series", $replace);
