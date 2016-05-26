@@ -695,6 +695,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         available_stock,
                         theoretical_stock,
                         avg_monthly_sale_qty,
+                        
                         legacy_synchro_at,
                         updated_at
                     )
@@ -704,6 +705,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                            t.stock,
                            t.stock_theorique,
                            t.moyenne_vente,
+                           
                            '{$this->legacy_synchro_at}' as legacy_synchro_at,
                            t.date_synchro
 
@@ -717,7 +719,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     on duplicate key update
                             available_stock = if(product_stock.updated_at > t.date_synchro, product_stock.available_stock, t.stock),
                             theoretical_stock = if(product_stock.updated_at > t.date_synchro, product_stock.theoretical_stock, t.stock_theorique),
-                            acg_monthly_sale_qty = t.moyenne_vente,
+                            avg_monthly_sale_qty = t.moyenne_vente,
                             legacy_synchro_at = '{$this->legacy_synchro_at}',
                             updated_at = if(product_stock.updated_at > t.date_synchro, product_stock.updated_at, t.date_synchro)                        
 
@@ -729,7 +731,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         // 2. Deleting - old links in case it changes
         $delete = "
             delete from $db.product_stock
-            where legacy_synchro_at < '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+            where 
+              legacy_synchro_at < '{$this->legacy_synchro_at}' 
+              and legacy_synchro_at is not null
+              and updated_at <  '{$this->legacy_synchro_at}'";
 
         $this->executeSQL("Delete eventual removed product_stock", $delete);
     }
