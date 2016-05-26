@@ -684,7 +684,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             if ($element['pricelist'] != '') {
                 $pricelist_clause = "and t.id_pays = '" . $element['pricelist'] . "'";
             } else {
-                $pricelist_clause = '';
+                throw new \Exception("Missing 'pricelist' value in product_stock configuration");
             }
 
             $replace = " insert
