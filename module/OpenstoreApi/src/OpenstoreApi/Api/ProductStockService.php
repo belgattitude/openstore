@@ -4,9 +4,12 @@ namespace OpenstoreApi\Api;
 
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
+use OpenstoreApi\Api\ApiTrait;
 
 class ProductStockService extends AbstractService
 {
+    use ApiTrait\StockRendererTrait;
+
     /**
      *
      * @param array $params
@@ -73,6 +76,10 @@ class ProductStockService extends AbstractService
             'product_barcode_upca' => new Expression('p.barcode_upca'),
             'pricelist_id' => new Expression('pl.pricelist_id'),
             'pricelist_reference' => new Expression('pl.reference'),
+            'avg_monthly_sale_qty' => new Expression('ps.avg_monthly_sale_qty'),
+            'stock_level' => new Expression("''"),
+            'next_stock_level' => new Expression("''")
+
         ];
 
         $select->columns($columns, true);
@@ -111,7 +118,14 @@ class ProductStockService extends AbstractService
             $store->getSource()->getOptions()->setOffset($params['offset']);
         }
 
+        $store->getColumnModel()->exclude([
+            'avg_monthly_sale_qty'
+        ]);
+        
         $this->initStoreFormatters($store, $params);
+
+        $this->addStockLevelRenderer($store, 'stock_level', 'available_stock');
+        $this->addStockLevelRenderer($store, 'next_stock_level', 'next_available_stock');
 
         $this->addNextAvailableStockAtRenderer($store, 'next_available_stock_at');
 

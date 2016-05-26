@@ -2,15 +2,20 @@
 
 namespace OpenstoreApi\Api;
 
+use Openstore\Store\Renderer\EmdStockLevelRenderer;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
 use Soluble\FlexStore\FlexStore;
 use Soluble\FlexStore\Column\Column;
 use Soluble\FlexStore\Column\ColumnModel;
 use Soluble\FlexStore\Column\ColumnType;
+use OpenstoreApi\Api\ApiTrait;
 
 class ProductCatalogService extends AbstractService
 {
+    use ApiTrait\StockRendererTrait;
+    use ApiTrait\StorePictureRendererTrait;
+
     /**
      *
      * @param array $params
@@ -189,6 +194,7 @@ class ProductCatalogService extends AbstractService
             'next_available_stock_at' => new Expression('CAST(ps.next_available_stock_at as DATE)'),
             'next_available_stock' => new Expression("LEAST(GREATEST(ps.next_available_stock, 0), $max_stock)"),
             'stock_updated_at' => new Expression('ps.updated_at'),
+            'avg_monthly_sale_qty' => new Expression('ps.avg_monthly_sale_qty'),
             'product_barcode_ean13' => new Expression('p.barcode_ean13'),
             'product_barcode_upca' => new Expression('p.barcode_upca'),
             'brand_id' => new Expression('pb.brand_id'),
@@ -261,7 +267,9 @@ class ProductCatalogService extends AbstractService
             'currency_symbol' => new Expression('c.symbol'),
             'trade_code_intrastat' => new Expression('p.trade_code_intrastat'),
             'trade_code_hts' => new Expression('p.trade_code_hts'),
-            'map_price' => new Expression('ppl.map_price')
+            'map_price' => new Expression('ppl.map_price'),
+            'stock_level' => new Expression("''"),
+            'next_stock_level' => new Expression("''")
         ]);
 
         $select->columns($columns, true);
@@ -398,11 +406,6 @@ class ProductCatalogService extends AbstractService
             $store->getSource()->getOptions()->setOffset($params['offset']);
         }
 
-
-        // Remove unwanted columns, that are included just because
-        // required for row renderers
-        $store->getColumnModel()->exclude(['status_reference', 'currency_symbol', 'picture_media_filemtime']);
-
         if (isset($params['customer_id'])) {
             $customer_id = $params['customer_id'];
         } else {
@@ -412,11 +415,24 @@ class ProductCatalogService extends AbstractService
         // Initialize column model
         $this->addStorePictureRenderer($store, 'picture_media_id', 'available_at', 'picture_media_filemtime');
         $this->addNextAvailableStockAtRenderer($store, 'next_available_stock_at');
+        $this->addStockLevelRenderer($store, 'stock_level', 'available_stock');
+        $this->addStockLevelRenderer($store, 'next_stock_level', 'next_available_stock');
+
         $this->addStorePriceRenderer($store, $customer_id, $pricelist_reference, 'picture_thumbnail_url');
         $this->initStoreFormatters($store, $params);
 
+        // Remove unwanted columns, that are included just because
+        // required for row renderers
+        $store->getColumnModel()->exclude([
+            'status_reference',
+            'currency_symbol',
+            'picture_media_filemtime',
+            'avg_monthly_sale_qty'
+        ]);
+
         return $store;
     }
+
 
 
     /**

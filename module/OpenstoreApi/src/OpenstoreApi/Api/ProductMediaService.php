@@ -4,9 +4,12 @@ namespace OpenstoreApi\Api;
 
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
+use OpenstoreApi\Api\ApiTrait;
 
 class ProductMediaService extends AbstractService
 {
+    use ApiTrait\StorePictureRendererTrait;
+
     /**
      * @param array $params [types,brands,pricelists]
      * @return \Soluble\FlexStore\FlexStore

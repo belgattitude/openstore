@@ -10,12 +10,8 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Soluble\FlexStore\FlexStore;
 use Soluble\FlexStore\Source\Zend\SqlSource;
-use Openstore\Store\Renderer\RowPictureRenderer;
-use Openstore\Store\Renderer\DateMinRenderer;
 use Soluble\FlexStore\Formatter;
-use Soluble\FlexStore\Column\Column;
 use Soluble\FlexStore\Column\ColumnModel;
-use Soluble\FlexStore\Column\ColumnType;
 
 abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorAwareInterface
 {
@@ -98,7 +94,7 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
     /**
      *
      * @param Select $select
-     * @return Store
+     * @return \Soluble\Flexstore\FlexStore
      */
     public function getStore(Select $select = null)
     {
@@ -106,63 +102,8 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
     }
 
 
-    /**
-     * Prevent next_available_stock_at to be in the past
-     *
-     * @param FlexStore $store
-     */
-    protected function addNextAvailableStockAtRenderer(FlexStore $store, $date_column = 'next_available_stock_at')
-    {
-        $cm = $store->getColumnModel();
-
-        if ($cm->exists($date_column)) {
-            //$col = $cm->get($date_column);
-            $dateMinRenderer = new DateMinRenderer($date_column);
-
-            $cm->addRowRenderer($dateMinRenderer);
-        }
-    }
-
-    /**
-     *
-     * @param FlexStore $store
-     * @param string $media_column column name containing the media_id
-     * @param string $insert_after insert after column name
-     * @param string $filemtime_column column containing the file modification time of the picture
-     */
-    protected function addStorePictureRenderer(FlexStore $store, $media_column, $insert_after, $filemtime_column = null)
-    {
-        $cm = $store->getColumnModel();
-
-        // Adding picture urls
-        if ($filemtime_column !== null) {
-            if (!$cm->exists($filemtime_column)) {
-                throw new \Exception(__METHOD__ . ": Filemtime column '$filemtime_column' does not exists in column model");
-            }
-        }
-
-        if ($cm->exists($media_column)) {
-            $column = new Column('picture_url');
-            $column->setType(ColumnType::TYPE_STRING);
-            $cm->add($column, $insert_after, ColumnModel::ADD_COLUMN_AFTER);
 
 
-            $configuration = $this->getServiceLocator()->get('Openstore\Configuration');
-            $base_url = $configuration->getConfigKey('media_library.preview.base_url');
-
-            //'picture_media_filemtime' => new Expression('m.filemtime')
-
-            $pictureRenderer = new RowPictureRenderer($media_column, 'picture_url', '1024x768', 95, $base_url, $filemtime_column);
-            $cm->addRowRenderer($pictureRenderer);
-
-            $column = new Column('picture_thumbnail_url');
-            $column->setType(ColumnType::TYPE_STRING);
-            $cm->add($column, 'picture_url', ColumnModel::ADD_COLUMN_AFTER);
-
-            $thumbRenderer = new RowPictureRenderer($media_column, 'picture_thumbnail_url', '170x200', 95, $base_url, $filemtime_column);
-            $cm->addRowRenderer($thumbRenderer);
-        }
-    }
 
 
     /**

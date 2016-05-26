@@ -3,6 +3,7 @@
 namespace OpenstoreApi\Controller;
 
 use OpenstoreApi\Mvc\Controller\AbstractRestfulController;
+
 use Zend\Mvc\MvcEvent;
 
 class ProductMediaController extends AbstractRestfulController
@@ -14,7 +15,7 @@ class ProductMediaController extends AbstractRestfulController
     /**
      *
      * @param MvcEvent $event
-     * @var \Openstore\Api\Api\ProductMediaService
+     * @var \OpenstoreApi\Api\ProductMediaService
      */
     protected $mediaService;
 

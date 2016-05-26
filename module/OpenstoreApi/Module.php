@@ -129,7 +129,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                             'line_separator' => CSVWriter::SEPARATOR_NEWLINE_UNIX,
                             'enclosure' => $enclosure,
                             'escape' => '"',
-                            
+
                         ];
 
                         $charset = trim($_GET['charset']);

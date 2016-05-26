@@ -157,33 +157,31 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
     public function synchronizeAll()
     {
-        
-
         $this->synchronizeCountry();
         $this->synchronizeCustomer();
         $this->synchronizeApi();
         $this->synchronizePricelist();
         $this->synchronizeCustomerPricelist();
 
-        
-        
+
+
         $this->synchronizeProductGroup();
         $this->synchronizeProductBrand();
-        
-        
+
+
         $this->synchronizeProductCategory();
         $this->synchronizeProductModel();
         $this->synchronizeProductSerie();
-        
+
         // Rankable categories are custom for EMD
         // should be after product category
         // and before Product and setProductCategoryBreadcrumbs
         $this->flagRankableCategories();
         $this->setProductCategoryRankBreadcrumbs();
-        
+
         $this->synchronizeProduct();
         $this->synchronizeProductTranslation();
-        
+
         $this->synchronizeProductPricelist();
         $this->synchronizeProductPricelistStat();
         $this->synchronizeProductStock();
@@ -199,7 +197,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
 
 
-        
+
         $this->synchronizeProductStatTrend();
 
 
@@ -1164,7 +1162,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             ";
 
             $this->executeSQL("Replace product pricelist stats for pricelist sales [$key] ", $replace);
- 
         }
 
 
@@ -1409,14 +1406,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
         ";
         $this->executeSQL("Create product category rank", $update);
-        
-        
-        
-        
     }
-    
-    public function setProductCategoryRankBreadcrumbs() {
-        
+
+    public function setProductCategoryRankBreadcrumbs()
+    {
         $update = "
             update product_category pc
             left outer join product_category pc_rank on (
@@ -1425,10 +1418,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             )
             set pc.rankable_breadcrumb = pc_rank.breadcrumb            
         ";
-        $this->executeSQL("Set ProductCategory rank breadcrumb", $update);        
-                
-                
-        
+        $this->executeSQL("Set ProductCategory rank breadcrumb", $update);
     }
 
     public function synchronizeProductModel()
@@ -1561,7 +1551,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
         $this->executeSQL("Delete eventual removed product group translations", $delete);
     }
-    
+
     public function synchronizeProductSerie()
     {
         $akilia1Db = $this->akilia1Db;
@@ -1569,7 +1559,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
         $default_lsfx = $this->default_language_sfx;
 
-        
+
         $replace = "insert into $db.product_serie
                 (serie_id, 
                  brand_id,
@@ -1640,7 +1630,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
         $this->executeSQL("Delete eventual removed product serie translations", $delete);
     }
-    
+
 
     public function synchronizeProductPackaging()
     {

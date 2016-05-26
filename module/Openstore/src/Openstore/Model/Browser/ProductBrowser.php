@@ -129,7 +129,7 @@ class ProductBrowser extends AbstractBrowser
                 ->join(['pstub18' => 'product_stub_translation'], new Expression("pstub.product_stub_id = pstub18.product_stub_id and pstub18.lang='$lang'"), [], $select::JOIN_LEFT)
 
                 ->join(['serie' => 'product_serie'], new Expression('serie.serie_id = p.serie_id'), [], $select::JOIN_LEFT)
-                
+
                 ->join(['psi' => 'product_search'], new Expression("psi.product_id = p.product_id and psi.lang = '$lang'"), [], $select::JOIN_LEFT)
                 ->join(['ppl' => 'product_pricelist'], new Expression('ppl.product_id = p.product_id'), [])
                 ->join(['pl' => 'pricelist'], new Expression('pl.pricelist_id = ppl.pricelist_id'), [])
@@ -181,10 +181,10 @@ class ProductBrowser extends AbstractBrowser
                 'brand_title' => new Expression('pb.title'),
                 'group_id' => new Expression('pg.group_id'),
                 'group_reference' => new Expression('pg.reference'),
-                
+
                 'serie_id' => new Expression('serie.serie_id'),
                 'serie_display_reference' => new Expression('COALESCE(serie.display_reference, serie.reference)'),
-                
+
                 'category_id' => new Expression('pc.category_id'),
                 'category_reference' => new Expression('pc.reference'),
                 //'category_title' => new Expression('COALESCE(pc18.title, pc.title)'),
@@ -235,13 +235,13 @@ class ProductBrowser extends AbstractBrowser
                 'is_promotional' => new Expression('ppl.is_promotional'),
                 'is_liquidation' => new Expression('ppl.is_liquidation'),
                 'is_new' => new Expression('ppl.is_new'),
-                
+
                 'bestseller_rank' => new Expression('ppl.bestseller_rank'),
                 'trending_rank' => new Expression('ppl.trending_rank'),
                 'popular_rank' => new Expression('ppl.popular_rank'),
                 'deal_rank' => new Expression('ppl.deal_rank'),
                 'fresh_rank' => new Expression('ppl.fresh_rank'),
-                
+
                 'available_stock' => new Expression('ps.available_stock'),
                 'next_available_stock' => new Expression('ps.next_available_stock'),
                 'next_available_stock_at' => new Expression('ps.next_available_stock_at'),
