@@ -11,7 +11,6 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Soluble\FlexStore\FlexStore;
 use Soluble\FlexStore\Source\Zend\SqlSource;
 use Soluble\FlexStore\Formatter;
-use Soluble\FlexStore\Column\ColumnModel;
 
 abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorAwareInterface
 {

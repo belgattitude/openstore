@@ -3,11 +3,11 @@
 namespace OpenstoreApi\Api\ApiTrait;
 
 use Soluble\FlexStore\FlexStore;
-use Soluble\FlexStore\Column\ColumnModel;
 use Openstore\Store\Renderer\DateMinRenderer;
 use Openstore\Store\Renderer\EmdStockLevelRenderer;
 
-trait StockRendererTrait {
+trait StockRendererTrait
+{
 
     /**
      * Prevent next_available_stock_at to be in the past
@@ -21,7 +21,6 @@ trait StockRendererTrait {
         if ($cm->exists($date_column)) {
             //$col = $cm->get($date_column);
             $dateMinRenderer = new DateMinRenderer($date_column);
-
             $cm->addRowRenderer($dateMinRenderer);
         }
     }
@@ -45,6 +44,4 @@ trait StockRendererTrait {
         }
         $cm->addRowRenderer($stockLevelRenderer);
     }
-
-
 }

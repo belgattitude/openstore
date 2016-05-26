@@ -2,14 +2,12 @@
 
 namespace OpenstoreApi\Api;
 
-use Openstore\Store\Renderer\EmdStockLevelRenderer;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
 use Soluble\FlexStore\FlexStore;
 use Soluble\FlexStore\Column\Column;
 use Soluble\FlexStore\Column\ColumnModel;
 use Soluble\FlexStore\Column\ColumnType;
-use OpenstoreApi\Api\ApiTrait;
 
 class ProductCatalogService extends AbstractService
 {

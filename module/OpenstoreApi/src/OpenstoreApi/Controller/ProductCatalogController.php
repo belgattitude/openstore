@@ -63,7 +63,6 @@ class ProductCatalogController extends AbstractRestfulController
                 $limited_columns = explode(',', $columns);
                 $cm = $store->getSource()->getColumnModel();
                 $cm->includeOnly($limited_columns);
-                
             }
         }
 

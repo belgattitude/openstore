@@ -4,7 +4,6 @@ namespace OpenstoreApi\Api;
 
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
-use OpenstoreApi\Api\ApiTrait;
 
 class ProductStockService extends AbstractService
 {
@@ -121,7 +120,7 @@ class ProductStockService extends AbstractService
         $store->getColumnModel()->exclude([
             'avg_monthly_sale_qty'
         ]);
-        
+
         $this->initStoreFormatters($store, $params);
 
         $this->addStockLevelRenderer($store, 'stock_level', 'available_stock');

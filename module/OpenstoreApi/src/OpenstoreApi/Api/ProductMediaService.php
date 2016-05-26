@@ -4,7 +4,6 @@ namespace OpenstoreApi\Api;
 
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
-use OpenstoreApi\Api\ApiTrait;
 
 class ProductMediaService extends AbstractService
 {
@@ -77,7 +76,6 @@ class ProductMediaService extends AbstractService
 
         $select->having('active_pricelists is not null');
         $select->order(['p.product_id' => $select::ORDER_ASCENDING]);
-
 
         $store = $this->getStore($select);
 

@@ -9,14 +9,15 @@ use Soluble\FlexStore\Column\ColumnModel;
 use Openstore\Store\Renderer\RowPictureRenderer;
 
 
-trait StorePictureRendererTrait {
+trait StorePictureRendererTrait
+{
 
     /**
      * Get service locator
      *
      * @return \Zend\ServiceManager\ServiceLocatorInterface
      */
-    abstract function getServiceLocator();
+    abstract public function getServiceLocator();
 
 
     /**
@@ -59,6 +60,4 @@ trait StorePictureRendererTrait {
             $cm->addRowRenderer($thumbRenderer);
         }
     }
-
-
 }

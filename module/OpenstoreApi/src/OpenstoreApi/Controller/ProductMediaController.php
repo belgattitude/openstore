@@ -3,7 +3,6 @@
 namespace OpenstoreApi\Controller;
 
 use OpenstoreApi\Mvc\Controller\AbstractRestfulController;
-
 use Zend\Mvc\MvcEvent;
 
 class ProductMediaController extends AbstractRestfulController
@@ -44,7 +43,6 @@ class ProductMediaController extends AbstractRestfulController
                 $cm->includeOnly($limited_columns);
             }
         }
-
         return $store;
     }
 }
