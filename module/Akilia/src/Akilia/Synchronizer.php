@@ -694,6 +694,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         stock_id,
                         available_stock,
                         theoretical_stock,
+                        avg_monthly_sale_qty,
                         legacy_synchro_at,
                         updated_at
                     )
@@ -702,6 +703,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                            pl.stock_id as stock_id,
                            t.stock,
                            t.stock_theorique,
+                           t.moyenne_vente,
                            '{$this->legacy_synchro_at}' as legacy_synchro_at,
                            t.date_synchro
 
@@ -710,11 +712,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     inner join $db.pricelist pl on t.id_pays = pl.legacy_mapping
                         $pricelist_clause
                                                     
-                                        where a.flag_archive = 0
+                    where a.flag_archive = 0
 
                     on duplicate key update
                             available_stock = if(product_stock.updated_at > t.date_synchro, product_stock.available_stock, t.stock),
                             theoretical_stock = if(product_stock.updated_at > t.date_synchro, product_stock.theoretical_stock, t.stock_theorique),
+                            acg_monthly_sale_qty = t.moyenne_vente,
                             legacy_synchro_at = '{$this->legacy_synchro_at}',
                             updated_at = if(product_stock.updated_at > t.date_synchro, product_stock.updated_at, t.date_synchro)                        
 
