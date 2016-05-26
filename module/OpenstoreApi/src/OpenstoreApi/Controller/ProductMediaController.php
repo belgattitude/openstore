@@ -7,8 +7,14 @@ use Zend\Mvc\MvcEvent;
 
 class ProductMediaController extends AbstractRestfulController
 {
+    /**
+     * @var array
+     */
     protected $collectionOptions = ['GET'];
-    //protected $resourceOptions = array('GET');
+
+    /**
+     * @var array
+     */
     protected $resourceOptions = [];
 
     /**
