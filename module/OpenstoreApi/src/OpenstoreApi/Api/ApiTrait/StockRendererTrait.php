@@ -32,7 +32,8 @@ trait StockRendererTrait
      * @param string $avg_sale_column
      * @param string $pricelist_column
      */
-    protected function addMaskedStockRenderer(FlexStore $store, $stock_column, $avg_sale_column = 'avg_monthly_sale_qty', $pricelist_column = 'pricelist_reference') {
+    protected function addMaskedStockRenderer(FlexStore $store, $stock_column, $avg_sale_column = 'avg_monthly_sale_qty', $pricelist_column = 'pricelist_reference')
+    {
         $cm = $store->getColumnModel();
         $stockLevelRenderer = new EmdMaskedStockRenderer($stock_column, $avg_sale_column, $pricelist_column);
         $cm->addRowRenderer($stockLevelRenderer);

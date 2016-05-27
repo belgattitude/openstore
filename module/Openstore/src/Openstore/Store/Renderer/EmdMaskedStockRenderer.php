@@ -103,7 +103,7 @@ class EmdMaskedStockRenderer implements RowRendererInterface
                     } elseif ($stock >= $avg_sale_qty) {
                         // If stock > average sales quantity, limit to
                         // average quantity (or maximum to displau)
-                        $masked_stock = max([$stock, $this->maxDisplayQty]);;
+                        $masked_stock = max([$stock, $this->maxDisplayQty]);
                     } else {
                         // If stock < average sales quantity,
                         // display stock value
@@ -112,23 +112,23 @@ class EmdMaskedStockRenderer implements RowRendererInterface
             }
         }
 
- //       $row[$this->stock_column] = $stock;
- //       return;
-        $row[$this->stock_column] = (int) $masked_stock;
 
+        $row[$this->stock_column] = (int) $masked_stock;
     }
 
     /**
      * @param int $max_display_qty
      */
-    public function setMaxDisplayQty($max_display_qty) {
+    public function setMaxDisplayQty($max_display_qty)
+    {
         $this->maxDisplayQty = $max_display_qty;
     }
 
     /**
      * @param int $max_display_qty
      */
-    public function setExportMaxDisplayQty($max_display_qty) {
+    public function setExportMaxDisplayQty($max_display_qty)
+    {
         $this->exportMaxDisplayQty = $max_display_qty;
     }
 
