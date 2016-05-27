@@ -113,7 +113,6 @@ class EmdMaskedStockRenderer implements RowRendererInterface
             }
         }
 
-
         $row[$this->stock_column] = max([(int) $masked_stock, 0]);
     }
 
