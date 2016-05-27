@@ -124,8 +124,8 @@ class EmdStockLevelRenderer implements RowRendererInterface
                         $level = self::STOCK_EMPTY;
                     } else {
                         // Stock between average and 2xavg, then 'orange light'
-                        // Conditional approval based on availability for other territories
-                        $level = self::STOCK_AVAILABLE_UPON_ACCEPTANCE;
+                        // Means LOW_STOCK 'orange light'
+                        $level = self::STOCK_LOW;
                     }
                     break;
 
