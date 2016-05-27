@@ -114,9 +114,9 @@ class EmdMaskedStockRenderer implements RowRendererInterface
 
 
         // Hack to remove when Gio, agreed
-        $masked_stock = min([$stock, $this->maxDisplayQty]);
+        $masked_stock = min([max([$stock, 0]), $this->maxDisplayQty]);
 
-        $row[$this->stock_column] = (int) $masked_stock;
+        $row[$this->stock_column] = max([(int) $masked_stock, 0]);
     }
 
     /**
