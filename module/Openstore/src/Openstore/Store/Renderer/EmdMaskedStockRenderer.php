@@ -100,21 +100,18 @@ class EmdMaskedStockRenderer implements RowRendererInterface
                     // Limited average quantity
                     if ($avg_sale_qty < 1) {
                         $masked_stock = min([$stock, $this->maxDisplayQty]);
-                    } elseif ($stock >= $avg_sale_qty) {
-                        // If stock > average sales quantity, limit to
-                        // average quantity (or maximum to displau)
-                        $masked_stock = max([$stock, $this->maxDisplayQty]);
                     } else {
-                        // If stock < average sales quantity,
-                        // display stock value
-                        $masked_stock = $stock;
+
+                        // Display stock, but limit the display to (average sales qty / 2)
+                        $masked_stock = min([$stock, ($avg_sale_qty / 2)]);
+
                     }
             }
         }
 
 
         // Hack to remove when Gio, agreed
-        $masked_stock = min([max([$stock, 0]), $this->maxDisplayQty]);
+        //$masked_stock = min([max([$stock, 0]), $this->maxDisplayQty]);
 
         $row[$this->stock_column] = max([(int) $masked_stock, 0]);
     }
