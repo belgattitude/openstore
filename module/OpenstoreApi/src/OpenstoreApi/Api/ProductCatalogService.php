@@ -136,9 +136,9 @@ class ProductCatalogService extends AbstractService
             $select->join(['packs' => $packSelect], new Expression("packs.product_id = p.product_id"), [], $select::JOIN_LEFT);
         }
 
-        $max_stock = 30;
 
-        /*
+
+        /**
           Liquidation
           DateCreation
          */
@@ -188,9 +188,9 @@ class ProductCatalogService extends AbstractService
             'is_new' => new Expression('ppl.is_new'),
             'sale_minimum_qty' => new Expression('ppl.sale_minimum_qty'),
             'on_stock' => new Expression('if (ps.available_stock > 0, 1, 0)'),
-            'available_stock' => new Expression("LEAST(GREATEST(ps.available_stock, 0), $max_stock)"),
+            'available_stock' => new Expression("ps.available_stock"),
             'next_available_stock_at' => new Expression('CAST(ps.next_available_stock_at as DATE)'),
-            'next_available_stock' => new Expression("LEAST(GREATEST(ps.next_available_stock, 0), $max_stock)"),
+            'next_available_stock' => new Expression("ps.next_available_stock"),
             'stock_updated_at' => new Expression('ps.updated_at'),
             'avg_monthly_sale_qty' => new Expression('ps.avg_monthly_sale_qty'),
             'product_barcode_ean13' => new Expression('p.barcode_ean13'),
@@ -413,8 +413,12 @@ class ProductCatalogService extends AbstractService
         // Initialize column model
         $this->addStorePictureRenderer($store, 'picture_media_id', 'available_at', 'picture_media_filemtime');
         $this->addNextAvailableStockAtRenderer($store, 'next_available_stock_at');
+        // Stock levels
         $this->addStockLevelRenderer($store, 'stock_level', 'available_stock');
         $this->addStockLevelRenderer($store, 'next_stock_level', 'next_available_stock');
+        // Masked stock renderers
+        $this->addMaskedStockRenderer($store, 'available_stock', 'avg_monthly_sale_qty');
+        $this->addMaskedStockRenderer($store, 'next_available_stock', 'avg_monthly_sale_qty');
 
         $this->addStorePriceRenderer($store, $customer_id, $pricelist_reference, 'picture_thumbnail_url');
         $this->initStoreFormatters($store, $params);

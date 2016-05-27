@@ -5,6 +5,7 @@ namespace OpenstoreApi\Api\ApiTrait;
 use Soluble\FlexStore\FlexStore;
 use Openstore\Store\Renderer\DateMinRenderer;
 use Openstore\Store\Renderer\EmdStockLevelRenderer;
+use Openstore\Store\Renderer\EmdMaskedStockRenderer;
 
 trait StockRendererTrait
 {
@@ -23,6 +24,18 @@ trait StockRendererTrait
             $dateMinRenderer = new DateMinRenderer($date_column);
             $cm->addRowRenderer($dateMinRenderer);
         }
+    }
+
+    /**
+     * @param FlexStore $store
+     * @param string $stock_column
+     * @param string $avg_sale_column
+     * @param string $pricelist_column
+     */
+    protected function addMaskedStockRenderer(FlexStore $store, $stock_column, $avg_sale_column = 'avg_monthly_sale_qty', $pricelist_column = 'pricelist_reference') {
+        $cm = $store->getColumnModel();
+        $stockLevelRenderer = new EmdMaskedStockRenderer($stock_column, $avg_sale_column, $pricelist_column);
+        $cm->addRowRenderer($stockLevelRenderer);
     }
 
     /**
