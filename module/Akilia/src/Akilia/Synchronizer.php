@@ -1978,7 +1978,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
         $update = "update $db.product p 
                    inner join $akilia1db.article a on a.id_article = p.legacy_mapping 
-                   inner join $akilia2db.famille f on a.id_famille = f.id_famille
+                   inner join $akilia1db.famille f on a.id_famille = f.id_famille
                    set p.type_id = if(f.id_famille in ('00'), $pricelist_type_id, 
                                         if(f.id_famille in ('A0'), $goodies_type_id, p.type_id) 
                                      )
