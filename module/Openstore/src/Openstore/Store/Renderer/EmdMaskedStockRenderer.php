@@ -98,7 +98,7 @@ class EmdMaskedStockRenderer implements RowRendererInterface
 
                 default:
                     // Limited average quantity
-                    if ($avg_sale_qty < 1) {
+                    if ($avg_sale_qty <= 0) {
                         $masked_stock = min([$stock, $this->maxDisplayQty]);
                     } else {
                         $avg_threshold = ($avg_sale_qty / 2);
