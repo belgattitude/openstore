@@ -42,6 +42,13 @@ return array(
             'default_language' => 'en',
             
             'options' => array(
+                'product' => [
+                        /*
+                        'post' => [
+                            'product_type_emd_hack' => 'synchronizeEMDProductType'
+                        ]*/
+                ],
+
                 'product_stock' => [
                         'enabled' => true,
                         /*

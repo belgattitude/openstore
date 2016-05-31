@@ -42,7 +42,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
     /**
      *
-     * @var Doctrine\Orm\EntityManager
+     * @var Doctrine\ORM\EntityManager
      */
     protected $em;
 
@@ -180,6 +180,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->setProductCategoryRankBreadcrumbs();
 
         $this->synchronizeProduct();
+
+        //
+        // FOR EMD, change the product_type
+        //
+        $this->synchronizeEMDProductType();
+
         $this->synchronizeProductTranslation();
 
         $this->synchronizeProductPricelist();
@@ -1758,8 +1764,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         }
 
 
-
-
         $description = "if(trim(COALESCE(i.desc$default_lsfx, '')) = '', null, $rep)";
 
         $replace = " insert
@@ -1929,6 +1933,59 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
         $this->executeSQL("Delete eventual removed products", $delete);
+
+
+        if (isset($this->configuration['options']['product']['post'])) {
+            $postOperations = (array) $this->configuration['options']['product']['post'];
+
+            foreach($postOperations as $opkey => $operation) {
+                $this->log("Executing post-operation '$opkey' for products");
+                $this->$operation();
+            }
+            return;
+        }
+
+    }
+
+
+    /**
+     * Hack for emd
+     * Will be executed as a post-operation after product insertion
+     * see configuration key
+     * - $this->configuration['options']['product']['post']
+     *
+     */
+    protected function synchronizeEMDProductType() {
+
+        // All products belonging to family
+        // - '00' : must be set as 'PRICELIST' product type
+        // - 'A0' : must be set as 'GOODIES' product type
+
+        $db = $this->openstoreDb;
+        $akilia1db = $this->akilia1Db;
+
+        $productTypeRepo = $this->em->getRepository('OpenstoreSchema\Core\Entity\ProductType');
+
+        $type_goodies   = $productTypeRepo->findOneBy(['reference' => 'GOODIES']);
+        $type_pricelist = $productTypeRepo->findOneBy(['reference' => 'PRICELIST']);
+
+        if (!$type_goodies || !$type_pricelist) {
+            throw new \Exception(__METHOD__ . " Missing fixtures GOODIES && PRICELIST in product type fixtures");
+        }
+
+        $goodies_type_id = $type_goodies->type_id;
+        $pricelist_type_id = $type_pricelist->type_id;
+
+        $update = "update nuvolia.product p 
+                   inner join emd00.article a on a.id_article = p.legacy_mapping 
+                   inner join emd00.famille f on a.id_famille = f.id_famille
+                   set p.type_id = if(f.id_famille in ('00'), $pricelist_type_id, 
+                                        if(f.id_famille in ('A0'), $goodies_type_id, p.type_id) 
+                                     )
+                ";
+
+        $this->executeSQL("EMD product type hack", $update);
+
     }
 
     /**
@@ -2030,10 +2087,10 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                                                         p.product_id as product_id,
                                                         CONCAT(a_parent.reference,  ':', a_parent.id_marque, ':', a_parent.id_article, '_stub') as stub_legacy_mapping, 
                                                         COUNT(a_parent.reference) as nb_members
-                                                FROM emd00.cst_art_infos cai_parent
-                                                INNER JOIN emd00.article a_parent on a_parent.id_article = cai_parent.id_article
-                                                LEFT OUTER JOIN emd00.cst_art_infos cai_child on cai_child.id_art_tete = cai_parent.id_article
-                                                LEFT OUTER JOIN emd00.article a_child on (a_child.id_article = cai_child.id_article)
+                                                FROM $akilia1db.cst_art_infos cai_parent
+                                                INNER JOIN $akilia1db.article a_parent on a_parent.id_article = cai_parent.id_article
+                                                LEFT OUTER JOIN $akilia1db.cst_art_infos cai_child on cai_child.id_art_tete = cai_parent.id_article
+                                                LEFT OUTER JOIN $akilia1db.article a_child on (a_child.id_article = cai_child.id_article)
                                                 INNER JOIN $db.product p on p.legacy_mapping = a_child.id_article
 
                                                 WHERE (a_parent.flag_archive = 0 and a_child.flag_archive=0 )
@@ -2046,11 +2103,11 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                                                         p.product_id as product_id,
                                                         CONCAT(a_parent.reference,  ':', a_parent.id_marque, ':', a_parent.id_article, '_stub') as stub_legacy_mapping, 
                                                         COUNT(a_child.reference) as nb_members
-                                                FROM emd00.cst_art_infos cai_parent
-                                                INNER JOIN emd00.article a_parent on a_parent.id_article = cai_parent.id_article
+                                                FROM $akilia1db.cst_art_infos cai_parent
+                                                INNER JOIN $akilia1db.article a_parent on a_parent.id_article = cai_parent.id_article
                                                 INNER JOIN $db.product p on p.legacy_mapping = a_parent.id_article
-                                                LEFT OUTER JOIN emd00.cst_art_infos cai_child on cai_child.id_art_tete = cai_parent.id_article
-                                                LEFT OUTER JOIN emd00.article a_child on (a_child.id_article = cai_child.id_article)
+                                                LEFT OUTER JOIN $akilia1db.cst_art_infos cai_child on cai_child.id_art_tete = cai_parent.id_article
+                                                LEFT OUTER JOIN $akilia1db.article a_child on (a_child.id_article = cai_child.id_article)
                                                 WHERE (a_parent.flag_archive = 0 and a_child.flag_archive=0 or a_child.reference is null)
                                                 GROUP BY product_id, stub_legacy_mapping
 
