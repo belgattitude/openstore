@@ -1976,9 +1976,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $goodies_type_id = $type_goodies->type_id;
         $pricelist_type_id = $type_pricelist->type_id;
 
-        $update = "update nuvolia.product p 
-                   inner join emd00.article a on a.id_article = p.legacy_mapping 
-                   inner join emd00.famille f on a.id_famille = f.id_famille
+        $update = "update $db.product p 
+                   inner join $akilia1db.article a on a.id_article = p.legacy_mapping 
+                   inner join $akilia2db.famille f on a.id_famille = f.id_famille
                    set p.type_id = if(f.id_famille in ('00'), $pricelist_type_id, 
                                         if(f.id_famille in ('A0'), $goodies_type_id, p.type_id) 
                                      )
