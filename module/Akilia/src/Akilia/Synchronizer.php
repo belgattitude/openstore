@@ -42,7 +42,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
     /**
      *
-     * @var Doctrine\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 
@@ -1938,13 +1938,12 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         if (isset($this->configuration['options']['product']['post'])) {
             $postOperations = (array) $this->configuration['options']['product']['post'];
 
-            foreach($postOperations as $opkey => $operation) {
+            foreach ($postOperations as $opkey => $operation) {
                 $this->log("Executing post-operation '$opkey' for products");
                 $this->$operation();
             }
             return;
         }
-
     }
 
 
@@ -1955,7 +1954,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
      * - $this->configuration['options']['product']['post']
      *
      */
-    protected function synchronizeEMDProductType() {
+    protected function synchronizeEMDProductType()
+    {
 
         // All products belonging to family
         // - '00' : must be set as 'PRICELIST' product type
@@ -1985,7 +1985,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 ";
 
         $this->executeSQL("EMD product type hack", $update);
-
     }
 
     /**
@@ -2194,8 +2193,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     /**
      * Synchronize only invoice titles
      */
-    public function synchronizeMinimalProductTranslation() {
-
+    public function synchronizeMinimalProductTranslation()
+    {
         $akilia1db = $this->akilia1Db;
         $db = $this->openstoreDb;
 
@@ -2236,7 +2235,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             delete from $db.product_translation 
             where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
         $this->executeSQL("Delete eventual removed product translations", $delete);
-
     }
 
     /**
@@ -2245,7 +2243,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
      */
     public function synchronizeProductTranslation(array $product_ids = null)
     {
-
         if (!$this->configuration['options']['product_translation']['enabled']) {
             $this->log("Skipping full product translation synchro [disabled by config]");
             $this->synchronizeMinimalProductTranslation();
@@ -2579,7 +2576,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
     /**
      *
-     * @return Zend\Db\Adapter\Adapter
+     * @return \Zend\Db\Adapter\Adapter
      */
     public function getDbAdapter()
     {

@@ -283,7 +283,7 @@ class ProductCatalogService extends AbstractService
 
         // only product that are not 'OFFER' (combination of products)
         $select->where("pt.flag_excluded_export = 0");
-        
+
         // FOR EMD - TODO add a flag in brand or product_type to automatically
         // exclude some products
         $select->where("pb.reference <> '****'");

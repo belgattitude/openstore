@@ -101,7 +101,7 @@ class ProductStockService extends AbstractService
         if (array_key_exists('groups', $params)) {
             $select->where->in('pg.reference', explode(',', $params['groups']));
         }
-        
+
         if (array_key_exists('product_barcode_ean13', $params)) {
             $select->where->equalTo('p.barcode_ean13', $params['product_barcode_ean13']);
         }
@@ -114,8 +114,8 @@ class ProductStockService extends AbstractService
         if (array_key_exists('product_id', $params)) {
             $select->where->equalTo('p.product_id', $params['product_id']);
         }
-        
-        
+
+
         //$select->limit(1000);
         /*
           $select->where("pl.reference = 'BE'");
