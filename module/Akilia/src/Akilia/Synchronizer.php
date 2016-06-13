@@ -2192,13 +2192,64 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     }
 
     /**
+     * Synchronize only invoice titles
+     */
+    public function synchronizeMinimalProductTranslation() {
+
+        $akilia1db = $this->akilia1Db;
+        $db = $this->openstoreDb;
+
+        $langs = $this->akilia1lang;
+
+
+        foreach ($langs as $lang => $sfx) {
+            $lang = strtolower($lang);
+
+            if ($lang != 'zh') {
+                $invoice_title = "if(trim(a.libelle$sfx) = '', null, trim(a.libelle$sfx))";
+
+                $replace = "insert into product_translation 
+                     ( product_id,
+                       lang,
+                       invoice_title,
+                       legacy_synchro_at
+                      )
+                      select
+                        p.product_id as product_id, 
+                        '$lang' as lang,
+                        REPLACE($invoice_title, '–', '-') as invoice_title,    
+                        '{$this->legacy_synchro_at}'    
+                      from $akilia1db.article a
+                      inner join $db.product p on p.legacy_mapping = a.id_article     
+                     where 1=1
+                     on duplicate key update
+                      invoice_title = REPLACE($invoice_title, '–', '-'),
+                      legacy_synchro_at = '{$this->legacy_synchro_at}'      
+                ";
+
+                $this->executeSQL("Replace product translations for lang: $lang", $replace);
+            }
+        }
+        // 2. Deleting - old links in case it changes only when product id is no specified
+
+        $delete = "
+            delete from $db.product_translation 
+            where legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+        $this->executeSQL("Delete eventual removed product translations", $delete);
+
+    }
+
+    /**
      *
      * @param array $product_ids restrict sync to the following products id's
      */
     public function synchronizeProductTranslation(array $product_ids = null)
     {
+
         if (!$this->configuration['options']['product_translation']['enabled']) {
-            $this->log("Skipping product translation synchro [disabled by config]");
+            $this->log("Skipping full product translation synchro [disabled by config]");
+            $this->synchronizeMinimalProductTranslation();
+
             return;
         }
 
@@ -2208,7 +2259,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $intelaccessDb = $this->intelaccessDb;
 
         $langs = $this->akilia1lang;
-
 
         if ($product_ids !== null) {
             $product_clause = " and ("

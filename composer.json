@@ -10,13 +10,11 @@
     "homepage": "http://nuvolia.com",
     "require": {
         "php": "^5.4.4 || ^7.0.0",
-        
         "openstore/schema-core": "dev-master",
         "belgattitude/openstore-akilia": "dev-master",
-        
-        "soluble/japha": "dev-master",
+        "soluble/japha": "^0.11.3",
+        "soluble/japha-pjb62-compat": "^0.11.0",
         "soluble/solublecomponents": "dev-master",
-        
         "zendframework/zendframework": "2.5.2",
         "doctrine/orm": ">=2.5,<2.7",
         "doctrine/dbal": ">=2.5,<2.7",        
