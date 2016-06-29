@@ -218,7 +218,7 @@ class ProductCatalogService extends AbstractService
             'pricelist_reference' => new Expression('pl.reference'),
             'type_id' => new Expression('pt.type_id'),
             'type_reference' => new Expression('pt.reference'),
-            'weight' => new Expression('p.weight'),
+            'weight' => new Expression('p.weight_gross'),
             'volume' => new Expression('p.volume'),
             'length' => new Expression('p.length'),
             'width' => new Expression('p.width'),
@@ -267,7 +267,8 @@ class ProductCatalogService extends AbstractService
             'trade_code_hts' => new Expression('p.trade_code_hts'),
             'map_price' => new Expression('ppl.map_price'),
             'stock_level' => new Expression("''"),
-            'next_stock_level' => new Expression("''")
+            'next_stock_level' => new Expression("''"),
+            'weight_net' => new Expression('p.weight'),
         ]);
 
         $select->columns($columns, true);
@@ -330,7 +331,7 @@ class ProductCatalogService extends AbstractService
                 $matches[0] = 'MATCH (psi.keywords) AGAINST (' . $platform->quoteValue(implode(' ', $splitted)) . ' IN NATURAL LANGUAGE MODE)';
 
                 $relevance = '';
-                $i = 0;
+
                 foreach ($matches as $weight => $condition) {
                     if ($weight > 0) {
                         $relevance .= "if ($condition, $weight, ";

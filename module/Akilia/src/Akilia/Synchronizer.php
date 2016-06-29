@@ -1793,6 +1793,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     
                     volume,
                     weight,
+                    weight_gross,
                     length,
                     height,
                     width,
@@ -1839,11 +1840,14 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     if(a.flag_archive = 1, 0, 1) as flag_active,
                     null as icon_class,
                     a.volume as volume,
-                    a.poids as weight,
+                    -- a.poids est un poids brut chez EMD
+                    a.weight as weight,
+                    a.poids as weight_gross,
+                    
                     -- dimensions are not yet supported
-                    null as length,
-                    null as height,
-                    null as width,
+                    a.length as length,
+                    a.height as height,
+                    a.width as width,
                     
                     
                     COALESCE(if(a.qty_emballage=0, null, a.qty_emballage), a.qty_carton) as pack_qty_box,
@@ -1904,11 +1908,13 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         flag_active = if(a.flag_archive = 1, 0, 1),
                         icon_class = null,
                         volume = a.volume,
-                        weight = a.poids,
-                        -- Dimensions are not yet supported
-                        length = null,
-                        height = null,
-                        width = null,
+                        weight = a.weight,
+                        weight_gross = a.poids,
+                        
+                        -- Dimensions of the product (not the pack)
+                        length = a.length,
+                        height = a.height,
+                        width = a.width,
                         
                         -- Qty carton has been deprecated, use pack_qty_carton
                         pack_qty_box = COALESCE(if(a.qty_emballage=0, null, a.qty_emballage), a.qty_carton),
