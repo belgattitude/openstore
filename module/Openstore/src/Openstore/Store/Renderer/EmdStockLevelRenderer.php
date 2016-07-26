@@ -133,7 +133,7 @@ class EmdStockLevelRenderer implements RowRendererInterface
                     // All regular pricelists like BE, FR, NL, ES, DE, AT,...
                     if ($stock < 1) {
                         $level = self::STOCK_EMPTY;
-                    } elseif ($avg_sale_qty <= 1) {
+                    } elseif ($avg_sale_qty <= 0) {
                         $level = self::STOCK_LEVEL_UNDETERMINABLE;
                     } elseif ($stock >= $avg_sale_qty) {
                         // if greater than average, then full stock [****]
