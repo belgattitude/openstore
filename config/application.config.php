@@ -21,7 +21,7 @@ $config = array(
         // Apigility
         'ZF\Apigility',
         'ZF\Apigility\Provider',
-        'AssetManager',
+        //'AssetManager',
         'ZF\ApiProblem',
         'ZF\MvcAuth',
         'ZF\OAuth2',
