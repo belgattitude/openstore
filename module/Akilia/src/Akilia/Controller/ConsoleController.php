@@ -211,8 +211,6 @@ class ConsoleController extends AbstractActionController
                             'created_at' => $now,
                             'updated_at' => $now,
                         ];
-                        //var_dump($newData);
-                        //echo ".";
                         $insert->values($newData);
                         $selectString = $sql->getSqlStringForSqlObject($insert);
                         $selectString = str_replace('INSERT INTO', 'REPLACE INTO', $selectString);
