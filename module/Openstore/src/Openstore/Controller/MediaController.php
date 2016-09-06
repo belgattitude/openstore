@@ -113,7 +113,7 @@ class MediaController extends AbstractActionController
 
                     $image = $imageManager->make($filename);
                     $image->resize($params['width'], $params['height'], function ($constraint) {
-                         $constraint->aspectRatio();
+                        $constraint->aspectRatio();
                     });
                         $response = $image->encode($format, $params['quality']);
 

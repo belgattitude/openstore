@@ -19,7 +19,6 @@ use HTMLPurifier;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface, ConsoleUsageProviderInterface
 {
-
     public function init(ModuleManager $moduleManager)
     {
 
@@ -115,7 +114,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Co
         $zfcServiceEvents->attach(
             'logout',
             function ($e) use ($serviceManager) {
-                    $serviceManager->get('Zend\Session\SessionManager')->getStorage()->clear('Openstore\UserContext');
+                $serviceManager->get('Zend\Session\SessionManager')->getStorage()->clear('Openstore\UserContext');
             }
         );
     }

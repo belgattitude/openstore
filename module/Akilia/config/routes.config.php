@@ -48,6 +48,17 @@ return [
                     ]
 
                 ],
+                'geocodedealers' => [
+                    'options' => [
+                        'route' => 'akilia geocodedealers',
+                        'defaults' => [
+                            //'__NAMESPACE__' => 'Openstore\Controller',
+                            'controller' => 'Akilia\Controller\Console',
+                            'action' => 'geocodedealers'
+                        ]
+                    ]
+                ],
+
                 'syncapi' => [
                     'options' => [
                         'route' => 'akilia syncapi',

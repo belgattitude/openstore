@@ -12,7 +12,7 @@ use Zend\Db\Sql\Expression;
 use Soluble\FlexStore\Source\Zend\SqlSource;
 use Soluble\FlexStore\FlexStore;
 
-class Akilia2Customers implements ServiceLocatorAwareInterface, AdapterAwareInterface
+class Akilia2Dealers implements ServiceLocatorAwareInterface, AdapterAwareInterface
 {
     /**
      * @var ServiceLocatorInterface
@@ -39,38 +39,42 @@ class Akilia2Customers implements ServiceLocatorAwareInterface, AdapterAwareInte
      * @param int $limit
      * @return type
      */
-    public function getCustomerGeo($days_threshold = 300, $ca_threshold = 1000, $min_accuracy = 6, $limit = 1000)
+    public function getDealersGeo($days_threshold = 300, $ca_threshold = 1000, $min_accuracy = 6, $limit = 1000)
     {
         $akilia2db  = $this->configuration['synchronizer']['db_akilia2'];
         $select = new Select();
-        $bcg = new \Zend\Db\Sql\TableIdentifier('base_customer_geo', $akilia2db);
+        $ccg = new \Zend\Db\Sql\TableIdentifier('crm_contact_geo', $akilia2db);
         $bc  = new \Zend\Db\Sql\TableIdentifier('base_customer', $akilia2db);
+        $cc  = new \Zend\Db\Sql\TableIdentifier('crm_contact', $akilia2db);
         $bs  = new \Zend\Db\Sql\TableIdentifier('base_state', $akilia2db);
         $bco  = new \Zend\Db\Sql\TableIdentifier('base_country', $akilia2db);
         $so = new \Zend\Db\Sql\TableIdentifier('sal_order', $akilia2db);
         $sol = new \Zend\Db\Sql\TableIdentifier('sal_order_line', $akilia2db);
-        $select->from(["bc" => $bc], [])
-                ->join(['bcg' => $bcg], "bc.id = bcg.customer_id", [], Select::JOIN_LEFT)
-                ->join(['bs' => $bs], "bs.id = bc.state_id", [], Select::JOIN_LEFT)
-                ->join(['bco' => $bco], "bco.id = bc.country_id", [], Select::JOIN_LEFT)
+        $select->from(["bc" => $bc])
+                ->join(['cc' => $cc], "bc.id = cc.customer_id", [], Select::JOIN_INNER)
+                ->join(['ccg' => $ccg], "cc.id = ccg.contact_id", [], Select::JOIN_LEFT)
+                ->join(['bs' => $bs], "bs.id = cc.state_id", [], Select::JOIN_LEFT)
+                ->join(['bco' => $bco], "bco.id = cc.country_id", [], Select::JOIN_LEFT)
                 ->join(['so' => $so], "bc.id = so.customer_id", [], Select::JOIN_INNER)
                 ->join(['sol' => $sol], "so.id = sol.order_id", [], Select::JOIN_INNER)
                ->where('bc.flag_archived <> 1');
 
+        $select->where('cc.use_customer_address = 0');
+
         $columns = [
                 'customer_id'    => new Expression('bc.id'),
                 'name'            => new Expression('bc.name'),
-                'street'        => new Expression('bc.street'),
-                'street_2'        => new Expression('bc.street_2'),
-                'street_number'    => new Expression('bc.street_number'),
+                'street'        => new Expression('cc.street'),
+                'street_2'        => new Expression('cc.street_2'),
+                'street_number'    => new Expression('cc.street_number'),
                 'state_reference'    => new Expression('bs.reference'),
                 'state_name'    => new Expression('bs.name'),
-                'zipcode'        => new Expression('bc.zipcode'),
-                'city'            => new Expression('bc.city'),
+                'zipcode'        => new Expression('cc.zipcode'),
+                'city'            => new Expression('cc.city'),
                 'country'            => new Expression('bco.name'),
-                'accuracy'    => new Expression('bcg.accuracy'),
-                'latitude'    => new Expression('bcg.latitude'),
-                'longitude'    => new Expression('bcg.longitude'),
+                'accuracy'    => new Expression('ccg.accuracy'),
+                'latitude'    => new Expression('ccg.latitude'),
+                'longitude'    => new Expression('ccg.longitude'),
 
             ];
 
@@ -99,6 +103,7 @@ class Akilia2Customers implements ServiceLocatorAwareInterface, AdapterAwareInte
 
 
         $store = $this->getStore($select);
+
         $data = $store->getData()->toArray();
         return $data;
     }

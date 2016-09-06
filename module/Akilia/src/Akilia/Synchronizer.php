@@ -956,10 +956,14 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             }
         }
 
-        $plstats_columns = implode(",\n", array_map(function ($col) { return "plstats.$col"; }, array_keys($columns)));
+        $plstats_columns = implode(",\n", array_map(function ($col) {
+            return "plstats.$col";
+        }, array_keys($columns)));
         $inner_columns = implode(",\n", array_values($columns));
         $stat_columns = implode(",\n", array_keys($columns));
-        $update_columns = implode(",\n", array_map(function ($col) { return "$col = plstats.$col"; }, array_keys($columns)));
+        $update_columns = implode(",\n", array_map(function ($col) {
+            return "$col = plstats.$col";
+        }, array_keys($columns)));
 
 
         $replace = "

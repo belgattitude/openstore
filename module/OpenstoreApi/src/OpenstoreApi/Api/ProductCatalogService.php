@@ -356,7 +356,6 @@ class ProductCatalogService extends AbstractService
             $select->where("ppl.price <= $price_max");
         }
 
-
         // List price
         if (array_key_exists('list_price_min', $params) && is_numeric($params['list_price_min'])) {
             $list_price_min = $params['list_price_min'];

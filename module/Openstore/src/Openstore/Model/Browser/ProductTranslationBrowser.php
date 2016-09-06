@@ -81,7 +81,6 @@ class ProductTranslationBrowser extends AbstractBrowser
 
         $lang_clause = '(' . implode(',', array_map(function ($lang) {
             return "'" . $lang . "'";
-
         }, $languages)) . ")";
 
         foreach ($languages as $lang) {
