@@ -136,7 +136,11 @@ class ConsoleController extends AbstractActionController
             $street = $r['street'];
 
 
-            $street = str_replace('STR.', "", $street);
+            $street = str_replace('STR.', "street", $street);
+            if (preg_match('/^C\//', $street)) {
+                $street = preg_replace('/^C\//', "CALLE ", $street);
+                $street = str_replace('  ', ' ', $street);
+            }
             $street = str_replace('"', " ", $street);
             $street = str_replace('(', " ", $street);
             $street = str_replace(')', " ", $street);
@@ -158,9 +162,11 @@ class ConsoleController extends AbstractActionController
              */
             echo PHP_EOL;
             try {
+
                 $addressCollection = $geocoder->geocode($address);
 
-                if ($addressCollection->count() > 1) {
+
+                if ($addressCollection->count() >= 1) {
                     $geocoded = $addressCollection->first();
 
                     $latitude = $geocoded->getLatitude();
@@ -206,7 +212,7 @@ class ConsoleController extends AbstractActionController
                             'updated_at' => $now,
                         ];
                         //var_dump($newData);
-                        echo ".";
+                        //echo ".";
                         $insert->values($newData);
                         $selectString = $sql->getSqlStringForSqlObject($insert);
                         $selectString = str_replace('INSERT INTO', 'REPLACE INTO', $selectString);
@@ -275,6 +281,11 @@ class ConsoleController extends AbstractActionController
 
 
             $street = str_replace('STR.', "", $street);
+            if (preg_match('/^C\//', $street)) {
+                $street = preg_replace('/^C\//', "CALLE ", $street);
+                $street = str_replace('  ', ' ', $street);
+            }
+
             $street = str_replace('"', " ", $street);
             $street = str_replace('(', " ", $street);
             $street = str_replace(')', " ", $street);
@@ -297,7 +308,7 @@ class ConsoleController extends AbstractActionController
             try {
                 $addressCollection = $geocoder->geocode($address);
 
-                if ($addressCollection->count() > 1) {
+                if ($addressCollection->count() >= 1) {
                     $geocoded = $addressCollection->first();
 
                     $latitude = $geocoded->getLatitude();
