@@ -46,6 +46,7 @@ class Akilia2Dealers implements ServiceLocatorAwareInterface, AdapterAwareInterf
         $ccg = new \Zend\Db\Sql\TableIdentifier('crm_contact_geo', $akilia2db);
         $bc  = new \Zend\Db\Sql\TableIdentifier('base_customer', $akilia2db);
         $cc  = new \Zend\Db\Sql\TableIdentifier('crm_contact', $akilia2db);
+        $cct  = new \Zend\Db\Sql\TableIdentifier('crm_contact_type', $akilia2db);
         $bs  = new \Zend\Db\Sql\TableIdentifier('base_state', $akilia2db);
         $bco  = new \Zend\Db\Sql\TableIdentifier('base_country', $akilia2db);
         $so = new \Zend\Db\Sql\TableIdentifier('sal_order', $akilia2db);
@@ -53,6 +54,7 @@ class Akilia2Dealers implements ServiceLocatorAwareInterface, AdapterAwareInterf
         $select->from(["bc" => $bc])
                 ->join(['cc' => $cc], "bc.id = cc.customer_id", [], Select::JOIN_INNER)
                 ->join(['ccg' => $ccg], "cc.id = ccg.contact_id", [], Select::JOIN_LEFT)
+                ->join(['cct' => $cct], "cct.id = cc.type_id", [], Select::JOIN_INNER)
                 ->join(['bs' => $bs], "bs.id = cc.state_id", [], Select::JOIN_LEFT)
                 ->join(['bco' => $bco], "bco.id = cc.country_id", [], Select::JOIN_LEFT)
                 ->join(['so' => $so], "bc.id = so.customer_id", [], Select::JOIN_INNER)
@@ -60,7 +62,7 @@ class Akilia2Dealers implements ServiceLocatorAwareInterface, AdapterAwareInterf
                ->where('bc.flag_archived <> 1');
 
         $select->where('cc.use_customer_address = 0');
-
+        $select->where->equalTo('cct.reference', 'ADDRESS_SHOP');
         $columns = [
                 'customer_id'    => new Expression('bc.id'),
                 'name'            => new Expression('bc.name'),
@@ -86,6 +88,7 @@ class Akilia2Dealers implements ServiceLocatorAwareInterface, AdapterAwareInterf
         $select->group($columns);
         $select->having("sum(sol.price_total_net) > $ca_threshold");
         $select->where(function (Where $where) use ($min_accuracy) {
+
             //$where->greaterThan('so.date_order', '2012-12-31');
 
 
