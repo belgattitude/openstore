@@ -369,7 +369,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             ];
 
             $media_id = $mediaManager->import($importElement, $container['container_id'],
-                $overwrite=false, $default_fields);
+                $overwrite=true, $default_fields);
 
             if (array_key_exists($infos['product_id'], $product_ids)) {
                 /*
