@@ -362,7 +362,14 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             $importElement->setFilename($infos['filename']);
             $importElement->setLegacyMapping($infos['md5']);
 
-            $media_id = $mediaManager->import($importElement, $container['container_id']);
+
+            $default_fields = [
+                'created_by' => 'akilia:syncdb',
+                'updated_by' => 'akilia:syncdb'
+            ];
+
+            $media_id = $mediaManager->import($importElement, $container['container_id'],
+                $overwrite=false, $default_fields);
 
             if (array_key_exists($infos['product_id'], $product_ids)) {
                 /*
@@ -375,14 +382,14 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                  * die();
                  */
                 // unset($product_ids[$infos['product_id']]);
-                $data = [
+                $data = array_merge([
                     'media_id' => $media_id,
                     'product_id' => $infos['product_id'],
                     'flag_primary' => $infos['alternate_index'] == '' ? 1 : null,
                     'sort_index' => $infos['alternate_index'] == '' ? 0 : $infos['alternate_index'],
                     'type_id' => $media_type_id,
                     'updated_at' => date('Y-m-d H:i:s')
-                ];
+                ], $default_fields);
                 try {
                     echo "[+] Importing product " . $infos['product_id'] . " as media_id $media_id [" . ($i + 1) . "/$count]\n";
                     $productMedia = $mediaTable->insertOnDuplicateKey($data, $duplicate_exclude = []);

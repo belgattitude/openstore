@@ -58,8 +58,9 @@ class MediaManager
      * @param ImportElement $element
      * @param int $container_id
      * @param boolean $overwrite
+     * @param array $fields optional values to save in db
      */
-    public function import(ImportElement $element, $container_id, $overwrite = true)
+    public function import(ImportElement $element, $container_id, $overwrite = true, $fields=[])
     {
         $fs = $this->storage->getFilesystem();
 
@@ -86,13 +87,13 @@ class MediaManager
 
 
             $filename = $element->getFilename();
-            $data = [
+            $data = array_merge($fields, [
                 'filename' => basename($filename),
                 'filemtime' => $element->getFilemtime(),
                 'filesize' => $element->getFilesize(),
                 'container_id' => $container_id,
                 'legacy_mapping' => $element->getLegacyMapping()
-            ];
+            ]);
 
 
             $media = $mediaTable->insertOnDuplicateKey($data, $duplicate_exclude = ['legacy_mapping']);
