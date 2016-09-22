@@ -19,7 +19,13 @@ class ProductMediaService extends AbstractService
 
         $select->from(['pm' => 'product_media'], [])
                 ->join(['m' => 'media'], new Expression('m.media_id = pm.media_id'), [])
-                ->join(['mc' => 'media_container'], new Expression('mc.container_id = m.container_id'), [])
+
+                // THE JOIN_LEFT with media_container
+                // allows to get medias that are not
+                // in a container type (see hosted VIDEOS...)
+                ->join(['mc' => 'media_container'], new Expression('mc.container_id = m.container_id'), [],
+                    Select::JOIN_LEFT)
+
                 ->join(['p' => 'product'], new Expression('p.product_id = pm.product_id'), [])
                 ->join(['pb' => 'product_brand'], new Expression('pb.brand_id = p.brand_id'), [])
                 ->join(['pmt' => 'product_media_type'], new Expression('pmt.type_id = pm.type_id'), [])
@@ -52,15 +58,29 @@ class ProductMediaService extends AbstractService
         $select->where('p.flag_active = 1');
         $select->where('ppl.flag_active = 1');
 
+        $type_filter_enabled = false;
 
         if (array_key_exists('type', $params)) {
+            $type_filter_enabled = true;
             $select->where(['pmt.reference' => $params['type']]);
         }
 
-
         if (array_key_exists('types', $params)) {
+            $type_filter_enabled = true;
             $select->where->in('pmt.reference', explode(',', $params['types']));
         }
+
+        if (!$type_filter_enabled) {
+            // default to picture types
+            $select->where->in('pmt.reference', ['PICTURE', 'ALTERNATE_PICTURE']);
+
+        }
+
+
+        if (array_key_exists('product_id', $params)) {
+            $select->where(['p.product_id' => $params['product_id']]);
+        }
+
 
         if (array_key_exists('pricelists', $params)) {
             $select->where->in('pl.reference', explode(',', $params['pricelists']));
