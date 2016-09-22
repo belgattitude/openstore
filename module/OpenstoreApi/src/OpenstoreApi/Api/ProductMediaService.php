@@ -73,7 +73,6 @@ class ProductMediaService extends AbstractService
         if (!$type_filter_enabled) {
             // default to picture types
             $select->where->in('pmt.reference', ['PICTURE', 'ALTERNATE_PICTURE']);
-
         }
 
 
