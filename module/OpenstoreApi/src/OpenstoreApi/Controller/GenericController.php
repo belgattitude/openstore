@@ -85,15 +85,21 @@ class GenericController extends AbstractRestfulController
     {
         $view_template = $this->template['view']['list'];
 
+        // http://localhost/workspace/openstore/public/api/generic?template=namm_item_v2007.1&pricelist=BE&limit=10&language=en&limit=10&api_key=TEST123-TEST456-TEST789
 
         $params = $this->params()->fromQuery();
-
         $this->apiKeyAccess->checkPricelistAccess($params['pricelist']);
 
 
         $api_key_log = $this->apiKeyAccess->addLog("2000-ProductCatalog");
         $store = $this->catalogService->getList($params);
 
+        if (isset($params['limit']) && is_numeric($params['limit'])) {
+            $limit = $params['limit'];
+            $store->getOptions()->setLimit($limit);
+        } else {
+            $limit = 0;
+        }
 
         $view_renderer = $this->getViewRenderer();
 
@@ -113,7 +119,9 @@ class GenericController extends AbstractRestfulController
             header('Content-Type: text/xml');
             if ($this->template['filename']['list'] != '') {
                 $filename = $this->template['filename']['list'];
-                header('Content-Disposition: attachement; filename="' . $filename . '"');
+                if ($limit == 0 || $limit > 20) {
+                    header('Content-Disposition: attachement; filename="' . $filename . '"');
+                }
             }
             echo $output;
         } catch (\Exception $e) {
@@ -196,15 +204,15 @@ class GenericController extends AbstractRestfulController
                     '2000-ProductCatalog'
                 ]
             ],
-            'namm_item_v2011.1' => [
+            'namm_item_v2015.1' => [
                 'view' => [
-                    'list' => 'namm_b2b/namm_item_v2011.1.phtml'
+                    'list' => 'namm_b2b/namm_item_v2015.1.phtml'
                 ],
                 'validate' => [
-                    'list' => 'namm_b2b/xsd/item_v2011.1.xsd'
+                    'list' => 'namm_b2b/xsd/item_v2015.1.xsd'
                 ],
                 'filename' => [
-                    'list' => 'namm_item_v2011.1.xml'
+                    'list' => 'namm_item_v2015.1.xml'
                 ],
                 'check_service_access' => [
                     '2000-ProductCatalog'

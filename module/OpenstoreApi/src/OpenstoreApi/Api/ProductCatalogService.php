@@ -228,7 +228,8 @@ class ProductCatalogService extends AbstractService
             'pack_qty_master_carton' => new Expression('p.pack_qty_master_carton'),
             'picture_media_id' => new Expression('pmed.media_id'),
             'picture_media_filemtime' => new Expression('m.filemtime'),
-            'product_stub_reference' => new Expression('pstub.reference')
+            'product_stub_reference' => new Expression('pstub.reference'),
+            //'supplier_id' => new Expression('p.supplier_id')
         ];
         if (!$disable_packaging) {
             $columns = array_merge($columns, [

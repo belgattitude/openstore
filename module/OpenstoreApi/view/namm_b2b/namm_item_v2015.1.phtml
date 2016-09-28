@@ -1,37 +1,60 @@
 <?php 
-namespace OpenstoreApi\Custom\Namm2007;
+namespace OpenstoreApi\Custom\Namm2011;
 
-use Soluble\FlexStore\Options;
-use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
-use PhpUnitsOfMeasure\PhysicalQuantity\Length;
 use \DateTime;
 use \DateTimeZone;
 use \Zend\Escaper\Escaper;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
+
 
 class Fcts {
-    
+
     static $enablePrintXMLComments = true;
+    static protected $escaper;
+
+    /*
+    function getInstance()
+    {
+        return new Fcts();
+    }
+
+    private function __construct()
+    {
+
+    }
+    */
+
+    static function setEscaper($escaper)
+    {
+        self::$escaper = $escaper;
+    }
 
     static function convertKgmInLbs($kg) {
-        if ($kg == "")  return 0;
+        if ($kg == "")  return '';
+
+        return self::formatNumber($kg * 2.20462, 2);
+        /*
         $mass = new Mass($kg, 'kg');
         $lbs = self::formatNumber($mass->toUnit('lbs'), 2);
         return $lbs;
+         *
+         */
     }
 
     static function convertMeterInInch($meter) {
-        if ($meter == "")  return 0;
+        if ($meter == "")  {
+            return '';
+        }
+        return self::formatNumber($meter * 39.3701, 2);
+
+        /*
         $length = new Length($meter, 'meter');
-        $inches = self::formatNumber($length->toUnit('inch'), 2, '.', '');
-        
+        $inches = self::formatNumber($length->toUnit('inch'), 2);
         return $inches;
+
+         */
     }
-    
-    static function formatNumber($number, $decimals=2)
-    {
-        return number_format($number, $decimals, '.', '');
-    }        
-                
 
     static function convertDateTime($datetime)
     {
@@ -40,17 +63,24 @@ class Fcts {
         $datetime =  $dt->format(DateTime::ATOM);
         //Y-m-d\TH:i:sP
         //2011-08-11T05:39:10.887
-        
-        return $datetime; 
-        
+
+        return $datetime;
+
     }
-    
+
+    static function formatNumber($number, $decimals=2)
+    {
+        return number_format($number, $decimals, '.', '');
+    }
+
+
     static function convertDate($date) {
+        //return $date;
         if ($date == '') return '';
         //$tz = new DateTimeZone('Europe\Brussels');
-        $d = DateTime::createFromFormat('Y-m-d', $date);
-        $date =  $d->format('Y-m-d');
-        return $date; 
+        return DateTime::createFromFormat('Y-m-d', $date)->format('Y-m-d');
+        //$date =  $d->format('Y-m-d');
+        //return $date;
     }
 
     static function getPictureMediaUrl($picture_media_id)
@@ -61,7 +91,24 @@ class Fcts {
         $p = str_replace('%picture_media_id%', $picture_media_id, $p);
         return $p;
     }
-    
+
+    static function escapeXMLText($text) {
+        return self::$escaper->escapeHtml(trim($text));
+    }
+
+    /**
+     * @return string
+     */
+    static function genUUID() {
+        try {
+            $uuid = (string) Uuid::uuid4();
+        } catch (UnsatisfiedDependencyException $e) {
+            $uuid = uniqid();
+        }
+        return strtoupper($uuid);
+    }
+
+
     static function printXMLComment($comments)
     {
         if (self::$enablePrintXMLComments) {
@@ -72,24 +119,29 @@ class Fcts {
     }
 }
 
-$esc = new Escaper('utf-8');
-http://api.emdmusic.com/media/preview/picture/170x200-90/%%/%picture_media_id%.jpg
-$picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_1024x768-90.jpg";
+
+$escaper = new Escaper('utf-8');
+Fcts::setEscaper($escaper);
+
+//http://api.emdmusic.com/media/preview/picture/170x200-90/%%/%picture_media_id%.jpg
+//$picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_1024x768-90.jpg";
 ?>
 <?= '<?xml version="1.0" encoding="utf-8" ?>' . "\n"; ?>
-<NAMM_ITEM xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://namm.org/b2b/2009/schemas" version="2011.1">
+<NAMM_ITEM xmlns="https://namm.org/b2b/2015/schemas" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2015.1" xsi:schemaLocation="https://www.namm.org/files/NAMM_Standards/v2015.1/schemas/Item-v2015.1.xsd">
   <!--
-  EMDMusic namm_item_v2011.1.xml template
+  EMDMusic namm_item_v2015.1.xml template
   Changelog:
-     [2014/09/12] Initial implementation
+     [2016/09/28] Initial implementation
   -->
-  
-  <Timestamp>2011-08-11T05:39:10.887</Timestamp>
-  <Id>38A6C25A-2344-4343-B53D-B8706E1A37DA</Id>
-  
-  <SupplierId>123121654654654</SupplierId>  
+
+  <Timestamp><?= Fcts::convertDateTime(date('Y-m-d h:i:s')) ?></Timestamp>
+  <Id><?= Fcts::genUUID() ?></Id>
+
+  <!-- EMD has still no supplier id at NAMM -->
+  <SupplierId></SupplierId>
+
   <?php
-    $options = new Options();
+    $options = $this->store->getOptions();
     $options->getHydrationOptions()->disableFormatters();
     $data = $this->store->getData($options);
   ?>  
@@ -98,29 +150,29 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
     <?php if ($idx > 0) Fcts::$enablePrintXMLComments = false; ?>  
     <Item>
         <!-- EMD internal id : <?= $line->product_id ?> -->
-        <SupplierItemId><?= $esc->escapeHtml(trim($line->product_reference)) ?></SupplierItemId>
-        <SupplierModel><?= $esc->escapeHtml(trim($line->product_reference)) ?></SupplierModel>
-        <SupplierItemDesc><?= $esc->escapeHtml(trim($line->product_title)) ?></SupplierItemDesc>
+        <SupplierItemId><?= Fcts::escapeXMLText(trim($line->product_reference)) ?></SupplierItemId>
+        <SupplierModel><?= Fcts::escapeXMLText(trim($line->product_reference)) ?></SupplierModel>
+        <SupplierItemDesc><?= Fcts::escapeXMLText(trim($line->product_title)) ?></SupplierItemDesc>
         <Kit>N</Kit>
         <Serialized>N</Serialized>
-        <BrandName><?= $esc->escapeHtml($line->brand_name) ?></BrandName>
-        <CountryOrigin></CountryOrigin>
-        <Length><?= Fcts::convertMeterInInch($line->pack_unit_length) ?></Length>
-        <Width><?= Fcts::convertMeterInInch($line->pack_unit_width) ?></Width>
-        <Height><?= Fcts::convertMeterInInch($line->pack_unit_height) ?></Height>
-        <DimUOM>In</DimUOM>
+        <BrandName><?= Fcts::escapeXMLText($line->brand_title) ?></BrandName>
+        <?php Fcts::printXMLComment('Country origin is not 100% accurate. Mostly CN for Stag/Ange/Jame but exceptions exists like Thailand...') ?>
+        <CountryOrigin><?= in_array($line->brand_reference, ['STAG', 'ANGE', 'JAME']) ? 'CN' : ''; ?></CountryOrigin>
+        <Length><?= Fcts::convertMeterInInch($line->length) ?></Length>
+        <Width><?= Fcts::convertMeterInInch($line->width) ?></Width>
+        <Height><?= Fcts::convertMeterInInch($line->height) ?></Height>
+        <DimUOM>IN</DimUOM>
         <Weight><?= Fcts::convertKgmInLbs($line->weight); ?></Weight>
-        <WeightUOM>Lbs</WeightUOM>
+        <WeightUOM>LBS</WeightUOM>
         <AnnounceDate><?= Fcts::convertDate($line->available_at) ?></AnnounceDate>
         <AvailableDate><?= Fcts::convertDate($line->available_at) ?></AvailableDate>
-        <?php Fcts::printXMLComment('UnAvailDate and EndOfProductionDate are not known') ?>
+        <?php Fcts::printXMLComment('<UnavailableDate> is not known') ?>
         <WarrantyPartTerm>365</WarrantyPartTerm>
         <WarrantyPartUOM>Day</WarrantyPartUOM>
         <WarrantyLabTerm>0</WarrantyLabTerm>
         <WarrantyLabUOM>Day</WarrantyLabUOM>        
         <Barcodes>
             <Barcode>
-                <!-- TODO CHECK -->
                 <ID><?= $line->product_barcode_upca ?></ID>
                 <Type>GTIN-14</Type>
             </Barcode>
@@ -131,29 +183,33 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
         </Barcodes>        
         <Pricing>
             <Price type="MSRP" Currency="<?= $line->currency_reference ?>"><?= Fcts::formatNumber($line->public_price, 2); ?></Price>
-            <!-- TODO prices -->
-            <Price type="MAP" Currency="USD">4</Price>
-            <Price type="Cost" Currency="USD" Qty="1"><?= Fcts::formatNumber($line->price, 2); ?></Price>
+            <?php Fcts::printXMLComment('Map price is only available in the US and Canada'); ?>
+            <Price type="MAP" Currency="<?= $line->currency_reference ?>"><?= Fcts::formatNumber($line->map_price, 2); ?></Price>
+            <Price type="Cost" Currency="<?= $line->currency_reference ?>" Qty="1"><?= Fcts::formatNumber($line->list_price, 2); ?></Price>
         </Pricing>        
         <Containers>
             <Container>
                 <Type>Each</Type>
-                <Length>52.0000</Length>
-                <Width>20.0000</Width>
-                <Height>11.0000</Height>
+                <Length><?= Fcts::convertMeterInInch($line->length) ?></Length>
+                <Width><?= Fcts::convertMeterInInch($line->width) ?></Width>
+                <Height><?= Fcts::convertMeterInInch($line->height) ?></Height>
                 <DimUOM>IN</DimUOM>
-                <Weight>54.5000</Weight>
+                <Weight><?= Fcts::convertKgmInLbs($line->weight) ?></Weight>
                 <WeightUOM>LBS</WeightUOM>
                 <UOM>EA</UOM>
                 <QtyPerUOM>1</QtyPerUOM>
                 <Barcodes>
                     <Barcode>
-                        <ID>4959112057029</ID>
+                        <ID><?= $line->product_barcode_upca ?></ID>
+                        <Type>GTIN-14</Type>
+                    </Barcode>
+                    <Barcode>
+                        <ID><?= $line->product_barcode_ean13 ?></ID>
                         <Type>GTIN-13</Type>
                     </Barcode>
                 </Barcodes>
             </Container>
-            <?php if ($line_pack_qty_carton != '') : ?>
+            <?php if ($line->pack_qty_carton != '') : ?>
             <Container>
                 <Type>Carton</Type>
                 <Length><?= Fcts::convertMeterInInch($line->pack_carton_length) ?></Length>
@@ -176,7 +232,7 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
                     </Barcode>
                     <Barcode>
                         <ID><?= $line->pack_carton_barcode_ean ?></ID>
-                        <Type>GTIN-14</Type>
+                        <Type>GTIN-13</Type>
                     </Barcode>
                 </Barcodes>
             </Container>
@@ -204,24 +260,31 @@ $picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_10
                     </Barcode>
                     <Barcode>
                         <ID><?= $line->pack_mastercarton_barcode_ean ?></ID>
-                        <Type>GTIN-14</Type>
+                        <Type>GTIN-13</Type>
                     </Barcode>
                 </Barcodes>
             </Container>
             <?php endif; ?>
-            
-            
         </Containers>
         <MarketingInfo>
-            <!-- todo -->
-            <PrimaryCategory>4018156706</PrimaryCategory>
+            <?php Fcts::printXMLComment('TODO categorization and primary category'); ?>
+            <PrimaryCategory><?= Fcts::escapeXMLText($line->category_breadcrumb) ?></PrimaryCategory>
             <ProductURL></ProductURL>
             <ItemDescLong><![CDATA[<?php
                     $desc = trim($line->product_title . ' ' . $line->product_description . ' ' . $line->product_characteristic);
                     echo preg_replace('/(\ ){2,}/', ' ', $desc); ?>]]>
             </ItemDescLong>      
             <Bullets>
-              <Bullet/>
+                <?php
+                $descBullets = explode("\n", $line->product_description);
+                ?>
+                <?php foreach($descBullets as $bullet) : ?>
+                    <?php if (preg_match('/^-\b/', $bullet)): ?>
+                    <Bullet><?= Fcts::escapeXMLText(preg_replace('/^-\b/', '', $bullet)) ?></Bullet>
+                    <?php endif; ?>
+
+                <?php endforeach;?>
+                <Bullet/>
             </Bullets>
             <Media>
                 <?php if ($line->picture_media_id != '') : ?>
