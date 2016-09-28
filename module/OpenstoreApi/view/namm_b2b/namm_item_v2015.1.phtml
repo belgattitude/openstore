@@ -279,12 +279,13 @@ Fcts::setEscaper($escaper);
                 $descBullets = explode("\n", $line->product_description);
                 ?>
                 <?php foreach($descBullets as $bullet) : ?>
-                    <?php if (preg_match('/^-\b/', $bullet)): ?>
-                    <Bullet><?= Fcts::escapeXMLText(preg_replace('/^-\b/', '', $bullet)) ?></Bullet>
+                    <?php if (trim($bullet) != '' && preg_match('/^\-\ /', trim($bullet))): ?>
+                    <Bullet><?= Fcts::escapeXMLText(preg_replace('/^\-\ /', '', trim($bullet))) ?></Bullet>
                     <?php endif; ?>
-
                 <?php endforeach;?>
-                <Bullet/>
+                <?php if (trim($line->product_characteristic) != '') : ?>
+                    <Bullet><?= Fcts::escapeXMLText(preg_replace('/^\-\ /', '', trim($line->product_characteristic))) ?></Bullet>
+                <?php endif; ?>
             </Bullets>
             <Media>
                 <?php if ($line->picture_media_id != '') : ?>
