@@ -86,7 +86,7 @@ class Fcts {
     static function getPictureMediaUrl($picture_media_id)
     {
         if ($picture_media_id == '') return '';
-        $p = 'http://api.emdmusic.com/media/preview/picture/1024x768-90/%pref%/%picture_media_id%.jpg';
+        $p = 'http://api.emdmusic.com/media/preview/picture/1200x1200-90/%pref%/%picture_media_id%.jpg';
         $p = str_replace('%pref%', str_pad(substr($picture_media_id, -2), 2, "0", STR_PAD_LEFT), $p);
         $p = str_replace('%picture_media_id%', $picture_media_id, $p);
         return $p;
@@ -149,29 +149,34 @@ Fcts::setEscaper($escaper);
     <?php foreach($data as $idx => $line) : ?>
     <?php if ($idx > 0) Fcts::$enablePrintXMLComments = false; ?>  
     <Item>
-        <!-- EMD internal id : <?= $line->product_id ?> -->
-        <SupplierItemId><?= Fcts::escapeXMLText(trim($line->product_reference)) ?></SupplierItemId>
+        <?= Fcts::printXMLComment("<SupplierItemId> at EMD is numeric, for SKU or product reference look <SupplierModel>") ?>
+        <SupplierItemId><?= $line->product_id ?></SupplierItemId>
         <SupplierModel><?= Fcts::escapeXMLText(trim($line->product_reference)) ?></SupplierModel>
         <SupplierItemDesc><?= Fcts::escapeXMLText(trim($line->product_title)) ?></SupplierItemDesc>
         <Kit>N</Kit>
         <Serialized>N</Serialized>
         <BrandName><?= Fcts::escapeXMLText($line->brand_title) ?></BrandName>
-        <?php Fcts::printXMLComment('Country origin is not 100% accurate. Mostly CN for Stag/Ange/Jame but exceptions exists like Thailand...') ?>
+        <?php Fcts::printXMLComment('Country origin is not 100% accurate.') ?>
+        <?php Fcts::printXMLComment('Currently only known for Stagg/James Neligan and Angel Lopez...') ?>
+        <?php Fcts::printXMLComment('... but pay attention minor exceptions exists, like Thailand for few products') ?>
         <CountryOrigin><?= in_array($line->brand_reference, ['STAG', 'ANGE', 'JAME']) ? 'CN' : ''; ?></CountryOrigin>
+        <?php Fcts::printXMLComment('Dimensions LxWxH are to be considered product dimensions, product measurements are not always available. See containers for product package dimensions.') ?>
         <Length><?= Fcts::convertMeterInInch($line->length) ?></Length>
         <Width><?= Fcts::convertMeterInInch($line->width) ?></Width>
         <Height><?= Fcts::convertMeterInInch($line->height) ?></Height>
         <DimUOM>IN</DimUOM>
+        <?php Fcts::printXMLComment('Product weight (gross)') ?>
         <Weight><?= Fcts::convertKgmInLbs($line->weight); ?></Weight>
         <WeightUOM>LBS</WeightUOM>
         <AnnounceDate><?= Fcts::convertDate($line->available_at) ?></AnnounceDate>
         <AvailableDate><?= Fcts::convertDate($line->available_at) ?></AvailableDate>
-        <?php Fcts::printXMLComment('<UnavailableDate> is not known') ?>
+        <?php Fcts::printXMLComment('<UnavailableDate> is not supported at EMD') ?>
         <WarrantyPartTerm>365</WarrantyPartTerm>
         <WarrantyPartUOM>Day</WarrantyPartUOM>
         <WarrantyLabTerm>0</WarrantyLabTerm>
         <WarrantyLabUOM>Day</WarrantyLabUOM>        
         <Barcodes>
+            <?php Fcts::printXMLComment('For USA and Canada, use only the GTIN-14 / upca barcode. The EAN13/GTIN13 is for Europe') ?>
             <Barcode>
                 <ID><?= $line->product_barcode_upca ?></ID>
                 <Type>GTIN-14</Type>
@@ -182,23 +187,26 @@ Fcts::setEscaper($escaper);
             </Barcode>
         </Barcodes>        
         <Pricing>
-            <Price type="MSRP" Currency="<?= $line->currency_reference ?>"><?= Fcts::formatNumber($line->public_price, 2); ?></Price>
+            <Price type="MSRP" Currency="<?= $line->currency_reference ?>" Qty="1"><?= Fcts::formatNumber($line->public_price, 2); ?></Price>
             <?php Fcts::printXMLComment('Map price is only available in the US and Canada'); ?>
-            <Price type="MAP" Currency="<?= $line->currency_reference ?>"><?= Fcts::formatNumber($line->map_price, 2); ?></Price>
-            <Price type="Cost" Currency="<?= $line->currency_reference ?>" Qty="1"><?= Fcts::formatNumber($line->list_price, 2); ?></Price>
+            <Price type="MAP" Currency="<?= $line->currency_reference ?>" Qty="1"><?= Fcts::formatNumber($line->map_price, 2); ?></Price>
+            <Price type="Cost" Currency="<?= $line->currency_reference ?>" Qty="1"><?= Fcts::formatNumber($line->price, 2); ?></Price>
         </Pricing>        
         <Containers>
             <Container>
+                <?php Fcts::printXMLComment('Product container (unit)') ?>
                 <Type>Each</Type>
-                <Length><?= Fcts::convertMeterInInch($line->length) ?></Length>
-                <Width><?= Fcts::convertMeterInInch($line->width) ?></Width>
-                <Height><?= Fcts::convertMeterInInch($line->height) ?></Height>
+                <Length><?= Fcts::convertMeterInInch($line->pack_unit_length) ?></Length>
+                <Width><?= Fcts::convertMeterInInch($line->pack_unit_width) ?></Width>
+                <Height><?= Fcts::convertMeterInInch($line->pack_unit_height) ?></Height>
                 <DimUOM>IN</DimUOM>
-                <Weight><?= Fcts::convertKgmInLbs($line->weight) ?></Weight>
+                <?php Fcts::printXMLComment('Gross weight') ?>
+                <Weight><?= Fcts::convertKgmInLbs($line->pack_unit_weight) ?></Weight>
                 <WeightUOM>LBS</WeightUOM>
                 <UOM>EA</UOM>
                 <QtyPerUOM>1</QtyPerUOM>
                 <Barcodes>
+                    <?php Fcts::printXMLComment('For USA and Canada, use only the GTIN-14 / upca barcode. The EAN13/GTIN13 is for Europe') ?>
                     <Barcode>
                         <ID><?= $line->product_barcode_upca ?></ID>
                         <Type>GTIN-14</Type>
@@ -226,6 +234,7 @@ Fcts::setEscaper($escaper);
                     }
                 ?></QtyPerUOM>
                 <Barcodes>
+                    <?php Fcts::printXMLComment('For USA and Canada, use only the GTIN-14 / upca barcode. The EAN13/GTIN13 is for Europe') ?>
                     <Barcode>
                         <ID><?= $line->pack_carton_barcode_upc ?></ID>
                         <Type>GTIN-14</Type>
@@ -254,6 +263,7 @@ Fcts::setEscaper($escaper);
                     }
                 ?></QtyPerUOM>
                 <Barcodes>
+                    <?php Fcts::printXMLComment('For USA and Canada, use only the GTIN-14 / upca barcode. The EAN13/GTIN13 is for Europe') ?>
                     <Barcode>
                         <ID><?= $line->pack_mastercarton_barcode_upc ?></ID>
                         <Type>GTIN-14</Type>
@@ -270,10 +280,11 @@ Fcts::setEscaper($escaper);
             <?php Fcts::printXMLComment('TODO categorization and primary category'); ?>
             <PrimaryCategory><?= Fcts::escapeXMLText($line->category_breadcrumb) ?></PrimaryCategory>
             <ProductURL></ProductURL>
-            <ItemDescLong><![CDATA[<?php
-                    $desc = trim($line->product_title . ' ' . $line->product_description . ' ' . $line->product_characteristic);
-                    echo preg_replace('/(\ ){2,}/', ' ', $desc); ?>]]>
-            </ItemDescLong>      
+            <?php
+                $desc = trim($line->product_title . ' ' . $line->product_description . ' ' . $line->product_characteristic);
+                $desc = preg_replace('/(\ ){2,}/', ' ', $desc);
+            ?>
+            <ItemDescLong><?= Fcts::escapeXMLText($desc) ?></ItemDescLong>
             <Bullets>
                 <?php
                 $descBullets = explode("\n", $line->product_description);
