@@ -30,8 +30,8 @@ class Fcts {
         self::$escaper = $escaper;
     }
 
-    static function convertKgmInLbs($kg) {
-        if ($kg == "")  return '';
+    static function convertKgmInLbs($kg, $return=0) {
+        if ($kg == "")  return $return;
 
         return self::formatNumber($kg * 2.20462, 2);
         /*
@@ -42,9 +42,9 @@ class Fcts {
          */
     }
 
-    static function convertMeterInInch($meter) {
+    static function convertMeterInInch($meter, $return=0) {
         if ($meter == "")  {
-            return '';
+            return $return;
         }
         return self::formatNumber($meter * 39.3701, 2);
 
@@ -127,7 +127,7 @@ Fcts::setEscaper($escaper);
 //$picture_url_spec = "http://api.emdmusic.com/media/picture/%picture_media_id%_1024x768-90.jpg";
 ?>
 <?= '<?xml version="1.0" encoding="utf-8" ?>' . "\n"; ?>
-<NAMM_ITEM xmlns="https://namm.org/b2b/2015/schemas" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2015.1" xsi:schemaLocation="https://www.namm.org/files/NAMM_Standards/v2015.1/schemas/Item-v2015.1.xsd">
+<NAMM_ITEM xmlns="http://namm.org/b2b/2015/schemas" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2015.1" xsi:schemaLocation="http://www.namm.org/files/NAMM_Standards/v2015.1/schemas/Item-v2015.1.xsd">
   <!--
   EMDMusic namm_item_v2015.1.xml template
   Changelog:
@@ -138,7 +138,7 @@ Fcts::setEscaper($escaper);
   <Id><?= Fcts::genUUID() ?></Id>
 
   <!-- EMD has still no supplier id at NAMM -->
-  <SupplierId></SupplierId>
+  <SupplierId>0</SupplierId>
 
   <?php
     $options = $this->store->getOptions();
@@ -176,10 +176,10 @@ Fcts::setEscaper($escaper);
         <WarrantyLabTerm>0</WarrantyLabTerm>
         <WarrantyLabUOM>Day</WarrantyLabUOM>        
         <Barcodes>
-            <?php Fcts::printXMLComment('For USA and Canada, use only the GTIN-14 / upca barcode. The EAN13/GTIN13 is for Europe') ?>
+            <?php Fcts::printXMLComment('For USA and Canada, use only the GTIN-12/UPCA barcode. The EAN13/GTIN13 is for Europe') ?>
             <Barcode>
                 <ID><?= $line->product_barcode_upca ?></ID>
-                <Type>GTIN-14</Type>
+                <Type>GTIN-12</Type>
             </Barcode>
             <Barcode>
                 <ID><?= $line->product_barcode_ean13 ?></ID>
@@ -206,10 +206,10 @@ Fcts::setEscaper($escaper);
                 <UOM>EA</UOM>
                 <QtyPerUOM>1</QtyPerUOM>
                 <Barcodes>
-                    <?php Fcts::printXMLComment('For USA and Canada, use only the GTIN-14 / upca barcode. The EAN13/GTIN13 is for Europe') ?>
+                    <?php Fcts::printXMLComment('For USA and Canada, use only the GTIN-12/UPCA barcode. The EAN13/GTIN13 is for Europe') ?>
                     <Barcode>
                         <ID><?= $line->product_barcode_upca ?></ID>
-                        <Type>GTIN-14</Type>
+                        <Type>GTIN-12</Type>
                     </Barcode>
                     <Barcode>
                         <ID><?= $line->product_barcode_ean13 ?></ID>
@@ -234,10 +234,10 @@ Fcts::setEscaper($escaper);
                     }
                 ?></QtyPerUOM>
                 <Barcodes>
-                    <?php Fcts::printXMLComment('For USA and Canada, use only the GTIN-14 / upca barcode. The EAN13/GTIN13 is for Europe') ?>
+                    <?php Fcts::printXMLComment('For USA and Canada, use only the GTIN-12/UPCA barcode. The EAN13/GTIN13 is for Europe') ?>
                     <Barcode>
                         <ID><?= $line->pack_carton_barcode_upc ?></ID>
-                        <Type>GTIN-14</Type>
+                        <Type>GTIN-12</Type>
                     </Barcode>
                     <Barcode>
                         <ID><?= $line->pack_carton_barcode_ean ?></ID>

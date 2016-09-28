@@ -113,8 +113,14 @@ class GenericController extends AbstractRestfulController
 
         try {
             $output = $view_renderer->render($view);
-            if (array_key_exists('validare', $params) && $params['validate'] == 'true') {
-                $this->validateXml($output, $this->template['validate']['list']);
+            if (array_key_exists('validate', $params) && $params['validate'] == 'true') {
+                $xsd_file = $this->view_directory . DIRECTORY_SEPARATOR . $this->template['validate']['list'];
+
+                if (!file_exists($xsd_file)) {
+                    throw new \Exception("Schema file does not exists:" . $xsd_file);
+                }
+
+                $this->validateXml($output, realpath($xsd_file));
             }
             header('Content-Type: text/xml');
             if ($this->template['filename']['list'] != '') {
@@ -132,14 +138,16 @@ class GenericController extends AbstractRestfulController
 
     protected function validateXml($xml_string, $xsd_file)
     {
-
         // Enable user error handling
         libxml_use_internal_errors(true);
 
         $xml = new \DOMDocument();
         $xml->loadXML($xml_string);
 
-        if (!$xml->schemaValidate($this->view_directory . DIRECTORY_SEPARATOR . $xsd_file)) {
+        if (!file_exists($xsd_file)) {
+            throw new \Exception("Cannot locate xsd file '$xsd_file'");
+        }
+        if (!$xml->schemaValidate($xsd_file)) {
             print '<b>DOMDocument::schemaValidate() Generated Errors!</b>';
             $errors = libxml_get_errors();
             foreach ($errors as $error) {
