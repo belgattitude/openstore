@@ -125,7 +125,7 @@ class GenericController extends AbstractRestfulController
             header('Content-Type: text/xml');
             if ($this->template['filename']['list'] != '') {
                 $filename = $this->template['filename']['list'];
-                if ($limit == 0 || $limit > 20) {
+                if ($limit == 0 || $limit > 200) {
                     header('Content-Disposition: attachement; filename="' . $filename . '"');
                 }
             }
