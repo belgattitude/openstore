@@ -142,7 +142,7 @@ Fcts::setEscaper($escaper);
   <!-- UUIDv4 -->
   <Id><?= Fcts::genUUID() ?></Id>
 
-  <!-- GLN/NAMM partner ID, currently EMD seems to not one ? -->
+  <!-- GLN/NAMM partner ID, currently EMD seems to not have one ? -->
   <SupplierId>0</SupplierId>
 
   <?php
@@ -288,7 +288,8 @@ Fcts::setEscaper($escaper);
             <?php endif; ?>
         </Containers>
         <MarketingInfo>
-            <?php Fcts::printXMLComment('TODO categorization and primary category'); ?>
+            <?php Fcts::printXMLComment("At EMD, category is not mapped to any NAMM categ number.\n" .
+                            "Decision was made to send our internal category breadcrumb instead."); ?>
             <PrimaryCategory><?= Fcts::escapeXMLText($line->category_breadcrumb) ?></PrimaryCategory>
             <?php Fcts::printXMLComment('Product URL is currently not supported'); ?>
             <ProductURL></ProductURL>
