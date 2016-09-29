@@ -130,14 +130,19 @@ Fcts::setEscaper($escaper);
 <NAMM_ITEM xmlns="http://namm.org/b2b/2015/schemas" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2015.1" xsi:schemaLocation="http://www.namm.org/files/NAMM_Standards/v2015.1/schemas/Item-v2015.1.xsd">
   <!--
   EMDMusic namm_item_v2015.1.xml template
+  See https://www.namm.org/standards/implementation-guide-/xml-tag-reference/item-document
+
   Changelog:
-     [2016/09/28] Initial implementation
+     [2016/09/28] Vanvelthem Sébastien, initial implementation
   -->
 
+  <!-- Document timestamp, ATOM format -->
   <Timestamp><?= Fcts::convertDateTime(date('Y-m-d h:i:s')) ?></Timestamp>
+
+  <!-- UUIDv4 -->
   <Id><?= Fcts::genUUID() ?></Id>
 
-  <!-- EMD has still no supplier id at NAMM -->
+  <!-- GLN/NAMM partner ID, currently EMD seems to not one ? -->
   <SupplierId>0</SupplierId>
 
   <?php
@@ -152,13 +157,19 @@ Fcts::setEscaper($escaper);
         <?= Fcts::printXMLComment("<SupplierItemId> at EMD is numeric, for SKU or product reference look <SupplierModel>") ?>
         <SupplierItemId><?= $line->product_id ?></SupplierItemId>
         <SupplierModel><?= Fcts::escapeXMLText(trim($line->product_reference)) ?></SupplierModel>
+        <?= Fcts::printXMLComment("<SupplierItemDesc> is the product title. For full description, see marketing section") ?>
         <SupplierItemDesc><?= Fcts::escapeXMLText(trim($line->product_title)) ?></SupplierItemDesc>
+        <?= Fcts::printXMLComment("Item SKU made up of other SKUs") ?>
         <Kit>N</Kit>
+        <?= Fcts::printXMLComment("Item has a serial number") ?>
         <Serialized>N</Serialized>
         <BrandName><?= Fcts::escapeXMLText($line->brand_title) ?></BrandName>
-        <?php Fcts::printXMLComment('Country origin is not 100% accurate.') ?>
-        <?php Fcts::printXMLComment('Currently only known for Stagg/James Neligan and Angel Lopez...') ?>
-        <?php Fcts::printXMLComment('... but pay attention minor exceptions exists, like Thailand for few products') ?>
+        <?php Fcts::printXMLComment(
+                "Country origin is not 100% accurate.\n" .
+                "Currently only known for Stagg/James Neligan and Angel Lopez...\n" .
+                "... but be aware minor exceptions exists, like Thailand for few products in Europe.\n"
+              );
+        ?>
         <CountryOrigin><?= in_array($line->brand_reference, ['STAG', 'ANGE', 'JAME']) ? 'CN' : ''; ?></CountryOrigin>
         <?php Fcts::printXMLComment('Dimensions LxWxH are to be considered product dimensions, product measurements are not always available. See containers for product package dimensions.') ?>
         <Length><?= Fcts::convertMeterInInch($line->length) ?></Length>
@@ -279,12 +290,16 @@ Fcts::setEscaper($escaper);
         <MarketingInfo>
             <?php Fcts::printXMLComment('TODO categorization and primary category'); ?>
             <PrimaryCategory><?= Fcts::escapeXMLText($line->category_breadcrumb) ?></PrimaryCategory>
+            <?php Fcts::printXMLComment('Product URL is currently not supported'); ?>
             <ProductURL></ProductURL>
             <?php
                 $desc = trim($line->product_title . ' ' . $line->product_description . ' ' . $line->product_characteristic);
                 $desc = preg_replace('/(\ ){2,}/', ' ', $desc);
             ?>
-            <ItemDescLong><?= Fcts::escapeXMLText($desc) ?></ItemDescLong>
+            <ItemDescLong><![CDATA[
+                <?= Fcts::escapeXMLText($desc) ?>
+                ]]>
+            </ItemDescLong>
             <Bullets>
                 <?php
                 $descBullets = explode("\n", $line->product_description);
