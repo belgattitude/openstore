@@ -36,6 +36,7 @@ return [
             'OpenstoreApi\Controller\ProductCatalog' => 'OpenstoreApi\Controller\ProductCatalogController',
             'OpenstoreApi\Controller\ProductStock' => 'OpenstoreApi\Controller\ProductStockController',
             'OpenstoreApi\Controller\ProductBrand' => 'OpenstoreApi\Controller\ProductBrandController',
+            'OpenstoreApi\Controller\ProductCategory' => 'OpenstoreApi\Controller\ProductCategoryController',
             'OpenstoreApi\Controller\NammProductCatalog' => 'OpenstoreApi\Controller\NammProductCatalogController',
             'OpenstoreApi\Controller\Generic' => 'OpenstoreApi\Controller\GenericController',
         ],

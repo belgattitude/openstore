@@ -282,6 +282,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                 'Api\ProductMediaService' => 'OpenstoreApi\Api\ProductMediaService',
                 'Api\ProductCatalogService' => 'OpenstoreApi\Api\ProductCatalogService',
                 'Api\ProductStockService' => 'OpenstoreApi\Api\ProductStockService',
+                'Api\ProductCategoryService' => 'OpenstoreApi\Api\ProductCategoryService',
                 'Api\ProductBrandService' => 'OpenstoreApi\Api\ProductBrandService',
                 'Api\NammProductCatalogService' => 'OpenstoreApi\Api\NammProductCatalogService',
             ]
