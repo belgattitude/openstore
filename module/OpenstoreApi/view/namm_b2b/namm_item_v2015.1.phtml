@@ -288,9 +288,13 @@ Fcts::setEscaper($escaper);
             <?php endif; ?>
         </Containers>
         <MarketingInfo>
-            <?php Fcts::printXMLComment("At EMD, category is not mapped to any NAMM categ number.\n" .
-                            "Decision was made to send our internal category breadcrumb instead."); ?>
-            <PrimaryCategory><?= Fcts::escapeXMLText($line->category_breadcrumb) ?></PrimaryCategory>
+            <?php Fcts::printXMLComment("At EMD, category are not (yet) mapped to the NAMM standard categ codes, \n" .
+                                        "when none found the <PrimaryCateg> is left blank."); ?>
+            <!--
+            @EMD category: <?= $line->category_breadcrumb ?> (<?= $line->category_reference ?>)
+            @EMD group: <?= $line->group_reference ?> (<?= $line->group_title ?>)
+            -->
+            <PrimaryCategory></PrimaryCategory>
             <?php Fcts::printXMLComment('Product URL is currently not supported'); ?>
             <ProductURL></ProductURL>
             <?php
