@@ -229,6 +229,7 @@ class ProductCatalogService extends AbstractService
             'picture_media_id' => new Expression('pmed.media_id'),
             'picture_media_filemtime' => new Expression('m.filemtime'),
             'product_stub_reference' => new Expression('pstub.reference'),
+            'namm_categ_code' => new Expression('pc.alt_mapping_reference'),
             //'supplier_id' => new Expression('p.supplier_id')
         ];
         if (!$disable_packaging) {
