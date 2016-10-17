@@ -1294,8 +1294,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 CONVERT(IF(c.libelle_7 is null OR c.libelle_7 = '', c.libelle$default_lsfx, c.libelle_7) USING utf8) as libelle_7, 
                 c.date_synchro,
                 category.category_id as category_id,
-                                c.alt_mapping_id,
-                                c.global_sort_index,
+                c.alt_mapping_id,
+                c.global_sort_index,
                 count(*) as doubled_categs
                 
             from $akilia1db.categories c
@@ -1337,7 +1337,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             $pc->setReference($row['id_categorie']);
             $pc->setSortIndex($row['sort_index']);
             $pc->setGlobalSortIndex($row['global_sort_index']);
-            $pc->setAltMappingReference($row['alt_mapping_id']);
+            //$pc->setAltMappingReference($row['alt_mapping_id']);
             $pc->setLegacyMapping($row['id_categorie']);
             $pc->setLegacySynchroAt(new \DateTime($this->legacy_synchro_at));
             // $pc->setCreatedAt($row['date_synchro']);
