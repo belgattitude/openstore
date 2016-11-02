@@ -31,6 +31,9 @@ return [
         ],
     ],
     'controllers' => [
+        'factories' => [
+            'OpenstoreApi\Controller\Generic' => Controller\GenericControllerFactory::class,
+        ],
         'invokables' => [
             'OpenstoreApi\Controller\ProductMedia' => 'OpenstoreApi\Controller\ProductMediaController',
             'OpenstoreApi\Controller\ProductCatalog' => 'OpenstoreApi\Controller\ProductCatalogController',
@@ -38,7 +41,6 @@ return [
             'OpenstoreApi\Controller\ProductBrand' => 'OpenstoreApi\Controller\ProductBrandController',
             'OpenstoreApi\Controller\ProductCategory' => 'OpenstoreApi\Controller\ProductCategoryController',
             'OpenstoreApi\Controller\NammProductCatalog' => 'OpenstoreApi\Controller\NammProductCatalogController',
-            'OpenstoreApi\Controller\Generic' => 'OpenstoreApi\Controller\GenericController',
         ],
     ],
     /*

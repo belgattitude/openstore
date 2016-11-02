@@ -391,8 +391,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     'updated_at' => date('Y-m-d H:i:s')
                 ], $default_fields);
                 try {
-                    echo "[+] Importing product " . $infos['product_id'] . " as media_id $media_id [" . ($i + 1) . "/$count]\n";
                     $productMedia = $mediaTable->insertOnDuplicateKey($data, $duplicate_exclude = []);
+                    echo "[+] Imported product " . $infos['product_id'] . " as media_id $media_id [" . ($i + 1) . "/$count]\n";
                 } catch (\Exception $e) {
                     echo "[Error] Cannot insert : \n";
                     var_dump($data);

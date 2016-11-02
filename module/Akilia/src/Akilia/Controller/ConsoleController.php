@@ -162,9 +162,7 @@ class ConsoleController extends AbstractActionController
              */
             echo PHP_EOL;
             try {
-
                 $addressCollection = $geocoder->geocode($address);
-
 
                 if ($addressCollection->count() >= 1) {
                     $geocoded = $addressCollection->first();

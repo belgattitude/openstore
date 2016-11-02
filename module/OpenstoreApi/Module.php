@@ -22,16 +22,65 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
     {
     }
 
+
+    public function onBootstrap3(MvcEvent $e)
+    {
+        $app      = $e->getApplication();
+        $sm = $app->getServiceManager();
+        $events   = $app->getEventManager();
+
+        $events->attach(MvcEvent::EVENT_DISPATCH, [$this, 'postProcess'], -100);
+
+        //$sharedEvents->attach('Zend\Mvc\Application', MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'errorProcess'), 999);
+        $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, [$this, 'errorProcess'], 1999);
+
+
+        /*
+        $events->attach(
+            MvcEvent::EVENT_ROUTE,
+            $services->get(Listener\NormalizeMatchedControllerServiceNameListener::class),
+            -20
+        );
+        $events->attach(
+            MvcEvent::EVENT_ROUTE,
+            $services->get(Listener\NormalizeMatchedInputFilterNameListener::class),
+            -20
+        );
+        $events->attach(
+            MvcEvent::EVENT_ROUTE,
+            $services->get(Listener\EnableHalRenderCollectionsListener::class),
+            -1000
+        );
+        $events->attach(
+            MvcEvent::EVENT_RENDER,
+            $services->get(Listener\InjectModuleResourceLinksListener::class),
+            100
+        );
+        $events->attach(
+            MvcEvent::EVENT_FINISH,
+            $services->get(Listener\DisableHttpCacheListener::class),
+            1000
+        );
+        */
+        //$this->sm->get(Listener\CryptFilterListener::class)->attach($events);
+    }
+
+
     public function onBootstrap(MvcEvent $e)
     {
 
         /** @var \Zend\ModuleManager\ModuleManager $moduleManager */
         $moduleManager = $e->getApplication()->getServiceManager()->get('modulemanager');
+
+
         //$moduleManager->
         /** @var \Zend\EventManager\SharedEventManager $sharedEvents */
         $sharedEvents = $moduleManager->getEventManager()->getSharedManager();
+
+
         //$sharedEvents->attach('Zend\Mvc\Controller\AbstractRestfulController', MvcEvent::EVENT_DISPATCH, array($this, 'postProcess'), -100);
         $sharedEvents->attach(__NAMESPACE__, MvcEvent::EVENT_DISPATCH, [$this, 'postProcess'], -100);
+
         //$sharedEvents->attach('Zend\Mvc\Application', MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'errorProcess'), 999);
         $sharedEvents->attach('Zend\Mvc\Application', MvcEvent::EVENT_DISPATCH_ERROR, [$this, 'errorProcess'], 999);
 

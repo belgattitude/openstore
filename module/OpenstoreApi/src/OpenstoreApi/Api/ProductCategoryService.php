@@ -13,7 +13,6 @@ class ProductCategoryService extends AbstractService
      */
     public function getList(array $params = [])
     {
-
         $lang = $params['language'];
         $qlang = $this->adapter->getPlatform()->quoteValue($lang);
 
@@ -60,7 +59,7 @@ class ProductCategoryService extends AbstractService
         }
 
         //$select->having('active_pricelists is not null');
-        $select->order(array('pc.global_sort_index' => $select::ORDER_ASCENDING));
+        $select->order(['pc.global_sort_index' => $select::ORDER_ASCENDING]);
 
         $store = $this->getStore($select);
         if (array_key_exists('limit', $params)) {

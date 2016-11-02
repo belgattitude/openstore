@@ -5,6 +5,8 @@ namespace OpenstoreApi\Controller;
 use OpenstoreApi\Mvc\Controller\AbstractRestfulController;
 use OpenstoreApi\Authorize\ApiKeyAccess;
 use Zend\View\Model\ViewModel;
+use OpenstoreApi\Api;
+
 
 class GenericController extends AbstractRestfulController
 {
@@ -14,7 +16,7 @@ class GenericController extends AbstractRestfulController
 
     /**
      *
-     * @var \OpenstoreApi\Api\NammProductCatalogService
+     * @var Api\NammProductCatalogService
      */
     protected $catalogService;
 
@@ -43,9 +45,15 @@ class GenericController extends AbstractRestfulController
      */
     protected $view_directory;
 
+
+    public function __construct(Api\NammProductCatalogService $catalogService)
+    {
+        $this->catalogService = $catalogService;
+    }
+
     public function onDispatch(\Zend\Mvc\MvcEvent $e)
     {
-        $this->catalogService = $this->getServiceLocator()->get('Api\NammProductCatalogService');
+        //$this->catalogService = $this->getServiceLocator()->get('Api\NammProductCatalogService');
 
         $api_key = $this->params()->fromQuery('api_key');
         $this->apiKeyAccess = new ApiKeyAccess($api_key, $this->getServiceLocator());

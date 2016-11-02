@@ -21,8 +21,9 @@ class NewProducts extends AbstractFilter
         //$this->getServiceLocator()->get('Openstore\Config');
         //$config['product']['filter']['minimum_date'];
         //die();
-        $minimum_date = '2012-06-01';
-        $select->where("(COALESCE(pl.new_product_min_date, '$minimum_date') <= COALESCE(ppl.available_at, p.available_at))");
+        //$minimum_date = '2012-06-01';
+        //$select->where("(COALESCE(pl.new_product_min_date, '$minimum_date') <= COALESCE(ppl.available_at, p.available_at))");
+        $select->where("(DATEDIFF(CURRENT_DATE(), coalesce(ppl.available_at, p.available_at)) <= pl.cond_product_new_max_days)");
         return $select;
     }
 

@@ -227,7 +227,7 @@ class ProductBrowser extends AbstractBrowser
                 'map_price' => new Expression('ppl.map_price'),
                 'barcode_ean' => new Expression('p.barcode_ean13'),
                 'barcode_upc' => new Expression('p.barcode_upca'),
-                'flag_new' => new Expression("(COALESCE(pl.new_product_min_date, '$flag_new_min_date') <= COALESCE(ppl.available_at, p.available_at))"),
+                'flag_new' => new Expression('(DATEDIFF(CURRENT_DATE(), coalesce(ppl.available_at, p.available_at)) <= pl.cond_product_new_max_days)'),
                 'discount_1' => new Expression('ppl.discount_1'),
                 'discount_2' => new Expression('ppl.discount_2'),
                 'discount_3' => new Expression('ppl.discount_3'),
