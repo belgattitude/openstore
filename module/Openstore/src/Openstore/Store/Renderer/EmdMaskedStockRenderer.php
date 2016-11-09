@@ -106,7 +106,7 @@ class EmdMaskedStockRenderer implements RowRendererInterface
                             // In case of very low average, the product may seem out of stock
                             $masked_stock = min([$stock, $this->maxDisplayQty]);
                         } else {
-                            $masked_stock = min([$stock, $avg_threshold]);
+                            $masked_stock = min([$stock, $avg_threshold, $this->maxDisplayQty]);
                         }
                     }
             }
