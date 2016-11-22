@@ -408,8 +408,10 @@ class MediaController extends AbstractActionController
         '40x40',        // for emdmusic.com typeahed (mini)
         '65x90',        // for old emdmusic.com website 'small pictures' and browse
         '170x200',        // for openstore browse
+
         '250x750',        // for old emdmusic.com website 'thumbnails'
-        '400x500',        // for hidpi
+        '300x400',     // for mobile version of apps.emdmusic.com
+        '400x500',        // hidpi thumbnails for apps.emdmusic.com
         '800x800',
         '1024x768',        // for emdmusic.com lightbox
         '1280x1024',    // for emdmusic.com info page

@@ -196,6 +196,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
 
         $this->rebuildCategoryBreadcrumbs();
+        $this->rebuildCategoryKeywords();
 
         $this->synchronizeProductStubFromArtTete();
 
@@ -2263,7 +2264,6 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         if (!$this->configuration['options']['product_translation']['enabled']) {
             $this->log("Skipping full product translation synchro [disabled by config]");
             $this->synchronizeMinimalProductTranslation();
-
             return;
         }
 
@@ -2291,7 +2291,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 // Handle a double encoding bug in chinese only
                 $title = "if (trim(i.libelle$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i.libelle$sfx") . "))";
                 $invoice_title = "if (trim(a.libelle$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("a.libelle$sfx") . "))";
-                $description = "if (i2.id_article is not null, 
+                $description = "if (i2.id_article is not ull, 
                                     null,            
                                     if (trim(i.desc$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i.desc$sfx") . "))
                                 )
@@ -2507,6 +2507,13 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $query = "CALL rebuild_category_breadcrumbs()";
         $this->executeSQL('Rebuild category breadcrumbs', $query);
     }
+
+    public function rebuildCategoryKeywords()
+    {
+        $query = "CALL rebuild_category_keywords()";
+        $this->executeSQL('Rebuild category keywords', $query);
+    }
+
 
     /**
      * Execute a query on the database and logs it
