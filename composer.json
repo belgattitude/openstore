@@ -13,7 +13,7 @@
         "openstore/schema-core": "dev-master",
         "belgattitude/openstore-akilia": "dev-master",
         "soluble/japha": "^0.13.0",
-        "soluble/japha-pjb62-compat": "^0.12.1",
+        "soluble/japha-pjb62-compat": "^0.13.0",
         "soluble/solublecomponents": "dev-master",
         "zendframework/zendframework": "~2.5.2",
         "doctrine/orm": ">=2.5,<2.7",
