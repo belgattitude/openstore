@@ -1790,6 +1790,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     type_id,
                     
                     status_id,
+                    target_id,
+                    
                     parent_id,
                     reference, 
                     display_reference,
@@ -1838,7 +1840,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     {$this->default_unit_id} as unit_id,
                     COALESCE(pt.type_id, {$this->default_product_type_id}) as type_id,
                                         
-                    if(ps.status_id is null, {$this->default_status_id}, ps.status_id) as status_id,    
+                    if(ps.status_id is null, {$this->default_status_id}, ps.status_id) as status_id,
+                    product_target.target_id as product_target_id,    
                     if (i.id_art_tete <> 0 and i.id_art_tete <> '' and i.id_art_tete is not null, i.id_art_tete, null) as parent_id,     
                     upper(TRIM(a.reference)) as reference,
                                         upper(TRIM(a.reference)) as display_reference,
@@ -1891,6 +1894,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 left outer join $db.product_status ps on ps.legacy_mapping = a.code_suivi
                 left outer join $db.product_type pt on pt.legacy_mapping = a.product_type COLLATE 'utf8_general_ci'
                 left outer join $db.product_translation p18 on p18.product_id = p.product_id and p18.lang = '$default_lang'
+                left outer join $db.product_target on product_target.reference = a.product_target_reference
                 
                 where a.flag_archive = 0
                 order by i.id_art_tete desc, a.id_article
@@ -1903,7 +1907,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         group_id = product_group.group_id,
                         unit_id = {$this->default_unit_id},
                         parent_id = if (i.id_art_tete <> 0 and i.id_art_tete <> '' and i.id_art_tete is not null, i.id_art_tete, null),     
-                        status_id = if(ps.status_id is null, {$this->default_status_id}, ps.status_id),        
+                        status_id = if(ps.status_id is null, {$this->default_status_id}, ps.status_id),
+                        target_id = product_target.target_id,        
                         category_id = category.category_id,
                         reference = upper(TRIM(a.reference)),
                         display_reference = upper(TRIM(a.reference)),
