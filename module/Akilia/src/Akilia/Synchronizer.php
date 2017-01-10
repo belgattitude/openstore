@@ -1894,7 +1894,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 left outer join $db.product_status ps on ps.legacy_mapping = a.code_suivi
                 left outer join $db.product_type pt on pt.legacy_mapping = a.product_type COLLATE 'utf8_general_ci'
                 left outer join $db.product_translation p18 on p18.product_id = p.product_id and p18.lang = '$default_lang'
-                left outer join $db.product_target on product_target.reference = a.product_target_reference
+                left outer join $db.product_target on product_target.reference = a.product_target_reference COLLATE 'utf8_general_ci'
                 
                 where a.flag_archive = 0
                 order by i.id_art_tete desc, a.id_article
