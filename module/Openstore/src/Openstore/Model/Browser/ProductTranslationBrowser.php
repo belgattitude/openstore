@@ -3,6 +3,7 @@
 namespace Openstore\Model\Browser;
 
 use Openstore\Core\Model\Browser\AbstractBrowser;
+use Openstore\Model\Util\ProductSearchableReference;
 //use Openstore\Catalog\Browser\SearchParams\SearchParamsAbstract as SearchParams;
 //use Openstore\Catalog\Browser\ProductFilter;
 use Zend\Db\Sql\Sql;
@@ -38,6 +39,8 @@ class ProductTranslationBrowser extends AbstractBrowser
      */
     public function getSelect()
     {
+
+
         $params = $this->getSearchParams();
 
         $pricelist = $params->get('pricelist');
@@ -199,6 +202,7 @@ class ProductTranslationBrowser extends AbstractBrowser
         if (count($brands) > 0) {
             $select->where(['pb.reference' => $brands]);
         }
+
 
         $categories = $params->get('categories');
         if ($categories !== null && count($categories) > 0) {
@@ -397,16 +401,6 @@ class ProductTranslationBrowser extends AbstractBrowser
         }
 
         $select->order($order_columns);
-
-        /*
-
-          echo '<pre>';
-
-          echo $select->getSql();
-          die();
-        */
-
-
         return $select;
     }
 
@@ -415,18 +409,14 @@ class ProductTranslationBrowser extends AbstractBrowser
      * @param string $reference
      * @return string
      */
-    protected function getSearchableReference($reference, $wildcards_starts_at_char = 4, $max_reference_length = 20)
+    protected function getSearchableReference($reference, $wildcards_starts_at_char = 3, $max_reference_length = 20)
     {
-        $reference = substr($reference, 0, $max_reference_length);
-        $quoted = $this->adapter->getPlatform()->quoteValue($reference);
-        $ref = $this->adapter->query("select get_searchable_reference($quoted) as ref")->execute()->current()['ref'];
-        $out = '';
-        foreach (str_split($ref) as $idx => $c) {
-            if ($idx >= $wildcards_starts_at_char) {
-                $out .= '%';
-            }
-            $out .= $c;
-        }
-        return $out;
+        $psr = new ProductSearchableReference([
+            'ref_min_length' => 1,
+            'ref_max_length' => $max_reference_length,
+            'ref_validation_regexp' => '/^%?([A-Za-z0-9)([A-Za-z0-9\ \_\-\/\*])+$/',
+            'sql_wildcards_starts_at_char' => $wildcards_starts_at_char
+        ]);
+        return $psr->getReferenceSqlSearch($reference);
     }
 }
