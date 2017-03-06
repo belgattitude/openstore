@@ -164,7 +164,30 @@ abstract class AbstractService implements AdapterAwareInterface, ServiceLocatorA
 
         $cm->search()->regexp('/^pack\_qty/')->setFormatter($intF);
 
-        $cm->search()->regexp('/(length|width|height)$/')->setFormatter($intF);
+        $dimensionF = Formatter::create(
+            Formatter::FORMATTER_UNIT,
+            ['decimals' => 3, 'locale' => $locale, 'unit' => 'm']
+        );
+
+        $cm->search()->regexp('/(length|width|height)$/')->setFormatter($dimensionF);
+
+        $volumeF = Formatter::create(
+            Formatter::FORMATTER_UNIT,
+            ['decimals' => 3, 'locale' => $locale, 'unit' => 'm³']
+        );
+
+        $cm->search()->regexp('/volume$/')->setFormatter($volumeF);
+
+
+        $weightF = Formatter::create(
+            Formatter::FORMATTER_UNIT,
+            ['decimals' => 3, 'locale' => $locale, 'unit' => 'Kg']
+        );
+
+        $cm->search()->regexp('/weight$/')->setFormatter($weightF);
+        $cm->search()->regexp('/^weight/')->setFormatter($weightF);
+
+
     }
 
 
