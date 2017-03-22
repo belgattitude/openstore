@@ -199,7 +199,9 @@ abstract class AbstractBrowser implements SearchableInterface, FilterableInterfa
      */
     public function getStore()
     {
+
         $select = $this->getSelect();
+
 
         $store = new FlexStore(new SqlSource($this->adapter, $select));
         if ($this->limit !== null) {
