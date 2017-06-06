@@ -5,9 +5,12 @@ namespace OpenstoreApi\Api;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
 
-class ProductMediaService extends AbstractService
+class ProductVideoService extends AbstractService
 {
-    use ApiTrait\StorePictureRendererTrait;
+    public static $default_types = [
+        'VIMEO_VIDEO',
+        'VIDEO'
+    ];
 
     /**
      * @param array $params [types,brands,pricelists]
@@ -42,16 +45,18 @@ class ProductMediaService extends AbstractService
             'group_reference' => new Expression('pg.reference'),
             'media_type' => new Expression('pmt.reference'),
             'media_id' => new Expression('m.media_id'),
-            'flag_primary' => new Expression('pm.flag_primary'),
-            'sort_index' => new Expression('pm.sort_index'),
-            'original_filename' => new Expression('m.filename'),
-            'filemtime' => new Expression('m.filemtime'),
+
+            'remote_media_id'  => 'm.remote_media_id',
+            'remote_media_url' => 'm.remote_media_url',
+
+
+
         ];
 
 
         $select->columns(array_merge($columns, [
             'active_pricelists' => new Expression('GROUP_CONCAT(distinct pl.reference)'),
-                ]), true);
+                ]), false);
 
         $select->group($columns);
 
@@ -73,7 +78,7 @@ class ProductMediaService extends AbstractService
 
         if (!$type_filter_enabled) {
             // default to picture types
-            $select->where->in('pmt.reference', ['PICTURE', 'ALTERNATE_PICTURE']);
+            $select->where->in('pmt.reference', self::$default_types);
         }
 
 
@@ -90,9 +95,6 @@ class ProductMediaService extends AbstractService
             $select->where->in('pb.reference', explode(',', $params['brands']));
         }
 
-        /*
-          $select->where("pl.reference = 'BE'");
-         */
 
         $select->having('active_pricelists is not null');
         $select->order(['p.product_id' => $select::ORDER_ASCENDING]);
@@ -108,7 +110,7 @@ class ProductMediaService extends AbstractService
 
 
         // Initialize column model
-        $this->addStorePictureRenderer($store, 'media_id', 'filemtime', 'filemtime');
+        //$this->addStorePictureRenderer($store, 'media_id', 'filemtime', 'filemtime');
         $this->initStoreFormatters($store, $params);
 
         return $store;

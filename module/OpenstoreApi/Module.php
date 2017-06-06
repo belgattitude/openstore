@@ -333,6 +333,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                 'Api\ProductStockService' => 'OpenstoreApi\Api\ProductStockService',
                 'Api\ProductCategoryService' => 'OpenstoreApi\Api\ProductCategoryService',
                 'Api\ProductBrandService' => 'OpenstoreApi\Api\ProductBrandService',
+                'Api\ProductVideoService' => 'OpenstoreApi\Api\ProductVideoService',
                 'Api\NammProductCatalogService' => 'OpenstoreApi\Api\NammProductCatalogService',
             ]
         ];

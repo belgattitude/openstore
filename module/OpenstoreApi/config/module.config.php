@@ -40,6 +40,7 @@ return [
             'OpenstoreApi\Controller\ProductStock' => 'OpenstoreApi\Controller\ProductStockController',
             'OpenstoreApi\Controller\ProductBrand' => 'OpenstoreApi\Controller\ProductBrandController',
             'OpenstoreApi\Controller\ProductCategory' => 'OpenstoreApi\Controller\ProductCategoryController',
+            'OpenstoreApi\Controller\ProductVideo' => 'OpenstoreApi\Controller\ProductVideoController',
             'OpenstoreApi\Controller\NammProductCatalog' => 'OpenstoreApi\Controller\NammProductCatalogController',
         ],
     ],

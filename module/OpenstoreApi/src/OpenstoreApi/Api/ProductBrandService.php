@@ -15,7 +15,7 @@ class ProductBrandService extends AbstractService
     {
         $select = new Select();
 
-        $select->from(['pb' => 'product_brand'], [])
+        $select->from(['pb' => 'product_brand'])
                 ->join(['p' => 'product'], new Expression('pb.brand_id = p.brand_id'), [])
                 ->join(['ppl' => 'product_pricelist'], new Expression('ppl.product_id = p.product_id'), [], $select::JOIN_LEFT)
                 ->join(['pl' => 'pricelist'], new Expression('ppl.pricelist_id = pl.pricelist_id'), [], $select::JOIN_LEFT);
