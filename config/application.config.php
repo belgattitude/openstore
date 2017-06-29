@@ -4,7 +4,6 @@ use Zend\Console\Console;
 
 $root = dirname(__DIR__);
 
-
 $config = array(
     'service_manager' => [
         'aliases' => [
