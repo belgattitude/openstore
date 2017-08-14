@@ -20,6 +20,7 @@
         "doctrine/dbal": "~2.5.13",
         "doctrine/common": "~2.7.3",
         "doctrine/annotations": "~1.4.0",
+        "doctrine/cache": "~1.6.2",
         "doctrine/doctrine-module": "^1.0.1",
         "doctrine/doctrine-orm-module": "^0.10.0",
         "doctrine/data-fixtures": "^1.1.0 || ^1.2.0",
