@@ -49,7 +49,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
     /**
      * mysqli connection
      *
-     * @param Mysqli
+     * @param \mysqli
      */
     protected $mysqli;
 
@@ -115,7 +115,22 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             ->getWrappedConnection()
             ->getWrappedResourceHandle();
         $this->setDbAdapter($zendDb);
+        $this->enableNoEngineSubstitution($zendDb);
         $this->legacy_synchro_at = date('Y-m-d H:i:s');
+    }
+
+
+    /**
+     * MariaDB 10.2+ is more strict about errors, this is used
+     * as a hack to allow some minor errors during sync.
+     *
+     * The best is to clean up in the future of course
+     *
+     * @param Adapter $zendDb
+     */
+    protected function enableNoEngineSubstitution(Adapter $zendDb) {
+
+        $zendDb->query('SET SQL_MODE="NO_ENGINE_SUBSTITUTION"');
     }
 
     /**
