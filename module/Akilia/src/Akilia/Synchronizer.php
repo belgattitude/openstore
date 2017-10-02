@@ -7,6 +7,7 @@
 namespace Akilia;
 
 use Akilia\Utils\Akilia1Products;
+use mysqli;
 use Zend\Db\Adapter\Adapter;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -125,12 +126,11 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
      * as a hack to allow some minor errors during sync.
      *
      * The best is to clean up in the future of course
-     *
-     * @param Adapter $zendDb
      */
-    protected function enableNoEngineSubstitution(Adapter $zendDb) {
+    protected function enableNoEngineSubstitution(Adapter $zendDb, mysqli $mysqli) {
 
         $zendDb->query('SET SQL_MODE="NO_ENGINE_SUBSTITUTION"');
+        $mysqli->query('SET SQL_MODE="NO_ENGINE_SUBSTITUTION"');
     }
 
     /**
