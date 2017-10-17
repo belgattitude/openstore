@@ -116,7 +116,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             ->getWrappedConnection()
             ->getWrappedResourceHandle();
         $this->setDbAdapter($zendDb);
-        $this->enableNoEngineSubstitution($zendDb);
+        $this->enableNoEngineSubstitution($zendDb,$this->mysqli);
         $this->legacy_synchro_at = date('Y-m-d H:i:s');
     }
 
