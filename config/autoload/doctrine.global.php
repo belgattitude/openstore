@@ -7,10 +7,10 @@ return array(
                 'driverClass' => 'Doctrine\DBAL\Driver\Mysqli\Driver',
                 //'pdo' => 'AdapterResourceFactory'
                 'params' => array(
-                    'host' => '192.168.32.11',
+                    'host' => '127.0.0.1',
                     'port' => '3306',
-                    'user' => 'root',
-                    'password' => 'intelart2009',
+                    'user' => 'user',
+                    'password' => 'password',
                     'dbname' => 'openstore_production',
                     'charset' => 'UTF8',
                     //'charset' => 'utf8mb4'
