@@ -17,6 +17,7 @@ class ConsoleController extends AbstractActionController
 {
     public function syncdbAction()
     {
+        //todo lire et comprendre, voir s'il synchronise que ce qui est dans un catalogue (d'ou le bug des fk)
         $configuration = $this->getAkiliaConfiguration();
         if (!is_array($configuration['synchronizer'])) {
             throw new \Exception("Cannot find akilia synchronize configuration, please see you global config files");

@@ -23,6 +23,6 @@ if (file_exists(APPLICATION_PATH . '/config/development.config.php')) {
 // It's all bout zf3 migration..
 ini_set('error_reporting', ~E_USER_DEPRECATED);
 
-
+//ini_set('display_errors', 1);
 // Run the application!
 Zend\Mvc\Application::init($appConfig)->run();
