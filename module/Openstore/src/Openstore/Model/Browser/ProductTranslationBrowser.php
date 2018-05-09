@@ -101,6 +101,7 @@ class ProductTranslationBrowser extends AbstractBrowser
             $inner_columns["version_timestamp_$lang"] = new Expression("MAX(IF(p18.lang = '$lang', if(p18.updated_at is null, p18.created_at, p18.updated_at), null))");
             $inner_columns["revision_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.revision, null))");
             $inner_columns["count_chars_$lang"] = new Expression("MAX(if(p18.lang = '$lang', CHAR_LENGTH(CONCAT(COALESCE(p18.title, ''), COALESCE(p18.description, ''), COALESCE(p18.characteristic, ''))), null))");
+            $inner_columns["usp_$lang"] = new Expression("COALESCE(MAX(if(p18.lang = '$lang', p18.usp, null)), '')");
         }
 
         $select->from(['p' => 'product'], [])
