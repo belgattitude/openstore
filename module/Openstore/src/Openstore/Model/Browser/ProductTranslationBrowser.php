@@ -102,6 +102,7 @@ class ProductTranslationBrowser extends AbstractBrowser
             $inner_columns["revision_$lang"] = new Expression("MAX(if(p18.lang = '$lang', p18.revision, null))");
             $inner_columns["count_chars_$lang"] = new Expression("MAX(if(p18.lang = '$lang', CHAR_LENGTH(CONCAT(COALESCE(p18.title, ''), COALESCE(p18.description, ''), COALESCE(p18.characteristic, ''))), null))");
             $inner_columns["usp_$lang"] = new Expression("COALESCE(MAX(if(p18.lang = '$lang', p18.usp, null)), '')");
+            $inner_columns["marketing_text_$lang"] = new Expression("COALESCE(MAX(if(p18.lang = '$lang', p18.marketing_text, null)), '')");
         }
 
         $select->from(['p' => 'product'], [])
@@ -402,6 +403,7 @@ class ProductTranslationBrowser extends AbstractBrowser
         }
 
         $select->order($order_columns);
+        //echo $select->getSql(); die();
         return $select;
     }
 
