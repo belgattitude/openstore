@@ -381,7 +381,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
             $default_fields = [
                 'created_by' => 'akilia:syncdb',
-                'updated_by' => 'akilia:syncdb'
+                'updated_by' => 'akilia:syncdb',
+                'legacy_synchro_at' => $this->legacy_synchro_at
             ];
 
             $media_id = $mediaManager->import($importElement, $container['container_id'],
@@ -425,6 +426,21 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                 echo "-----------------------------------------------------------\n";
             }
         }
+
+
+        $db = $this->openstoreDb;
+        $date = date('Y-m-d');
+        $delete = "
+            DELETE FROM $db.product_media 
+            WHERE type_id = 1 
+            AND sort_index != 0 
+            AND updated_by = 'akilia:syncdb'
+            AND flag_primary IS NULL
+            AND updated_at < '$date'
+            AND legacy_synchro_at <> '{$this->legacy_synchro_at}' 
+            AND legacy_synchro_at IS NOT NULL";
+
+        $this->executeSQL("Delete eventual removed alternate pictures", $delete);
 
         echo "-----------------------------------------------------------\n";
         echo "Memory: " . convertMemorySize(memory_get_usage($real_usage = true)) . "\n";
@@ -2319,6 +2335,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                                 )
                 ";
                 $characteristic = "if (trim(i.couleur$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i.couleur$sfx") . "))";
+                //$usp = "if (trim(i.usp$sfx) = '', null, trim(" . $this->hackUtf8TranslationColumn("i.usp$sfx") . "))";
             } else {
                 $title = "if (trim(i.libelle$sfx) = '', null, trim(i.libelle$sfx))";
                 $invoice_title = "if (trim(a.libelle$sfx) = '', null, trim(a.libelle$sfx))";
@@ -2328,6 +2345,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                                 )
                 ";
                 $characteristic = "if (trim(i.couleur$sfx) = '', null, trim(i.couleur$sfx))";
+                //$usp = "if (trim(i.usp$sfx) = '', null, trim(i.usp$sfx))";
             }
 
             $rep = "REPLACE($description, '–', '-')";
@@ -2342,6 +2360,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
 
             $description = $rep;
 
+            //usp,
             $replace = "insert into product_translation 
                  ( product_id,
                    lang,
