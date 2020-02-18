@@ -1858,7 +1858,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     trade_code_intrastat,
                     trade_code_hts,
                     legacy_mapping, 
-                    legacy_synchro_at
+                    legacy_synchro_at,
+                    
+                    flag_kids
                 )
 
                 select
@@ -1911,7 +1913,9 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                     a.intrastat_trade_code,
                     a.hts_trade_code,
                     a.id_article as legacy_mapping,
-                    '{$this->legacy_synchro_at}' as legacy_synchro_at
+                    '{$this->legacy_synchro_at}' as legacy_synchro_at,
+                    
+                    a.flag_kids
                         
                     
                 from $akilia1db.article as a
@@ -1977,7 +1981,8 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
                         trade_code_intrastat = a.intrastat_trade_code,
                         trade_code_hts = a.hts_trade_code,
                         legacy_mapping = a.id_article,
-                        legacy_synchro_at = '{$this->legacy_synchro_at}'
+                        legacy_synchro_at = '{$this->legacy_synchro_at}',
+                        flag_kids = a.flag_kids
                      ";
 
 
