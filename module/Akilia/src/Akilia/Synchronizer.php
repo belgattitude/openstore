@@ -209,6 +209,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
         $this->synchronizeProductPackaging();
         $this->synchronizeDiscountCondition();
 
+        $this->synchronizeProductCustomer();
 
         $this->rebuildCategoryBreadcrumbs();
         $this->rebuildCategoryKeywords();
@@ -2543,6 +2544,40 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
 
         $this->executeSQL("Delete eventual removed discount conditions", $delete);
+    }
+
+    /*
+     * Synchronize reserved products for customers
+     */
+    public function synchronizeProductCustomer($use_akilia2 = true)
+    {
+        $akilia1Db = $this->akilia1Db;
+        $db = $this->openstoreDb;
+
+        $replace = "
+                INSERT INTO $db.product_customer(
+                  product_id, 
+                  customer_id,
+                  legacy_synchro_at
+                )
+                SELECT
+                  acl.id_article, 
+                  acl.id_client, 
+                  '{$this->legacy_synchro_at}'
+            FROM $akilia1Db.article_client acl
+            ON duplicate KEY UPDATE
+                product_id = acl.id_article,
+                customer_id = acl.id_client, 
+                legacy_synchro_at = '{$this->legacy_synchro_at}'";
+
+        $this->executeSQL("Replace reserved product customer", $replace);
+
+        // 2. Deleting - old links in case it changes
+        $delete = "
+            delete from $db.product_customer where
+            legacy_synchro_at <> '{$this->legacy_synchro_at}' and legacy_synchro_at is not null";
+
+        $this->executeSQL("Delete eventual removed reserved product customer", $delete);
     }
 
     public function rebuildProductSearch()
