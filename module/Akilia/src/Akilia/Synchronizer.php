@@ -362,7 +362,7 @@ class Synchronizer implements ServiceLocatorAwareInterface, AdapterAwareInterfac
             throw new \Exception("Cannot find PICTURE product media type in your database");
         }
 
-        $limit_to_import = 25000;
+        $limit_to_import = 29000;
         $count = count($list);
         $productTable = $tm->table('product');
         $mediaTable = $tm->table('product_media');
